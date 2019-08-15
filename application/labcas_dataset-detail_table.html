@@ -118,8 +118,8 @@
                                         </div>
                                         <div class="col-7">
                                             <div class="numbers">
-                                                <p class="card-category"># Collection Details</p>
-                                                <h4 class="card-title" id='collection_details_len'></h4>
+                                                <p class="card-category"># Dataset Details</p>
+                                                <h4 class="card-title" id='dataset_details_len'></h4>
                                             </div>
                                         </div>
                                     </div>
@@ -143,8 +143,8 @@
                                         </div>
                                         <div class="col-7">
                                             <div class="numbers">
-                                                <p class="card-category"># Datasets</p>
-                                                <h4 class="card-title" id='collection_datasets_len'></h4>
+                                                <p class="card-category"># Files</p>
+                                                <h4 class="card-title" id='dataset_files_len'></h4>
                                             </div>
                                         </div>
                                     </div>
@@ -163,38 +163,13 @@
                                     <div class="row">
                                         <div class="col-5">
                                             <div class="icon-big text-center icon-warning">
-                                                <i class="nc-icon nc-single-copy-04 text-success"></i>
-                                            </div>
-                                        </div>
-                                        <div class="col-7">
-                                            <div class="numbers">
-                                                <p class="card-category"># Files</p>
-                                                <h4 class="card-title" id='collection_files_len'>1,345</h4>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card-footer ">
-                                    <hr>
-                                    <div class="stats">
-                                        <i class="fa fa-calendar-o"></i> Last day
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-sm-6">
-                            <div class="card card-stats">
-                                <div class="card-body ">
-                                    <div class="row">
-                                        <div class="col-5">
-                                            <div class="icon-big text-center icon-warning">
                                                 <i class="nc-icon nc-favourite-28 text-primary"></i>
                                             </div>
                                         </div>
                                         <div class="col-7">
                                             <div class="numbers">
                                                 <p class="card-category"># Favorited</p>
-                                                <h4 class="card-title" id='collection_favorites_len'>0</h4>
+                                                <h4 class="card-title" id='dataset_favorites_len'>0</h4>
                                             </div>
                                         </div>
                                     </div>
@@ -209,15 +184,15 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="card ">
                                 <div class="card-header">
-                                    <h4 class="card-title"><div id="collectiontitle"></div></h4>
-                                     <p class="card-category">Collection Details</p>
+                                    <h4 class="card-title"><div id="datasettitle"></div></h4>
+                                     <p class="card-category">Dataset Details</p>
                                 </div>
                                 <div class="card-body">
                                             <div class="table-responsive">
-                                                <table class="table" id="collectiondetails-table">
+                                                <table class="table" id="datasetdetails-table">
                                                     <tbody>
                                                     </tbody>
                                                 </table>
@@ -232,15 +207,24 @@
 								</div>
                             </div>
                         </div>
-                        <div class="col-md-6 ml-auto mr-auto">
+                        <div class="col-md-12 ml-auto mr-auto">
                                                     <div class="card card-tasks">
                                                         <div class="card-header ">
-                                                            <h4 class="card-title">Datasets in this Collection</h4>
+                                                            <h4 class="card-title">Files in this Dataset</h4>
                                                             <p class="card-category">Explore or Download</p>
                                                         </div>
                                                         <div class="card-body">
                                                             <div class="table-full-width">
-                                                                <table class="table" id="datasets-table">
+                                                                <table class="table" id="files-table">
+                                                                	<thead>
+                                                                		<th>Check</th>
+                                                                		<th>Name</th>
+                                                                		<th>Type</th>
+                                                                		<th>Description</th>
+                                                                		<th>Thumbnail</th>
+                                                                		<th>Size</th>
+                                                                		<th>Action</th>
+                                                                	</thead>
                                                                     <tbody>
                                                                     </tbody>
                                                                 </table>
@@ -349,8 +333,8 @@
     $(document).ready(function() {
         //setup_labcas_data("collectiondatasets",'id:"1.0_Athena-IHC4_with_Swedish_Breast_Cancer_Study"', 'id:1.0_Athena-IHC4_with_Swedish_Breast_Cancer_Study.*');
         var get_var = get_url_vars();
-        setup_labcas_data("collectiondatasets",'id:"'+get_var["collection_id"]+'"', 'id:'+get_var["collection_id"]+'.*');
-        
+        console.log(get_var["dataset_id"]);
+        setup_labcas_dataset_data("datasetfiles",'id:"'+get_var["dataset_id"]+'"', 'id:'+get_var["dataset_id"]+'.*'); 
         includeHTML();
 		
     });
