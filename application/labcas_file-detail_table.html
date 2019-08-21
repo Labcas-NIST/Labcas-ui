@@ -270,13 +270,13 @@
 <!--<script src="../assets/js/demo.js"></script>-->
 <script src="../assets/js/plugins/js.cookie.js"></script>
 <script src="../assets/js/labcas/labcas-sidebar.js"></script>
-<script src="../assets/js/labcas/authentication.js?15"></script>
+<script src="../assets/js/labcas/authentication.js?18"></script>
 <script src="../assets/js/labcas/utils.js"></script>
 <script type="text/javascript">
     $(document).ready(function() {
         var get_var = get_url_vars();
         console.log(get_var["file_id"]);
-        setup_labcas_file_data("file",'id:"'+get_var["file_id"]+'"', 'id:'+get_var["file_id"]+'.*'); 
+        setup_labcas_file_data("file",'id:"'+get_var["file_id"]+'"', 'id:'+get_var["file_id"]+'*'); 
         includeHTML();
     });
 </script>

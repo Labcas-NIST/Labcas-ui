@@ -212,8 +212,12 @@
                                                         <div class="card-header ">
                                                             <h4 class="card-title">Files in this Dataset</h4>
                                                             <p class="card-category">Explore or Download</p>
+                                                            
                                                         </div>
                                                         <div class="card-body">
+                                                        <ul class="pagination pagination-no-border" id='files_pagination_top' style="float: right;">
+																	
+																</ul>
                                                             <div class="table-full-width">
                                                                 <table class="table" id="files-table">
                                                                 	<thead>
@@ -233,7 +237,11 @@
                                                         <div class="card-footer ">
                                                             <hr>
                                                             <div class="stats">
-                                                                <i class="now-ui-icons loader_refresh spin"></i> Updated 3 minutes ago
+                                                                <i class="now-ui-icons loader_refresh spin"></i>
+                                                                <ul class="pagination pagination-no-border" id='files_pagination_bottom' style="float: right;">
+																	
+																</ul>
+
                                                             </div>
                                                         </div>
                                                     </div>
@@ -327,14 +335,15 @@
 <!--<script src="../assets/js/demo.js"></script>-->
 <script src="../assets/js/plugins/js.cookie.js"></script>
 <script src="../assets/js/labcas/labcas-sidebar.js"></script>
-<script src="../assets/js/labcas/authentication.js?15"></script>
-<script src="../assets/js/labcas/utils.js"></script>
+<script src="../assets/js/labcas/utils.js?1"></script>
+<script src="../assets/js/labcas/authentication.js?18"></script>
+
 <script type="text/javascript">
     $(document).ready(function() {
         //setup_labcas_data("collectiondatasets",'id:"1.0_Athena-IHC4_with_Swedish_Breast_Cancer_Study"', 'id:1.0_Athena-IHC4_with_Swedish_Breast_Cancer_Study.*');
         var get_var = get_url_vars();
         console.log(get_var["dataset_id"]);
-        setup_labcas_dataset_data("datasetfiles",'id:"'+get_var["dataset_id"]+'"', 'id:'+get_var["dataset_id"]+'.*'); 
+        setup_labcas_dataset_data("datasetfiles",'id:"'+get_var["dataset_id"]+'"', 'id:'+get_var["dataset_id"]+'*', 0); 
         includeHTML();
 		
     });
