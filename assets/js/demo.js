@@ -1311,7 +1311,7 @@ demo = {
 
         $.notify({
             icon: "nc-icon nc-app",
-            message: "Welcome to <b>Light Bootstrap Dashboard</b> - a beautiful freebie for every web developer."
+            message: "Welcome to <b>Labcas 2.0</b> - your central repository for all your scientific data."
 
         }, {
             type: type[color],
