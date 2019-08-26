@@ -12,6 +12,7 @@ $('#loginform').submit(function (e) {
                 //localStorage.setItem('token', data);
                 Cookies.set("token", data);
                 Cookies.set("user", $('#username').val());
+                Cookies.set("userletters", $('#username').val().substr(0, 2).toUpperCase());
                 window.location.replace("/labcas-ui/application/labcas_collection_table.html");
             },
             error: function(){

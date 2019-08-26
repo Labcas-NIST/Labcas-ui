@@ -15,7 +15,7 @@
     <link href="../assets/css/bootstrap.min.css" rel="stylesheet" />
     <link href="../assets/css/light-bootstrap-dashboard.css?v=2.0.1" rel="stylesheet" />
     <!-- CSS Just for demo purpose, don't include it in your project -->
-    <link href="../assets/css/demo.css" rel="stylesheet" />
+    <link href="../assets/css/labcas/custom.css" rel="stylesheet" />
 </head>
 
 <body class="sidebar-mini">
@@ -44,7 +44,7 @@
                             <form class="navbar-form navbar-left navbar-search-form" role="search" action="javascript:search();">
                                 <div class="input-group">
                                     <i class="nc-icon nc-zoom-split"></i>
-                                    <input id="search_text" type="text" value="" class="form-control" placeholder="Labcas Full Search...">
+                                    <input id="search_text" type="text" class="form-control" placeholder="Labcas Full Search...">
                                 </div>
                             </form>
                         </ul>
@@ -118,8 +118,8 @@
                                         </div>
                                         <div class="col-7">
                                             <div class="numbers">
-                                                <p class="card-category"># File Details</p>
-                                                <h4 class="card-title" id='file_details_len'></h4>
+                                                <p class="card-category"># Collections</p>
+                                                <h4 class="card-title" id='collections_len'></h4>
                                             </div>
                                         </div>
                                     </div>
@@ -127,7 +127,57 @@
                                 <div class="card-footer ">
                                     <hr>
                                     <div class="stats">
-                                        <i class="fa fa-refresh"></i> Update Now
+                                        <i class="fa fa-refresh"></i> Updated Now
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-6">
+                            <div class="card card-stats">
+                                <div class="card-body ">
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <div class="icon-big text-center icon-warning">
+                                                <i class="nc-icon nc-vector text-danger"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col-7">
+                                            <div class="numbers">
+                                                <p class="card-category"># Datasets</p>
+                                                <h4 class="card-title" id='datasets_len'></h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer ">
+                                    <hr>
+                                    <div class="stats">
+                                        <i class="fa fa-refresh"></i> Updated now
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-6">
+                            <div class="card card-stats">
+                                <div class="card-body ">
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <div class="icon-big text-center icon-warning">
+                                                <i class="nc-icon nc-single-copy-04 text-success"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col-7">
+                                            <div class="numbers">
+                                                <p class="card-category"># Files</p>
+                                                <h4 class="card-title" id='files_len'></h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer ">
+                                    <hr>
+                                    <div class="stats">
+                                        <i class="fa fa-refresh"></i> Updated now
                                     </div>
                                 </div>
                             </div>
@@ -144,7 +194,7 @@
                                         <div class="col-7">
                                             <div class="numbers">
                                                 <p class="card-category"># Favorited</p>
-                                                <h4 class="card-title" id='file_favorites_len'>0</h4>
+                                                <h4 class="card-title" id='favorites_len'>0</h4>
                                             </div>
                                         </div>
                                     </div>
@@ -152,36 +202,86 @@
                                 <div class="card-footer ">
                                     <hr>
                                     <div class="stats">
-                                        <i class="fa fa-refresh"></i> Update now
+                                        <i class="fa fa-refresh"></i> Updated now
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-3">
                             <div class="card ">
                                 <div class="card-header">
-                                    <h4 class="card-title"><div id="filetitle"></div></h4>
-                                     <p class="card-category">File Details</p>
+                                    <h4 class="card-title">Organ Filters</h4>
+                                    <hr>
                                 </div>
                                 <div class="card-body">
-                                            <div class="table-responsive">
-                                                <table class="table" id="filedetails-table">
-                                                    <tbody>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        
+                                       <form>
+                                       		<div class="row">
+												<div class="col-md-6">
+													<center>Heart</center>
+												</div>
+												<div class="col-md-6">
+													<input type="checkbox" checked="" data-toggle="switch" data-on-color="info" data-off-color="info" data-on-text="<i class='fa fa-check'></i>" data-off-text="<i class='fa fa-times'></i>">
+													<span class="toggle"></span>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-6">
+													<center>Stomach</center>
+												</div>
+												<div class="col-md-6">
+													<input type="checkbox" checked="" data-toggle="switch" data-on-color="info" data-off-color="info" data-on-text="<i class='fa fa-check'></i>" data-off-text="<i class='fa fa-times'></i>">
+													<span class="toggle"></span>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-6">
+													<center>Lungs</center>
+												</div>
+												<div class="col-md-6">
+													<input type="checkbox" checked="" data-toggle="switch" data-on-color="info" data-off-color="info" data-on-text="<i class='fa fa-check'></i>" data-off-text="<i class='fa fa-times'></i>">
+													<span class="toggle"></span>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-6">
+													<center>Prostate</center>
+												</div>
+												<div class="col-md-6">
+													<input type="checkbox" checked="" data-toggle="switch" data-on-color="info" data-off-color="info" data-on-text="<i class='fa fa-check'></i>" data-off-text="<i class='fa fa-times'></i>">
+													<span class="toggle"></span>
+												</div>
+											</div>
+                                        </form>
                                 </div>
-                                <div class="card-footer ">
-									<hr>
-									<div class="stats">
-										<i class="now-ui-icons loader_refresh spin"></i> Updated 3 minutes ago
-									</div>
-								</div>
                             </div>
                         </div>
+                        <div class="col-md-9 ml-auto mr-auto">
+                                                    <div class="card card-tasks">
+                                                        <div class="card-header ">
+                                                            <h4 class="card-title">Search Results</h4>
+                                                            <p class="card-category">Explore or Download</p>
+                                                        </div>
+                                                        <div class="card-body">
+                                                        	<ul class="pagination pagination-no-border" id='collections_pagination_top' style="float: right;"></ul>
+                                                            <div class="table-full-width">
+                                                                <table class="table" id="search-collection-table">
+                                                                    <tbody>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                        <div class="card-footer ">
+                                                            <hr>
+                                                            <div class="stats">
+                                                                <i class="now-ui-icons loader_refresh spin"></i> Updated 3 minutes ago
+                                                            	<ul class="pagination pagination-no-border" id='collections_pagination_bottom' style="float: right;"></ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                
+                                                </div>
                                                 </div>
                                             </div>
                                             
@@ -261,23 +361,23 @@
 <!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
 <script src="../assets/js/light-bootstrap-dashboard.js?v=2.0.1" type="text/javascript"></script>
 <!-- Light Dashboard DEMO methods, don't include it in your project! -->
-<link href="../assets/css/labcas/custom.css" rel="stylesheet" />
+<!--<script src="../assets/js/demo.js"></script>-->
 <script src="../assets/js/plugins/js.cookie.js"></script>
 <script src="../assets/js/labcas/labcas-sidebar.js"></script>
-<script src="../assets/js/labcas/authentication.js?18"></script>
-<script src="../assets/js/labcas/utils.js"></script>
+<script src="../assets/js/labcas/authentication.js?21"></script>
+<script src="../assets/js/labcas/utils.js?2"></script>
 <script src="../assets/js/labcas/search.js?2"></script>
 <script type="text/javascript">
     $(document).ready(function() {
         var get_var = get_url_vars();
-        console.log(get_var["file_id"]);
-        setup_labcas_file_data("file",'id:"'+get_var["file_id"]+'"', 'id:'+get_var["file_id"]+'*'); 
+        setup_labcas_search(get_var["search"], "all", 0);
         
         $.get( "sidebar.html?2", function( data ) {
             $( "#sidebar_placeholder" ).append(data);
             $( "#username_placeholder" ).html(Cookies.get('user'));
             $( "#username_letters_placeholder" ).html(Cookies.get('userletters'));
         });
+		
     });
 </script>
 

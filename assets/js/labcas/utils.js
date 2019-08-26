@@ -55,5 +55,7 @@ function paginate(divid, cpage){
 	var get_var = get_url_vars();
 	if (divid == 'files'){
 		setup_labcas_dataset_data("datasetfiles",'id:"'+get_var["dataset_id"]+'"', 'id:'+get_var["dataset_id"]+'*', cpage-1); 
+	}else if (divid == 'collections'){
+		setup_labcas_search(get_var["search"], divid, cpage-1);
 	}
 }

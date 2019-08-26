@@ -15,12 +15,12 @@
     <link href="../assets/css/bootstrap.min.css" rel="stylesheet" />
     <link href="../assets/css/light-bootstrap-dashboard.css?v=2.0.1" rel="stylesheet" />
     <!-- CSS Just for demo purpose, don't include it in your project -->
-    <link href="../assets/css/demo.css" rel="stylesheet" />
+    <link href="../assets/css/labcas/custom.css" rel="stylesheet" />
 </head>
 
 <body class="sidebar-mini">
     <div class="wrapper">
-        <div w3-include-html="sidebar.html?2"></div>
+        <div id='sidebar_placeholder'></div>
         <div class="main-panel">
             <!-- Navbar -->
             <nav class="navbar navbar-expand-lg ">
@@ -41,10 +41,10 @@
                     </button>
                     <div class="collapse navbar-collapse justify-content-end">
                         <ul class="nav navbar-nav mr-auto">
-                            <form class="navbar-form navbar-left navbar-search-form" role="search">
+                            <form class="navbar-form navbar-left navbar-search-form" role="search" action="javascript:search();">
                                 <div class="input-group">
                                     <i class="nc-icon nc-zoom-split"></i>
-                                    <input type="text" value="" class="form-control" placeholder="Search...">
+                                    <input id="search_text" type="text" value="" class="form-control" placeholder="Labcas Full Search...">
                                 </div>
                             </form>
                         </ul>
@@ -262,41 +262,35 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <footer class="footer">
-                                        <div class="container">
-                                            <nav>
-                                                <ul class="footer-menu">
-                                                    <li>
-                                                        <a href="#">
-                                                            Home
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#">
-                                                            Company
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#">
-                                                            Portfolio
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#">
-                                                            Blog
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                                <p class="copyright text-center">
-                                                    ©
-                                                    <script>
-                                                        document.write(new Date().getFullYear())
-                                                    </script>
-                                                    <a href="http://www.creative-tim.com">Creative Tim</a>, made with love for a better web
-                                                </p>
-                                            </nav>
-                                        </div>
-                                    </footer>
+                                    <footer role='contentinfo' class='labcas-footer'>
+            <div class='container'>
+                <ul class='labcas-footer-links'>
+                    
+                    <li>
+                        <a href='https://mcl.nci.nih.gov/'>
+                            Consortium for Molecular and Cellular Characterization of Screen-Detected Lesions
+                        </a>
+                    </li>
+                    <li>
+                        <a href='https://mcl-labcas.jpl.nasa.gov/ui/help'>Help</a>
+                    </li>
+                    <li>
+                        <a href='https://mcl-labcas.jpl.nasa.gov/ui/about'>About</a>
+                    </li>
+                </ul>
+                <p>
+                    Copyright © 2019
+                    California Institute of Technology. <small>ALL RIGHTS RESERVED.</small>
+                    U.S. Government Sponsorship Acknowledged.
+                </p>
+                <p>
+                    Portions of this web application powered by <a href='http://www.plupload.com/'>Plupload</a>,
+                    licensed under <a href='https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html'>GPLv2</a>.
+                    <a href='https://mcl-labcas.jpl.nasa.gov/ui/static/plupload-2.1.9.zip'>Get Plupload</a>.
+                </p>
+        
+                </div>
+            </footer>
                                 </div>
                             </div>
                           
@@ -345,13 +339,18 @@
 <script src="../assets/js/labcas/labcas-sidebar.js"></script>
 <script src="../assets/js/labcas/authentication.js?19"></script>
 <script src="../assets/js/labcas/utils.js"></script>
+<script src="../assets/js/labcas/search.js?2"></script>
 <script type="text/javascript">
     $(document).ready(function() {
         //setup_labcas_data("collectiondatasets",'id:"1.0_Athena-IHC4_with_Swedish_Breast_Cancer_Study"', 'id:1.0_Athena-IHC4_with_Swedish_Breast_Cancer_Study.*');
         var get_var = get_url_vars();
         setup_labcas_data("collectiondatasets",'id:"'+get_var["collection_id"]+'"', 'id:'+get_var["collection_id"]+'*');
         
-        includeHTML();
+        $.get( "sidebar.html?2", function( data ) {
+            $( "#sidebar_placeholder" ).append(data);
+            $( "#username_placeholder" ).html(Cookies.get('user'));
+            $( "#username_letters_placeholder" ).html(Cookies.get('userletters'));
+        });
 		
     });
 </script>

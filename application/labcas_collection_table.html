@@ -15,12 +15,13 @@
     <link href="../assets/css/bootstrap.min.css" rel="stylesheet" />
     <link href="../assets/css/light-bootstrap-dashboard.css?v=2.0.1" rel="stylesheet" />
     <!-- CSS Just for demo purpose, don't include it in your project -->
-    <link href="../assets/css/demo.css" rel="stylesheet" />
+    <link href="../assets/css/labcas/custom.css" rel="stylesheet" />
 </head>
 
 <body class="sidebar-mini">
     <div class="wrapper">
-        <div w3-include-html="sidebar.html?5"></div>
+        <!--<div w3-include-html="sidebar.html?7"></div>-->
+        <div id='sidebar_placeholder'></div>
         <div class="main-panel">
             <!-- Navbar -->
             <nav class="navbar navbar-expand-lg ">
@@ -41,10 +42,10 @@
                     </button>
                     <div class="collapse navbar-collapse justify-content-end">
                         <ul class="nav navbar-nav mr-auto">
-                            <form class="navbar-form navbar-left navbar-search-form" role="search">
+                            <form class="navbar-form navbar-left navbar-search-form" role="search" action="javascript:search();">
                                 <div class="input-group">
                                     <i class="nc-icon nc-zoom-split"></i>
-                                    <input type="text" value="" class="form-control" placeholder="Search...">
+                                    <input id="search_text" type="text" class="form-control" placeholder="Labcas Full Search...">
                                 </div>
                             </form>
                         </ul>
@@ -139,38 +140,34 @@
                     </div>
                 </div>
             </div>
-            <footer class="footer">
-                <div class="container">
-                    <nav>
-                        <ul class="footer-menu">
-                            <li>
-                                <a href="#">
-                                    Home
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    EDRN
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    JPL
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    Events
-                                </a>
-                            </li>
-                        </ul>
-                        <p class="copyright text-center">
-                            ©
-                            <script>
-                                document.write(new Date().getFullYear())
-                            </script>
-                        </p>
-                    </nav>
+
+            <footer role='contentinfo' class='labcas-footer'>
+            <div class='container'>
+                <ul class='labcas-footer-links'>
+                    
+                    <li>
+                        <a href='https://mcl.nci.nih.gov/'>
+                            Consortium for Molecular and Cellular Characterization of Screen-Detected Lesions
+                        </a>
+                    </li>
+                    <li>
+                        <a href='https://mcl-labcas.jpl.nasa.gov/ui/help'>Help</a>
+                    </li>
+                    <li>
+                        <a href='https://mcl-labcas.jpl.nasa.gov/ui/about'>About</a>
+                    </li>
+                </ul>
+                <p>
+                    Copyright © 2019
+                    California Institute of Technology. <small>ALL RIGHTS RESERVED.</small>
+                    U.S. Government Sponsorship Acknowledged.
+                </p>
+                <p>
+                    Portions of this web application powered by <a href='http://www.plupload.com/'>Plupload</a>,
+                    licensed under <a href='https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html'>GPLv2</a>.
+                    <a href='https://mcl-labcas.jpl.nasa.gov/ui/static/plupload-2.1.9.zip'>Get Plupload</a>.
+                </p>
+        
                 </div>
             </footer>
         </div>
@@ -221,10 +218,10 @@
 <script src="../assets/js/labcas/authentication.js?18"></script>
 <script src="../assets/js/labcas/labcas-sidebar.js"></script>
 <script src="../assets/js/labcas/utils.js"></script>
+<script src="../assets/js/labcas/search.js?2"></script>
 <script type="text/javascript">
     setup_labcas_data("collections","*:*");
     var $table = $('#collection-table');
-	console.log("NEW");
     function operateFormatter(value, row, index) {
         return [
             '<a rel="tooltip" title="Favorite" class="btn btn-link btn-info table-action view" href="javascript:void(0)">',
@@ -258,7 +255,13 @@
                 });
             }
         };
-		includeHTML();
+        //includeHTML();
+		$.get( "sidebar.html?2", function( data ) {
+            $( "#sidebar_placeholder" ).append(data);
+            $( "#username_placeholder" ).html(Cookies.get('user'));
+            $( "#username_letters_placeholder" ).html(Cookies.get('userletters'));
+        });
+        
     });
 </script>
 

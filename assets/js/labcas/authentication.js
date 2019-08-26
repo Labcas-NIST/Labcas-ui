@@ -294,3 +294,126 @@ function setup_labcas_file_data(datatype, query, file_query){
          }
     });
 }
+
+
+
+
+/*Search Section*/
+function fill_datasets_search(data){
+	var size = data.response.numFound;
+	var cpage = data.response.start;
+	
+	$("#datasets_len").html(size); 
+}
+function fill_files_search(data){
+	var size = data.response.numFound;
+	var cpage = data.response.start;
+	
+	$("#files_len").html(size); 
+}
+
+function fill_collections_search(data){
+	var size = data.response.numFound;
+	var cpage = data.response.start;
+	load_pagination("collections",size,cpage);
+	$("#search-collection-table tbody").empty();
+	$.each(data.response.docs, function(key, obj) {
+	  var thumb = "";
+	  var filetype = obj.FileType ? obj.FileType.join(",") : "";
+	  var description = obj.Description? obj.Description.join(",") : "";
+	  if ('FileThumbnailUrl' in obj){
+		thumb = "<img width='50' height='50' src='"+obj.FileThumbnailUrl+"'/>";
+	  }
+	  
+	  $("#search-collection-table tbody").append(
+		"<tr>"+
+			"<td><div class=\"form-check\">"+
+				"<label class=\"form-check-label\">"+
+					"<input class=\"form-check-input\" type=\"checkbox\" value=''>"+
+					"<span class=\"form-check-sign\"></span>"+
+				"</label>"+
+			"</div></td><td>"+
+			"<a href='/labcas-ui/application/labcas_collection-detail_table.html?collection_id="+
+                    obj.id+"'>"+
+                obj.CollectionName+"</a></td>"+
+                "<td>"+obj.LeadPI+"</td>"+
+                "<td>"+obj.Institution+"</td>"+
+                "<td>"+obj.Discipline+"</td>"+
+                "<td>"+obj.DataCustodian+"</td>"+
+                "<td>"+obj.Organ+"</td>"+
+			"<td class=\"td-actions text-right\">"+
+				"<button type=\"button\" rel=\"tooltip\" title=\"Edit Task\" class=\"btn btn-info btn-simple btn-link\">"+
+					"<i class=\"fa fa-share\"></i>"+
+				"</button>"+
+				"<button type=\"button\" rel=\"tooltip\" title=\"Remove\" class=\"btn btn-danger btn-simple btn-link\">"+
+					"<i class=\"fa fa-star\"></i>"+
+				"</button>"+
+				"<button type=\"button\" rel=\"tooltip\" title=\"Remove\" class=\"btn btn-danger btn-simple btn-link\">"+
+					"<i class=\"fa fa-download\"></i>"+
+				"</button>"+
+			"</td>"+
+		"</tr>");	
+	});                                                                     
+    $("#collections_len").html(size); 
+}
+
+function setup_labcas_search(query, divid, cpage){
+    console.log("Searching...");
+    if (divid == "collections" || divid == "all"){
+    console.log(cpage);
+		$.ajax({
+			url: "https://"+root_app+".jpl.nasa.gov/data-access-api/collections/select?q=*"+query+"*&wt=json&indent=true&start="+cpage*10,	
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token'));
+			},
+			type: 'GET',
+			dataType: 'json',
+			success: function (data) {
+				fill_collections_search(data);
+			},
+			error: function(){
+				 alert("Login expired, please login...");
+				 window.location.replace("/labcas-ui/application/pages/login.html");
+			 }
+		});
+    }
+    if (divid == "datasets" || divid == "all"){
+        $.ajax({
+            url: "https://"+root_app+".jpl.nasa.gov/data-access-api/datasets/select?q=*"+query+"*&wt=json&indent=true&start="+cpage*10,
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token'));
+            },
+            type: 'GET',
+            dataType: 'json',
+            processData: false,
+            success: function (data) {
+                fill_datasets_search(data);
+            },
+            error: function(){
+                 alert("Login expired, please login...");
+                 window.location.replace("/labcas-ui/application/pages/login.html");
+             }
+        });
+    }
+    if (divid == "files" || divid == "all"){
+		$.ajax({
+			url: "https://"+root_app+".jpl.nasa.gov/data-access-api/files/select?q=*"+query+"*&wt=json&indent=true&start="+cpage*10,
+			xhrFields: {
+					withCredentials: true
+			  },
+			beforeSend: function(xhr, settings) { 
+				xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
+			},
+			dataType: 'json',
+			success: function (data) {
+				fill_files_search(data);
+			},
+			error: function(){
+				 alert("Login expired, please login...");
+				 window.location.replace("/labcas-ui/application/pages/login.html");
+			 
+			 }
+		});
+	}
+}
+/* End Search Section */
