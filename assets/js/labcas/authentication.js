@@ -4,8 +4,8 @@ function fill_collections_data(data){
           $("#collection-table tbody").append(
             "<tr>"+
                 "<td></td><td>"+
-                "<a href='/labcas-ui/application/labcas_collection-detail_table.html?collection_id="+
-                    obj.id+"'>"+
+                "<a href=\"/labcas-ui/application/labcas_collection-detail_table.html?collection_id="+
+                    obj.id+"\">"+
                 obj.CollectionName+"</a></td>"+
                 "<td>"+obj.LeadPI+"</td>"+
                 "<td>"+obj.Institution+"</td>"+
@@ -52,6 +52,8 @@ function fill_collections_data(data){
     });
 }
 function fill_collection_details_data(data){
+	console.log("HERE");
+	console.log(data);
 	$("#collectiontitle").html(data.response.docs[0].CollectionName);
 	$.each(data.response.docs[0], function(key, value) {
 		if ($.isArray(value)){
@@ -75,7 +77,7 @@ function fill_dataset_details_data(data){
 			value = value.join(",");
 		}
         if (key == "CollectionId"){
-            value = "<a href='/labcas-ui/application/labcas_collection-detail_table.html?collection_id="+value+"'>"+value+"</a>";
+            value = "<a href=\"/labcas-ui/application/labcas_collection-detail_table.html?collection_id="+value+"\">"+value+"</a>";
         }
           $("#datasetdetails-table tbody").append(
             "<tr>"+
@@ -116,8 +118,8 @@ function fill_datasets_data(data){
 						"</label>"+
 					"</div>--></td>"+
 					"<td class='text-left'>"+
-                        "<a href='/labcas-ui/application/labcas_dataset-detail_table.html?dataset_id="+
-                            value.id+"'>"+
+                        "<a href=\"/labcas-ui/application/labcas_dataset-detail_table.html?dataset_id="+
+                            value.id+"\">"+
                             value.DatasetName+
                         "</a>"+
 					"</td>"+
@@ -157,8 +159,8 @@ function fill_files_data(data){
 				"</label>"+
 			"</div></td>"+
 			"<td class='text-left'>"+
-				"<a href='/labcas-ui/application/labcas_file-detail_table.html?file_id="+
-					value.id+"'>"+
+				"<a href=\"/labcas-ui/application/labcas_file-detail_table.html?file_id="+
+					value.id+"\">"+
 					value.FileName+
 				"</a>"+
 			"</td>"+
@@ -302,20 +304,105 @@ function setup_labcas_file_data(datatype, query, file_query){
 function fill_datasets_search(data){
 	var size = data.response.numFound;
 	var cpage = data.response.start;
-	
+	load_pagination("datasets_search",size,cpage);
+	console.log(data);
+	$("#search-dataset-table tbody").empty();
+	$.each(data.response.docs, function(key, obj) {
+	  var thumb = "";
+	  var filetype = obj.FileType ? obj.FileType.join(",") : "";
+	  var description = obj.Description? obj.Description.join(",") : "";
+	  if ('FileThumbnailUrl' in obj){
+		thumb = "<img width='50' height='50' src='"+obj.FileThumbnailUrl+"'/>";
+	  }
+	  $("#search-dataset-table tbody").append(
+		"<tr>"+
+			"<td><div class=\"form-check\">"+
+				"<label class=\"form-check-label\">"+
+					"<input class=\"form-check-input\" type=\"checkbox\" value=''>"+
+					"<span class=\"form-check-sign\"></span>"+
+				"</label>"+
+			"</div></td><td>"+
+			"<a href=\"/labcas-ui/application/labcas_dataset-detail_table.html?dataset_id="+
+                    obj.id+"\">"+
+                obj.DatasetName+"</a></td>"+
+                "<td><a href=\"/labcas-ui/application/labcas_collection-detail_table.html?collection_id="+
+                    obj.CollectionId+"\">"+
+                    	obj.CollectionName+"</a></td>"+
+                "<td>"+obj.DatasetVersion+"</td>"+
+			"<td class=\"td-actions text-right\">"+
+				"<button type=\"button\" rel=\"tooltip\" title=\"Edit Task\" class=\"btn btn-info btn-simple btn-link\">"+
+					"<i class=\"fa fa-share\"></i>"+
+				"</button>"+
+				"<button type=\"button\" rel=\"tooltip\" title=\"Remove\" class=\"btn btn-danger btn-simple btn-link\">"+
+					"<i class=\"fa fa-star\"></i>"+
+				"</button>"+
+				"<button type=\"button\" rel=\"tooltip\" title=\"Remove\" class=\"btn btn-danger btn-simple btn-link\">"+
+					"<i class=\"fa fa-download\"></i>"+
+				"</button>"+
+			"</td>"+
+		"</tr>");	
+	});                
 	$("#datasets_len").html(size); 
 }
 function fill_files_search(data){
 	var size = data.response.numFound;
 	var cpage = data.response.start;
-	
+	load_pagination("files_search",size,cpage);
+	console.log(data);
+	$("#search-file-table tbody").empty();
+	$.each(data.response.docs, function(key, obj) {
+	  var thumb = "";
+	  var filetype = obj.FileType ? obj.FileType.join(",") : "";
+	  var description = obj.Description? obj.Description.join(",") : "";
+	  if ('FileThumbnailUrl' in obj){
+		thumb = "<img width='50' height='50' src='"+obj.FileThumbnailUrl+"'/>";
+	  }
+	  $("#search-file-table tbody").append(
+		"<tr>"+
+			"<td><div class=\"form-check\">"+
+				"<label class=\"form-check-label\">"+
+					"<input class=\"form-check-input\" type=\"checkbox\" value=''>"+
+					"<span class=\"form-check-sign\"></span>"+
+				"</label>"+
+			"</div></td>"+
+			"<td class='text-left'>"+
+				"<a href=\"/labcas-ui/application/labcas_file-detail_table.html?file_id="+
+					obj.id+"\">"+
+					obj.FileName+
+				"</a>"+
+			"</td>"+
+			"<td class='text-left'>"+
+					filetype +
+			"</td>"+
+			"<td class='text-left'>"+
+					description +
+			"</td>"+
+			"<td class='text-left'>"+
+					thumb+
+			"</td>"+
+			"<td class='text-left'>"+
+					obj.FileSize+
+			"</td>"+
+			"<td class=\"td-actions text-right\">"+
+				"<button type=\"button\" rel=\"tooltip\" title=\"Edit Task\" class=\"btn btn-info btn-simple btn-link\">"+
+					"<i class=\"fa fa-share\"></i>"+
+				"</button>"+
+				"<button type=\"button\" rel=\"tooltip\" title=\"Remove\" class=\"btn btn-danger btn-simple btn-link\">"+
+					"<i class=\"fa fa-star\"></i>"+
+				"</button>"+
+				"<button type=\"button\" rel=\"tooltip\" title=\"Remove\" class=\"btn btn-danger btn-simple btn-link\">"+
+					"<i class=\"fa fa-download\"></i>"+
+				"</button>"+
+			"</td>"+
+		"</tr>");	
+	});              
 	$("#files_len").html(size); 
 }
 
 function fill_collections_search(data){
 	var size = data.response.numFound;
 	var cpage = data.response.start;
-	load_pagination("collections",size,cpage);
+	load_pagination("collections_search",size,cpage);
 	$("#search-collection-table tbody").empty();
 	$.each(data.response.docs, function(key, obj) {
 	  var thumb = "";
@@ -324,7 +411,6 @@ function fill_collections_search(data){
 	  if ('FileThumbnailUrl' in obj){
 		thumb = "<img width='50' height='50' src='"+obj.FileThumbnailUrl+"'/>";
 	  }
-	  
 	  $("#search-collection-table tbody").append(
 		"<tr>"+
 			"<td><div class=\"form-check\">"+
@@ -333,8 +419,8 @@ function fill_collections_search(data){
 					"<span class=\"form-check-sign\"></span>"+
 				"</label>"+
 			"</div></td><td>"+
-			"<a href='/labcas-ui/application/labcas_collection-detail_table.html?collection_id="+
-                    obj.id+"'>"+
+			"<a href=\"/labcas-ui/application/labcas_collection-detail_table.html?collection_id="+
+                    obj.id+"\">"+
                 obj.CollectionName+"</a></td>"+
                 "<td>"+obj.LeadPI+"</td>"+
                 "<td>"+obj.Institution+"</td>"+
@@ -357,9 +443,10 @@ function fill_collections_search(data){
     $("#collections_len").html(size); 
 }
 
+
 function setup_labcas_search(query, divid, cpage){
     console.log("Searching...");
-    if (divid == "collections" || divid == "all"){
+    if (divid == "collections_search" || divid == "all"){
     console.log(cpage);
 		$.ajax({
 			url: "https://"+root_app+".jpl.nasa.gov/data-access-api/collections/select?q=*"+query+"*&wt=json&indent=true&start="+cpage*10,	
@@ -377,7 +464,7 @@ function setup_labcas_search(query, divid, cpage){
 			 }
 		});
     }
-    if (divid == "datasets" || divid == "all"){
+    if (divid == "datasets_search" || divid == "all"){
         $.ajax({
             url: "https://"+root_app+".jpl.nasa.gov/data-access-api/datasets/select?q=*"+query+"*&wt=json&indent=true&start="+cpage*10,
             beforeSend: function(xhr) {
@@ -395,7 +482,7 @@ function setup_labcas_search(query, divid, cpage){
              }
         });
     }
-    if (divid == "files" || divid == "all"){
+    if (divid == "files_search" || divid == "all"){
 		$.ajax({
 			url: "https://"+root_app+".jpl.nasa.gov/data-access-api/files/select?q=*"+query+"*&wt=json&indent=true&start="+cpage*10,
 			xhrFields: {
