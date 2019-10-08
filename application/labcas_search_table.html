@@ -215,44 +215,28 @@
                                     <h4 class="card-title">Organ Filters</h4>
                                     <hr>
                                 </div>
-                                <div class="card-body">
-                                       <form>
-                                       		<div class="row">
-												<div class="col-md-6">
-													<center>Heart</center>
-												</div>
-												<div class="col-md-6">
-													<input type="checkbox" checked="" data-toggle="switch" data-on-color="info" data-off-color="info" data-on-text="<i class='fa fa-check'></i>" data-off-text="<i class='fa fa-times'></i>">
-													<span class="toggle"></span>
-												</div>
-											</div>
-											<div class="row">
-												<div class="col-md-6">
-													<center>Stomach</center>
-												</div>
-												<div class="col-md-6">
-													<input type="checkbox" checked="" data-toggle="switch" data-on-color="info" data-off-color="info" data-on-text="<i class='fa fa-check'></i>" data-off-text="<i class='fa fa-times'></i>">
-													<span class="toggle"></span>
-												</div>
-											</div>
-											<div class="row">
-												<div class="col-md-6">
-													<center>Lungs</center>
-												</div>
-												<div class="col-md-6">
-													<input type="checkbox" checked="" data-toggle="switch" data-on-color="info" data-off-color="info" data-on-text="<i class='fa fa-check'></i>" data-off-text="<i class='fa fa-times'></i>">
-													<span class="toggle"></span>
-												</div>
-											</div>
-											<div class="row">
-												<div class="col-md-6">
-													<center>Prostate</center>
-												</div>
-												<div class="col-md-6">
-													<input type="checkbox" checked="" data-toggle="switch" data-on-color="info" data-off-color="info" data-on-text="<i class='fa fa-check'></i>" data-off-text="<i class='fa fa-times'></i>">
-													<span class="toggle"></span>
-												</div>
-											</div>
+                                <div class="card-body" style="padding: 0px 15px 10px 15px">
+                                       <form id="organ_filters">
+                                        </form>
+                                </div>
+                            </div>
+                            <div class="card ">
+                                <div class="card-header">
+                                    <h4 class="card-title">Discipline Filters</h4>
+                                    <hr>
+                                </div>
+                                <div class="card-body" style="padding: 0px 15px 10px 15px">
+                                       <form id="disc_filters">
+                                        </form>
+                                </div>
+                            </div>
+                            <div class="card ">
+                                <div class="card-header">
+                                    <h4 class="card-title">LeadPI Filters</h4>
+                                    <hr>
+                                </div>
+                                <div class="card-body" style="padding: 0px 15px 10px 15px">
+                                       <form id="pi_filters">
                                         </form>
                                 </div>
                             </div>
@@ -403,7 +387,7 @@
 <!--<script src="../assets/js/demo.js"></script>-->
 <script src="../assets/js/plugins/js.cookie.js"></script>
 <script src="../assets/js/labcas/labcas-sidebar.js"></script>
-<script src="../assets/js/labcas/authentication.js?23"></script>
+<script src="../assets/js/labcas/authentication.js?40"></script>
 <script src="../assets/js/labcas/utils.js?3"></script>
 <script src="../assets/js/labcas/search.js?2"></script>
 <script type="text/javascript">
