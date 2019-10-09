@@ -1,4 +1,4 @@
-var root_app = "mcl-labcas";
+var root_app = "";
 Array.prototype.contains = function(v) {
       for (var i = 0; i < this.length; i++) {
               if (this[i] === v) return true;
@@ -210,7 +210,7 @@ function fill_files_data(data){
 
 function setup_labcas_data(datatype, query, dataset_query){
     $.ajax({
-        url: "https://"+root_app+".jpl.nasa.gov/data-access-api/collections/select?q="+query+"&wt=json&indent=true&rows=2147483647",
+        url: "https://"+Cookies.get('environment')+".jpl.nasa.gov/data-access-api/collections/select?q="+query+"&wt=json&indent=true&rows=2147483647",
         beforeSend: function(xhr) { 
             xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
         },
@@ -230,7 +230,7 @@ function setup_labcas_data(datatype, query, dataset_query){
     });
     if (datatype == "collectiondatasets"){
     	$.ajax({
-			url: "https://"+root_app+".jpl.nasa.gov/data-access-api/datasets/select?q="+dataset_query+"&wt=json&indent=true&rows=2147483647",
+			url: "https://"+Cookies.get('environment')+".jpl.nasa.gov/data-access-api/datasets/select?q="+dataset_query+"&wt=json&indent=true&rows=2147483647",
 			beforeSend: function(xhr) { 
 				xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
 			},
@@ -238,7 +238,7 @@ function setup_labcas_data(datatype, query, dataset_query){
 			dataType: 'json',
 			processData: false,
 			success: function (data) {
-                console.log("https://"+root_app+".jpl.nasa.gov/data-access-api/datasets/select?q="+dataset_query+"&wt=json&indent=true&rows=2147483647");
+                console.log("https://"+Cookies.get('environment')+".jpl.nasa.gov/data-access-api/datasets/select?q="+dataset_query+"&wt=json&indent=true&rows=2147483647");
                 console.log(Cookies.get('token'));
                 fill_datasets_data(data);
 			},
@@ -252,7 +252,7 @@ function setup_labcas_data(datatype, query, dataset_query){
 function setup_labcas_dataset_data(datatype, query, file_query, cpage){
     if (cpage == 0){ //if this isn't a pagination request and a default load
 		$.ajax({
-			url: "https://"+root_app+".jpl.nasa.gov/data-access-api/datasets/select?q="+query+"&wt=json&indent=true&rows=2147483647",
+			url: "https://"+Cookies.get('environment')+".jpl.nasa.gov/data-access-api/datasets/select?q="+query+"&wt=json&indent=true&rows=2147483647",
 			xhrFields: {
 					withCredentials: true
 			  },
@@ -272,7 +272,7 @@ function setup_labcas_dataset_data(datatype, query, file_query, cpage){
     }
     
     $.ajax({
-        url: "https://"+root_app+".jpl.nasa.gov/data-access-api/files/select?q="+file_query+"&wt=json&indent=true&start="+cpage*10,
+        url: "https://"+Cookies.get('environment')+".jpl.nasa.gov/data-access-api/files/select?q="+file_query+"&wt=json&indent=true&start="+cpage*10,
         xhrFields: {
                 withCredentials: true
           },
@@ -292,9 +292,9 @@ function setup_labcas_dataset_data(datatype, query, file_query, cpage){
 }
 
 function setup_labcas_file_data(datatype, query, file_query){
-    console.log( "https://"+root_app+".jpl.nasa.gov/data-access-api/files/select?q="+query+"&wt=json&indent=true&rows=2147483647");
+    console.log( "https://"+Cookies.get('environment')+".jpl.nasa.gov/data-access-api/files/select?q="+query+"&wt=json&indent=true&rows=2147483647");
     $.ajax({
-        url: "https://"+root_app+".jpl.nasa.gov/data-access-api/files/select?q="+query+"&wt=json&indent=true&rows=2147483647",
+        url: "https://"+Cookies.get('environment')+".jpl.nasa.gov/data-access-api/files/select?q="+query+"&wt=json&indent=true&rows=2147483647",
         xhrFields: {
                 withCredentials: true
           },
@@ -489,7 +489,7 @@ function setup_labcas_search(query, divid, cpage){
     if (divid == "collections_search" || divid == "all"){
     console.log(cpage);
 		$.ajax({
-			url: "https://"+root_app+".jpl.nasa.gov/data-access-api/collections/select?q=*"+query+"*&wt=json&indent=true&start="+cpage*10,	
+			url: "https://"+Cookies.get('environment')+".jpl.nasa.gov/data-access-api/collections/select?q=*"+query+"*&wt=json&indent=true&start="+cpage*10,	
 			beforeSend: function(xhr) {
 				xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token'));
 			},
@@ -506,7 +506,7 @@ function setup_labcas_search(query, divid, cpage){
     }
     if (divid == "datasets_search" || divid == "all"){
         $.ajax({
-            url: "https://"+root_app+".jpl.nasa.gov/data-access-api/datasets/select?q=*"+query+"*&wt=json&indent=true&start="+cpage*10,
+            url: "https://"+Cookies.get('environment')+".jpl.nasa.gov/data-access-api/datasets/select?q=*"+query+"*&wt=json&indent=true&start="+cpage*10,
             beforeSend: function(xhr) {
                 xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token'));
             },
@@ -524,7 +524,7 @@ function setup_labcas_search(query, divid, cpage){
     }
     if (divid == "files_search" || divid == "all"){
 		$.ajax({
-			url: "https://"+root_app+".jpl.nasa.gov/data-access-api/files/select?q=*"+query+"*&wt=json&indent=true&start="+cpage*10,
+			url: "https://"+Cookies.get('environment')+".jpl.nasa.gov/data-access-api/files/select?q=*"+query+"*&wt=json&indent=true&start="+cpage*10,
 			xhrFields: {
 					withCredentials: true
 			  },
