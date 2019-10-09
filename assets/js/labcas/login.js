@@ -1,4 +1,4 @@
-var root_app = "edrn-labcas";
+var root_app = "mcl-labcas";
 Cookies.set("token", "None");
 $('#loginform').submit(function (e) {
     e.preventDefault();

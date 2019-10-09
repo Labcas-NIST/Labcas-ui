@@ -1,4 +1,20 @@
-var root_app = "edrn-labcas";
+var root_app = "mcl-labcas";
+Array.prototype.contains = function(v) {
+      for (var i = 0; i < this.length; i++) {
+              if (this[i] === v) return true;
+                }
+        return false;
+};
+
+Array.prototype.unique = function() {
+      var arr = [];
+        for (var i = 0; i < this.length; i++) {
+                if (!arr.contains(this[i])) {
+                          arr.push(this[i]);
+                              }
+                  }
+          return arr;
+}
 function fill_collections_data(data){
     $.each(data.response.docs, function(index, obj) {
           $("#collection-table tbody").append(
@@ -130,7 +146,7 @@ function fill_datasets_data(data){
 						"<button type=\"button\" rel=\"tooltip\" title=\"Remove\" class=\"btn btn-danger btn-simple btn-link\">"+
 							"<i class=\"fa fa-star\"></i>"+
 						"</button>"+
-						"<button type=\"button\" rel=\"tooltip\" title=\"Remove\" class=\"btn btn-danger btn-simple btn-link\">"+
+						"<button type=\"button\" rel=\"tooltip\" title=\"Download\" class=\"btn btn-danger btn-simple btn-link\">"+
 							"<i class=\"fa fa-download\"></i>"+
 						"</button>"+
 					"</td>"+
@@ -183,7 +199,7 @@ function fill_files_data(data){
 				"<button type=\"button\" rel=\"tooltip\" title=\"Remove\" class=\"btn btn-danger btn-simple btn-link\">"+
 					"<i class=\"fa fa-star\"></i>"+
 				"</button>"+
-				"<button type=\"button\" rel=\"tooltip\" title=\"Remove\" class=\"btn btn-danger btn-simple btn-link\">"+
+				"<button type=\"button\" rel=\"tooltip\" title=\"Download\" class=\"btn btn-danger btn-simple btn-link\" onclick=\"location.href='https://mcl-labcas.jpl.nasa.gov/data-access-api/download?id="+value.id+"'\">"+
 					"<i class=\"fa fa-download\"></i>"+
 				"</button>"+
 			"</td>"+
@@ -336,7 +352,7 @@ function fill_datasets_search(data){
 				"<button type=\"button\" rel=\"tooltip\" title=\"Remove\" class=\"btn btn-danger btn-simple btn-link\">"+
 					"<i class=\"fa fa-star\"></i>"+
 				"</button>"+
-				"<button type=\"button\" rel=\"tooltip\" title=\"Remove\" class=\"btn btn-danger btn-simple btn-link\">"+
+				"<button type=\"button\" rel=\"tooltip\" title=\"Download\" class=\"btn btn-danger btn-simple btn-link\">"+
 					"<i class=\"fa fa-download\"></i>"+
 				"</button>"+
 			"</td>"+
@@ -390,7 +406,7 @@ function fill_files_search(data){
 				"<button type=\"button\" rel=\"tooltip\" title=\"Remove\" class=\"btn btn-danger btn-simple btn-link\">"+
 					"<i class=\"fa fa-star\"></i>"+
 				"</button>"+
-				"<button type=\"button\" rel=\"tooltip\" title=\"Remove\" class=\"btn btn-danger btn-simple btn-link\">"+
+				"<button type=\"button\" rel=\"tooltip\" title=\"Download\" class=\"btn btn-danger btn-simple btn-link\"  onclick=\"location.href='https://mcl-labcas.jpl.nasa.gov/data-access-api/download?id="+obj.id+"'\">"+
 					"<i class=\"fa fa-download\"></i>"+
 				"</button>"+
 			"</td>"+
@@ -404,6 +420,9 @@ function fill_collections_search(data){
 	var cpage = data.response.start;
 	load_pagination("collections_search",size,cpage);
 	$("#search-collection-table tbody").empty();
+    var organ_filter = [];
+    var pi_filter = [];
+    var disc_filter = [];
 	$.each(data.response.docs, function(key, obj) {
 	  var thumb = "";
 	  var filetype = obj.FileType ? obj.FileType.join(",") : "";
@@ -411,6 +430,9 @@ function fill_collections_search(data){
 	  if ('FileThumbnailUrl' in obj){
 		thumb = "<img width='50' height='50' src='"+obj.FileThumbnailUrl+"'/>";
 	  }
+      organ_filter.push(String(obj.Organ));
+      disc_filter.push(String(obj.Discipline));
+      pi_filter.push(String(obj.LeadPI));
 	  $("#search-collection-table tbody").append(
 		"<tr>"+
 			"<td><div class=\"form-check\">"+
@@ -434,13 +456,31 @@ function fill_collections_search(data){
 				"<button type=\"button\" rel=\"tooltip\" title=\"Remove\" class=\"btn btn-danger btn-simple btn-link\">"+
 					"<i class=\"fa fa-star\"></i>"+
 				"</button>"+
-				"<button type=\"button\" rel=\"tooltip\" title=\"Remove\" class=\"btn btn-danger btn-simple btn-link\">"+
+				"<button type=\"button\" rel=\"tooltip\" title=\"Download\" class=\"btn btn-danger btn-simple btn-link\">"+
 					"<i class=\"fa fa-download\"></i>"+
 				"</button>"+
 			"</td>"+
 		"</tr>");	
 	});                                                                     
     $("#collections_len").html(size); 
+    organ_filter = organ_filter.unique();
+    disc_filter = disc_filter.unique();
+    pi_filter = pi_filter.unique();
+    $.each(organ_filter, function(key, obj) {
+        //console.log(key);
+        //console.log(obj);
+        $("#organ_filters").append($(' <div class="row"><div class="col-md-6"><center>'+obj+'</center></div><div class="col-md-6"><input type="checkbox" checked="" data-toggle="switch" data-on-color="info" data-off-color="info" data-on-text="<i class=\'fa fa-check\'></i>" data-off-text="<i class=\'fa fa-times\'></i>"><span class="toggle"></span></div></div>'));
+        //.find('input[type="checkbox"]')
+          //  .last()
+            //.bootstrapToggle();
+    });
+    $.each(pi_filter, function(key, obj) {
+        $("#pi_filters").append($(' <div class="row"><div class="col-md-6"><center>'+obj+'</center></div><div class="col-md-6"><input type="checkbox" checked="" data-toggle="switch" data-on-color="info" data-off-color="info" data-on-text="<i class=\'fa fa-check\'></i>" data-off-text="<i class=\'fa fa-times\'></i>"><span class="toggle"></span></div></div>'));
+    });
+    $.each(disc_filter, function(key, obj) {
+        $("#disc_filters").append($(' <div class="row"><div class="col-md-6"><center>'+obj+'</center></div><div class="col-md-6"><input type="checkbox" checked="" data-toggle="switch" data-on-color="info" data-off-color="info" data-on-text="<i class=\'fa fa-check\'></i>" data-off-text="<i class=\'fa fa-times\'></i>"><span class="toggle"></span></div></div>'));
+    });
+
 }
 
 
