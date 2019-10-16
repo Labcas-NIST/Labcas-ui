@@ -210,7 +210,7 @@ function fill_files_data(data){
 
 function setup_labcas_data(datatype, query, dataset_query){
     $.ajax({
-        url: "https://"+Cookies.get('environment')+".jpl.nasa.gov/data-access-api/collections/select?q="+query+"&wt=json&indent=true&rows=2147483647",
+        url: Cookies.get('environment')+"/data-access-api/collections/select?q="+query+"&wt=json&indent=true&rows=2147483647",
         beforeSend: function(xhr) { 
             xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
         },
@@ -230,7 +230,7 @@ function setup_labcas_data(datatype, query, dataset_query){
     });
     if (datatype == "collectiondatasets"){
     	$.ajax({
-			url: "https://"+Cookies.get('environment')+".jpl.nasa.gov/data-access-api/datasets/select?q="+dataset_query+"&wt=json&indent=true&rows=2147483647",
+			url: Cookies.get('environment')+"/data-access-api/datasets/select?q="+dataset_query+"&wt=json&indent=true&rows=2147483647",
 			beforeSend: function(xhr) { 
 				xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
 			},
@@ -238,7 +238,7 @@ function setup_labcas_data(datatype, query, dataset_query){
 			dataType: 'json',
 			processData: false,
 			success: function (data) {
-                console.log("https://"+Cookies.get('environment')+".jpl.nasa.gov/data-access-api/datasets/select?q="+dataset_query+"&wt=json&indent=true&rows=2147483647");
+                console.log(Cookies.get('environment')+"/data-access-api/datasets/select?q="+dataset_query+"&wt=json&indent=true&rows=2147483647");
                 console.log(Cookies.get('token'));
                 fill_datasets_data(data);
 			},
@@ -252,7 +252,7 @@ function setup_labcas_data(datatype, query, dataset_query){
 function setup_labcas_dataset_data(datatype, query, file_query, cpage){
     if (cpage == 0){ //if this isn't a pagination request and a default load
 		$.ajax({
-			url: "https://"+Cookies.get('environment')+".jpl.nasa.gov/data-access-api/datasets/select?q="+query+"&wt=json&indent=true&rows=2147483647",
+			url: Cookies.get('environment')+"/data-access-api/datasets/select?q="+query+"&wt=json&indent=true&rows=2147483647",
 			xhrFields: {
 					withCredentials: true
 			  },
@@ -272,7 +272,7 @@ function setup_labcas_dataset_data(datatype, query, file_query, cpage){
     }
     
     $.ajax({
-        url: "https://"+Cookies.get('environment')+".jpl.nasa.gov/data-access-api/files/select?q="+file_query+"&wt=json&indent=true&start="+cpage*10,
+        url: Cookies.get('environment')+"/data-access-api/files/select?q="+file_query+"&wt=json&indent=true&start="+cpage*10,
         xhrFields: {
                 withCredentials: true
           },
@@ -292,9 +292,9 @@ function setup_labcas_dataset_data(datatype, query, file_query, cpage){
 }
 
 function setup_labcas_file_data(datatype, query, file_query){
-    console.log( "https://"+Cookies.get('environment')+".jpl.nasa.gov/data-access-api/files/select?q="+query+"&wt=json&indent=true&rows=2147483647");
+    console.log( Cookies.get('environment')+"/data-access-api/files/select?q="+query+"&wt=json&indent=true&rows=2147483647");
     $.ajax({
-        url: "https://"+Cookies.get('environment')+".jpl.nasa.gov/data-access-api/files/select?q="+query+"&wt=json&indent=true&rows=2147483647",
+        url: Cookies.get('environment')+"/data-access-api/files/select?q="+query+"&wt=json&indent=true&rows=2147483647",
         xhrFields: {
                 withCredentials: true
           },
@@ -466,30 +466,106 @@ function fill_collections_search(data){
     organ_filter = organ_filter.unique();
     disc_filter = disc_filter.unique();
     pi_filter = pi_filter.unique();
-    $.each(organ_filter, function(key, obj) {
-        //console.log(key);
-        //console.log(obj);
-        $("#organ_filters").append($(' <div class="row"><div class="col-md-6"><center>'+obj+'</center></div><div class="col-md-6"><input type="checkbox" checked="" data-toggle="switch" data-on-color="info" data-off-color="info" data-on-text="<i class=\'fa fa-check\'></i>" data-off-text="<i class=\'fa fa-times\'></i>"><span class="toggle"></span></div></div>'));
-        //.find('input[type="checkbox"]')
-          //  .last()
-            //.bootstrapToggle();
-    });
-    $.each(pi_filter, function(key, obj) {
-        $("#pi_filters").append($(' <div class="row"><div class="col-md-6"><center>'+obj+'</center></div><div class="col-md-6"><input type="checkbox" checked="" data-toggle="switch" data-on-color="info" data-off-color="info" data-on-text="<i class=\'fa fa-check\'></i>" data-off-text="<i class=\'fa fa-times\'></i>"><span class="toggle"></span></div></div>'));
-    });
-    $.each(disc_filter, function(key, obj) {
-        $("#disc_filters").append($(' <div class="row"><div class="col-md-6"><center>'+obj+'</center></div><div class="col-md-6"><input type="checkbox" checked="" data-toggle="switch" data-on-color="info" data-off-color="info" data-on-text="<i class=\'fa fa-check\'></i>" data-off-text="<i class=\'fa fa-times\'></i>"><span class="toggle"></span></div></div>'));
-    });
+    if (Cookies.get("search_filter") != "on"){
+        var organ_list = [];
+        $.each(organ_filter, function(key, obj) {
+            //console.log(key);
+            //console.log(obj);
+            $.each(obj.split(","),function(i,o){
+                if ($.trim(o) != ""){
+                    organ_list.push($.trim(o).replace(" ","+"));
+                }
+            });
+            //.find('input[type="checkbox"]')
+              //  .last()
+                //.bootstrapToggle();
+        });
+        $.each($.unique(organ_list),function(i,o){
+            $("#organ_filters").append($(' <div class="row"><div class="col-md-6"><center>'+$.trim(o)+'</center></div><div class="col-md-6"><input type="checkbox" name="organ_filter[]" value="'+$.trim(o)+'" data-toggle="switch" data-on-color="info" data-off-color="info" data-on-text="<i class=\'fa fa-check\'></i>" data-off-text="<i class=\'fa fa-times\'></i>"><span class="toggle"></span></div></div>'));
+        });
 
+        var pi_list = [];
+        $.each(pi_filter, function(key, obj) {
+            $.each(obj.split(","),function(i,o){
+                if ($.trim(o) != ""){
+                    pi_list.push($.trim(o).replace(" ","+"));
+                }
+            });
+        });
+        $.each($.unique(pi_list),function(i,o){
+            $("#pi_filters").append($(' <div class="row"><div class="col-md-6"><center>'+$.trim(o)+'</center></div><div class="col-md-6"><input type="checkbox" name="pi_filter[]" value="'+$.trim(o)+'" data-toggle="switch" data-on-color="info" data-off-color="info" data-on-text="<i class=\'fa fa-check\'></i>" data-off-text="<i class=\'fa fa-times\'></i>"><span class="toggle"></span></div></div>'));
+        });
+
+        var disc_list = [];
+        $.each(disc_filter, function(key, obj) {
+            $.each(obj.split(","),function(i,o){
+                if ($.trim(o) != ""){
+                     disc_list.push($.trim(o).replace(" ","+"));
+                }
+            });
+        });
+        $.each($.unique(disc_list),function(i,o){
+            $("#disc_filters").append($(' <div class="row"><div class="col-md-6"><center>'+$.trim(o)+'</center></div><div class="col-md-6"><input type="checkbox" name="disc_filter[]" value="'+$.trim(o)+'" data-toggle="switch" data-on-color="info" data-off-color="info" data-on-text="<i class=\'fa fa-check\'></i>" data-off-text="<i class=\'fa fa-times\'></i>"><span class="toggle"></span></div></div>'));
+        });
+
+        $('input[name="organ_filter[]"]').change(function() {
+            var organ_val = [];
+            $("input[name='organ_filter[]']").each(function (index, obj) {
+                if(this.checked) {
+                    organ_val.push(this.value);
+                }
+            });
+            var organ_search = "";
+            if (organ_val.length > 0){
+                organ_search = "&fq=(Organ:"+organ_val.join(" OR Organ:")+")";
+            }
+            console.log(organ_search);
+            Cookies.set("organ_filter", organ_search);
+            Cookies.set("search_filter", "on");
+            setup_labcas_search(Cookies.get('search'), "all", 0);
+        });
+        $('input[name="pi_filter[]"]').change(function() {
+            var pi_val = [];
+            $("input[name='pi_filter[]']").each(function (index, obj) {
+                if(this.checked) {
+                    pi_val.push(this.value);
+                }
+            });
+            var pi_search = "";
+            if (pi_val.length > 0){
+                pi_search = "&fq=(LeadPI:"+pi_val.join(" OR LeadPI:")+")";
+            }
+            Cookies.set("pi_filter", pi_search);
+            Cookies.set("search_filter", "on");
+            setup_labcas_search(Cookies.get('search'), "all", 0);
+        });
+        $('input[name="disc_filter[]"]').change(function() {
+            var disc_val = [];
+            $("input[name='disc_filter[]']").each(function (index, obj) {
+                if(this.checked) {
+                    disc_val.push(this.value);
+                }
+            });
+            var disc_search = "";
+            if (disc_val.length > 0){
+                disc_search = "&fq=(Discipline:"+disc_val.join(" OR Discipline:")+")";
+            }
+            console.log(disc_search);
+            Cookies.set("disc_filter", disc_search);
+            Cookies.set("search_filter", "on");
+            setup_labcas_search(Cookies.get('search'), "all", 0);
+        });
+
+    }
 }
 
 
 function setup_labcas_search(query, divid, cpage){
     console.log("Searching...");
     if (divid == "collections_search" || divid == "all"){
-    console.log(cpage);
+        console.log(Cookies.get('environment')+"/data-access-api/collections/select?q=*"+query+"*"+Cookies.get('organ_filter')+Cookies.get('pi_filter')+Cookies.get('disc_filter')+"&wt=json&indent=true&start="+cpage*10);
 		$.ajax({
-			url: "https://"+Cookies.get('environment')+".jpl.nasa.gov/data-access-api/collections/select?q=*"+query+"*&wt=json&indent=true&start="+cpage*10,	
+			url: Cookies.get('environment')+"/data-access-api/collections/select?q=*"+query+"*"+Cookies.get('organ_filter')+Cookies.get('pi_filter')+Cookies.get('disc_filter')+"&wt=json&indent=true&start="+cpage*10,	
 			beforeSend: function(xhr) {
 				xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token'));
 			},
@@ -506,7 +582,7 @@ function setup_labcas_search(query, divid, cpage){
     }
     if (divid == "datasets_search" || divid == "all"){
         $.ajax({
-            url: "https://"+Cookies.get('environment')+".jpl.nasa.gov/data-access-api/datasets/select?q=*"+query+"*&wt=json&indent=true&start="+cpage*10,
+            url: Cookies.get('environment')+"/data-access-api/datasets/select?q=*"+query+"*&wt=json&indent=true&start="+cpage*10,
             beforeSend: function(xhr) {
                 xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token'));
             },
@@ -524,7 +600,7 @@ function setup_labcas_search(query, divid, cpage){
     }
     if (divid == "files_search" || divid == "all"){
 		$.ajax({
-			url: "https://"+Cookies.get('environment')+".jpl.nasa.gov/data-access-api/files/select?q=*"+query+"*&wt=json&indent=true&start="+cpage*10,
+			url: Cookies.get('environment')+"/data-access-api/files/select?q=*"+query+"*&wt=json&indent=true&start="+cpage*10,
 			xhrFields: {
 					withCredentials: true
 			  },

@@ -6,7 +6,7 @@ $('#loginform').submit(function (e) {
     $.get('/labcas-ui/assets/conf/environment.cfg', function(data) {
         root_app = data;
         $.ajax({
-            url: "https://"+root_app+".jpl.nasa.gov/data-access-api/auth",
+            url: root_app+"/data-access-api/auth",
                 beforeSend: function(xhr) {
                     xhr.setRequestHeader("Authorization", "Basic " + btoa($('#username').val() + ":" + $('#password').val()));
                 },

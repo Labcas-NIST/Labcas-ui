@@ -387,12 +387,17 @@
 <!--<script src="../assets/js/demo.js"></script>-->
 <script src="../assets/js/plugins/js.cookie.js"></script>
 <script src="../assets/js/labcas/labcas-sidebar.js"></script>
-<script src="../assets/js/labcas/authentication.js?40"></script>
+<script src="../assets/js/labcas/authentication.js?62"></script>
 <script src="../assets/js/labcas/utils.js?3"></script>
 <script src="../assets/js/labcas/search.js?2"></script>
 <script type="text/javascript">
     $(document).ready(function() {
         var get_var = get_url_vars();
+        Cookies.set("search", get_var["search"]);
+        Cookies.set("search_filter", "off");
+        Cookies.set("organ_filter", "");
+        Cookies.set("pi_filter", "");
+        Cookies.set("disc_filter", "");
         setup_labcas_search(get_var["search"], "all", 0);
         
         $.get( "sidebar.html?2", function( data ) {
