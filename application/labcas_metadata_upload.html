@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
+    <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>Labcas 2.0</title>
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
+    <!--     Fonts and icons     -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
+    <!-- CSS Files -->
+    <link href="../assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../assets/css/light-bootstrap-dashboard.css?v=2.0.1" rel="stylesheet" />
+    <!-- CSS Just for demo purpose, don't include it in your project -->
+    <link href="../assets/css/labcas/custom.css" rel="stylesheet" />
+    <link rel='stylesheet' type='text/css' href='../assets/css/labcas/typeahead.css'/>
+    
+    <script src="../assets/js/core/jquery.3.2.1.min.js" type="text/javascript"></script>
+    <script type='text/javascript' src='../assets/js/labcas/jquery.form-3.09.js'></script>
+	<script type='text/javascript' src='../assets/js/labcas/deform.js'></script>
+	<script type='text/javascript' src='../assets/js/labcas/typeahead.min.js'></script>
+</head>
+
+<body class="sidebar-mini">
+    <div class="wrapper">
+        <!--<div w3-include-html="sidebar.html?7"></div>-->
+        <div id='sidebar_placeholder'></div>
+        <div class="main-panel">
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand-lg ">
+                <div class="container-fluid">
+                    <div class="navbar-wrapper">
+                        <div class="navbar-minimize">
+                            <button id="minimizeSidebar" class="btn btn-info btn-fill btn-round btn-icon d-none d-lg-block">
+                                <i class="fa fa-ellipsis-v visible-on-sidebar-regular"></i>
+                                <i class="fa fa-navicon visible-on-sidebar-mini"></i>
+                            </button>
+                        </div>
+                        <!--<a class="navbar-brand" href="#pablo"> Bootstrap Table </a>-->
+                    </div>
+                    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-bar burger-lines"></span>
+                        <span class="navbar-toggler-bar burger-lines"></span>
+                        <span class="navbar-toggler-bar burger-lines"></span>
+                    </button>
+                    <div class="collapse navbar-collapse justify-content-end">
+                        <ul class="nav navbar-nav mr-auto">
+                            <form class="navbar-form navbar-left navbar-search-form" role="search" action="javascript:search();">
+                                <div class="input-group">
+                                    <i class="nc-icon nc-zoom-split"></i>
+                                    <input id="search_text" type="text" class="form-control" placeholder="Labcas Full Search...">
+                                </div>
+                            </form>
+                        </ul>
+                        <ul class="navbar-nav">
+                            <li class="dropdown nav-item">
+                                <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+                                    <i class="nc-icon nc-planet"></i>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <a class="dropdown-item" href="#">Create New Post</a>
+                                    <a class="dropdown-item" href="#">Manage Something</a>
+                                    <a class="dropdown-item" href="#">Do Nothing</a>
+                                    <a class="dropdown-item" href="#">Submit to live</a>
+                                    <li class="divider"></li>
+                                    <a class="dropdown-item" href="#">Another action</a>
+                                </ul>
+                            </li>
+                            <li class="dropdown nav-item">
+                                <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+                                    <i class="nc-icon nc-bell-55"></i>
+                                    <span class="notification">5</span>
+                                    <span class="d-lg-none">Notification</span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <a class="dropdown-item" href="#">Notification 1</a>
+                                    <a class="dropdown-item" href="#">Notification 2</a>
+                                    <a class="dropdown-item" href="#">Notification 3</a>
+                                    <a class="dropdown-item" href="#">Notification 4</a>
+                                    <a class="dropdown-item" href="#">Notification 5</a>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="nc-icon nc-bullet-list-67"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                                    <a class="dropdown-item" href="#">
+                                        <i class="nc-icon nc-email-85"></i> Messages
+                                    </a>
+                                    <a class="dropdown-item" href="#">
+                                        <i class="nc-icon nc-umbrella-13"></i> Help Center
+                                    </a>
+                                    <a class="dropdown-item" href="#">
+                                        <i class="nc-icon nc-settings-90"></i> Settings
+                                    </a>
+                                    <div class="divider"></div>
+                                    <a class="dropdown-item" href="#">
+                                        <i class="nc-icon nc-lock-circle-open"></i> Lock Screen
+                                    </a>
+                                    <a href="/labcas-ui/application/pages/login.html" class="dropdown-item text-danger">
+                                        <i class="nc-icon nc-button-power"></i> Log out
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            <!-- End Navbar -->
+            <div class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card bootstrap-table">
+                                <div class="card-header">
+                                    <center><h3 class="card-title">LABCAS Collections</h3></center>
+                                <hr width="25%">
+                                </div>
+                                <div class="card-body table-full-width" style="margin-right: 20px; margin-left: 20px;">
+                                
+                                    <p>
+                    We'll need just a few details before we can accept your data.
+                    <small>🔴 indicates required fields.</small>
+                </p>
+                <form
+				  id="deform"
+				  method="POST"
+				  enctype="multipart/form-data"
+				  accept-charset="utf-8" class="deform"
+				  >
+
+				  <fieldset class="deformFormFieldset">
+
+	
+
+					<input type="hidden" name="_charset_" />
+					<input type="hidden" name="__formid__" value="deform"/>
+
+	
+
+	
+
+					<div
+					 class="form-group  item-collectionname"
+					 title="Short name for this data collection (one or a few words only)."
+					 id="item-deformField1">
+
+				  <label for="deformField1"
+						 class="control-label required"
+						 id="req-deformField1"
+						 >
+					🔴 Data Collection Name
+				  </label>
+
+  
+					<input type="text" name="CollectionName" value=""
+						   id="deformField1" class=" form-control "/>
+  
+
+  
+
+				  <p
+					 class="help-block" >
+					Short name for this data collection (one or a few words only).
+				  </p>
+				</div>
+
+					<div
+					 class="form-group  "
+					 title="Short description for this data collection (a few sentences)."
+					 id="item-deformField2">
+
+				  <label for="deformField2"
+						 class="control-label required"
+						 id="req-deformField2"
+						 >
+					🔴 Data Collection Description
+				  </label>
+
+  
+					<textarea
+						  id="deformField2"
+						  name="CollectionDescription" rows="6" class=" form-control "></textarea>
+  
+
+  
+
+				  <p
+					 class="help-block" >
+					Short description for this data collection (a few sentences).
+				  </p>
+				</div>
+
+					<div
+					 class="form-group  "
+					 title="Medical discipline for this dataset (select one)"
+					 id="item-deformField3">
+
+				  <label for="deformField3"
+						 class="control-label required"
+						 id="req-deformField3"
+						 >
+					🔴 Discipline
+				  </label>
+
+  
+					<input type="text"
+						   name="Discipline"
+						   value=""
+						   data-provide="typeahead"
+						   id="deformField3" class=" form-control "/>
+					<script type="text/javascript">
+						deform.addCallback(
+						  'deformField3',
+						  function (oid) {
+							  $('#' + oid).typeahead({"minLength": 1, "remote": "https://mcl-labcas.jpl.nasa.gov/ui/disciplines?term=%QUERY", "limit": 8});
+						  }
+						);
+					</script>
+  
+
+  
+
+				  <p
+					 class="help-block" >
+					Medical discipline for this dataset (select one)
+				  </p>
+				</div>
+
+					<div
+					 class="form-group  "
+					 title="Institution where the research was conducted (full name)"
+					 id="item-deformField4">
+
+				  <label for="deformField4"
+						 class="control-label required"
+						 id="req-deformField4"
+						 >
+					🔴 Institution
+				  </label>
+
+  
+					<input type="text"
+						   name="Institution"
+						   value=""
+						   data-provide="typeahead"
+						   id="deformField4" class=" form-control "/>
+					<script type="text/javascript">
+						deform.addCallback(
+						  'deformField4',
+						  function (oid) {
+							  $('#' + oid).typeahead({"minLength": 1, "remote": "https://mcl-labcas.jpl.nasa.gov/ui/sites?term=%QUERY", "limit": 8});
+						  }
+						);
+					</script>
+  
+
+  
+
+				  <p
+					 class="help-block" >
+					Institution where the research was conducted (full name)
+				  </p>
+				</div>
+
+					<div
+					 class="form-group  "
+					 title="Begin typing an investigator name. A list of options will appear."
+					 id="item-deformField5">
+
+				  <label for="deformField5"
+						 class="control-label required"
+						 id="req-deformField5"
+						 >
+					🔴 Lead PI
+				  </label>
+
+  
+					<input type="text"
+						   name="LeadPI"
+						   value=""
+						   data-provide="typeahead"
+						   id="deformField5" class=" form-control "/>
+					<script type="text/javascript">
+						deform.addCallback(
+						  'deformField5',
+						  function (oid) {
+							  $('#' + oid).typeahead({"minLength": 1, "remote": "https://mcl-labcas.jpl.nasa.gov/ui/people?term=%QUERY", "limit": 8});
+						  }
+						);
+					</script>
+  
+
+  
+
+				  <p
+					 class="help-block" >
+					Begin typing an investigator name. A list of options will appear.
+				  </p>
+				</div>
+
+					<div
+					 class="form-group  "
+					 title="Organ (select all that apply)"
+					 id="item-deformField6">
+
+				  <label for="deformField6"
+						 class="control-label required"
+						 id="req-deformField6"
+						 >
+					🔴 Organ
+				  </label>
+
+  
+					<input type="text"
+						   name="Organ"
+						   value=""
+						   data-provide="typeahead"
+						   id="deformField6" class=" form-control "/>
+					<script type="text/javascript">
+						deform.addCallback(
+						  'deformField6',
+						  function (oid) {
+							  $('#' + oid).typeahead({"minLength": 1, "remote": "https://mcl-labcas.jpl.nasa.gov/ui/organs?term=%QUERY", "limit": 8});
+						  }
+						);
+					</script>
+  
+
+  
+
+				  <p
+					 class="help-block" >
+					Organ (select all that apply)
+				  </p>
+				</div>
+
+					<div
+					 class="form-group  item-datacustodian"
+					 title="Name of the dataset custodian in 'Last, First' format"
+					 id="item-deformField7">
+
+				  <label for="deformField7"
+						 class="control-label required"
+						 id="req-deformField7"
+						 >
+					🔴 Data Custodian
+				  </label>
+
+  
+					<input type="text" name="DataCustodian" value="dliu"
+						   id="deformField7" class=" form-control "/>
+  
+
+  
+
+				  <p
+					 class="help-block" >
+					Name of the dataset custodian in 'Last, First' format
+				  </p>
+				</div>
+
+					<div
+					 class="form-group  item-ownerprincipal"
+					 title="Select or remove the groups or individuals with whom you’d like to share this data."
+					 id="item-deformField8">
+
+					<div
+					 class="deformSeq"
+					 id="deformField8">
+
+				  <style>
+					body.dragging, body.dragging * {
+					  cursor: move !important;
+					}
+
+					.dragged {
+					  position: absolute;
+					  opacity: 0.5;
+					  z-index: 2000;
+					}
+				  </style>   
+
+				  <!-- sequence -->
+				  <input type="hidden" name="__start__"
+						 value="OwnerPrincipal:sequence"
+						 class="deformProto" prototype="%3Cdiv%0A%20%20%20%20%20title%3D%22Name%20of%20an%20EDRN%20group%20that%20should%20be%20able%20to%20access%20this%20data%22%0A%20%20%20%20%20class%3D%22form-group%20row%20deformSeqItem%20%20%22%3E%0A%20%20%3Cdiv%20class%3D%22col-xs-11%22%3E%0A%20%20%20%20%0A%20%20%20%20%3Cinput%20type%3D%22text%22%0A%20%20%20%20%20%20%20%20%20%20%20name%3D%22group%22%0A%20%20%20%20%20%20%20%20%20%20%20value%3D%22%22%0A%20%20%20%20%20%20%20%20%20%20%20data-provide%3D%22typeahead%22%0A%20%20%20%20%20%20%20%20%20%20%20id%3D%22deformField22%22%20class%3D%22%20form-control%20%22/%3E%0A%20%20%20%20%3Cscript%20type%3D%22text/javascript%22%3E%0A%20%20%20%20%20%20%20%20deform.addCallback%28%0A%20%20%20%20%20%20%20%20%20%20%27deformField22%27%2C%0A%20%20%20%20%20%20%20%20%20%20function%20%28oid%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%24%28%27%23%27%20%2B%20oid%29.typeahead%28%7B%22minLength%22%3A%201%2C%20%22remote%22%3A%20%22https%3A//mcl-labcas.jpl.nasa.gov/ui/ldapGroups%3Fterm%3D%25QUERY%22%2C%20%22limit%22%3A%208%7D%29%3B%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%29%3B%0A%20%20%20%20%3C/script%3E%0A%0A%0A%20%20%20%20%0A%20%20%3C/div%3E%0A%20%20%3Cdiv%20class%3D%22col-xs-1%22%20style%3D%22padding%3A0%22%3E%0A%20%20%20%20%3C%21--%20sequence_item%20--%3E%0A%20%20%20%20%3Cspan%20class%3D%22deformOrderbutton%20close%20glyphicon%20glyphicon-resize-vertical%22%0A%20%20%20%20%20%20%20%20%20%20id%3D%22deformField22-order%22%0A%20%20%20%20%20%20%20%20%20%20title%3D%22Reorder%20%28via%20drag%20and%20drop%29%22%3E%3C/span%3E%20%20%20%20%0A%20%20%20%20%3Ca%20class%3D%22deformClosebutton%20close%22%0A%20%20%20%20%20%20%20id%3D%22deformField22-close%22%0A%20%20%20%20%20%20%20title%3D%22Remove%22%0A%20%20%20%20%20%20%20onclick%3D%22javascript%3Adeform.removeSequenceItem%28this%29%3B%22%3E%26times%3B%3C/a%3E%0A%20%20%3C/div%3E%0A%20%20%3C%21--%20/sequence_item%20--%3E%0A%3C/div%3E%0A"/>
+
+				  <div class="panel panel-default">
+					<div class="panel-heading">🔴 Share data with...</div>
+					<div class="panel-body">
+
+					  <div class="deformSeqContainer"
+						   id="deformField8-orderable">
+						<div
+					 title="Name of an EDRN group that should be able to access this data"
+					 class="form-group row deformSeqItem  ">
+				  <div class="col-xs-11">
+	
+					<input type="text"
+						   name="group"
+						   value="All MCL"
+						   data-provide="typeahead"
+						   id="deformField20" class=" form-control "/>
+					<script type="text/javascript">
+						deform.addCallback(
+						  'deformField20',
+						  function (oid) {
+							  $('#' + oid).typeahead({"minLength": 1, "remote": "https://mcl-labcas.jpl.nasa.gov/ui/ldapGroups?term=%QUERY", "limit": 8});
+						  }
+						);
+					</script>
+
+
+	
+				  </div>
+				  <div class="col-xs-1" style="padding:0">
+					<!-- sequence_item -->
+					<span class="deformOrderbutton close glyphicon glyphicon-resize-vertical"
+						  id="deformField20-order"
+						  title="Reorder (via drag and drop)"></span>    
+					<a class="deformClosebutton close"
+					   id="deformField20-close"
+					   title="Remove"
+					   onclick="javascript:deform.removeSequenceItem(this);">&times;</a>
+				  </div>
+				  <!-- /sequence_item -->
+				</div>
+
+						<div
+					 title="Name of an EDRN group that should be able to access this data"
+					 class="form-group row deformSeqItem  ">
+				  <div class="col-xs-11">
+	
+					<input type="text"
+						   name="group"
+						   value="Super User"
+						   data-provide="typeahead"
+						   id="deformField21" class=" form-control "/>
+					<script type="text/javascript">
+						deform.addCallback(
+						  'deformField21',
+						  function (oid) {
+							  $('#' + oid).typeahead({"minLength": 1, "remote": "https://mcl-labcas.jpl.nasa.gov/ui/ldapGroups?term=%QUERY", "limit": 8});
+						  }
+						);
+					</script>
+
+
+	
+				  </div>
+				  <div class="col-xs-1" style="padding:0">
+					<!-- sequence_item -->
+					<span class="deformOrderbutton close glyphicon glyphicon-resize-vertical"
+						  id="deformField21-order"
+						  title="Reorder (via drag and drop)"></span>    
+					<a class="deformClosebutton close"
+					   id="deformField21-close"
+					   title="Remove"
+					   onclick="javascript:deform.removeSequenceItem(this);">&times;</a>
+				  </div>
+				  <!-- /sequence_item -->
+				</div>
+
+						<span class="deformInsertBefore" min_len="0" max_len="100000" now_len="2" orderable="0"></span>
+					  </div>
+
+					</div>
+
+					<div class="panel-footer">
+					  <a href="#"
+						 class="btn deformSeqAdd"
+						 id="deformField8-seqAdd"
+						 onclick="javascript: return deform.appendSequenceItem(this);">
+						<small id="deformField8-addtext">Add Group</small>
+					  </a>
+
+					  <script type="text/javascript">
+					   deform.addCallback(
+						 'deformField8',
+						 function(oid) {
+						   oid_node = $('#'+ oid);
+						   deform.processSequenceButtons(oid_node, 0,
+														 100000, 2,
+														 0);
+						   }
+						 )
+		 
+					  </script>
+
+					  <input type="hidden" name="__end__" value="OwnerPrincipal:sequence"/>
+					  <!-- /sequence -->
+					</div>
+
+				  </div>
+				</div>
+  
+
+  
+
+				  <p
+					 class="help-block" >
+					Select or remove the groups or individuals with whom you’d like to share this data.
+				  </p>
+				</div>
+
+					<div
+					 class="form-group  "
+					 title="Organ Collaborative Group (select one)"
+					 id="item-deformField10">
+
+				  <label for="deformField10"
+						 class="control-label required"
+						 id="req-deformField10"
+						 >
+					🔴 Collaborative Group
+				  </label>
+
+  
+					<input type="hidden" name="__start__" value="CollaborativeGroup:rename"/>
+				  <div
+					   class="radio">
+					<label for="deformField10-0">
+					  <input
+							 type="radio"
+							 name="deformField10"
+							 value="N/A"
+							 id="deformField10-0"/>
+					  N/A
+					</label>
+				  </div>
+				  <div
+					   class="radio">
+					<label for="deformField10-1">
+					  <input
+							 type="radio"
+							 name="deformField10"
+							 value="Breast and Gynecologic Cancers Research Group"
+							 id="deformField10-1"/>
+					  Breast and Gynecologic Cancers Research Group
+					</label>
+				  </div>
+				  <div
+					   class="radio">
+					<label for="deformField10-2">
+					  <input
+							 type="radio"
+							 name="deformField10"
+							 value="G.I. and Other Associated Cancers Research Group"
+							 id="deformField10-2"/>
+					  G.I. and Other Associated Cancers Research Group
+					</label>
+				  </div>
+				  <div
+					   class="radio">
+					<label for="deformField10-3">
+					  <input
+							 type="radio"
+							 name="deformField10"
+							 value="Lung and Upper Aerodigestive Cancers Research Group"
+							 id="deformField10-3"/>
+					  Lung and Upper Aerodigestive Cancers Research Group
+					</label>
+				  </div>
+				  <div
+					   class="radio">
+					<label for="deformField10-4">
+					  <input
+							 type="radio"
+							 name="deformField10"
+							 value="Prostate and Urologic Cancers Research Group"
+							 id="deformField10-4"/>
+					  Prostate and Urologic Cancers Research Group
+					</label>
+				  </div>
+				  <input type="hidden" name="__end__" value="CollaborativeGroup:rename"/>
+  
+
+  
+
+				  <p
+					 class="help-block" >
+					Organ Collaborative Group (select one)
+				  </p>
+				</div>
+
+					<div
+					 class="form-group  "
+					 title="Choose 'Public' to enable anybody to access"
+					 id="item-deformField11">
+
+				  <label for="deformField11"
+						 class="control-label "
+						 id="req-deformField11"
+						 >
+					Public Data ?
+				  </label>
+
+  
+					<div>
+				  <input type="hidden" name="__start__" value="QAState:rename"/>
+  
+					<label for="deformField11-0" class="radio-inline">
+					  <input
+							 type="radio"
+							 name="deformField11"
+							 value="Public"
+							 id="deformField11-0"/>
+					  Public
+					</label>
+  
+  
+					<label for="deformField11-1" class="radio-inline">
+					  <input
+							 type="radio"
+							 name="deformField11"
+							 value="Under Review"
+							 id="deformField11-1"/>
+					  Under Review
+					</label>
+  
+				  <input type="hidden" name="__end__" value="QAState:rename"/>
+				</div>
+  
+
+  
+
+				  <p
+					 class="help-block" >
+					Choose 'Public' to enable anybody to access
+				  </p>
+				</div>
+
+					<div
+					 class="form-group  "
+					 title="Begin typing a protocol name or id. A list of options will appear. Don’t see the protocol you want? Email edrn-ic@jpl.nasa.gov"
+					 id="item-deformField12">
+
+				  <label for="deformField12"
+						 class="control-label "
+						 id="req-deformField12"
+						 >
+					Protocol Name
+				  </label>
+
+  
+					<input type="text"
+						   name="ProtocolName"
+						   value=""
+						   data-provide="typeahead"
+						   id="deformField12" class=" form-control "/>
+					<script type="text/javascript">
+						deform.addCallback(
+						  'deformField12',
+						  function (oid) {
+							  $('#' + oid).typeahead({"minLength": 1, "remote": "https://mcl-labcas.jpl.nasa.gov/ui/protocols?term=%QUERY", "limit": 8});
+						  }
+						);
+					</script>
+  
+
+  
+
+				  <p
+					 class="help-block" >
+					Begin typing a protocol name or id. A list of options will appear. Don’t see the protocol you want? Email edrn-ic@jpl.nasa.gov
+				  </p>
+				</div>
+
+					<div
+					 class="form-group  item-datasetname"
+					 title="Short name for this dataset (one or a few words only)."
+					 id="item-deformField13">
+
+				  <label for="deformField13"
+						 class="control-label required"
+						 id="req-deformField13"
+						 >
+					🔴 Dataset Name
+				  </label>
+
+  
+					<input type="text" name="DatasetName" value=""
+						   id="deformField13" class=" form-control "/>
+  
+
+  
+
+				  <p
+					 class="help-block" >
+					Short name for this dataset (one or a few words only).
+				  </p>
+				</div>
+
+					<div
+					 class="form-group  "
+					 title="Short description for this dataset (a few sentences)."
+					 id="item-deformField14">
+
+				  <label for="deformField14"
+						 class="control-label required"
+						 id="req-deformField14"
+						 >
+					🔴 Dataset Description
+				  </label>
+
+  
+					<textarea
+						  id="deformField14"
+						  name="DatasetDescription" rows="6" class=" form-control "></textarea>
+  
+
+  
+
+				  <p
+					 class="help-block" >
+					Short description for this dataset (a few sentences).
+				  </p>
+				</div>
+
+					<div
+					 class="form-group  "
+					 title="Animal species for which this study was conducted"
+					 id="item-deformField15">
+
+				  <label for="deformField15"
+						 class="control-label "
+						 id="req-deformField15"
+						 >
+					Species
+				  </label>
+
+  
+					<input type="text"
+						   name="Species"
+						   value=""
+						   data-provide="typeahead"
+						   id="deformField15" class=" form-control "/>
+					<script type="text/javascript">
+						deform.addCallback(
+						  'deformField15',
+						  function (oid) {
+							  $('#' + oid).typeahead({"minLength": 1, "remote": "https://mcl-labcas.jpl.nasa.gov/ui/species?term=%QUERY", "limit": 8});
+						  }
+						);
+					</script>
+  
+
+  
+
+				  <p
+					 class="help-block" >
+					Animal species for which this study was conducted
+				  </p>
+				</div>
+
+					<div
+					 class="form-group  "
+					 title="The specimen type (select all that apply)"
+					 id="item-deformField16">
+
+				  <label for="deformField16"
+						 class="control-label "
+						 id="req-deformField16"
+						 >
+					Specimen Type
+				  </label>
+
+  
+					<div>
+				  <input type="hidden" name="__start__" value="SpecimenType:sequence"/>
+  
+					<label for="deformField16-0" class="checkbox-inline">
+					  <input
+							 type="checkbox"
+							 name="checkbox"
+							 value="Ascites (5)"
+							 id="deformField16-0"/>
+					  Ascites (5)
+					</label>
+  
+  
+					<label for="deformField16-1" class="checkbox-inline">
+					  <input
+							 type="checkbox"
+							 name="checkbox"
+							 value="Biliary washing/brushing  (12)"
+							 id="deformField16-1"/>
+					  Biliary washing/brushing  (12)
+					</label>
+  
+  
+					<label for="deformField16-2" class="checkbox-inline">
+					  <input
+							 type="checkbox"
+							 name="checkbox"
+							 value="Blood (1)"
+							 id="deformField16-2"/>
+					  Blood (1)
+					</label>
+  
+  
+					<label for="deformField16-3" class="checkbox-inline">
+					  <input
+							 type="checkbox"
+							 name="checkbox"
+							 value="Bone marrow  (13)"
+							 id="deformField16-3"/>
+					  Bone marrow  (13)
+					</label>
+  
+  
+					<label for="deformField16-4" class="checkbox-inline">
+					  <input
+							 type="checkbox"
+							 name="checkbox"
+							 value="Bronchial washing/brushing  (14)"
+							 id="deformField16-4"/>
+					  Bronchial washing/brushing  (14)
+					</label>
+  
+  
+					<label for="deformField16-5" class="checkbox-inline">
+					  <input
+							 type="checkbox"
+							 name="checkbox"
+							 value="Buccal swab/scraping  (15)"
+							 id="deformField16-5"/>
+					  Buccal swab/scraping  (15)
+					</label>
+  
+  
+					<label for="deformField16-6" class="checkbox-inline">
+					  <input
+							 type="checkbox"
+							 name="checkbox"
+							 value="Cerebrospinal fluid  (16)"
+							 id="deformField16-6"/>
+					  Cerebrospinal fluid  (16)
+					</label>
+  
+  
+					<label for="deformField16-7" class="checkbox-inline">
+					  <input
+							 type="checkbox"
+							 name="checkbox"
+							 value="Cervical swab/scraping  (17)"
+							 id="deformField16-7"/>
+					  Cervical swab/scraping  (17)
+					</label>
+  
+  
+					<label for="deformField16-8" class="checkbox-inline">
+					  <input
+							 type="checkbox"
+							 name="checkbox"
+							 value="Ductal lavage aspirate (18)"
+							 id="deformField16-8"/>
+					  Ductal lavage aspirate (18)
+					</label>
+  
+  
+					<label for="deformField16-9" class="checkbox-inline">
+					  <input
+							 type="checkbox"
+							 name="checkbox"
+							 value="Endocervical secretion/mucous  (7)"
+							 id="deformField16-9"/>
+					  Endocervical secretion/mucous  (7)
+					</label>
+  
+  
+					<label for="deformField16-10" class="checkbox-inline">
+					  <input
+							 type="checkbox"
+							 name="checkbox"
+							 value="Nipple aspirate/discharge  (9)"
+							 id="deformField16-10"/>
+					  Nipple aspirate/discharge  (9)
+					</label>
+  
+  
+					<label for="deformField16-11" class="checkbox-inline">
+					  <input
+							 type="checkbox"
+							 name="checkbox"
+							 value="Not Applicable (19)"
+							 id="deformField16-11"/>
+					  Not Applicable (19)
+					</label>
+  
+  
+					<label for="deformField16-12" class="checkbox-inline">
+					  <input
+							 type="checkbox"
+							 name="checkbox"
+							 value="Pancreatic washing/brushing  (8)"
+							 id="deformField16-12"/>
+					  Pancreatic washing/brushing  (8)
+					</label>
+  
+  
+					<label for="deformField16-13" class="checkbox-inline">
+					  <input
+							 type="checkbox"
+							 name="checkbox"
+							 value="Pleural fluid  (10)"
+							 id="deformField16-13"/>
+					  Pleural fluid  (10)
+					</label>
+  
+  
+					<label for="deformField16-14" class="checkbox-inline">
+					  <input
+							 type="checkbox"
+							 name="checkbox"
+							 value="Saliva  (6)"
+							 id="deformField16-14"/>
+					  Saliva  (6)
+					</label>
+  
+  
+					<label for="deformField16-15" class="checkbox-inline">
+					  <input
+							 type="checkbox"
+							 name="checkbox"
+							 value="Seminal fluid  (11)"
+							 id="deformField16-15"/>
+					  Seminal fluid  (11)
+					</label>
+  
+  
+					<label for="deformField16-16" class="checkbox-inline">
+					  <input
+							 type="checkbox"
+							 name="checkbox"
+							 value="Stool  (4)"
+							 id="deformField16-16"/>
+					  Stool  (4)
+					</label>
+  
+  
+					<label for="deformField16-17" class="checkbox-inline">
+					  <input
+							 type="checkbox"
+							 name="checkbox"
+							 value="Tissue (3)"
+							 id="deformField16-17"/>
+					  Tissue (3)
+					</label>
+  
+  
+					<label for="deformField16-18" class="checkbox-inline">
+					  <input
+							 type="checkbox"
+							 name="checkbox"
+							 value="Urine (2)"
+							 id="deformField16-18"/>
+					  Urine (2)
+					</label>
+  
+				  <input type="hidden" name="__end__" value="SpecimenType:sequence"/>
+				</div>
+  
+
+  
+
+				  <p
+					 class="help-block" >
+					The specimen type (select all that apply)
+				  </p>
+				</div>
+
+					<div
+					 class="form-group  item-pubmedid"
+					 title="URL of PubMed publication"
+					 id="item-deformField17">
+
+				  <label for="deformField17"
+						 class="control-label "
+						 id="req-deformField17"
+						 >
+					Pub Med ID
+				  </label>
+
+  
+					<input type="text" name="PubMedId" value=""
+						   id="deformField17" class=" form-control "/>
+  
+
+  
+
+				  <p
+					 class="help-block" >
+					URL of PubMed publication
+				  </p>
+				</div>
+
+					<div
+					 class="form-group  item-referenceurl"
+					 title="External URL of associated web site for these data"
+					 id="item-deformField18">
+
+				  <label for="deformField18"
+						 class="control-label "
+						 id="req-deformField18"
+						 >
+					Reference URL
+				  </label>
+
+  
+					<input type="text" name="ReferenceURL" value=""
+						   id="deformField18" class=" form-control "/>
+  
+
+  
+
+				  <p
+					 class="help-block" >
+					External URL of associated web site for these data
+				  </p>
+				</div>
+
+					<div
+					 class="form-group  item-instrument"
+					 title="Instrument that was used to collect these data"
+					 id="item-deformField19">
+
+				  <label for="deformField19"
+						 class="control-label "
+						 id="req-deformField19"
+						 >
+					Instrument
+				  </label>
+
+  
+					<input type="text" name="Instrument" value=""
+						   id="deformField19" class=" form-control "/>
+  
+
+  
+
+				  <p
+					 class="help-block" >
+					Instrument that was used to collect these data
+				  </p>
+				</div>
+
+
+					<div class="form-group">
+	  
+						<button
+							  id="deformsubmit"
+							  name="submit"
+							  type="submit"
+							  class="btn btn-primary "
+							  value="submit">
+		  
+						  Submit
+						</button>
+	  
+					</div>
+
+				  </fieldset>
+
+  
+
+				</form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <footer role='contentinfo' class='labcas-footer'>
+            <div class='container'>
+                <ul class='labcas-footer-links'>
+                    
+                    <li>
+                        <a href='https://mcl.nci.nih.gov/'>
+                            Consortium for Molecular and Cellular Characterization of Screen-Detected Lesions
+                        </a>
+                    </li>
+                    <li>
+                        <a href='https://mcl-labcas.jpl.nasa.gov/ui/help'>Help</a>
+                    </li>
+                    <li>
+                        <a href='https://mcl-labcas.jpl.nasa.gov/ui/about'>About</a>
+                    </li>
+                </ul>
+                <p>
+                    Copyright © 2019
+                    California Institute of Technology. <small>ALL RIGHTS RESERVED.</small>
+                    U.S. Government Sponsorship Acknowledged.
+                </p>
+                <p>
+                    Portions of this web application powered by <a href='http://www.plupload.com/'>Plupload</a>,
+                    licensed under <a href='https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html'>GPLv2</a>.
+                    <a href='https://mcl-labcas.jpl.nasa.gov/ui/static/plupload-2.1.9.zip'>Get Plupload</a>.
+                </p>
+        
+                </div>
+            </footer>
+        </div>
+    </div>
+    
+</body>
+<!--   Core JS Files   -->
+
+<script src="../assets/js/core/popper.min.js" type="text/javascript"></script>
+<script src="../assets/js/core/bootstrap.min.js" type="text/javascript"></script>
+<!--  Plugin for Switches, full documentation here: http://www.jque.re/plugins/version3/bootstrap.switch/ -->
+<script src="../assets/js/plugins/bootstrap-switch.js"></script>
+<!--  Google Maps Plugin    -->
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?YOUR_KEY_HERE"></script>
+<!--  Chartist Plugin  -->
+<script src="../assets/js/plugins/chartist.min.js"></script>
+<!--  Notifications Plugin    -->
+<script src="../assets/js/plugins/bootstrap-notify.js"></script>
+<!--  jVector Map  -->
+<script src="../assets/js/plugins/jquery-jvectormap.js" type="text/javascript"></script>
+<!--  Plugin for Date Time Picker and Full Calendar Plugin-->
+<script src="../assets/js/plugins/moment.min.js"></script>
+<!--  DatetimePicker   -->
+<script src="../assets/js/plugins/bootstrap-datetimepicker.js"></script>
+<!--  Sweet Alert  -->
+<script src="../assets/js/plugins/sweetalert2.min.js" type="text/javascript"></script>
+<!--  Tags Input  -->
+<script src="../assets/js/plugins/bootstrap-tagsinput.js" type="text/javascript"></script>
+<!--  Sliders  -->
+<script src="../assets/js/plugins/nouislider.js" type="text/javascript"></script>
+<!--  Bootstrap Select  -->
+<script src="../assets/js/plugins/bootstrap-selectpicker.js" type="text/javascript"></script>
+<!--  jQueryValidate  -->
+<script src="../assets/js/plugins/jquery.validate.min.js" type="text/javascript"></script>
+<!--  Plugin for the Wizard, full documentation here: https://github.com/VinceG/twitter-bootstrap-wizard -->
+<script src="../assets/js/plugins/jquery.bootstrap-wizard.js"></script>
+<!--  Bootstrap Table Plugin -->
+<script src="../assets/js/plugins/bootstrap-table.js"></script>
+<!--  DataTable Plugin -->
+<script src="../assets/js/plugins/jquery.dataTables.min.js"></script>
+<!--  Full Calendar   -->
+<script src="../assets/js/plugins/fullcalendar.min.js"></script>
+<!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
+<script src="../assets/js/light-bootstrap-dashboard.js?v=2.0.1" type="text/javascript"></script>
+<!-- Light Dashboard DEMO methods, don't include it in your project! -->
+<script src="../assets/js/demo.js"></script>
+<script src="../assets/js/plugins/js.cookie.js"></script>
+<script src="../assets/js/labcas/authentication.js?22"></script>
+<script src="../assets/js/labcas/labcas-sidebar.js"></script>
+<script src="../assets/js/labcas/utils.js"></script>
+
+<script src="../assets/js/labcas/search.js?2"></script>
+<script type="text/javascript">
+    setup_labcas_data("collections","*:*");
+    var $table = $('#collection-table');
+    function operateFormatter(value, row, index) {
+        return [
+            '<a rel="tooltip" title="Favorite" class="btn btn-link btn-info table-action view" href="javascript:void(0)">',
+            '<i class="fa fa-star"></i>',
+            '</a>',
+            '<a rel="tooltip" title="Share" class="btn btn-link btn-warning table-action edit" href="javascript:void(0)">',
+            '<i class="fa fa-share"></i>',
+            '</a>'
+        ].join('');
+    }
+
+    $().ready(function() {
+        window.operateEvents = {
+            'click .view': function(e, value, row, index) {
+                info = JSON.stringify(row);
+
+                swal('You click view icon, row: ', info);
+                console.log(info);
+            },
+            'click .edit': function(e, value, row, index) {
+                info = JSON.stringify(row);
+
+                swal('You click edit icon, row: ', info);
+                console.log(info);
+            },
+            'click .remove': function(e, value, row, index) {
+                console.log(row);
+                $table.bootstrapTable('remove', {
+                    field: 'id',
+                    values: [row.id]
+                });
+            }
+        };
+        //includeHTML();
+		$.get( "sidebar.html?2", function( data ) {
+            $( "#sidebar_placeholder" ).append(data);
+            $( "#username_placeholder" ).html(Cookies.get('user'));
+            $( "#username_letters_placeholder" ).html(Cookies.get('userletters'));
+        });
+        
+    });
+</script>
+
+</html>

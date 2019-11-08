@@ -20,7 +20,6 @@
 
 <body class="sidebar-mini">
     <div class="wrapper">
-        <!--<div w3-include-html="sidebar.html?7"></div>-->
         <div id='sidebar_placeholder'></div>
         <div class="main-panel">
             <!-- Navbar -->
@@ -28,12 +27,12 @@
                 <div class="container-fluid">
                     <div class="navbar-wrapper">
                         <div class="navbar-minimize">
-                            <button id="minimizeSidebar" class="btn btn-info btn-fill btn-round btn-icon d-none d-lg-block">
+                            <button id="minimizeSidebar" class="btn btn-warning btn-fill btn-round btn-icon d-none d-lg-block">
                                 <i class="fa fa-ellipsis-v visible-on-sidebar-regular"></i>
                                 <i class="fa fa-navicon visible-on-sidebar-mini"></i>
                             </button>
                         </div>
-                        <!--<a class="navbar-brand" href="#pablo"> Bootstrap Table </a>-->
+                        <a class="navbar-brand" href="#pablo"></a>
                     </div>
                     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-bar burger-lines"></span>
@@ -45,7 +44,7 @@
                             <form class="navbar-form navbar-left navbar-search-form" role="search" action="javascript:search();">
                                 <div class="input-group">
                                     <i class="nc-icon nc-zoom-split"></i>
-                                    <input id="search_text" type="text" class="form-control" placeholder="Labcas Full Search...">
+                                    <input id="search_text" type="text" value="" class="form-control" placeholder="Labcas Full Search...">
                                 </div>
                             </form>
                         </ul>
@@ -108,41 +107,192 @@
             <div class="content">
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-md-12">
-                            <div class="card bootstrap-table">
-                                <div class="card-header">
-                                    <center><h3 class="card-title">LABCAS Collections</h3></center>
-                                <hr width="25%">
-                                <center><a href="/labcas-ui/application/labcas_metadata_upload.html">Upload your metadata</a></center>
-                                </div>
-                                <div class="card-body table-full-width">
-                                    <div class="toolbar">
-                                        
+                        <div class="col-lg-3 col-sm-6">
+                            <div class="card card-stats">
+                                <div class="card-body ">
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <div class="icon-big text-center icon-warning">
+                                                <i class="nc-icon nc-chart text-warning"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col-7">
+                                            <div class="numbers">
+                                                <p class="card-category"># Collections</p>
+                                                <h4 class="card-title" id='collections_len'></h4>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <table id="collection-table" class="table">
-                                        <thead>
-                                            <!--<th data-field="state" data-checkbox="true"></th>-->
-                                            <th data-field="state"	></th>
-                                            <th data-field="collection" data-sortable="true">Collection</th>
-                                            <th data-field="leadpi" data-sortable="true">Lead PI</th>
-                                            <th data-field="institution" data-sortable="true" data-visible="false">Institution</th>
-                                            <th data-field="discipline" data-sortable="true" data-visible="false">Discipline</th>
-                                            <th data-field="datacustodian" data-sortable="true" data-visible="false">Data Custodian</th>
-                                            <th data-field="organ" data-sortable="false">Organ</th>
-                                            <!--<th data-field="filetypes">File Types</th>-->
-                                            <th data-field="actions" class="td-actions text-right" data-events="operateEvents" data-formatter="operateFormatter">Actions</th>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
+                                </div>
+                                <div class="card-footer ">
+                                    <hr>
+                                    <div class="stats">
+                                        <i class="fa fa-refresh"></i> Updated Now
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-6">
+                            <div class="card card-stats">
+                                <div class="card-body ">
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <div class="icon-big text-center icon-warning">
+                                                <i class="nc-icon nc-vector text-danger"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col-7">
+                                            <div class="numbers">
+                                                <p class="card-category"># Datasets</p>
+                                                <h4 class="card-title" id='datasets_len'></h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer ">
+                                    <hr>
+                                    <div class="stats">
+                                        <i class="fa fa-refresh"></i> Updated now
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-6">
+                            <div class="card card-stats">
+                                <div class="card-body ">
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <div class="icon-big text-center icon-warning">
+                                                <i class="nc-icon nc-vector text-danger"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col-7">
+                                            <div class="numbers">
+                                                <p class="card-category"># Files</p>
+                                                <h4 class="card-title" id='files_len'></h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer ">
+                                    <hr>
+                                    <div class="stats">
+                                        <i class="fa fa-clock-o"></i> In the last hour
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-6">
+                            <div class="card card-stats">
+                                <div class="card-body ">
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <div class="icon-big text-center icon-warning">
+                                                <i class="nc-icon nc-favourite-28 text-primary"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col-7">
+                                            <div class="numbers">
+                                                <p class="card-category"># Favorited</p>
+                                                <h4 class="card-title" id='favorites_len'>0</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer ">
+                                    <hr>
+                                    <div class="stats">
+                                        <i class="fa fa-refresh"></i> Update now
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <footer role='contentinfo' class='labcas-footer'>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card ">
+                                <div class="card-header">
+                                    <h4 class="card-title"><div id="datasettitle"></div></h4>
+                                     <p class="card-category"># Dataset per Collection</p>
+                                </div>
+                                <div class="card-body">
+                                            <div id="labcas_sunburst_distribution"/>
+                                </div>
+                                <div class="card-footer ">
+									<hr>
+									<div class="stats">
+										<i class="now-ui-icons loader_refresh spin"></i> Updated 3 minutes ago
+									</div>
+								</div>
+                            </div>
+                          </div>
+					  </div>
+				    </div>
+				    <div class="row">
+				    	<div class="col-md-12">
+                            <div class="card ">
+                                <div class="card-header">
+                                    <h4 class="card-title"><div id="datasettitle"></div></h4>
+                                     <p class="card-category"># Dataset by Lead PI</p>
+                                </div>
+                                <div class="card-body">
+                                            <div id="labcas_boxplot_distribution"/>
+                                </div>
+                                <div class="card-footer ">
+									<hr>
+									<div class="stats">
+										<i class="now-ui-icons loader_refresh spin"></i> Updated 3 minutes ago
+									</div>
+								</div>
+                            </div>
+                          </div>
+					  </div>
+					</div>
+                                           
+					<div class="row">
+                        <div class="col-md-6">
+                            <div class="card ">
+                                <div class="card-header">
+                                    <h4 class="card-title"><div id="datasettitle"></div></h4>
+                                     <p class="card-category">Collections by Organ</p>
+                                </div>
+                                <div class="card-body">
+                                            <div id="organ_distribution"/>
+                                             
+                                </div>
+                                <div class="card-footer ">
+									<hr>
+									<div class="stats">
+										<i class="now-ui-icons loader_refresh spin"></i> Updated 3 minutes ago
+									</div>
+								</div>
+                            </div>
+                          </div>
+					  </div>
+                        <div class="col-md-6">
+                            <div class="card ">
+                                <div class="card-header">
+                                    <h4 class="card-title"><div id="datasettitle"></div></h4>
+                                     <p class="card-category">Collections by Collaborative Group</p>
+                                </div>
+                                <div class="card-body">
+                                          <div id="collabgroup_distribution"/>
+                                </div>
+                                <div class="card-footer ">
+									<hr>
+									<div class="stats">
+										<i class="now-ui-icons loader_refresh spin"></i> Updated 3 minutes ago
+									</div>
+								</div>
+                            </div>
+                          </div>
+					  </div>
+				    </div>
+						
+					</div>
+				</div>
+			</div>
+			<footer role='contentinfo' class='labcas-footer'>
             <div class='container'>
                 <ul class='labcas-footer-links'>
                     
@@ -171,9 +321,9 @@
         
                 </div>
             </footer>
-        </div>
-    </div>
-    
+                                </div>
+                            </div>
+                          
 </body>
 <!--   Core JS Files   -->
 <script src="../assets/js/core/jquery.3.2.1.min.js" type="text/javascript"></script>
@@ -214,55 +364,25 @@
 <!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
 <script src="../assets/js/light-bootstrap-dashboard.js?v=2.0.1" type="text/javascript"></script>
 <!-- Light Dashboard DEMO methods, don't include it in your project! -->
-<script src="../assets/js/demo.js"></script>
+<!--<script src="../assets/js/demo.js"></script>-->
 <script src="../assets/js/plugins/js.cookie.js"></script>
-<script src="../assets/js/labcas/authentication.js?22"></script>
-<script src="../assets/js/labcas/labcas-sidebar.js"></script>
 <script src="../assets/js/labcas/utils.js"></script>
-<script src="../assets/js/labcas/search.js?2"></script>
+<script src="../assets/js/labcas/labcas-sidebar.js"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="../assets/js/labcas/dashboard.js?7"></script>
+
+
 <script type="text/javascript">
-    setup_labcas_data("collections","*:*");
-    var $table = $('#collection-table');
-    function operateFormatter(value, row, index) {
-        return [
-            '<a rel="tooltip" title="Favorite" class="btn btn-link btn-info table-action view" href="javascript:void(0)">',
-            '<i class="fa fa-star"></i>',
-            '</a>',
-            '<a rel="tooltip" title="Share" class="btn btn-link btn-warning table-action edit" href="javascript:void(0)">',
-            '<i class="fa fa-share"></i>',
-            '</a>'
-        ].join('');
-    }
-
-    $().ready(function() {
-        window.operateEvents = {
-            'click .view': function(e, value, row, index) {
-                info = JSON.stringify(row);
-
-                swal('You click view icon, row: ', info);
-                console.log(info);
-            },
-            'click .edit': function(e, value, row, index) {
-                info = JSON.stringify(row);
-
-                swal('You click edit icon, row: ', info);
-                console.log(info);
-            },
-            'click .remove': function(e, value, row, index) {
-                console.log(row);
-                $table.bootstrapTable('remove', {
-                    field: 'id',
-                    values: [row.id]
-                });
-            }
-        };
-        //includeHTML();
-		$.get( "sidebar.html?3", function( data ) {
+    $(document).ready(function() {
+        //setup_labcas_data("collectiondatasets",'id:"1.0_Athena-IHC4_with_Swedish_Breast_Cancer_Study"', 'id:1.0_Athena-IHC4_with_Swedish_Breast_Cancer_Study.*');
+        var get_var = get_url_vars();
+        //console.log(get_var["dataset_id"]);
+        setup_labcas_analytics();
+        $.get( "sidebar.html?2", function( data ) {
             $( "#sidebar_placeholder" ).append(data);
             $( "#username_placeholder" ).html(Cookies.get('user'));
             $( "#username_letters_placeholder" ).html(Cookies.get('userletters'));
         });
-        
     });
 </script>
 

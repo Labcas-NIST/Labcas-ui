@@ -68,8 +68,6 @@ function fill_collections_data(data){
     });
 }
 function fill_collection_details_data(data){
-	console.log("HERE");
-	console.log(data);
 	$("#collectiontitle").html(data.response.docs[0].CollectionName);
 	$.each(data.response.docs[0], function(key, value) {
 		if ($.isArray(value)){
