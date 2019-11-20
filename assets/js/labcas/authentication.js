@@ -1,4 +1,5 @@
 var root_app = "";
+
 Array.prototype.contains = function(v) {
       for (var i = 0; i < this.length; i++) {
               if (this[i] === v) return true;
@@ -15,20 +16,52 @@ Array.prototype.unique = function() {
                   }
           return arr;
 }
+
+
 function fill_collections_data(data){
+	
     $.each(data.response.docs, function(index, obj) {
+    	var color = "btn-info";
+		if(user_data["FavoriteCollections"].includes(obj.id)){
+			color = "btn-success";
+    	}
+    	
+		
+		var institutions = obj.Institution;
+    	var pis = obj.LeadPI;
+    	var orgs = obj.Organ;
+    	
+    	if (Cookies.get('environment').includes("edrn-labcas")){
+			var obj_arr = generate_edrn_links(obj);
+			institutions = obj_arr[0];
+			pis = obj_arr[1];
+			orgs = obj_arr[2];
+		}else if(Cookies.get('environment').includes("mcl-labcas")){
+			var obj_arr = generate_mcl_links(obj);
+			institutions = obj_arr[0];
+			pis = obj_arr[1];
+			orgs = obj_arr[2];
+		}
+    	//console.log(institutions);
           $("#collection-table tbody").append(
             "<tr>"+
                 "<td></td><td>"+
                 "<a href=\"/labcas-ui/application/labcas_collection-detail_table.html?collection_id="+
                     obj.id+"\">"+
                 obj.CollectionName+"</a></td>"+
-                "<td>"+obj.LeadPI+"</td>"+
-                "<td>"+obj.Institution+"</td>"+
+                "<td>"+pis.join(", ")+"</td>"+
+                "<td>"+institutions.join(", ")+"</td>"+
                 "<td>"+obj.Discipline+"</td>"+
                 "<td>"+obj.DataCustodian+"</td>"+
-                "<td>"+obj.Organ+"</td>"+
-                "<td></td>"+
+                "<td>"+orgs.join(", ")+"</td>"+
+                "<td class=\"td-actions text-right\">"+
+						"<button type=\"button\" rel=\"tooltip\" title=\"Favorite\" onclick=\"save_favorite('"+obj.id+"', 'FavoriteCollections')\" class=\"btn "+color+" btn-simple btn-link\">"+
+							"<i class=\"fa fa-star\"></i>"+
+						"</button>"+
+						"<button type=\"button\" rel=\"tooltip\" title=\"Download\" class=\"btn btn-danger btn-simple btn-link\">"+
+							"<i class=\"fa fa-download\"></i>"+
+						"</button>"+
+					"</td>"+
             "</tr>");
           //console.log(obj);
     });
@@ -69,9 +102,35 @@ function fill_collections_data(data){
 }
 function fill_collection_details_data(data){
 	$("#collectiontitle").html(data.response.docs[0].CollectionName);
-	$.each(data.response.docs[0], function(key, value) {
+	var obj = data.response.docs[0];
+	var institutions = obj.Institution;
+	var pis = obj.LeadPI;
+	var orgs = obj.Organ;
+	
+	if (Cookies.get('environment').includes("edrn-labcas")){
+		var obj_arr = generate_edrn_links(obj);
+		institutions = obj_arr[0];
+		pis = obj_arr[1];
+		orgs = obj_arr[2];
+	}else if(Cookies.get('environment').includes("mcl-labcas")){
+		var obj_arr = generate_mcl_links(obj);
+		institutions = obj_arr[0];
+		pis = obj_arr[1];
+		orgs = obj_arr[2];
+	}
+	
+	$.each(obj, function(key, value) {
 		if ($.isArray(value)){
 			value = value.join(",");
+		}
+		if (key == "Institution"){
+			value = institutions.join(", ");
+		}else if (key == "LeadPI"){
+			value = pis.join(", ");
+		}else if (key == "Consortium"){
+			value = "<a href='https://edrn.nci.nih.gov'>"+value+"</a>";
+		}else if (key == "Organ"){
+			value = orgs.join(", ");
 		}
           $("#collectiondetails-table tbody").append(
             "<tr>"+
@@ -82,7 +141,7 @@ function fill_collection_details_data(data){
 			"</tr>");
 		
     });
-    $("#collection_details_len").html(Object.keys(data.response.docs[0]).length);
+    $("#collection_details_len").html(Object.keys(obj).length);
 }
 function fill_dataset_details_data(data){
 	$("#datasettitle").html(data.response.docs[0].DatasetName);
@@ -122,7 +181,16 @@ function fill_file_details_data(data){
     $("#file_details_len").html(Object.keys(data.response.docs[0]).length);
 }
 function fill_datasets_data(data){
+
+	data.response.docs.sort(dataset_compare_sort);
 	$.each(data.response.docs, function(key, value) {
+			var color = "btn-info";
+			if(user_data["FavoriteDatasets"].includes(value.id)){
+				color = "btn-success";
+			}
+				if (value.id.split("/").length - 2 > 0){
+					value.DatasetName = "&nbsp;&nbsp;&nbsp;&nbsp;".repeat(value.id.split("/").length - 2)+"<span>&#8226;</span>"+value.DatasetName
+				}
 			  $("#datasets-table tbody").append(
 				"<tr>"+
 					"<td><!--<div class=\"form-check\">"+
@@ -138,19 +206,17 @@ function fill_datasets_data(data){
                         "</a>"+
 					"</td>"+
 					"<td class=\"td-actions text-right\">"+
-						"<button type=\"button\" rel=\"tooltip\" title=\"Edit Task\" class=\"btn btn-info btn-simple btn-link\">"+
-							"<i class=\"fa fa-share\"></i>"+
-						"</button>"+
-						"<button type=\"button\" rel=\"tooltip\" title=\"Remove\" class=\"btn btn-danger btn-simple btn-link\">"+
+						"<button type=\"button\" rel=\"tooltip\" title=\"Favorite\" onclick=\"save_favorite('"+value.id+"', 'FavoriteDatasets')\" class=\"btn "+color+" btn-simple btn-link\">"+
 							"<i class=\"fa fa-star\"></i>"+
 						"</button>"+
 						"<button type=\"button\" rel=\"tooltip\" title=\"Download\" class=\"btn btn-danger btn-simple btn-link\">"+
 							"<i class=\"fa fa-download\"></i>"+
 						"</button>"+
 					"</td>"+
-				"</tr>");	
+				"</tr>");
 		});                                                                     
     $("#collection_datasets_len").html(data.response.numFound); 
+    $("#collection_favorites_len").html(user_data['FavoriteFiles'].length+user_data['FavoriteDatasets'].length+user_data['FavoriteCollections'].length);
 }
 function fill_files_data(data){
 	var size = data.response.numFound;
@@ -158,13 +224,19 @@ function fill_files_data(data){
 	load_pagination("files",size,cpage);
 	$("#files-table tbody").empty();
 	$.each(data.response.docs, function(key, value) {
-	  var thumb = "";
-	  var filetype = value.FileType ? value.FileType.join(",") : "";
-	  var description = value.Description? value.Description.join(",") : "";
-	  if ('FileThumbnailUrl' in value){
+	
+		var color = "btn-info";
+		if(user_data["FavoriteFiles"].includes(value.id)){
+			color = "btn-success";
+		}
+		
+		var thumb = "";
+		var filetype = value.FileType ? value.FileType.join(",") : "";
+		var description = value.Description? value.Description.join(",") : "";
+		if ('FileThumbnailUrl' in value){
 		thumb = "<img width='50' height='50' src='"+value.FileThumbnailUrl+"'/>";
-	  }
-	  $("#files-table tbody").append(
+		}
+		$("#files-table tbody").append(
 		"<tr>"+
 			"<td><div class=\"form-check\">"+
 				"<label class=\"form-check-label\">"+
@@ -191,10 +263,7 @@ function fill_files_data(data){
 					value.FileSize+
 			"</td>"+
 			"<td class=\"td-actions text-right\">"+
-				"<button type=\"button\" rel=\"tooltip\" title=\"Edit Task\" class=\"btn btn-info btn-simple btn-link\">"+
-					"<i class=\"fa fa-share\"></i>"+
-				"</button>"+
-				"<button type=\"button\" rel=\"tooltip\" title=\"Remove\" class=\"btn btn-danger btn-simple btn-link\">"+
+				"<button type=\"button\" rel=\"tooltip\" title=\"Favorite\" onclick=\"save_favorite('"+value.id+"', 'FavoriteFiles')\" class=\"btn "+color+" btn-simple btn-link\">"+
 					"<i class=\"fa fa-star\"></i>"+
 				"</button>"+
 				"<button type=\"button\" rel=\"tooltip\" title=\"Download\" class=\"btn btn-danger btn-simple btn-link\" onclick=\"location.href='https://mcl-labcas.jpl.nasa.gov/data-access-api/download?id="+value.id+"'\">"+
@@ -204,9 +273,12 @@ function fill_files_data(data){
 		"</tr>");	
 	});                                                                     
     $("#dataset_files_len").html(size); 
+    $("#dataset_favorites_len").html(user_data['FavoriteFiles'].length+user_data['FavoriteDatasets'].length+user_data['FavoriteCollections'].length);
 }
 
 function setup_labcas_data(datatype, query, dataset_query){
+	
+	
     $.ajax({
         url: Cookies.get('environment')+"/data-access-api/collections/select?q="+query+"&wt=json&indent=true&rows=2147483647",
         beforeSend: function(xhr) { 
@@ -236,8 +308,8 @@ function setup_labcas_data(datatype, query, dataset_query){
 			dataType: 'json',
 			processData: false,
 			success: function (data) {
-                console.log(Cookies.get('environment')+"/data-access-api/datasets/select?q="+dataset_query+"&wt=json&indent=true&rows=2147483647");
-                console.log(Cookies.get('token'));
+                //console.log(Cookies.get('environment')+"/data-access-api/datasets/select?q="+dataset_query+"&wt=json&indent=true&rows=2147483647");
+                //console.log(Cookies.get('token'));
                 fill_datasets_data(data);
 			},
 			error: function(){
@@ -290,7 +362,7 @@ function setup_labcas_dataset_data(datatype, query, file_query, cpage){
 }
 
 function setup_labcas_file_data(datatype, query, file_query){
-    console.log( Cookies.get('environment')+"/data-access-api/files/select?q="+query+"&wt=json&indent=true&rows=2147483647");
+    //console.log( Cookies.get('environment')+"/data-access-api/files/select?q="+query+"&wt=json&indent=true&rows=2147483647");
     $.ajax({
         url: Cookies.get('environment')+"/data-access-api/files/select?q="+query+"&wt=json&indent=true&rows=2147483647",
         xhrFields: {
@@ -319,9 +391,14 @@ function fill_datasets_search(data){
 	var size = data.response.numFound;
 	var cpage = data.response.start;
 	load_pagination("datasets_search",size,cpage);
-	console.log(data);
+	//console.log(data);
 	$("#search-dataset-table tbody").empty();
 	$.each(data.response.docs, function(key, obj) {
+	  var color = "btn-info";
+	  if(user_data["FavoriteDatasets"].includes(obj.id)){
+			color = "btn-success";
+	  }
+	
 	  var thumb = "";
 	  var filetype = obj.FileType ? obj.FileType.join(",") : "";
 	  var description = obj.Description? obj.Description.join(",") : "";
@@ -344,10 +421,7 @@ function fill_datasets_search(data){
                     	obj.CollectionName+"</a></td>"+
                 "<td>"+obj.DatasetVersion+"</td>"+
 			"<td class=\"td-actions text-right\">"+
-				"<button type=\"button\" rel=\"tooltip\" title=\"Edit Task\" class=\"btn btn-info btn-simple btn-link\">"+
-					"<i class=\"fa fa-share\"></i>"+
-				"</button>"+
-				"<button type=\"button\" rel=\"tooltip\" title=\"Remove\" class=\"btn btn-danger btn-simple btn-link\">"+
+				"<button type=\"button\" rel=\"tooltip\" title=\"Favorite\" onclick=\"save_favorite('"+obj.id+"', 'FavoriteDatasets')\" class=\"btn "+color+" btn-simple btn-link\">"+
 					"<i class=\"fa fa-star\"></i>"+
 				"</button>"+
 				"<button type=\"button\" rel=\"tooltip\" title=\"Download\" class=\"btn btn-danger btn-simple btn-link\">"+
@@ -362,9 +436,13 @@ function fill_files_search(data){
 	var size = data.response.numFound;
 	var cpage = data.response.start;
 	load_pagination("files_search",size,cpage);
-	console.log(data);
+	//console.log(data);
 	$("#search-file-table tbody").empty();
 	$.each(data.response.docs, function(key, obj) {
+	  var color = "btn-info";
+	  if(user_data["FavoriteFiles"].includes(obj.id)){
+			color = "btn-success";
+	  }
 	  var thumb = "";
 	  var filetype = obj.FileType ? obj.FileType.join(",") : "";
 	  var description = obj.Description? obj.Description.join(",") : "";
@@ -398,10 +476,7 @@ function fill_files_search(data){
 					obj.FileSize+
 			"</td>"+
 			"<td class=\"td-actions text-right\">"+
-				"<button type=\"button\" rel=\"tooltip\" title=\"Edit Task\" class=\"btn btn-info btn-simple btn-link\">"+
-					"<i class=\"fa fa-share\"></i>"+
-				"</button>"+
-				"<button type=\"button\" rel=\"tooltip\" title=\"Remove\" class=\"btn btn-danger btn-simple btn-link\">"+
+				"<button type=\"button\" rel=\"tooltip\" title=\"Favorite\" onclick=\"save_favorite('"+obj.id+"', 'FavoriteFiles')\" class=\"btn "+colors+" btn-simple btn-link\">"+
 					"<i class=\"fa fa-star\"></i>"+
 				"</button>"+
 				"<button type=\"button\" rel=\"tooltip\" title=\"Download\" class=\"btn btn-danger btn-simple btn-link\"  onclick=\"location.href='https://mcl-labcas.jpl.nasa.gov/data-access-api/download?id="+obj.id+"'\">"+
@@ -422,6 +497,10 @@ function fill_collections_search(data){
     var pi_filter = [];
     var disc_filter = [];
 	$.each(data.response.docs, function(key, obj) {
+	  var color = "btn-info";
+	  if(user_data["FavoriteCollections"].includes(obj.id)){
+			color = "btn-success";
+	  }
 	  var thumb = "";
 	  var filetype = obj.FileType ? obj.FileType.join(",") : "";
 	  var description = obj.Description? obj.Description.join(",") : "";
@@ -448,10 +527,7 @@ function fill_collections_search(data){
                 "<td>"+obj.DataCustodian+"</td>"+
                 "<td>"+obj.Organ+"</td>"+
 			"<td class=\"td-actions text-right\">"+
-				"<button type=\"button\" rel=\"tooltip\" title=\"Edit Task\" class=\"btn btn-info btn-simple btn-link\">"+
-					"<i class=\"fa fa-share\"></i>"+
-				"</button>"+
-				"<button type=\"button\" rel=\"tooltip\" title=\"Remove\" class=\"btn btn-danger btn-simple btn-link\">"+
+				"<button type=\"button\" rel=\"tooltip\" title=\"Favorite\"  onclick=\"save_favorite('"+obj.id+"', 'FavoriteCollections')\" class=\"btn "+colors+" btn-simple btn-link\">"+
 					"<i class=\"fa fa-star\"></i>"+
 				"</button>"+
 				"<button type=\"button\" rel=\"tooltip\" title=\"Download\" class=\"btn btn-danger btn-simple btn-link\">"+
@@ -517,7 +593,7 @@ function fill_collections_search(data){
             if (organ_val.length > 0){
                 organ_search = "&fq=(Organ:"+organ_val.join(" OR Organ:")+")";
             }
-            console.log(organ_search);
+            //console.log(organ_search);
             Cookies.set("organ_filter", organ_search);
             Cookies.set("search_filter", "on");
             setup_labcas_search(Cookies.get('search'), "all", 0);
@@ -548,7 +624,7 @@ function fill_collections_search(data){
             if (disc_val.length > 0){
                 disc_search = "&fq=(Discipline:"+disc_val.join(" OR Discipline:")+")";
             }
-            console.log(disc_search);
+            //console.log(disc_search);
             Cookies.set("disc_filter", disc_search);
             Cookies.set("search_filter", "on");
             setup_labcas_search(Cookies.get('search'), "all", 0);

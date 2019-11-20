@@ -1,3 +1,180 @@
+var user_data = {};
+$().ready(function() {
+	user_data = JSON.parse(Cookies.get("userdata"));
+	console.log(user_data);
+});
+function writeUserData(udata){
+	$.ajax({
+        url: Cookies.get('environment')+"/data-access-api/userdata/create",
+        beforeSend: function(xhr) { 
+            xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
+        },
+        type: 'POST',
+        data: udata,
+        contentType:"application/json",
+        dataType: 'json',
+        success: function (data) {
+            console.log(data);
+            Cookies.set("userdata",  udata);
+            window.location.reload();
+        },
+        error: function(){
+             //alert("Login expired, please login...");
+             //window.location.replace("/labcas-ui/application/pages/login.html");
+         }
+    });
+    
+}
+function getUserData(){
+	$.ajax({
+		url: Cookies.get('environment')+"/data-access-api/userdata/read?id="+Cookies.get('user'),
+		beforeSend: function(xhr) { 
+			xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
+		},
+		type: 'GET',
+		dataType: 'json',
+		success: function (data) {
+			user_data_tmp = {"FavoriteCollections":[], "FavoriteCDatasets":[], "FavoriteFiles":[]};
+			if (data['response']){
+				user_data_tmp = data['response']['docs'][0];
+			}
+			Cookies.set("userdata",  JSON.stringify(user_data_tmp));
+		},
+		error: function(){
+			 //alert("Login expired, please login...");
+			 //window.location.replace("/labcas-ui/application/pages/login.html");
+		 }
+	});
+}
+
+function save_favorite(labcas_id, labcas_type){
+	var user_id = Cookies.get('user');
+	$.ajax({
+        url: Cookies.get('environment')+"/data-access-api/userdata/read?id="+user_id,
+        beforeSend: function(xhr) { 
+            xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
+        },
+        type: 'GET',
+        dataType: 'json',
+        success: function (data) {
+			var user_data_tmp = data;
+			console.log(user_data_tmp);
+			var user_collection = [];
+			if (user_data_tmp['response']){
+				user_data_tmp = user_data_tmp['response']['docs'][0];
+				delete user_data_tmp["_version_"];
+			}else{
+				user_data_tmp = {"id":user_id};
+			}
+			
+			if (user_data_tmp[labcas_type]){
+				user_collection = user_data_tmp[labcas_type];
+			}
+			
+			if (user_collection.includes(labcas_id)){
+				user_collection.splice(user_collection.indexOf(labcas_id), 1);
+			}else{
+				user_collection.push(labcas_id);
+				user_data_tmp[labcas_type] = user_collection;
+			}
+	
+			writeUserData(JSON.stringify(user_data_tmp));
+		},
+        error: function(){
+             //alert("Login expired, please login...");
+             //window.location.replace("/labcas-ui/application/pages/login.html");
+         }
+    });
+	//writeUserData('{"id":"dliu", "FavoriteCollections":["test", "okay"], "LastLogin": "2019-10-30T12:00:00Z"}');
+	//getUserData("dliu");
+}
+
+function dataset_compare_sort(a, b) {
+  const idA = a.id.toUpperCase();
+  const idB = b.id.toUpperCase();
+
+  let comparison = 0;
+  if (idA > idB) {
+    comparison = 1;
+  } else if (idA < idB) {
+    comparison = -1;
+  }
+  return comparison;
+}
+
+function generate_mcl_links(obj){
+	var institutions = [];
+	var pis = [];
+	var orgs = [];
+	if (obj.Institution){
+		for (var i = 0; i < obj.Institution.length; i++) {
+			o = $.trim(obj.Institution[i]);
+			if (o != ""){
+				inst_url = o.replace(/\./g,"").replace(/\(/g,"").replace(/\)/g,"").replace(/ - /g," ").toLowerCase().replace(/ /g,"-");
+			}	
+			
+			leadpi = $.trim(obj.LeadPI[i]).toLowerCase().split(" ");
+			if (obj.LeadPI[i].includes("+")){
+				leadpi = $.trim(obj.LeadPI[i]).toLowerCase().split("+");
+			}
+			pis.push("<a href='"+Cookies.get('leadpi_url')+leadpi[1]+"-"+leadpi[0]+"'>"+obj.LeadPI[i]+"</a>");
+			institutions.push("<a href='"+Cookies.get('institution_url')+inst_url+"'>"+o+"</a>");
+			
+			
+		}
+	}
+	
+	if (obj.Organ){
+		for (var i = 0; i < obj.Organ.length; i++) {
+			o = $.trim(obj.Organ[i]);
+			if (o != ""){
+				orgs.push("<a href='"+Cookies.get('organ_url')+o.toLowerCase()+"'>"+o+"</a>");
+			}
+		}
+	}
+	return [institutions, pis, orgs];
+}
+
+function generate_edrn_links(obj){
+	var institutions = [];
+	var pis = [];
+	var orgs = [];
+	if (obj.Institution){
+		for (var i = 0; i < obj.Institution.length; i++) {
+			o = $.trim(obj.Institution[i]);
+			if (o != ""){
+				inst_split = o.replace(".","").toLowerCase().split(" ");
+				inst_url = $.trim(obj.InstitutionId[i]);
+				for (var c = 0; c < 7; c++) {
+					if (!inst_split[c]){
+						break;
+					}
+					inst_url += "-"+$.trim(inst_split[c]);
+				}
+				
+				leadpi = $.trim(obj.LeadPI[i]).toLowerCase().split(" ");
+				if (obj.LeadPI[i].includes("+")){
+					leadpi = $.trim(obj.LeadPI[i]).toLowerCase().split("+");
+				}
+				pis.push("<a href='"+Cookies.get('institution_url')+inst_url+"/"+leadpi[1]+"-"+leadpi[0]+"'>"+obj.LeadPI[i]+"</a>");
+				institutions.push("<a href='"+Cookies.get('institution_url')+inst_url+"'>"+o+"</a>");
+			
+			}
+		}
+	}
+	
+	if (obj.Organ){
+		for (var i = 0; i < obj.Organ.length; i++) {
+			o = $.trim(obj.Organ[i]);
+			if (o != ""){
+				orgs.push("<a href='"+Cookies.get('organ_url')+o+"'>"+o+"</a>");
+			}
+		}
+	}
+	return [institutions, pis, orgs];
+}
+
+
 function get_url_vars(){
     var $_GET = {};
 

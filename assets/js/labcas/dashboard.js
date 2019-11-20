@@ -270,9 +270,8 @@ function fill_files_analytics(data){
 	
 	$("#files_len").html(size);
 }
-function fill_favorites_analytics(data){
-	var size = data.response.numFound;
-	$("#favorites_len").html(size);
+function fill_favorites_analytics(){
+	$("#favorites_len").html(user_data['FavoriteFiles'].length+user_data['FavoriteDatasets'].length+user_data['FavoriteCollections'].length);
 }
 function setup_labcas_analytics(){
     console.log("Analyzing...");
@@ -332,5 +331,5 @@ function setup_labcas_analytics(){
 			 
 			 }
 		});
-
+		fill_favorites_analytics();
 }

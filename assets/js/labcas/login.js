@@ -1,47 +1,16 @@
 var root_app = "";
 
-function writeUserData(data){
-	$.ajax({
-        url: Cookies.get('environment')+"/data-access-api/userdata/create",
-        beforeSend: function(xhr) { 
-            xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
-        },
-        type: 'POST',
-        data: data,
-        contentType:"application/json",
-        dataType: 'json',
-        success: function (data) {
-            console.log(data);
-        },
-        error: function(){
-             //alert("Login expired, please login...");
-             //window.location.replace("/labcas-ui/application/pages/login.html");
-         }
-    });
-}
-function getUserData(user){
-	$.ajax({
-        url: Cookies.get('environment')+"/data-access-api/userdata/read?id="+user,
-        beforeSend: function(xhr) { 
-            xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
-        },
-        type: 'GET',
-        dataType: 'json',
-        success: function (data) {
-            console.log(data);
-        },
-        error: function(){
-             //alert("Login expired, please login...");
-             //window.location.replace("/labcas-ui/application/pages/login.html");
-         }
-    });
-}
-
 Cookies.set("token", "None");
 $('#loginform').submit(function (e) {
     e.preventDefault();
-    $.get('/labcas-ui/assets/conf/environment.cfg', function(data) {
-        root_app = data;
+    $.get('/labcas-ui/assets/conf/environment.cfg?9', function(data) {
+    	config_split = data.split("\n");
+        root_app = config_split[0];
+        environment_url = config_split[1];
+        leadpi_url = config_split[2];
+        institution_url = config_split[3];
+        organ_url = config_split[4];
+        
         $.ajax({
             url: root_app+"/data-access-api/auth",
                 beforeSend: function(xhr) {
@@ -49,15 +18,38 @@ $('#loginform').submit(function (e) {
                 },
                 type: 'GET',
                 success: function (data) {
-                    //localStorage.setItem('token', data);
                     Cookies.set("token", data);
                     Cookies.set("user", $('#username').val());
                     Cookies.set("userletters", $('#username').val().substr(0, 2).toUpperCase());
                     Cookies.set("environment", root_app);
-                    //getUserData("dliu");
-                    //writeUserData('{"id":"dliu", "FavoriteCollections":["test", "okay"], "LastLogin": "2019-10-30T12:00:00Z"}');
-                    //getUserData("dliu");
-                    window.location.replace("/labcas-ui/application/labcas_collection_table.html");
+                    Cookies.set("environment_url", environment_url);
+                    Cookies.set("leadpi_url", leadpi_url);
+                    Cookies.set("institution_url", institution_url);
+                    Cookies.set("organ_url", organ_url);
+                    
+                    //Get user data, then redirect
+                    $.ajax({
+						url: Cookies.get('environment')+"/data-access-api/userdata/read?id="+Cookies.get('user'),
+						beforeSend: function(xhr) { 
+							xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
+						},
+						type: 'GET',
+						dataType: 'json',
+						success: function (data) {
+							user_data = {"FavoriteCollections":[],"FavoriteDatasets":[],"FavoriteFiles":[]};
+							if (data['response'] && data['response']['docs'] && data['response']['docs'][0]){
+								user_data = data['response']['docs'][0];
+							}
+							console.log("HERE");
+							console.log(user_data);
+							Cookies.set("userdata",  JSON.stringify(user_data));
+							window.location.replace("/labcas-ui/application/labcas_collection_table.html");
+						},
+						error: function(){
+							 //alert("Login expired, please login...");
+							 //window.location.replace("/labcas-ui/application/pages/login.html");
+						 }
+					});
                 },
                 error: function(){
                     //localStorage.setItem('token', "None");
