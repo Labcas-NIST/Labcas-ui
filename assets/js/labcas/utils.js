@@ -34,9 +34,18 @@ function getUserData(){
 		type: 'GET',
 		dataType: 'json',
 		success: function (data) {
-			user_data_tmp = {"FavoriteCollections":[], "FavoriteCDatasets":[], "FavoriteFiles":[]};
+			user_data_tmp = {}
 			if (data['response']){
 				user_data_tmp = data['response']['docs'][0];
+			}
+			if (!user_data_tmp["FavoriteCollections"]){
+				user_data_tmp["FavoriteCollections"] = [];
+			}
+			if (!user_data_tmp["FavoriteDatasets"]){
+				user_data_tmp["FavoriteDatasets"] = [];
+			}
+			if (!user_data_tmp["FavoriteFiles"]){
+				user_data_tmp["FavoriteFiles"] = [];
 			}
 			Cookies.set("userdata",  JSON.stringify(user_data_tmp));
 		},
@@ -60,9 +69,11 @@ function save_favorite(labcas_id, labcas_type){
 			var user_data_tmp = data;
 			console.log(user_data_tmp);
 			var user_collection = [];
-			if (user_data_tmp['response']){
+			if (user_data_tmp['response'] && user_data_tmp['response']['docs'][0]){
 				user_data_tmp = user_data_tmp['response']['docs'][0];
-				delete user_data_tmp["_version_"];
+				if (user_data_tmp["_version_"]){
+					delete user_data_tmp["_version_"];
+				}
 			}else{
 				user_data_tmp = {"id":user_id};
 			}

@@ -111,7 +111,7 @@
                         <div class="col-md-12">
                             <div class="card bootstrap-table">
                                 <div class="card-header">
-                                    <center><h3 class="card-title">LABCAS Collections</h3></center>
+                                    <center><h3 class="card-title">LABCAS Public Collections</h3></center>
                                 <hr width="25%">
                                 <center><a href="/labcas-ui/application/labcas_metadata_upload.html">Upload your metadata</a></center>
                                 </div>
@@ -122,7 +122,7 @@
                                     <table id="collection-table" class="table">
                                         <thead>
                                             <!--<th data-field="state" data-checkbox="true"></th>-->
-                                            <th data-field="state"></th>
+                                            <th data-field="state"	></th>
                                             <th data-field="collection" data-sortable="true">Collection</th>
                                             <th data-field="leadpi" data-sortable="true">Lead PI</th>
                                             <th data-field="institution" data-sortable="true" data-visible="true">Institution</th>
@@ -216,9 +216,9 @@
 <!-- Light Dashboard DEMO methods, don't include it in your project! -->
 <script src="../assets/js/demo.js"></script>
 <script src="../assets/js/plugins/js.cookie.js"></script>
-<script src="../assets/js/labcas/authentication.js?79"></script>
+<script src="../assets/js/labcas/authentication.js?81"></script>
 <script src="../assets/js/labcas/labcas-sidebar.js"></script>
-<script src="../assets/js/labcas/utils.js?20"></script>
+<script src="../assets/js/labcas/utils.js?11"></script>
 <script src="../assets/js/labcas/search.js?2"></script>
 <script type="text/javascript">
     
@@ -235,7 +235,7 @@
     }
 
     $().ready(function() {
-    	setup_labcas_data("collections","*:*");
+    	setup_labcas_data("collections_public","*:*");
         window.operateEvents = {
             'click .view': function(e, value, row, index) {
                 info = JSON.stringify(row);

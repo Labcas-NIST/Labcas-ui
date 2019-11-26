@@ -3,7 +3,7 @@ var root_app = "";
 Cookies.set("token", "None");
 $('#loginform').submit(function (e) {
     e.preventDefault();
-    $.get('/labcas-ui/assets/conf/environment.cfg?9', function(data) {
+    $.get('/labcas-ui/assets/conf/environment.cfg?11', function(data) {
     	config_split = data.split("\n");
         root_app = config_split[0];
         environment_url = config_split[1];
@@ -40,7 +40,16 @@ $('#loginform').submit(function (e) {
 							if (data['response'] && data['response']['docs'] && data['response']['docs'][0]){
 								user_data = data['response']['docs'][0];
 							}
-							console.log("HERE");
+							if (!user_data["FavoriteCollections"]){
+								user_data["FavoriteCollections"] = [];
+							}
+							if (!user_data["FavoriteDatasets"]){
+								user_data["FavoriteDatasets"] = [];
+							}
+							if (!user_data["FavoriteFiles"]){
+								user_data["FavoriteFiles"] = [];
+							}
+							console.log("userdata");
 							console.log(user_data);
 							Cookies.set("userdata",  JSON.stringify(user_data));
 							window.location.replace("/labcas-ui/application/labcas_collection_table.html");
