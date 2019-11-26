@@ -3,7 +3,7 @@ var root_app = "";
 Cookies.set("token", "None");
 $('#loginform').submit(function (e) {
     e.preventDefault();
-    $.get('/labcas-ui/assets/conf/environment.cfg?11', function(data) {
+    $.get('/labcas-ui/assets/conf/environment.cfg?12', function(data) {
     	config_split = data.split("\n");
         root_app = config_split[0];
         environment_url = config_split[1];

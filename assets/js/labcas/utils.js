@@ -88,7 +88,15 @@ function save_favorite(labcas_id, labcas_type){
 				user_collection.push(labcas_id);
 				user_data_tmp[labcas_type] = user_collection;
 			}
-	
+			if (!user_data_tmp["FavoriteCollections"]){
+				user_data_tmp["FavoriteCollections"] = [];
+			}
+			if (!user_data_tmp["FavoriteDatasets"]){
+				user_data_tmp["FavoriteDatasets"] = [];
+			}
+			if (!user_data_tmp["FavoriteFiles"]){
+				user_data_tmp["FavoriteFiles"] = [];
+			}
 			writeUserData(JSON.stringify(user_data_tmp));
 		},
         error: function(){
