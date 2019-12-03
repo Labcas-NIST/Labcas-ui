@@ -219,9 +219,9 @@ function load_pagination(divid, size, cpage){
 	}
 	if (cpage + 5 < upperbound){
 		upperbound = cpage + 5;
-		if (upperbound < 10){
+		/*if (upperbound < 10){
 			upperbound =10;
-		}
+		}*/
 	}
 	if (cpage - 20 > fastbackward){
 		fastbackward = cpage - 20;

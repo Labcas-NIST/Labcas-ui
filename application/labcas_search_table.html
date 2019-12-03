@@ -242,67 +242,87 @@
                             </div>
                         </div>
                         <div class="col-md-9 ml-auto mr-auto">
-                                                    <div class="card card-tasks">
-                                                        <div class="card-header ">
-                                                            <h4 class="card-title">Search Results</h4>
-                                                            <p class="card-category">Explore or Download</p>
-                                                        </div>
-                                                        <div class="card-body">
-                                                        	
-                                                        	<ul role="tablist" class="nav nav-tabs">
-																<li role="presentation" class="nav-item show active">
-																	<a class="nav-link" id="info-tab" href="#icon-info" data-toggle="tab"><i class="nc-icon nc-chart text-warning"></i> Collections</a>
-																</li>
-																<li class="nav-item">
-																	<a class="nav-link" id="account-tab" href="#icon-account" data-toggle="tab"><i class="nc-icon nc-vector text-danger"></i> Datasets</a>
-																</li>
-																<li class="nav-item">
-																	<a class="nav-link" id="style-tab" href="#icon-style" data-toggle="tab"><i class="nc-icon nc-single-copy-04 text-success"></i> Files</a>
-																</li>
-															</ul>
-															<div class="tab-content">
-																<div id="icon-info" class="tab-pane active" role="tabpanel" aria-labelledby="info-tab">
-																	<ul class="pagination pagination-no-border" id='collections_search_pagination_top' style="float: right;"></ul>
-																	<div class="table-full-width">
-																		<table class="table" id="search-collection-table">
-																			<tbody>
-																			</tbody>
-																		</table>
-																	</div>
-																	<ul class="pagination pagination-no-border" id='collections_search_pagination_bottom' style="float: right;"></ul>
-																</div>
-																<div id="icon-account" class="tab-pane" role="tabpanel" aria-labelledby="account-tab">
-																	<ul class="pagination pagination-no-border" id='datasets_search_pagination_top' style="float: right;"></ul>
-																	<div class="table-full-width">
-																		<table class="table" id="search-dataset-table" style="table-layout: fixed;">
-																			<tbody>
-																			</tbody>
-																		</table>
-																	</div>
-																	<ul class="pagination pagination-no-border" id='datasets_search_pagination_bottom' style="float: right;"></ul>
-																</div>
-																<div id="icon-style" class="tab-pane" role="tabpanel" aria-labelledby="style-tab">
-																	<ul class="pagination pagination-no-border" id='files_search_pagination_top' style="float: right;"></ul>
-																	<div class="table-full-width">
-																		<table class="table" id="search-file-table" style="table-layout: fixed;">
-																			<tbody>
-																			</tbody>
-																		</table>
-																	</div>
-																	<ul class="pagination pagination-no-border" id='files_search_pagination_bottom' style="float: right;"></ul>
-																</div>
-																
-															</div>
-                                                            
-                                                        </div>
-                                                        <div class="card-footer ">
-                                                            <hr>
-                                                            <div class="stats">
-                                                                <i class="now-ui-icons loader_refresh spin"></i> Updated 3 minutes ago
-                                                            	
-                                                            </div>
-                                                        </div>
-                                                    </div>
+							<div class="card card-tasks">
+								<div class="card-header ">
+									<h4 class="card-title">Collection Search Results</h4>
+								</div>
+								<div class="card-body">
+								
+										<div id="icon-info">
+											<ul class="pagination pagination-no-border" id='collections_search_pagination_top' style="float: right;"></ul>
+											<div class="table-full-width">
+												<table class="table" id="search-collection-table">
+													<tbody>
+													</tbody>
+												</table>
+											</div>
+											<ul class="pagination pagination-no-border" id='collections_search_pagination_bottom' style="float: right;"></ul>
+										</div>
+										
+								</div>
+								<div class="card-footer ">
+									<hr>
+									<div class="stats">
+										<i class="now-ui-icons loader_refresh spin"></i> Updated 3 minutes ago
+									
+									</div>
+								</div>
+							</div>
+							<div class="card card-tasks">
+								<div class="card-header ">
+									<h4 class="card-title">Dataset Search Results</h4>
+								</div>
+								<div class="card-body">
+								
+										<div id="icon-account">
+											<ul class="pagination pagination-no-border" id='datasets_search_pagination_top' style="float: right;"></ul>
+											<div class="table-full-width">
+												<table class="table" id="search-dataset-table" style="table-layout: fixed;">
+													<tbody>
+													</tbody>
+												</table>
+											</div>
+											<ul class="pagination pagination-no-border" id='datasets_search_pagination_bottom' style="float: right;"></ul>
+										</div>
+										
+									
+								
+								</div>
+								<div class="card-footer ">
+									<hr>
+									<div class="stats">
+										<i class="now-ui-icons loader_refresh spin"></i> Updated 3 minutes ago
+									
+									</div>
+								</div>
+							</div>
+							<div class="card card-tasks">
+								<div class="card-header ">
+									<h4 class="card-title">Files Search Results</h4>
+									<p class="card-category">Explore or Download</p>
+								</div>
+								<div class="card-body">
+								
+										<div id="icon-style">
+											<ul class="pagination pagination-no-border" id='files_search_pagination_top' style="float: right;"></ul>
+											<div class="table-full-width">
+												<table class="table" id="search-file-table" style="table-layout: fixed;">
+													<tbody>
+													</tbody>
+												</table>
+											</div>
+											<ul class="pagination pagination-no-border" id='files_search_pagination_bottom' style="float: right;"></ul>
+										</div>
+								</div>
+								<div class="card-footer ">
+									<hr>
+									<div class="stats">
+										<i class="now-ui-icons loader_refresh spin"></i> Updated 3 minutes ago
+									
+									</div>
+								</div>
+							</div>
+
                                                 
                                                 </div>
                                                 </div>
@@ -387,7 +407,7 @@
 <!--<script src="../assets/js/demo.js"></script>-->
 <script src="../assets/js/plugins/js.cookie.js"></script>
 <script src="../assets/js/labcas/labcas-sidebar.js"></script>
-<script src="../assets/js/labcas/authentication.js?73"></script>
+<script src="../assets/js/labcas/authentication.js?84"></script>
 <script src="../assets/js/labcas/utils.js?7"></script>
 <script src="../assets/js/labcas/search.js?2"></script>
 <script type="text/javascript">

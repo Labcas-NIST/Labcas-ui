@@ -255,6 +255,8 @@ function fill_file_details_data(data){
 		
     });
     $("#file_details_len").html(Object.keys(data.response.docs[0]).length);
+    $("#download_icon").attr("onclick","location.href='"+Cookies.get('environment')+"/data-access-api/download?id="+data.response.docs[0].id+"';");
+
 }
 function fill_datasets_data(data){
 
@@ -284,9 +286,6 @@ function fill_datasets_data(data){
 					"<td class=\"td-actions text-right\">"+
 						"<button type=\"button\" rel=\"tooltip\" title=\"Favorite\" onclick=\"save_favorite('"+value.id+"', 'FavoriteDatasets')\" class=\"btn "+color+" btn-simple btn-link\">"+
 							"<i class=\"fa fa-star\"></i>"+
-						"</button>"+
-						"<button type=\"button\" rel=\"tooltip\" title=\"Download\" class=\"btn btn-danger btn-simple btn-link\">"+
-							"<i class=\"fa fa-download\"></i>"+
 						"</button>"+
 					"</td>"+
 				"</tr>");
@@ -342,7 +341,7 @@ function fill_files_data(data){
 				"<button type=\"button\" rel=\"tooltip\" title=\"Favorite\" onclick=\"save_favorite('"+value.id+"', 'FavoriteFiles')\" class=\"btn "+color+" btn-simple btn-link\">"+
 					"<i class=\"fa fa-star\"></i>"+
 				"</button>"+
-				"<button type=\"button\" rel=\"tooltip\" title=\"Download\" class=\"btn btn-danger btn-simple btn-link\" onclick=\"location.href='https://mcl-labcas.jpl.nasa.gov/data-access-api/download?id="+value.id+"'\">"+
+				"<button type=\"button\" rel=\"tooltip\" title=\"Download\" class=\"btn btn-danger btn-simple btn-link\" onclick=\"location.href='"+Cookies.get('environment')+"/data-access-api/download?id="+value.id+"'\">"+
 					"<i class=\"fa fa-download\"></i>"+
 				"</button>"+
 			"</td>"+
@@ -368,6 +367,22 @@ function setup_labcas_data(datatype, query, dataset_query){
             	fill_collections_public_data(data);
             }else if (datatype == "collectiondatasets"){
                 fill_collection_details_data(data);
+                $.ajax({
+					url: Cookies.get('environment')+"/data-access-api/files/select?q="+dataset_query+"&wt=json&indent=true",
+					beforeSend: function(xhr) { 
+						xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
+					},
+					type: 'GET',
+					dataType: 'json',
+					processData: false,
+					success: function (data) {
+						$("#collection_files_len").html(data.response.numFound);
+					},
+					error: function(){
+						 alert("Login expired, please login...");
+						 window.location.replace("/labcas-ui/application/pages/login.html");
+					 }
+				});
             }
         },
         error: function(){
@@ -501,9 +516,6 @@ function fill_datasets_search(data){
 				"<button type=\"button\" rel=\"tooltip\" title=\"Favorite\" onclick=\"save_favorite('"+obj.id+"', 'FavoriteDatasets')\" class=\"btn "+color+" btn-simple btn-link\">"+
 					"<i class=\"fa fa-star\"></i>"+
 				"</button>"+
-				"<button type=\"button\" rel=\"tooltip\" title=\"Download\" class=\"btn btn-danger btn-simple btn-link\">"+
-					"<i class=\"fa fa-download\"></i>"+
-				"</button>"+
 			"</td>"+
 		"</tr>");	
 	});                
@@ -513,7 +525,6 @@ function fill_files_search(data){
 	var size = data.response.numFound;
 	var cpage = data.response.start;
 	load_pagination("files_search",size,cpage);
-	//console.log(data);
 	$("#search-file-table tbody").empty();
 	$.each(data.response.docs, function(key, obj) {
 	  var color = "btn-info";
@@ -556,9 +567,6 @@ function fill_files_search(data){
 				"<button type=\"button\" rel=\"tooltip\" title=\"Favorite\" onclick=\"save_favorite('"+obj.id+"', 'FavoriteFiles')\" class=\"btn "+color+" btn-simple btn-link\">"+
 					"<i class=\"fa fa-star\"></i>"+
 				"</button>"+
-				//"<button type=\"button\" rel=\"tooltip\" title=\"Download\" class=\"btn btn-danger btn-simple btn-link\"  onclick=\"location.href='https://mcl-labcas.jpl.nasa.gov/data-access-api/download?id="+obj.id+"'\">"+
-				//	"<i class=\"fa fa-download\"></i>"+
-				//"</button>"+
 			"</td>"+
 		"</tr>");	
 	});              
@@ -607,9 +615,6 @@ function fill_collections_search(data){
 				"<button type=\"button\" rel=\"tooltip\" title=\"Favorite\"  onclick=\"save_favorite('"+obj.id+"', 'FavoriteCollections')\" class=\"btn "+color+" btn-simple btn-link\">"+
 					"<i class=\"fa fa-star\"></i>"+
 				"</button>"+
-				//"<button type=\"button\" rel=\"tooltip\" title=\"Download\" class=\"btn btn-danger btn-simple btn-link\">"+
-				//	"<i class=\"fa fa-download\"></i>"+
-				//"</button>"+
 			"</td>"+
 		"</tr>");	
 	});                                                                     
@@ -777,7 +782,7 @@ function setup_labcas_search(query, divid, cpage){
 function fill_datasets_starred(data){
 	var size = data.response.numFound;
 	var cpage = data.response.start;
-	load_pagination("datasets_search",size,cpage);
+	//load_pagination("datasets_search",size,cpage);
 	//console.log(data);
 	$("#starred-dataset-table tbody").empty();
 	$.each(data.response.docs, function(key, obj) {
@@ -810,9 +815,6 @@ function fill_datasets_starred(data){
 					"<button type=\"button\" rel=\"tooltip\" title=\"Favorite\" onclick=\"save_favorite('"+obj.id+"', 'FavoriteDatasets')\" class=\"btn "+color+" btn-simple btn-link\">"+
 						"<i class=\"fa fa-star\"></i>"+
 					"</button>"+
-					"<button type=\"button\" rel=\"tooltip\" title=\"Download\" class=\"btn btn-danger btn-simple btn-link\">"+
-						"<i class=\"fa fa-download\"></i>"+
-					"</button>"+
 				"</td>"+
 			"</tr>");	
 		  }
@@ -822,11 +824,11 @@ function fill_datasets_starred(data){
 function fill_files_starred(data){
 	var size = data.response.numFound;
 	var cpage = data.response.start;
-	load_pagination("files_search",size,cpage);
+	//load_pagination("files_search",size,cpage);
 	//console.log(data);
 	$("#starred-file-table tbody").empty();
 	$.each(data.response.docs, function(key, obj) {
-	  if(user_data["FavoriteFiles"].includes(obj.id)){
+	  //if(user_data["FavoriteFiles"].includes(obj.id)){
 		  var color = "btn-success";
 	  
 		  var thumb = "";
@@ -865,12 +867,9 @@ function fill_files_starred(data){
 					"<button type=\"button\" rel=\"tooltip\" title=\"Favorite\" onclick=\"save_favorite('"+obj.id+"', 'FavoriteFiles')\" class=\"btn "+color+" btn-simple btn-link\">"+
 						"<i class=\"fa fa-star\"></i>"+
 					"</button>"+
-					//"<button type=\"button\" rel=\"tooltip\" title=\"Download\" class=\"btn btn-danger btn-simple btn-link\"  onclick=\"location.href='https://mcl-labcas.jpl.nasa.gov/data-access-api/download?id="+obj.id+"'\">"+
-					//	"<i class=\"fa fa-download\"></i>"+
-					//"</button>"+
 				"</td>"+
 			"</tr>");	
-		  }
+	//	  }
 	});              
 	$("#files_len").html(size); 
 }
@@ -878,7 +877,7 @@ function fill_files_starred(data){
 function fill_collections_starred(data){
 	var size = data.response.numFound;
 	var cpage = data.response.start;
-	load_pagination("collections_search",size,cpage);
+	//load_pagination("collections_search",size,cpage);
 	$("#starred-collection-table tbody").empty();
 	
 	console.log(data.response.docs);
@@ -921,11 +920,24 @@ function fill_collections_starred(data){
 }
 
 function setup_labcas_starred(query, divid, cpage){
+	var collection_starred_search = "";
+	if (user_data["FavoriteCollections"].length > 0){
+		collection_starred_search = "&fq=(id:"+user_data["FavoriteCollections"].join(" OR id:")+")";
+	}
+	var dataset_starred_search = "";
+	if (user_data["FavoriteDatasets"].length > 0){
+		dataset_starred_search = "&fq=(id:"+user_data["FavoriteDatasets"].join(" OR id:")+")";
+	}
+	var file_starred_search = "";
+	if (user_data["FavoriteFiles"].length > 0){
+		var tmp_files_search = user_data["FavoriteFiles"].join(" OR id:").replace(/ *\([^)]*\) */g, "*");
+		file_starred_search = "&fq=(id:"+tmp_files_search+")";
+	}
     console.log("Loading data...");
     if (divid == "collections_starred" || divid == "all"){
-        console.log(Cookies.get('environment')+"/data-access-api/collections/select?q=*&wt=json&indent=true&start="+cpage*10);
+        console.log(Cookies.get('environment')+"/data-access-api/collections/select?q=*"+collection_starred_search+"&wt=json&indent=true&start="+cpage*10);
 		$.ajax({
-			url: Cookies.get('environment')+"/data-access-api/collections/select?q=*&wt=json&indent=true&start="+cpage*10,	
+			url: Cookies.get('environment')+"/data-access-api/collections/select?q=*"+collection_starred_search+"&wt=json&indent=true&start="+cpage*10,	
 			beforeSend: function(xhr) {
 				xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token'));
 			},
@@ -942,7 +954,7 @@ function setup_labcas_starred(query, divid, cpage){
     }
     if (divid == "datasets_starred" || divid == "all"){
         $.ajax({
-            url: Cookies.get('environment')+"/data-access-api/datasets/select?q=*"+query+"*&wt=json&indent=true&start="+cpage*10,
+            url: Cookies.get('environment')+"/data-access-api/datasets/select?q=*"+dataset_starred_search+"&wt=json&indent=true&start="+cpage*10,
             beforeSend: function(xhr) {
                 xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token'));
             },
@@ -954,13 +966,16 @@ function setup_labcas_starred(query, divid, cpage){
             },
             error: function(){
                  alert("Login expired, please login...");
-                 window.location.replace("/labcas-ui/application/pages/login.html");
+                 //window.location.replace("/labcas-ui/application/pages/login.html");
              }
         });
     }
+    
     if (divid == "files_starred" || divid == "all"){
+    	console.log(Cookies.get('environment')+"/data-access-api/files/select?q=*"+file_starred_search+"&wt=json&indent=true&start="+cpage*10);
+		
 		$.ajax({
-			url: Cookies.get('environment')+"/data-access-api/files/select?q=*&wt=json&indent=true&start="+cpage*10,
+			url: Cookies.get('environment')+"/data-access-api/files/select?q=*"+file_starred_search+"&wt=json&indent=true&start="+cpage*10,
 			xhrFields: {
 					withCredentials: true
 			  },
@@ -969,11 +984,12 @@ function setup_labcas_starred(query, divid, cpage){
 			},
 			dataType: 'json',
 			success: function (data) {
+			 console.log(data);
 				fill_files_starred(data);
 			},
 			error: function(){
 				 alert("Login expired, please login...");
-				 window.location.replace("/labcas-ui/application/pages/login.html");
+				 //window.location.replace("/labcas-ui/application/pages/login.html");
 			 
 			 }
 		});
