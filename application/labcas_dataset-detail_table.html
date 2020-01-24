@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
     <!-- CSS Files -->
     <link href="../assets/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="../assets/css/light-bootstrap-dashboard.css?v=2.0.1" rel="stylesheet" />
+    <link href="../assets/css/light-bootstrap-dashboard.css?v=2.0.1&1" rel="stylesheet" />
     <!-- CSS Just for demo purpose, don't include it in your project -->
     <link href="../assets/css/labcas/custom.css" rel="stylesheet" />
 </head>
@@ -49,51 +49,12 @@
                             </form>
                         </ul>
                         <ul class="navbar-nav">
-                            <!--<li class="dropdown nav-item">
-                                <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
-                                    <i class="nc-icon nc-planet"></i>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <a class="dropdown-item" href="#">Create New Post</a>
-                                    <a class="dropdown-item" href="#">Manage Something</a>
-                                    <a class="dropdown-item" href="#">Do Nothing</a>
-                                    <a class="dropdown-item" href="#">Submit to live</a>
-                                    <li class="divider"></li>
-                                    <a class="dropdown-item" href="#">Another action</a>
-                                </ul>
-                            </li>
-                            <li class="dropdown nav-item">
-                                <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
-                                    <i class="nc-icon nc-bell-55"></i>
-                                    <span class="notification">5</span>
-                                    <span class="d-lg-none">Notification</span>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <a class="dropdown-item" href="#">Notification 1</a>
-                                    <a class="dropdown-item" href="#">Notification 2</a>
-                                    <a class="dropdown-item" href="#">Notification 3</a>
-                                    <a class="dropdown-item" href="#">Notification 4</a>
-                                    <a class="dropdown-item" href="#">Notification 5</a>
-                                </ul>
-                            </li>-->
+                            
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i class="nc-icon nc-bullet-list-67"></i>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                                    <!--<a class="dropdown-item" href="#">
-                                        <i class="nc-icon nc-email-85"></i> Messages
-                                    </a>
-                                    <a class="dropdown-item" href="#">
-                                        <i class="nc-icon nc-umbrella-13"></i> Help Center
-                                    </a>
-                                    <a class="dropdown-item" href="#">
-                                        <i class="nc-icon nc-settings-90"></i> Settings
-                                    </a>
-                                    <div class="divider"></div>
-                                    <a class="dropdown-item" href="#">
-                                        <i class="nc-icon nc-lock-circle-open"></i> Lock Screen
-                                    </a>-->
                                     <a href="/labcas-ui/application/pages/login.html" class="dropdown-item text-danger">
                                         <i class="nc-icon nc-button-power"></i> Log out
                                     </a>
@@ -118,16 +79,35 @@
                                         </div>
                                         <div class="col-7">
                                             <div class="numbers">
-                                                <p class="card-category"># Dataset Details</p>
-                                                <h4 class="card-title" id='dataset_details_len'></h4>
+                                                <p class="card-category">Collection Name</p>
+                                                <h6 class="card-title" id='collection_name'></h6>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card-footer ">
+                                <!--<div class="card-footer ">
                                     <hr>
                                     <div class="stats">
                                         <i class="fa fa-refresh"></i> Update Now
+                                    </div>
+                                </div>-->
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-6">
+                            <div class="card card-stats">
+                                <div class="card-body ">
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <div class="icon-big text-center icon-warning">
+                                                <i class="nc-icon nc-vector text-warning"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col-7">
+                                            <div class="numbers">
+                                                <p class="card-category">Dataset Name</p>
+                                                <h6 class="card-title" id='dataset_name'></h6>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -138,7 +118,7 @@
                                     <div class="row">
                                         <div class="col-5">
                                             <div class="icon-big text-center icon-warning">
-                                                <i class="nc-icon nc-vector text-danger"></i>
+                                                <i class="nc-icon nc-single-copy-04 text-success"></i>
                                             </div>
                                         </div>
                                         <div class="col-7">
@@ -149,12 +129,12 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card-footer ">
+                                <!--<div class="card-footer ">
                                     <hr>
                                     <div class="stats">
                                         <i class="fa fa-clock-o"></i> In the last hour
                                     </div>
-                                </div>
+                                </div>-->
                             </div>
                         </div>
                         <div class="col-lg-3 col-sm-6">
@@ -163,7 +143,7 @@
                                     <div class="row">
                                         <div class="col-5">
                                             <div class="icon-big text-center icon-warning">
-                                                <i class="nc-icon nc-favourite-28 text-primary"></i>
+                                                <i class="fa fa-star text-success"></i>
                                             </div>
                                         </div>
                                         <div class="col-7">
@@ -174,14 +154,23 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card-footer ">
+                                <!--<div class="card-footer ">
                                     <hr>
                                     <div class="stats">
                                         <i class="fa fa-refresh"></i> Update now
                                     </div>
-                                </div>
+                                </div>-->
                             </div>
                         </div>
+                    </div>
+                    <div class="row">
+                    	<div class="col-md-12">
+							<nav aria-label="breadcrumb">
+							  <ol id="breadcrumb" class="breadcrumb">
+								
+							  </ol>
+							</nav>
+                    	</div>
                     </div>
                     <div class="row">
                         <div class="col-md-12">
@@ -320,13 +309,13 @@
 <!--  Full Calendar   -->
 <script src="../assets/js/plugins/fullcalendar.min.js"></script>
 <!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
-<script src="../assets/js/light-bootstrap-dashboard.js?v=2.0.1" type="text/javascript"></script>
+<script src="../assets/js/light-bootstrap-dashboard.js?v=2.0.1& type="text/javascript"></script>
 <!-- Light Dashboard DEMO methods, don't include it in your project! -->
 <!--<script src="../assets/js/demo.js"></script>-->
 <script src="../assets/js/plugins/js.cookie.js"></script>
 <script src="../assets/js/labcas/labcas-sidebar.js"></script>
 <script src="../assets/js/labcas/utils.js?11"></script>
-<script src="../assets/js/labcas/authentication.js?81"></script>
+<script src="../assets/js/labcas/authentication.js?84"></script>
 <script src="../assets/js/labcas/search.js?2"></script>
 
 <script type="text/javascript">
@@ -334,8 +323,22 @@
         //setup_labcas_data("collectiondatasets",'id:"1.0_Athena-IHC4_with_Swedish_Breast_Cancer_Study"', 'id:1.0_Athena-IHC4_with_Swedish_Breast_Cancer_Study.*');
         var get_var = get_url_vars();
         console.log(get_var["dataset_id"]);
-        setup_labcas_dataset_data("datasetfiles",'id:"'+get_var["dataset_id"]+'"', 'id:'+get_var["dataset_id"]+'*', 0); 
+        setup_labcas_dataset_data("datasetfiles",'id:"'+get_var["dataset_id"]+'"', 'id:'+get_var["dataset_id"]+'*', 0);
         
+        var breadcrumb = '<li class="breadcrumb-item"><a href="/labcas-ui/application/labcas_collection_table.html">Home</a></li>';
+		var data_split = get_var["dataset_id"].split("/");
+		var url_prefix = "";
+		for (i = 0; i < data_split.length; i++) {
+			if(i == 0){
+				breadcrumb += '<li class="breadcrumb-item active" aria-current="page"><a href="/labcas-ui/application/labcas_collection-detail_table.html?collection_id='+data_split[i]+'">'+data_split[i].replace(/_/g," ")+'</a></li>';
+			}else if (i == data_split.length -1){
+				breadcrumb += '<li class="breadcrumb-item active" aria-current="page">'+data_split[i].replace(/_/g," ")+'</li>';
+			}else{
+				breadcrumb += '<li class="breadcrumb-item active" aria-current="page"><a href="/labcas-ui/application/labcas_dataset-detail_table.html?dataset_id='+data_split.slice(0,i+1).join("/")+'">'+data_split[i].replace(/_/g," ")+'</a></li>';
+		  	}
+		}
+		$('#breadcrumb').html(breadcrumb);
+							
         $.get( "sidebar.html?2", function( data ) {
             $( "#sidebar_placeholder" ).append(data);
             $( "#username_placeholder" ).html(Cookies.get('user'));

@@ -123,6 +123,7 @@ function dataset_compare_sort(a, b) {
 
 function generate_mcl_links(obj){
 	var institutions = [];
+	var protocols = [];
 	var pis = [];
 	var orgs = [];
 	if (obj.Institution){
@@ -138,7 +139,7 @@ function generate_mcl_links(obj){
 			}
 			pis.push("<a href='"+Cookies.get('leadpi_url')+leadpi[1]+"-"+leadpi[0]+"'>"+obj.LeadPI[i]+"</a>");
 			institutions.push("<a href='"+Cookies.get('institution_url')+inst_url+"'>"+o+"</a>");
-			
+			protocols.push("<a href='"+Cookies.get('protocol_url')+inst_url+"'>"+o+"</a>");
 			
 		}
 	}
@@ -151,11 +152,12 @@ function generate_mcl_links(obj){
 			}
 		}
 	}
-	return [institutions, pis, orgs];
+	return [institutions, pis, orgs, protocols];
 }
 
 function generate_edrn_links(obj){
 	var institutions = [];
+	var protocols = [];
 	var pis = [];
 	var orgs = [];
 	if (obj.Institution){
@@ -181,6 +183,23 @@ function generate_edrn_links(obj){
 			}
 		}
 	}
+	if (obj.ProtocolName){
+		for (var i = 0; i < obj.ProtocolName.length; i++) {
+			o = $.trim(obj.ProtocolName[i]);
+			if (o != ""){
+				inst_split = o.replace(".","").replace(":","").toLowerCase().split(" ");
+				inst_url = $.trim(obj.ProtocolId[i]);
+				for (var c = 0; c < 7; c++) {
+					if (!inst_split[c]){
+						break;
+					}
+					inst_url += "-"+$.trim(inst_split[c]);
+				}
+				protocols.push("<a href='"+Cookies.get('protocol_url')+inst_url+"'>"+o+"</a>");
+			
+			}
+		}
+	}
 	
 	if (obj.Organ){
 		for (var i = 0; i < obj.Organ.length; i++) {
@@ -190,7 +209,7 @@ function generate_edrn_links(obj){
 			}
 		}
 	}
-	return [institutions, pis, orgs];
+	return [institutions, pis, orgs, protocols];
 }
 
 

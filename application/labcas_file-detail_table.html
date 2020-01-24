@@ -107,7 +107,7 @@
             <div class="content">
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-lg-3 col-sm-6">
+                        <!--<div class="col-lg-3 col-sm-6">
                             <div class="card card-stats">
                                 <div class="card-body ">
                                     <div class="row">
@@ -131,39 +131,15 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div>-->
+                        
                         <div class="col-lg-3 col-sm-6">
                             <div class="card card-stats">
                                 <div class="card-body ">
                                     <div class="row">
                                         <div class="col-5">
                                             <div class="icon-big text-center icon-warning">
-                                                <i class="nc-icon nc-favourite-28 text-primary"></i>
-                                            </div>
-                                        </div>
-                                        <div class="col-7">
-                                            <div class="numbers">
-                                                <p class="card-category"># Favorited</p>
-                                                <h4 class="card-title" id='file_favorites_len'>0</h4>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card-footer ">
-                                    <hr>
-                                    <div class="stats">
-                                        <i class="fa fa-refresh"></i> Update now
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-sm-6">
-                            <div class="card card-stats">
-                                <div class="card-body ">
-                                    <div class="row">
-                                        <div class="col-5">
-                                            <div class="icon-big text-center icon-warning">
-                                            	<i id='download_icon' class="fa fa-download text-success"></i>
+                                            	<a href="#"><i id='download_icon' class="fa fa-download text-success"></i></a>
                                             </div>
                                         </div>
                                         <div class="col-7">
@@ -173,14 +149,23 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card-footer ">
+                                <!--<div class="card-footer ">
                                     <hr>
                                     <div class="stats">
                                         <i class="fa fa-refresh"></i> Update now
                                     </div>
-                                </div>
+                                </div>-->
                             </div>
                         </div>
+                    </div>
+                    <div class="row">
+                    	<div class="col-md-12">
+							<nav aria-label="breadcrumb">
+							  <ol id="breadcrumb" class="breadcrumb">
+								
+							  </ol>
+							</nav>
+                    	</div>
                     </div>
                     <div class="row">
                         <div class="col-md-12">
@@ -198,12 +183,12 @@
                                             </div>
                                         
                                 </div>
-                                <div class="card-footer ">
+                                <!--<div class="card-footer ">
 									<hr>
 									<div class="stats">
 										<i class="now-ui-icons loader_refresh spin"></i> Updated 3 minutes ago
 									</div>
-								</div>
+								</div>-->
                             </div>
                         </div>
                                                 </div>
@@ -296,6 +281,20 @@
         var get_var = get_url_vars();
         console.log(get_var["file_id"]);
         setup_labcas_file_data("file",'id:"'+get_var["file_id"]+'"', 'id:'+get_var["file_id"]+'*'); 
+        
+        var breadcrumb = '<li class="breadcrumb-item"><a href="/labcas-ui/application/labcas_collection_table.html">Home</a></li>';
+		var data_split = get_var["file_id"].split("/");
+		var url_prefix = "";
+		for (i = 0; i < data_split.length; i++) {
+			if(i == 0){
+				breadcrumb += '<li class="breadcrumb-item active" aria-current="page"><a href="/labcas-ui/application/labcas_collection-detail_table.html?collection_id='+data_split[i]+'">'+data_split[i].replace(/_/g," ")+'</a></li>';
+			}else if (i == data_split.length -1){
+				breadcrumb += '<li class="breadcrumb-item active" aria-current="page">'+data_split[i].replace(/_/g," ")+'</li>';
+			}else{
+				breadcrumb += '<li class="breadcrumb-item active" aria-current="page"><a href="/labcas-ui/application/labcas_dataset-detail_table.html?dataset_id='+data_split.slice(0,i+1).join("/")+'">'+data_split[i].replace(/_/g," ")+'</a></li>';
+		  	}
+		}
+		$('#breadcrumb').html(breadcrumb);
         
         $.get( "sidebar.html?2", function( data ) {
             $( "#sidebar_placeholder" ).append(data);

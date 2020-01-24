@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
     <!-- CSS Files -->
     <link href="../assets/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="../assets/css/light-bootstrap-dashboard.css?v=2.0.1" rel="stylesheet" />
+    <link href="../assets/css/light-bootstrap-dashboard.css?v=2.0.1&2" rel="stylesheet" />
     <!-- CSS Just for demo purpose, don't include it in your project -->
     <link href="../assets/css/labcas/custom.css" rel="stylesheet" />
 </head>
@@ -118,18 +118,18 @@
                                         </div>
                                         <div class="col-7">
                                             <div class="numbers">
-                                                <p class="card-category"># Collection Details</p>
-                                                <h4 class="card-title" id='collection_details_len'></h4>
+                                                <p class="card-category">Collection Name</p>
+                                                <h6 class="card-title" id='collection_name'></h6>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card-footer ">
+                                <!--<div class="card-footer ">
                                     <hr>
                                     <div class="stats">
                                         <i class="fa fa-refresh"></i> Update Now
                                     </div>
-                                </div>
+                                </div>-->
                             </div>
                         </div>
                         <div class="col-lg-3 col-sm-6">
@@ -149,12 +149,12 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card-footer ">
+                                <!--<div class="card-footer ">
                                     <hr>
                                     <div class="stats">
                                         <i class="fa fa-clock-o"></i> In the last hour
                                     </div>
-                                </div>
+                                </div>-->
                             </div>
                         </div>
                         <div class="col-lg-3 col-sm-6">
@@ -174,12 +174,12 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card-footer ">
+                                <!--<div class="card-footer ">
                                     <hr>
                                     <div class="stats">
                                         <i class="fa fa-calendar-o"></i> Last day
                                     </div>
-                                </div>
+                                </div>-->
                             </div>
                         </div>
                         <div class="col-lg-3 col-sm-6">
@@ -188,7 +188,7 @@
                                     <div class="row">
                                         <div class="col-5">
                                             <div class="icon-big text-center icon-warning">
-                                                <i class="nc-icon nc-favourite-28 text-primary"></i>
+                                                <i class="fa fa-star text-success"></i>
                                             </div>
                                         </div>
                                         <div class="col-7">
@@ -199,14 +199,24 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card-footer ">
+                                <!--<div class="card-footer ">
                                     <hr>
                                     <div class="stats">
                                         <i class="fa fa-refresh"></i> Update now
                                     </div>
-                                </div>
+                                </div>-->
                             </div>
                         </div>
+                    </div>
+                    <div class="row">
+                    	<div class="col-md-12">
+							<nav aria-label="breadcrumb">
+							  <ol class="breadcrumb">
+								<li class="breadcrumb-item"><a href="/labcas-ui/application/labcas_collection_table.html">Home</a></li>
+								<li id="breadcrumb_collection" class="breadcrumb-item active" aria-current="page"></li>
+							  </ol>
+							</nav>
+                    	</div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
@@ -224,12 +234,12 @@
                                             </div>
                                         
                                 </div>
-                                <div class="card-footer ">
+                                <!--<div class="card-footer ">
 									<hr>
 									<div class="stats">
 										<i class="now-ui-icons loader_refresh spin"></i> Updated 3 minutes ago
 									</div>
-								</div>
+								</div>-->
                             </div>
                         </div>
                         <div class="col-md-6 ml-auto mr-auto">
@@ -246,12 +256,12 @@
                                                                 </table>
                                                             </div>
                                                         </div>
-                                                        <div class="card-footer ">
+                                                        <!--<div class="card-footer ">
                                                             <hr>
                                                             <div class="stats">
                                                                 <i class="now-ui-icons loader_refresh spin"></i> Updated 3 minutes ago
                                                             </div>
-                                                        </div>
+                                                        </div>-->
                                                     </div>
                                                 
                                                 </div>
@@ -332,12 +342,12 @@
 <!--  Full Calendar   -->
 <script src="../assets/js/plugins/fullcalendar.min.js"></script>
 <!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
-<script src="../assets/js/light-bootstrap-dashboard.js?v=2.0.1" type="text/javascript"></script>
+<script src="../assets/js/light-bootstrap-dashboard.js?v=2.0.1&2" type="text/javascript"></script>
 <!-- Light Dashboard DEMO methods, don't include it in your project! -->
 <!--<script src="../assets/js/demo.js"></script>-->
 <script src="../assets/js/plugins/js.cookie.js"></script>
 <script src="../assets/js/labcas/labcas-sidebar.js"></script>
-<script src="../assets/js/labcas/authentication.js?81"></script>
+<script src="../assets/js/labcas/authentication.js?95"></script>
 <script src="../assets/js/labcas/utils.js?14"></script>
 <script src="../assets/js/labcas/search.js?3"></script>
 <script type="text/javascript">
@@ -345,7 +355,7 @@
         //setup_labcas_data("collectiondatasets",'id:"1.0_Athena-IHC4_with_Swedish_Breast_Cancer_Study"', 'id:1.0_Athena-IHC4_with_Swedish_Breast_Cancer_Study.*');
         var get_var = get_url_vars();
         setup_labcas_data("collectiondatasets",'id:"'+get_var["collection_id"]+'"', 'id:'+get_var["collection_id"]+'*');
-        
+        $("#breadcrumb_collection").html(get_var["collection_id"].replace(/_/g," "));
         $.get( "sidebar.html?2", function( data ) {
             $( "#sidebar_placeholder" ).append(data);
             $( "#username_placeholder" ).html(Cookies.get('user'));
