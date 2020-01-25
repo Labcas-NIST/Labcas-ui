@@ -3472,8 +3472,8 @@ fieldset[disabled] .form-control {
 .table>thead>tr>td,
 .table>tbody>tr>td,
 .table>tfoot>tr>td {
-    padding: 12px 8px;
-    vertical-align: middle;
+    padding: 12px 0px;
+    vertical-align: top;
     border-color: #E3E3E3;
 }
 

@@ -235,13 +235,13 @@ function fill_collection_details_data(data){
 			value += " ("+obj[head+"Id"]+")";
 		}else if (collapse_headers.includes(head)){
             if (value.length > 20){
-                value = "<nobr>"+value.substring(0, 20) + "<a data-toggle='collapse' id='#"+head+"Less' href='#"+head+"Collapse' role='button' aria-expanded='false' onclick='document.getElementById(\"#"+head+"Less\").style.display = \"none\";'>... More</a></nobr><div class='collapse' id='"+head+"Collapse'>" + value.substring(25) + " <a data-toggle='collapse' href='#"+head+"Collapse' role='button' aria-expanded='false' onclick='document.getElementById(\"#"+head+"Less\").style.display = \"block\";'>Less</a></div>";
+                value = "<nobr>"+value.substring(0, 20) + "<a data-toggle='collapse' id='#"+head+"Less' href='#"+head+"Collapse' role='button' aria-expanded='false' onclick='document.getElementById(\"#"+head+"Less\").style.display = \"none\";'>... More</a></nobr><div class='collapse' id='"+head+"Collapse'>" + value.substring(20) + " <a data-toggle='collapse' href='#"+head+"Collapse' role='button' aria-expanded='false' onclick='document.getElementById(\"#"+head+"Less\").style.display = \"block\";'>Less</a></div>";
             }
         }
         $("#collectiondetails-table tbody").append(
             "<tr>"+
-				"<td class='text-right'>"+head.replace( /([a-z])([A-Z])/g, "$1 $2" )+":</td>"+
-				"<td class='text-left'>"+
+				"<td class='text-right' valign='top' style='padding: 2px 8px;' width='30%'>"+head.replace( /([a-z])([A-Z])/g, "$1 $2" )+":</td>"+
+				"<td class='text-left' valign='top' style='padding: 2px 8px;'>"+
 					value+
 				"</td>"+
 			"</tr>");
@@ -261,13 +261,13 @@ function fill_collection_details_data(data){
 		}
 		if (collapse_headers.includes(key)){
             if (value.length > 20){
-                value = "<nobr>"+value.substring(0, 20) + "<a data-toggle='collapse' id='#"+key+"Less' href='#"+key+"Collapse' role='button' aria-expanded='false' onclick='document.getElementById(\"#"+key+"Less\").style.display = \"none\";'>... More</a></nobr><div class='collapse' id='"+key+"Collapse'>" + value.substring(25) + " <a data-toggle='collapse' href='#"+key+"Collapse' role='button' aria-expanded='false' onclick='document.getElementById(\"#"+key+"Less\").style.display = \"block\";'>Less</a></div>";
+                value = "<nobr>"+value.substring(0, 20) + "<a data-toggle='collapse' id='#"+key+"Less' href='#"+key+"Collapse' role='button' aria-expanded='false' onclick='document.getElementById(\"#"+key+"Less\").style.display = \"none\";'>... More</a></nobr><div class='collapse' id='"+key+"Collapse'>" + value.substring(20) + " <a data-toggle='collapse' href='#"+key+"Collapse' role='button' aria-expanded='false' onclick='document.getElementById(\"#"+key+"Less\").style.display = \"block\";'>Less</a></div>";
             }
         }
           $("#collectiondetails-table tbody").append(
             "<tr>"+
-				"<td class='text-right'>"+key.replace( /([a-z])([A-Z])/g, "$1 $2" )+":</td>"+
-				"<td class='text-left'>"+
+				"<td class='text-right' valign='top' style='padding: 2px 8px;' width='30%'>"+key.replace( /([a-z])([A-Z])/g, "$1 $2" )+":</td>"+
+				"<td class='text-left' valign='top' style='padding: 2px 8px;'>"+
 					value+
 				"</td>"+
 			"</tr>");
@@ -312,7 +312,7 @@ function fill_dataset_details_data(data){
         }
         $("#datasetdetails-table tbody").append(
             "<tr>"+
-				"<td class='text-right'>"+head.replace( /([a-z])([A-Z])/g, "$1 $2" )+":</td>"+
+				"<td class='text-right' valign='top' style='padding: 0px 8px;' width='20%'>"+head.replace( /([a-z])([A-Z])/g, "$1 $2" )+":</td>"+
 				"<td class='text-left'>"+
 					value+
 				"</td>"+
@@ -335,7 +335,7 @@ function fill_dataset_details_data(data){
         
           $("#datasetdetails-table tbody").append(
             "<tr>"+
-				"<td class='text-right'>"+key.replace( /([a-z:])([A-Z])/g, "$1 $2" )+":</td>"+
+				"<td class='text-right' valign='top' width='20%'>"+key.replace( /([a-z:])([A-Z])/g, "$1 $2" )+":</td>"+
 				"<td class='text-left'>"+
 					value+
 				"</td>"+
@@ -384,13 +384,13 @@ function fill_datasets_data(data){
 							"<span class=\"form-check-sign\"></span>"+
 						"</label>"+
 					"</div>--></td>"+
-					"<td class='text-left'>"+
+					"<td class='text-left' valign='middle' style='padding: 0px 8px; vertical-align: middle;'>"+
                         "<a href=\"/labcas-ui/application/labcas_dataset-detail_table.html?dataset_id="+
                             value.id+"\">"+
                             value.DatasetName+
                         "</a>"+
 					"</td>"+
-					"<td class=\"td-actions text-right\">"+
+					"<td class=\"td-actions text-right\" valign='middle' style='padding: 0px 8px; vertical-align: middle;'>"+
 						"<button type=\"button\" rel=\"tooltip\" title=\"Favorite\" onclick=\"save_favorite('"+value.id+"', 'FavoriteDatasets')\" class=\"btn "+color+" btn-simple btn-link\">"+
 							"<i class=\"fa fa-star\"></i>"+
 						"</button>"+
