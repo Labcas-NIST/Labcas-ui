@@ -348,10 +348,11 @@
 <script src="../assets/js/plugins/js.cookie.js"></script>
 <script src="../assets/js/labcas/labcas-sidebar.js"></script>
 <script src="../assets/js/labcas/authentication.js?95"></script>
-<script src="../assets/js/labcas/utils.js?14"></script>
+<script src="../assets/js/labcas/utils.js?15"></script>
 <script src="../assets/js/labcas/search.js?3"></script>
 <script type="text/javascript">
     $(document).ready(function() {
+    	initCookies();
         //setup_labcas_data("collectiondatasets",'id:"1.0_Athena-IHC4_with_Swedish_Breast_Cancer_Study"', 'id:1.0_Athena-IHC4_with_Swedish_Breast_Cancer_Study.*');
         var get_var = get_url_vars();
         setup_labcas_data("collectiondatasets",'id:"'+get_var["collection_id"]+'"', 'id:'+get_var["collection_id"]+'*');
