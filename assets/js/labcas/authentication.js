@@ -312,7 +312,7 @@ function fill_dataset_details_data(data){
         }
         $("#datasetdetails-table tbody").append(
             "<tr>"+
-				"<td class='text-right' valign='top' style='padding: 0px 8px;' width='20%'>"+head.replace( /([a-z])([A-Z])/g, "$1 $2" )+":</td>"+
+				"<td class='text-right' style='padding: 0px 8px;' width='20%'>"+head.replace( /([a-z])([A-Z])/g, "$1 $2" )+":</td>"+
 				"<td class='text-left'>"+
 					value+
 				"</td>"+
@@ -335,7 +335,7 @@ function fill_dataset_details_data(data){
         
           $("#datasetdetails-table tbody").append(
             "<tr>"+
-				"<td class='text-right' valign='top' width='20%'>"+key.replace( /([a-z:])([A-Z])/g, "$1 $2" )+":</td>"+
+				"<td class='text-right' width='20%'>"+key.replace( /([a-z:])([A-Z])/g, "$1 $2" )+":</td>"+
 				"<td class='text-left'>"+
 					value+
 				"</td>"+
@@ -464,7 +464,10 @@ function setup_labcas_data(datatype, query, dataset_query){
     $.ajax({
         url: Cookies.get('environment')+"/data-access-api/collections/select?q="+query+"&wt=json&indent=true&rows=2147483647",
         beforeSend: function(xhr) { 
-            xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
+        	if(Cookies.get('token') && Cookies.get('token') != "None"){
+        		console.log("HERE");
+            	xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
+            }
         },
         type: 'GET',
         dataType: 'json',
@@ -478,7 +481,9 @@ function setup_labcas_data(datatype, query, dataset_query){
                 $.ajax({
 					url: Cookies.get('environment')+"/data-access-api/files/select?q="+dataset_query+"&wt=json&indent=true",
 					beforeSend: function(xhr) { 
-						xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
+						if(Cookies.get('token') && Cookies.get('token') != "None"){
+							xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
+						} 
 					},
 					type: 'GET',
 					dataType: 'json',
@@ -502,7 +507,9 @@ function setup_labcas_data(datatype, query, dataset_query){
     	$.ajax({
 			url: Cookies.get('environment')+"/data-access-api/datasets/select?q="+dataset_query+"&wt=json&indent=true&rows=2147483647",
 			beforeSend: function(xhr) { 
-				xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
+				if(Cookies.get('token') && Cookies.get('token') != "None"){
+					xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
+				}
 			},
 			type: 'GET',
 			dataType: 'json',
@@ -527,7 +534,9 @@ function setup_labcas_dataset_data(datatype, query, file_query, cpage){
 					withCredentials: true
 			  },
 			beforeSend: function(xhr, settings) { 
-				xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
+				if(Cookies.get('token') && Cookies.get('token') != "None"){
+					xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
+				} 
 			},
 			dataType: 'json',
 			success: function (data) {
@@ -547,7 +556,9 @@ function setup_labcas_dataset_data(datatype, query, file_query, cpage){
                 withCredentials: true
           },
         beforeSend: function(xhr, settings) { 
-            xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
+            if(Cookies.get('token') && Cookies.get('token') != "None"){
+            	xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
+            }
         },
         dataType: 'json',
         success: function (data) {
@@ -569,7 +580,9 @@ function setup_labcas_file_data(datatype, query, file_query){
                 withCredentials: true
           },
         beforeSend: function(xhr, settings) { 
-            xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
+            if(Cookies.get('token') && Cookies.get('token') != "None"){
+            	xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
+            }
         },
         dataType: 'json',
         success: function (data) {
@@ -831,7 +844,9 @@ function setup_labcas_search(query, divid, cpage){
 		$.ajax({
 			url: Cookies.get('environment')+"/data-access-api/collections/select?q=*"+query+"*"+Cookies.get('organ_filter')+Cookies.get('pi_filter')+Cookies.get('disc_filter')+"&wt=json&indent=true&start="+cpage*10,	
 			beforeSend: function(xhr) {
-				xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token'));
+				if(Cookies.get('token') && Cookies.get('token') != "None"){
+					xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
+				}
 			},
 			type: 'GET',
 			dataType: 'json',
@@ -848,7 +863,9 @@ function setup_labcas_search(query, divid, cpage){
         $.ajax({
             url: Cookies.get('environment')+"/data-access-api/datasets/select?q=*"+query+"*&wt=json&indent=true&start="+cpage*10,
             beforeSend: function(xhr) {
-                xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token'));
+                if(Cookies.get('token') && Cookies.get('token') != "None"){
+					xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
+				}
             },
             type: 'GET',
             dataType: 'json',
@@ -869,7 +886,9 @@ function setup_labcas_search(query, divid, cpage){
 					withCredentials: true
 			  },
 			beforeSend: function(xhr, settings) { 
-				xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
+				if(Cookies.get('token') && Cookies.get('token') != "None"){
+					xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
+				} 
 			},
 			dataType: 'json',
 			success: function (data) {
@@ -1047,7 +1066,9 @@ function setup_labcas_starred(query, divid, cpage){
 		$.ajax({
 			url: Cookies.get('environment')+"/data-access-api/collections/select?q=*"+collection_starred_search+"&wt=json&indent=true&start="+cpage*10,	
 			beforeSend: function(xhr) {
-				xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token'));
+				if(Cookies.get('token') && Cookies.get('token') != "None"){
+					xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
+				}
 			},
 			type: 'GET',
 			dataType: 'json',
@@ -1064,7 +1085,9 @@ function setup_labcas_starred(query, divid, cpage){
         $.ajax({
             url: Cookies.get('environment')+"/data-access-api/datasets/select?q=*"+dataset_starred_search+"&wt=json&indent=true&start="+cpage*10,
             beforeSend: function(xhr) {
-                xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token'));
+                if(Cookies.get('token') && Cookies.get('token') != "None"){
+					xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
+				}
             },
             type: 'GET',
             dataType: 'json',
@@ -1088,7 +1111,9 @@ function setup_labcas_starred(query, divid, cpage){
 					withCredentials: true
 			  },
 			beforeSend: function(xhr, settings) { 
-				xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
+				if(Cookies.get('token') && Cookies.get('token') != "None"){
+					xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
+				}
 			},
 			dataType: 'json',
 			success: function (data) {

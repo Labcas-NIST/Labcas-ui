@@ -1,8 +1,46 @@
 var user_data = {};
 $().ready(function() {
-	user_data = JSON.parse(Cookies.get("userdata"));
+	if(Cookies.get("userdata") && Cookies.get("userdata") != "None"){
+		user_data = JSON.parse(Cookies.get("userdata"));
+	}
 	console.log(user_data);
 });
+function initCookies(){
+	if(!Cookies.get("token") || Cookies.get("token") == "None"){
+		
+		$.getJSON( '/labcas-ui/assets/conf/environment.cfg?23', function(json) {
+			Cookies.set("user", "Public");
+			Cookies.set("userletters", "PU");
+			$.each( json, function( key, val ) {
+				Cookies.set(key, val);
+			});
+	
+			user_data = {"FavoriteCollections":[],"FavoriteDatasets":[],"FavoriteFiles":[]};
+			if(Cookies.get("userdata") && Cookies.get("userdata") != "None"){
+				var data = Cookies.get("userdata");
+			
+				if (data['response'] && data['response']['docs'] && data['response']['docs'][0]){
+					user_data = data['response']['docs'][0];
+				}
+			}
+			if (!user_data["FavoriteCollections"]){
+				user_data["FavoriteCollections"] = [];
+			}
+			if (!user_data["FavoriteDatasets"]){
+				user_data["FavoriteDatasets"] = [];
+			}
+			if (!user_data["FavoriteFiles"]){
+				user_data["FavoriteFiles"] = [];
+			}
+			console.log("userdata");
+			console.log(user_data);
+			Cookies.set("userdata",  JSON.stringify(user_data));
+
+		}, 'text');
+		user_data = JSON.parse(Cookies.get("userdata"));
+	}
+}
+
 function writeUserData(udata){
 	$.ajax({
         url: Cookies.get('environment')+"/data-access-api/userdata/create",
