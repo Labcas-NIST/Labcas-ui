@@ -278,6 +278,7 @@
 <script src="../assets/js/labcas/search.js?2"></script>
 <script type="text/javascript">
     $(document).ready(function() {
+    	initCookies();
         var get_var = get_url_vars();
         console.log(get_var["file_id"]);
         setup_labcas_file_data("file",'id:"'+get_var["file_id"]+'"', 'id:'+get_var["file_id"]+'*'); 

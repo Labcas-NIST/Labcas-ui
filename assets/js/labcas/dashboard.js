@@ -29,6 +29,9 @@ function init_labcas_sunburst_distribution(collections, collection_dataset_count
 
 	Plotly.newPlot('labcas_sunburst_distribution', data, layout,{displayModeBar: false, responsize: true});
 }
+
+
+
 function init_labcas_data_distribution(div, second_graph_organ){ //acronym, name, count, date
 	var data = [{
 	  values: second_graph_organ[1],
@@ -74,6 +77,7 @@ function fill_collections_analytics(data){
 	
 	var second_graph_institution_dict = {};
 	var second_graph_organ_dict = {};
+	var second_graph_discipline_dict = {};
 	var second_graph_collabgroup_dict = {};
 	var second_graph_discipline_dict = {};
 	var second_graph_leadpi_dict = {};
@@ -83,6 +87,7 @@ function fill_collections_analytics(data){
 	var second_graph_institution = [[],[]];
 	var second_graph_organ = [[],[]];
 	var second_graph_collabgroup = [[],[]];
+	var second_graph_discipline = [[],[]];
 	var second_graph_discipline = [[],[]];
 	var second_graph_leadpi = [[],[]];
 	var second_graph_pubmed = [[],[]];
@@ -102,16 +107,20 @@ function fill_collections_analytics(data){
 				second_graph_organ_dict[y] = (second_graph_organ_dict[y] || 0) + 1;
 			});
 		}
+		if (obj.Discipline){
+			$.each(obj.Discipline, function(idx, y) { 
+				y = y.trim();
+				
+				if (y == ""){
+					y = "None";
+				}
+				second_graph_discipline_dict[y] = (second_graph_discipline_dict[y] || 0) + 1;
+			});
+		}
 		if (obj.CollaborativeGroup){
 			$.each(obj.CollaborativeGroup, function(idx, y) { 
 				y = y.trim();
 				second_graph_collabgroup_dict[y] = (second_graph_collabgroup_dict[y] || 0) + 1;
-			});
-		}
-		if (obj.Discipline){
-			$.each(obj.Discipline, function(idx, y) { 
-				y = y.trim();
-				second_graph_discipline_dict[y] = (second_graph_discipline_dict[y] || 0) + 1;
 			});
 		}
 		if (obj.LeadPI){
@@ -133,7 +142,8 @@ function fill_collections_analytics(data){
 			});
 		}
 	});
-	
+	console.log("HERE");
+	console.log(second_graph_discipline_dict);
 	$.each(second_graph_organ_dict, function(key, val) { 
 		second_graph_organ[0].push(key);
 		second_graph_organ[1].push(val);
@@ -146,9 +156,17 @@ function fill_collections_analytics(data){
 		second_graph_leadpi[0].push(key);
 		second_graph_leadpi[1].push(val);
 	});
+	$.each(second_graph_discipline_dict, function(key, val) { 
+		second_graph_discipline[0].push(key);
+		second_graph_discipline[1].push(val);
+	});
+	
+	
 	init_labcas_data_distribution("organ_distribution", second_graph_organ);
 	init_labcas_data_distribution("collabgroup_distribution", second_graph_collabgroup);
 	init_labcas_data_boxplot("labcas_boxplot_distribution",second_graph_leadpi);
+	init_labcas_data_distribution("labcas_discipline_distribution", second_graph_discipline);
+	
 }
 function fill_datasets_analytics(data){
 	var size = data.response.numFound;
@@ -182,7 +200,7 @@ function fill_datasets_analytics(data){
 	
 	console.log(collection_disc);
 	$.each(datadict, function(key, obj) {
-		cl.push(get_acronym(key));
+		cl.push(key);
 		cla.push(key);
 		cdc.push(obj);
 		

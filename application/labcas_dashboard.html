@@ -209,7 +209,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <div class="card ">
                                 <div class="card-header">
                                     <h4 class="card-title"><div id="datasettitle"></div></h4>
@@ -221,7 +221,23 @@
                                 <div class="card-footer ">
 									<hr>
 									<div class="stats">
-										<i class="now-ui-icons loader_refresh spin"></i> Updated 3 minutes ago
+									</div>
+								</div>
+                            </div>
+                          </div>
+					  </div>
+					  <div class="col-md-6">
+                            <div class="card ">
+                                <div class="card-header">
+                                    <h4 class="card-title"><div id="datasettitle"></div></h4>
+                                     <p class="card-category"># Discipline by Collection</p>
+                                </div>
+                                <div class="card-body">
+                                            <div id="labcas_discipline_distribution"/>
+                                </div>
+                                <div class="card-footer ">
+									<hr>
+									<div class="stats">
 									</div>
 								</div>
                             </div>
@@ -369,11 +385,12 @@
 <script src="../assets/js/labcas/utils.js?7"></script>
 <script src="../assets/js/labcas/labcas-sidebar.js"></script>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-<script src="../assets/js/labcas/dashboard.js?8"></script>
+<script src="../assets/js/labcas/dashboard.js?12"></script>
 
 
 <script type="text/javascript">
     $(document).ready(function() {
+    	initCookies();
         //setup_labcas_data("collectiondatasets",'id:"1.0_Athena-IHC4_with_Swedish_Breast_Cancer_Study"', 'id:1.0_Athena-IHC4_with_Swedish_Breast_Cancer_Study.*');
         var get_var = get_url_vars();
         //console.log(get_var["dataset_id"]);

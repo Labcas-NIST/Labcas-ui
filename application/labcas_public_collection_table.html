@@ -235,6 +235,7 @@
     }
 
     $().ready(function() {
+    	initCookies();
     	setup_labcas_data("collections_public","*:*");
         window.operateEvents = {
             'click .view': function(e, value, row, index) {
