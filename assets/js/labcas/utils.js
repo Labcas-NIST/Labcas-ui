@@ -8,7 +8,7 @@ $().ready(function() {
 function initCookies(){
 	if(!Cookies.get("token") || Cookies.get("token") == "None"){
 		
-		$.getJSON( '/labcas-ui/assets/conf/environment.cfg?25', function(json) {
+		$.getJSON( '/labcas-ui/assets/conf/environment.cfg?26', function(json) {
 			Cookies.set("user", "Public");
 			Cookies.set("userletters", "PU");
 			$.each( json, function( key, val ) {
@@ -35,6 +35,7 @@ function initCookies(){
 			console.log("userdata");
 			console.log(user_data);
 			Cookies.set("userdata",  JSON.stringify(user_data));
+			Cookies.set('JasonWebToken', '');
 		}, 'text');
 		//user_data = JSON.parse(Cookies.get("userdata"));
 	}
