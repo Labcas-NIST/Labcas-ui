@@ -35,7 +35,7 @@ function initCookies(){
 			console.log("userdata");
 			console.log(user_data);
 			Cookies.set("userdata",  JSON.stringify(user_data));
-			Cookies.set('JasonWebToken', '');
+			Cookies.remove('JasonWebToken');
 		}, 'text');
 		//user_data = JSON.parse(Cookies.get("userdata"));
 	}
@@ -311,4 +311,7 @@ function paginate(divid, cpage){
 	}else if (divid == 'collections_search' || divid == 'datasets_search' || divid == 'files_search'){
 		setup_labcas_search(get_var["search"], divid, cpage-1);
 	}
+}
+function escapeRegExp(string) {
+      return string.replace(/[\.\*\+\?\^\$\{\}\(\)\|\[\]\\\-~&!"]/g, '\\$&'); // $& means the whole matched string
 }

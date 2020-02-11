@@ -362,7 +362,9 @@ function fill_file_details_data(data){
 		
     });
     $("#file_details_len").html(Object.keys(data.response.docs[0]).length);
-    $("#download_icon").attr("onclick","location.href='"+Cookies.get('environment')+"/data-access-api/download?id="+data.response.docs[0].id+"';");
+    var html_safe_id = escapeRegExp(data.response.docs[0].id);
+    
+    $("#download_icon").attr("onclick","location.href='"+Cookies.get('environment')+"/data-access-api/download?id="+html_safe_id+"';");
 
 }
 function fill_datasets_data(data){
@@ -419,6 +421,7 @@ function fill_files_data(data){
 		if ('ThumbnailRelativePath' in value){
 			thumb = "<img width='50' height='50' src='/labcas-ui/assets/"+value.ThumbnailRelativePath+"'/>";
 		}
+        var html_safe_id = escapeRegExp(value.id);
 		$("#files-table tbody").append(
 		"<tr>"+
 			"<td><div class=\"form-check\">"+
@@ -449,7 +452,7 @@ function fill_files_data(data){
 				"<button type=\"button\" rel=\"tooltip\" title=\"Favorite\" onclick=\"save_favorite('"+value.id+"', 'FavoriteFiles')\" class=\"btn "+color+" btn-simple btn-link\">"+
 					"<i class=\"fa fa-star\"></i>"+
 				"</button>"+
-				"<button type=\"button\" rel=\"tooltip\" title=\"Download\" class=\"btn btn-danger btn-simple btn-link\" onclick=\"location.href='"+Cookies.get('environment')+"/data-access-api/download?id="+value.id+"'\">"+
+				"<button type=\"button\" rel=\"tooltip\" title=\"Download\" class=\"btn btn-danger btn-simple btn-link\" onclick=\"location.href='"+Cookies.get('environment')+"/data-access-api/download?id="+html_safe_id+"'\">"+
 					"<i class=\"fa fa-download\"></i>"+
 				"</button>"+
 			"</td>"+
