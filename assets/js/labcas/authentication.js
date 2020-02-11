@@ -366,7 +366,7 @@ function fill_file_details_data(data){
 		
     });
     $("#file_details_len").html(Object.keys(data.response.docs[0]).length);
-    var html_safe_id = escapeRegExp(data.response.docs[0].id);
+    var html_safe_id = encodeURI(escapeRegExp(data.response.docs[0].id));
     
     $("#download_icon").attr("onclick","location.href='"+Cookies.get('environment')+"/data-access-api/download?id="+html_safe_id+"';");
 
@@ -425,7 +425,7 @@ function fill_files_data(data){
 		if ('ThumbnailRelativePath' in value){
 			thumb = "<img width='50' height='50' src='/labcas-ui/assets/"+value.ThumbnailRelativePath+"'/>";
 		}
-        var html_safe_id = escapeRegExp(value.id);
+        var html_safe_id = encodeURI(escapeRegExp(value.id));
 		$("#files-table tbody").append(
 		"<tr>"+
 			"<td><div class=\"form-check\">"+
