@@ -36,8 +36,9 @@ function fill_collections_public_data(data){
 				protocols = obj_arr[3].join(",");
 				//pis = obj_arr[1].join(",");
 				orgs = obj_arr[2].join(",");
-			}else if(Cookies.get('environment').includes("mcl-labcas")){
+			}else if(Cookies.get('environment').includes("mcl-labcas") || Cookies.get('environment').includes("labcas-dev")){
 				var obj_arr = generate_mcl_links(obj);
+				protocols = obj_arr[3].join(",");
 				//institutions = obj_arr[0].join(",");
 				//pis = obj_arr[1].join(",");
 				orgs = obj_arr[2].join(",");
@@ -118,8 +119,9 @@ function fill_collections_data(data){
 			protocols = obj_arr[3].join(", ");
 			//pis = obj_arr[1].join(", ");
 			orgs = obj_arr[2].join(", ");
-		}else if(Cookies.get('environment').includes("mcl-labcas")){
+		}else if(Cookies.get('environment').includes("mcl-labcas") || Cookies.get('environment').includes("labcas-dev")){
 			var obj_arr = generate_mcl_links(obj);
+			protocols = obj_arr[3].join(", ");
 			//institutions = obj_arr[0].join(", ");
 			//pis = obj_arr[1].join(", ");
 			orgs = obj_arr[2].join(", ");
@@ -201,9 +203,11 @@ function fill_collection_details_data(data){
 		var obj_arr = generate_edrn_links(obj);
 		//institutions = obj_arr[0].join(", ");
 		//pis = obj_arr[1].join(", ");
+		protocols = obj_arr[3].join(",");
 		orgs = obj_arr[2].join(", ");
-	}else if(Cookies.get('environment').includes("mcl-labcas")){
+	}else if(Cookies.get('environment').includes("mcl-labcas") || Cookies.get('environment').includes("labcas-dev")){
 		var obj_arr = generate_mcl_links(obj);
+		protocols = obj_arr[3].join(",");
 		institutions = obj_arr[0].join(", ");
 		pis = obj_arr[1].join(", ");
 		orgs = obj_arr[2].join(", ");
@@ -212,7 +216,7 @@ function fill_collection_details_data(data){
 	obj.Institution = institutions;
 	obj.LeadPI = pis;
 	obj.Organ = orgs;
-	
+	obj.ProtocolName = protocols;
 	obj.Consortium = obj.Consortium? "<a href='"+Cookies.get('environment_url')+"'>"+obj.Consortium+"</a>" : "";
 	
 	var hide_headers = Cookies.get('collection_header_hide').split(',');

@@ -177,11 +177,19 @@ function generate_mcl_links(obj){
 			}
 			pis.push("<a href='"+Cookies.get('leadpi_url')+leadpi[1]+"-"+leadpi[0]+"'>"+obj.LeadPI[i]+"</a>");
 			institutions.push("<a href='"+Cookies.get('institution_url')+inst_url+"'>"+o+"</a>");
-			protocols.push("<a href='"+Cookies.get('protocol_url')+inst_url+"'>"+o+"</a>");
 			
 		}
 	}
-	
+	if (obj.ProtocolName){
+                for (var i = 0; i < obj.ProtocolName.length; i++) {
+                        o = $.trim(obj.ProtocolName[i]);
+                        if (o != ""){
+                                inst_url = o.replace(/\./g,"").replace(/\(/g,"").replace(/\)/g,"").replace(/ - /g," ").toLowerCase().replace(/ /g,"-");
+                        }
+                        protocols.push("<a href='"+Cookies.get('protocol_url')+inst_url+"'>"+o+"</a>");
+
+                }
+        }
 	if (obj.Organ){
 		for (var i = 0; i < obj.Organ.length; i++) {
 			o = $.trim(obj.Organ[i]);
