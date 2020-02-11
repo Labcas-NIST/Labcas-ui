@@ -281,7 +281,7 @@
     	initCookies();
         var get_var = get_url_vars();
         console.log(get_var["file_id"]);
-        setup_labcas_file_data("file",'id:"'+get_var["file_id"]+'"', 'id:'+get_var["file_id"]+'*'); 
+        setup_labcas_file_data("file",'id:"'+encodeURI(get_var["file_id"])+'"', 'id:'+get_var["file_id"]+'*'); 
         
         var breadcrumb = '<li class="breadcrumb-item"><a href="/labcas-ui/application/labcas_collection_table.html">Home</a></li>';
 		var data_split = get_var["file_id"].split("/");

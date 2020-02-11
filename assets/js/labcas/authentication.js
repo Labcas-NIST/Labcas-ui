@@ -358,7 +358,7 @@ function fill_file_details_data(data){
 		}
           $("#filedetails-table tbody").append(
             "<tr>"+
-				"<td class='text-right'>"+key.replace( /([A-Z])/g, " $1" )+":</td>"+
+				"<td class='text-right'  width='20%'>"+key.replace( /([A-Z])/g, " $1" )+":</td>"+
 				"<td class='text-left'>"+
 					value+
 				"</td>"+
@@ -436,7 +436,7 @@ function fill_files_data(data){
 			"</div></td>"+
 			"<td class='text-left'>"+
 				"<a href=\"/labcas-ui/application/labcas_file-detail_table.html?file_id="+
-					value.id+"\">"+
+					html_safe_id+"\">"+
 					value.FileName+
 				"</a>"+
 			"</td>"+
