@@ -7,8 +7,11 @@ $().ready(function() {
 });
 function initCookies(){
 	if(!Cookies.get("token") || Cookies.get("token") == "None"){
-		
-		$.getJSON( '/labcas-ui/assets/conf/environment.cfg?26', function(json) {
+		$.ajax({
+			  url: '/labcas-ui/assets/conf/environment.cfg?26',
+			  dataType: 'json',
+			  async: false,
+			  success: function(json) {
 			Cookies.set("user", "Public");
 			Cookies.set("userletters", "PU");
 			$.each( json, function( key, val ) {
@@ -36,7 +39,7 @@ function initCookies(){
 			console.log(user_data);
 			Cookies.set("userdata",  JSON.stringify(user_data));
 			Cookies.remove('JasonWebToken');
-		}, 'text');
+		}});
 		//user_data = JSON.parse(Cookies.get("userdata"));
 	}
 }

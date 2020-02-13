@@ -466,8 +466,8 @@ function fill_files_data(data){
     $("#dataset_favorites_len").html(user_data['FavoriteFiles'].length+user_data['FavoriteDatasets'].length+user_data['FavoriteCollections'].length);
 }
 
-function setup_labcas_data(datatype, query, dataset_query){
-	
+function setup_labcas_data(datatype, query, dataset_query){	
+    console.log(Cookies.get('environment'));
     $.ajax({
         url: Cookies.get('environment')+"/data-access-api/collections/select?q="+query+"&wt=json&indent=true&rows=2147483647",
         beforeSend: function(xhr) { 
