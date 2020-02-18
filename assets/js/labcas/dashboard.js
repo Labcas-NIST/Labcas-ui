@@ -22,7 +22,7 @@ function init_labcas_sunburst_distribution(collections, collection_dataset_count
 
 	var layout = {
 	  yaxis: {title: 'Dataset Count'},
-	  xaxis: {title: 'Collection Name Acronym', tickangle: 45, showline: true},
+	  xaxis: {title: 'Collection Name', tickangle: 45, showline: true},
 	  margin: {t: 10, b: 150}
 	};
 
@@ -299,7 +299,9 @@ function setup_labcas_analytics(){
 		$.ajax({
 			url: Cookies.get('environment')+"/data-access-api/collections/select?q=*&wt=json&indent=true&rows=2147483647",	
 			beforeSend: function(xhr) {
-				xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token'));
+				if(Cookies.get('token') && Cookies.get('token') != "None"){
+					xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token'));
+				}
 			},
 			type: 'GET',
 			dataType: 'json',
@@ -319,7 +321,10 @@ function setup_labcas_analytics(){
 		$.ajax({
 			url: Cookies.get('environment')+"/data-access-api/datasets/select?q=*&wt=json&indent=true&rows=2147483647",
 			beforeSend: function(xhr) {
-				xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token'));
+				if(Cookies.get('token') && Cookies.get('token') != "None"){
+					xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token'));
+				}
+
 			},
 			type: 'GET',
 			dataType: 'json',
@@ -336,7 +341,9 @@ function setup_labcas_analytics(){
 		$.ajax({
 			url: Cookies.get('environment')+"/data-access-api/files/select?q=*&wt=json&indent=true",
 			beforeSend: function(xhr, settings) { 
-				xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
+				if(Cookies.get('token') && Cookies.get('token') != "None"){
+					xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token'));
+				}
 			},
 			type: 'GET',
             dataType: 'json',
