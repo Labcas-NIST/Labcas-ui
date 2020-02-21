@@ -40,6 +40,7 @@
                         <span class="navbar-toggler-bar burger-lines"></span>
                     </button>
                     <div class="collapse navbar-collapse justify-content-end">
+                        <div style="margin-right: 0px">
                         <ul class="nav navbar-nav mr-auto">
                             <form class="navbar-form navbar-left navbar-search-form" role="search" action="javascript:search();">
                                 <div class="input-group">
@@ -48,11 +49,12 @@
                                 </div>
                             </form>
                         </ul>
+			</div>
                         <ul class="navbar-nav">
                             
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="nc-icon nc-bullet-list-67"></i>
+                                        <B><span id="username_placeholder_second"></span></B>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
                                     <a href="/labcas-ui/application/pages/login.html" class="dropdown-item text-danger" id="login_logout">
@@ -340,9 +342,10 @@
 		}
 		$('#breadcrumb').html(breadcrumb);
 							
-        $.get( "sidebar.html?2", function( data ) {
+        $.get( "sidebar.html?3", function( data ) {
             $( "#sidebar_placeholder" ).append(data);
             $( "#username_placeholder" ).html(Cookies.get('user'));
+            $( "#username_placeholder_second" ).html(Cookies.get('user'));
         });
     });
 </script>

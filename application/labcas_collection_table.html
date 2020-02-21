@@ -42,12 +42,6 @@
                     </button>
                     <div class="collapse navbar-collapse justify-content-end">
                         <ul class="nav navbar-nav mr-auto">
-                            <form class="navbar-form navbar-left navbar-search-form" role="search" action="javascript:search();">
-                                <div class="input-group">
-                                    <i class="nc-icon nc-zoom-split"></i>
-                                    <input id="search_text" type="text" class="form-control" placeholder="Labcas Full Search...">
-                                </div>
-                            </form>
                         </ul>
                         <ul class="navbar-nav">
                             <!--<li class="dropdown nav-item">
@@ -116,8 +110,13 @@
                                 <!--<center><a href="/labcas-ui/application/labcas_metadata_upload.html">Upload your metadata</a></center>-->
                                 </div>
                                 <div class="card-body table-full-width">
+					    <form class="navbar-form navbar-left navbar-search-form" role="search" action="javascript:search();">
+						<div class="input-group" style="margin-left: auto; margin-right: auto; width: 15%;">
+						    <div class='col-md-1'><i class="nc-icon nc-zoom-split"></i></div>
+						    <div class='col-md-11'><input id="search_text" type="text" class="form-control" placeholder="Labcas Full Search..." style="width:100%"></div>
+						</div>
+					    </form>
                                     <div class="toolbar">
-                                        
                                     </div>
                                     <table id="collection-table" class="table">
                                         <thead>
@@ -217,9 +216,9 @@
 <!-- Light Dashboard DEMO methods, don't include it in your project! -->
 <script src="../assets/js/demo.js"></script>
 <script src="../assets/js/plugins/js.cookie.js"></script>
-<script src="../assets/js/labcas/authentication.js?88"></script>
+<script src="../assets/js/labcas/authentication.js?89"></script>
 <script src="../assets/js/labcas/labcas-sidebar.js"></script>
-<script src="../assets/js/labcas/utils.js?29"></script>
+<script src="../assets/js/labcas/utils.js?30"></script>
 <script src="../assets/js/labcas/search.js?2"></script>
 <script type="text/javascript">
     

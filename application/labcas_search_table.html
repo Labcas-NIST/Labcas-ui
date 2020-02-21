@@ -40,6 +40,7 @@
                         <span class="navbar-toggler-bar burger-lines"></span>
                     </button>
                     <div class="collapse navbar-collapse justify-content-end">
+                        <div style="margin-right: 0px">
                         <ul class="nav navbar-nav mr-auto">
                             <form class="navbar-form navbar-left navbar-search-form" role="search" action="javascript:search();">
                                 <div class="input-group">
@@ -48,6 +49,7 @@
                                 </div>
                             </form>
                         </ul>
+			</div>
                         <ul class="navbar-nav">
                             <!--<li class="dropdown nav-item">
                                 <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
@@ -78,7 +80,7 @@
                             </li>-->
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="nc-icon nc-bullet-list-67"></i>
+                                        <B><span id="username_placeholder_second"></span></B>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
                                     <!--<a class="dropdown-item" href="#">
@@ -212,31 +214,95 @@
                         <div class="col-md-3">
                             <div class="card ">
                                 <div class="card-header">
-                                    <h4 class="card-title">Organ Filters</h4>
-                                    <hr>
+                                    <h4 class="card-title">Collection Filters</h4>
+                                    <hr style="margin-top: .5em; margin-bottom: 0; height: 1px; color:#333;background-color:#333;">
+                                </div>
+                                <div class="card-header">
+                                    <h5 class="card-title">Organ </h5>
+                                    <hr style="margin-top: .5em; margin-bottom: 0">
                                 </div>
                                 <div class="card-body" style="padding: 0px 15px 10px 15px">
                                        <form id="organ_filters">
                                         </form>
                                 </div>
-                            </div>
-                            <div class="card ">
+                            <!--</div>
+                            <div class="card ">-->
                                 <div class="card-header">
-                                    <h4 class="card-title">Discipline Filters</h4>
-                                    <hr>
+                                    <h5 class="card-title">Discipline</h5>
+                                    <hr  style="margin-top: .5em; margin-bottom: 0">
                                 </div>
                                 <div class="card-body" style="padding: 0px 15px 10px 15px">
                                        <form id="disc_filters">
                                         </form>
                                 </div>
-                            </div>
-                            <div class="card ">
+                            <!--</div>
+                            <div class="card ">-->
                                 <div class="card-header">
-                                    <h4 class="card-title">LeadPI Filters</h4>
-                                    <hr>
+                                    <h5 class="card-title">LeadPI</h5>
+                                    <hr style="margin-top: .5em; margin-bottom: 0">
                                 </div>
                                 <div class="card-body" style="padding: 0px 15px 10px 15px">
                                        <form id="pi_filters">
+                                        </form>
+                                </div>
+                            </div>
+                            <div class="card ">
+                                <div class="card-header">
+                                    <h4 class="card-title">Dataset Filters</h4>
+                                    <hr style="margin-top: .5em; margin-bottom: 0; height: 1px; color:#333;background-color:#333;">
+                                </div>
+                                <div class="card-header">
+                                    <h5 class="card-title">Species </h5>
+                                    <hr style="margin-top: .5em; margin-bottom: 0">
+                                </div>
+                                <div class="card-body" style="padding: 0px 15px 10px 15px">
+                                       <form id="species_filters">
+                                        </form>
+                                </div>
+                                <div class="card-header">
+                                    <h5 class="card-title">Status </h5>
+                                    <hr style="margin-top: .5em; margin-bottom: 0">
+                                </div>
+                                <div class="card-body" style="padding: 0px 15px 10px 15px">
+                                       <form id="status_filters">
+                                        </form>
+                                </div>
+                                <div class="card-header">
+                                    <h5 class="card-title">Cohort </h5>
+                                    <hr style="margin-top: .5em; margin-bottom: 0">
+                                </div>
+                                <div class="card-body" style="padding: 0px 15px 10px 15px">
+                                       <form id="cohort_filters">
+                                        </form>
+                                </div>
+                            </div>
+                            <div class="card ">
+                                <div class="card-header">
+                                    <h4 class="card-title">File Filters</h4>
+                                    <hr style="margin-top: .5em; margin-bottom: 0; height: 1px; color:#333;background-color:#333;">
+                                </div>                          
+                                <div class="card-header">
+                                    <h5 class="card-title">Stain </h5>
+                                    <hr style="margin-top: .5em; margin-bottom: 0">
+                                </div>                  
+                                <div class="card-body" style="padding: 0px 15px 10px 15px">
+                                       <form id="stain_filters">      
+                                        </form>                 
+                                </div>                          
+                                <div class="card-header">
+                                    <h5 class="card-title">Gender </h5>
+                                    <hr style="margin-top: .5em; margin-bottom: 0">
+                                </div>
+                                <div class="card-body" style="padding: 0px 15px 10px 15px">
+                                       <form id="gender_filters">
+                                        </form>
+                                </div>
+                                <div class="card-header">
+                                    <h5 class="card-title">Type </h5>
+                                    <hr style="margin-top: .5em; margin-bottom: 0">
+                                </div>
+                                <div class="card-body" style="padding: 0px 15px 10px 15px">
+                                       <form id="filetype_filters">
                                         </form>
                                 </div>
                             </div>
@@ -421,9 +487,10 @@
         Cookies.set("disc_filter", "");
         setup_labcas_search(get_var["search"], "all", 0);
         
-        $.get( "sidebar.html?2", function( data ) {
+        $.get( "sidebar.html?3", function( data ) {
             $( "#sidebar_placeholder" ).append(data);
             $( "#username_placeholder" ).html(Cookies.get('user'));
+            $( "#username_placeholder_second" ).html(Cookies.get('user'));
         });
 		
     });
