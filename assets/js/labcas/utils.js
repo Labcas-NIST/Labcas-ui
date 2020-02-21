@@ -39,6 +39,9 @@ function initCookies(){
 			console.log(user_data);
 			Cookies.set("userdata",  JSON.stringify(user_data));
 			Cookies.remove('JasonWebToken');
+            $('#login_logout').html('<i class="nc-icon nc-button-power"></i> Log in')
+            $('#login_logout').removeClass("text-danger");
+            $('#login_logout').addClass("text-success");
 		}});
 		//user_data = JSON.parse(Cookies.get("userdata"));
 	}
