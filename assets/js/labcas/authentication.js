@@ -611,8 +611,14 @@ function fill_datasets_search(data){
 	var size = data.response.numFound;
 	var cpage = data.response.start;
 	load_pagination("datasets_search",size,cpage);
-	//console.log(data);
+	console.log("datasets");
+	console.log(data);
 	$("#search-dataset-table tbody").empty();
+
+	var species_filter = [];
+	var status_filter = [];
+	var cohort_filter = [];
+	console.log(data);
 	$.each(data.response.docs, function(key, obj) {
 	  var color = "btn-info";
 	  if(user_data["FavoriteDatasets"].includes(obj.id)){
@@ -624,6 +630,16 @@ function fill_datasets_search(data){
 	  var description = obj.Description? obj.Description.join(",") : "";
 	  if ('FileThumbnailUrl' in obj){
 		thumb = "<img width='50' height='50' src='"+obj.FileThumbnailUrl+"'/>";
+	  }
+
+	  if ('Species' in obj){
+		species_filter.push(String(obj['Species']));
+	  }
+	  if ('ExperimentStatus' in obj){
+		status_filter.push(String(obj['ExperimentStatus']));
+	  }
+	  if ('Cohort' in obj){
+		cohort_filter.push(String(obj['Cohort']));
 	  }
 	  $("#search-dataset-table tbody").append(
 		"<tr>"+
@@ -647,6 +663,102 @@ function fill_datasets_search(data){
 			"</td>"+
 		"</tr>");	
 	});                
+
+	species_filter = species_filter.unique();
+	cohort_filter = cohort_filter.unique();
+	status_filter = status_filter.unique();
+	console.log("Species");
+	console.log(species_filter);
+	console.log("Status");
+	console.log(status_filter);
+	console.log("Cohort");
+	console.log(cohort_filter);
+	if (Cookies.get("search_filter") != "on"){
+		var status_list = [];
+		$.each(status_filter, function(key, obj) {
+		    $.each(obj.split(","),function(i,o){
+			if ($.trim(o) != ""){
+			     status_list.push($.trim(o).replace(" ","+"));
+			}
+		    });
+		});
+		$.each($.unique(status_list),function(i,o){
+		    $("#status_filters").append($(' <div class="row"><div class="col-md-6"><center>'+$.trim(o)+'</center></div><div class="col-md-6"><input type="checkbox" name="status_filter[]" value="'+$.trim(o)+'" data-toggle="switch" data-on-color="info" data-off-color="info" data-on-text="<i class=\'fa fa-check\'></i>" data-off-text="<i class=\'fa fa-times\'></i>"><span class="toggle"></span></div></div>'));
+		});
+
+		$('input[name="status_filter[]"]').change(function() {
+		    var status_val = [];
+		    $("input[name='status_filter[]']").each(function (index, obj) {
+			if(this.checked) {
+			    status_val.push(this.value);
+			}
+		    });
+		    var status_search = "";
+		    if (status_val.length > 0){
+			status_search = "&fq=(ExperimentStatus:"+status_val.join(" OR ExperimentStatus:")+")";
+		    }
+		    Cookies.set("status_filter", status_search);
+		    Cookies.set("search_filter", "on");
+		    setup_labcas_search(Cookies.get('search'), "all", 0);
+		    });
+		var cohort_list = [];
+		$.each(cohort_filter, function(key, obj) {
+		    $.each(obj.split(","),function(i,o){
+			if ($.trim(o) != ""){
+			     cohort_list.push($.trim(o).replace(" ","+"));
+			}
+		    });
+		});
+		$.each($.unique(cohort_list),function(i,o){
+		    $("#cohort_filters").append($(' <div class="row"><div class="col-md-6"><center>'+$.trim(o)+'</center></div><div class="col-md-6"><input type="checkbox" name="cohort_filter[]" value="'+$.trim(o)+'" data-toggle="switch" data-on-color="info" data-off-color="info" data-on-text="<i class=\'fa fa-check\'></i>" data-off-text="<i class=\'fa fa-times\'></i>"><span class="toggle"></span></div></div>'));
+		});
+
+		$('input[name="cohort_filter[]"]').change(function() {
+		    var cohort_val = [];
+		    $("input[name='cohort_filter[]']").each(function (index, obj) {
+			if(this.checked) {
+			    cohort_val.push(this.value);
+			}
+		    });
+		    var cohort_search = "";
+		    if (cohort_val.length > 0){
+			cohort_search = "&fq=(Cohort:"+cohort_val.join(" OR Cohort:")+")";
+		    }
+		    Cookies.set("cohort_filter", cohort_search);
+		    Cookies.set("search_filter", "on");
+		    setup_labcas_search(Cookies.get('search'), "all", 0);
+		    });
+
+		var species_list = [];
+		$.each(species_filter, function(key, obj) {
+		    $.each(obj.split(","),function(i,o){
+			if ($.trim(o) != ""){
+			     species_list.push($.trim(o).replace(" ","+"));
+			}
+		    });
+		});
+		$.each($.unique(species_list),function(i,o){
+		    $("#species_filters").append($(' <div class="row"><div class="col-md-6"><center>'+$.trim(o)+'</center></div><div class="col-md-6"><input type="checkbox" name="species_filter[]" value="'+$.trim(o)+'" data-toggle="switch" data-on-color="info" data-off-color="info" data-on-text="<i class=\'fa fa-check\'></i>" data-off-text="<i class=\'fa fa-times\'></i>"><span class="toggle"></span></div></div>'));
+		});
+
+		$('input[name="species_filter[]"]').change(function() {
+		    var species_val = [];
+		    $("input[name='species_filter[]']").each(function (index, obj) {
+			if(this.checked) {
+			    species_val.push(this.value);
+			}
+		    });
+		    var species_search = "";
+		    if (species_val.length > 0){
+			species_search = "&fq=(Species:"+species_val.join(" OR Species:")+")";
+		    }
+		    Cookies.set("species_filter", species_search);
+		    Cookies.set("search_filter", "on");
+		    setup_labcas_search(Cookies.get('search'), "all", 0);
+		    });
+
+	}
+
 	$("#datasets_len").html(size); 
 }
 function fill_files_search(data){
@@ -867,8 +979,9 @@ function setup_labcas_search(query, divid, cpage){
 		});
     }
     if (divid == "datasets_search" || divid == "all"){
+	console.log(Cookies.get('environment')+"/data-access-api/datasets/select?q=*"+query+"*"+Cookies.get('species_filter')+"&wt=json&indent=true&start="+cpage*10);
         $.ajax({
-            url: Cookies.get('environment')+"/data-access-api/datasets/select?q=*"+query+"*&wt=json&indent=true&start="+cpage*10,
+            url: Cookies.get('environment')+"/data-access-api/datasets/select?q=*"+query+"*"+Cookies.get('species_filter')+"&wt=json&indent=true&rows=2147483647&start="+cpage*10,
             beforeSend: function(xhr) {
                 if(Cookies.get('token') && Cookies.get('token') != "None"){
 					xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
@@ -888,7 +1001,7 @@ function setup_labcas_search(query, divid, cpage){
     }
     if (divid == "files_search" || divid == "all"){
 		$.ajax({
-			url: Cookies.get('environment')+"/data-access-api/files/select?q=*"+query+"*&wt=json&indent=true&start="+cpage*10,
+			url: Cookies.get('environment')+"/data-access-api/files/select?q=*"+query+"*&wt=json&indent=true&rows=2147483647&start="+cpage*10,
 			xhrFields: {
 					withCredentials: true
 			  },
