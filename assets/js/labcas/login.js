@@ -1,7 +1,7 @@
 Cookies.set("token", "None");
 $('#loginform').submit(function (e) {
     e.preventDefault();
-    $.getJSON( '/labcas-ui/assets/conf/environment.cfg?29', function(json) {
+    $.getJSON( '/labcas-ui/assets/conf/environment.cfg?30', function(json) {
         //console.log(json);
 		Cookies.set("user", $('#username').val());
 		Cookies.set("userletters", $('#username').val().substr(0, 2).toUpperCase());

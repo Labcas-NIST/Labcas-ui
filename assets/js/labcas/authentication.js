@@ -470,12 +470,12 @@ function fill_files_data(data){
         var html_safe_id = encodeURI(escapeRegExp(value.id));
 		$("#files-table tbody").append(
 		"<tr>"+
-			"<td><div class=\"form-check\">"+
+			"<td><!--<div class=\"form-check\">"+
 				"<label class=\"form-check-label\">"+
 					"<input class=\"form-check-input\" type=\"checkbox\" value=''>"+
 					"<span class=\"form-check-sign\"></span>"+
 				"</label>"+
-			"</div></td>"+
+			"</div>--></td>"+
 			"<td class='text-left'>"+
 				"<a href=\"/labcas-ui/application/labcas_file-detail_table.html?file_id="+
 					html_safe_id+"\">"+
@@ -684,19 +684,19 @@ function fill_datasets_search(data){
 
 	  $("#search-dataset-table tbody").append(
 		"<tr>"+
-			"<td><div class=\"form-check\">"+
+			"<td><!--<div class=\"form-check\">"+
 				"<label class=\"form-check-label\">"+
 					"<input class=\"form-check-input\" type=\"checkbox\" value=''>"+
 					"<span class=\"form-check-sign\"></span>"+
 				"</label>"+
-			"</div></td><td>"+
+			"</div>--></td><td>"+
 			"<a href=\"/labcas-ui/application/labcas_dataset-detail_table.html?dataset_id="+
                     obj.id+"\">"+
                 obj.DatasetName+"</a></td>"+
                 "<td><a href=\"/labcas-ui/application/labcas_collection-detail_table.html?collection_id="+
                     obj.CollectionId+"\">"+
                     	obj.CollectionName+"</a></td>"+
-                "<td>"+obj.DatasetVersion+"</td>"+
+                "<!--<td>"+obj.DatasetVersion+"</td>-->"+
 			"<td class=\"td-actions text-right\">"+
 				"<button type=\"button\" rel=\"tooltip\" title=\"Favorite\" onclick=\"save_favorite('"+obj.id+"', 'FavoriteDatasets')\" class=\"btn "+color+" btn-simple btn-link\">"+
 					"<i class=\"fa fa-star\"></i>"+
@@ -739,12 +739,12 @@ function fill_files_search(data){
 	  }
 	  $("#search-file-table tbody").append(
 		"<tr>"+
-			"<td><div class=\"form-check\">"+
+			"<td><!--<div class=\"form-check\">"+
 				"<label class=\"form-check-label\">"+
 					"<input class=\"form-check-input\" type=\"checkbox\" value=''>"+
 					"<span class=\"form-check-sign\"></span>"+
 				"</label>"+
-			"</div></td>"+
+			"</div>--></td>"+
 			"<td class='text-left'>"+
 				"<a href=\"/labcas-ui/application/labcas_file-detail_table.html?file_id="+
 					obj.id+"\">"+
@@ -849,12 +849,12 @@ function fill_collections_search(data){
       //pi_filter.push(String(obj.LeadPI));
 	  $("#search-collection-table tbody").append(
 		"<tr>"+
-			"<td><div class=\"form-check\">"+
+			"<td><!--<div class=\"form-check\">"+
 				"<label class=\"form-check-label\">"+
 					"<input class=\"form-check-input\" type=\"checkbox\" value=''>"+
 					"<span class=\"form-check-sign\"></span>"+
 				"</label>"+
-			"</div></td><td>"+
+			"</div>--></td><td>"+
 			"<a href=\"/labcas-ui/application/labcas_collection-detail_table.html?collection_id="+
                     obj.id+"\">"+
                 obj.CollectionName+"</a></td>"+
@@ -1038,12 +1038,12 @@ function fill_datasets_starred(data){
 		  }
 		  $("#starred-dataset-table tbody").append(
 			"<tr>"+
-				"<td><div class=\"form-check\">"+
+				"<td><!--<div class=\"form-check\">"+
 					"<label class=\"form-check-label\">"+
 						"<input class=\"form-check-input\" type=\"checkbox\" value=''>"+
 						"<span class=\"form-check-sign\"></span>"+
 					"</label>"+
-				"</div></td><td>"+
+				"</div>--></td><td>"+
 				"<a href=\"/labcas-ui/application/labcas_dataset-detail_table.html?dataset_id="+
 						obj.id+"\">"+
 					obj.DatasetName+"</a></td>"+
@@ -1079,12 +1079,12 @@ function fill_files_starred(data){
 		  }
 		  $("#starred-file-table tbody").append(
 			"<tr>"+
-				"<td><div class=\"form-check\">"+
+				"<td><!--<div class=\"form-check\">"+
 					"<label class=\"form-check-label\">"+
 						"<input class=\"form-check-input\" type=\"checkbox\" value=''>"+
 						"<span class=\"form-check-sign\"></span>"+
 					"</label>"+
-				"</div></td>"+
+				"</div>--></td>"+
 				"<td class='text-left'>"+
 					"<a href=\"/labcas-ui/application/labcas_file-detail_table.html?file_id="+
 						obj.id+"\">"+
@@ -1133,12 +1133,12 @@ function fill_collections_starred(data){
 		  }
 		  $("#starred-collection-table tbody").append(
 			"<tr>"+
-				"<td><div class=\"form-check\">"+
+				"<td><!--<div class=\"form-check\">"+
 					"<label class=\"form-check-label\">"+
 						"<input class=\"form-check-input\" type=\"checkbox\" value=''>"+
 						"<span class=\"form-check-sign\"></span>"+
 					"</label>"+
-				"</div></td><td>"+
+				"</div>--></td><td>"+
 				"<a href=\"/labcas-ui/application/labcas_collection-detail_table.html?collection_id="+
 						obj.id+"\">"+
 					obj.CollectionName+"</a></td>"+
