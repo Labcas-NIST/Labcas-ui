@@ -317,7 +317,7 @@
 <script src="../assets/js/plugins/js.cookie.js"></script>
 <script src="../assets/js/labcas/labcas-sidebar.js"></script>
 <script src="../assets/js/labcas/utils.js?13"></script>
-<script src="../assets/js/labcas/authentication.js?90"></script>
+<script src="../assets/js/labcas/authentication.js?91"></script>
 <script src="../assets/js/labcas/search.js?2"></script>
 
 <script type="text/javascript">
@@ -326,6 +326,7 @@
         //setup_labcas_data("collectiondatasets",'id:"1.0_Athena-IHC4_with_Swedish_Breast_Cancer_Study"', 'id:1.0_Athena-IHC4_with_Swedish_Breast_Cancer_Study.*');
         var get_var = get_url_vars();
         console.log(get_var["dataset_id"]);
+	get_var["dataset_id"] = get_var["dataset_id"].replace(/\\\./g,'.');
         setup_labcas_dataset_data("datasetfiles",'id:"'+get_var["dataset_id"]+'"', 'id:'+get_var["dataset_id"]+'*', 0);
         
         var breadcrumb = '<li class="breadcrumb-item"><a href="/labcas-ui/application/labcas_collection_table.html">Home</a></li>';
