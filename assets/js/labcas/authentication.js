@@ -21,7 +21,7 @@ function reset_search_filters(){
         Cookies.set("search", get_var["search"]);
         Cookies.set("search_filter", "off");
 
-        Cookies.set("organ_filters_val", "");
+        /*Cookies.set("organ_filters_val", "");
         Cookies.set("pi_filters_val", "");
         Cookies.set("disc_filters_val", "");
         Cookies.set("gender_filters_val","");
@@ -55,8 +55,15 @@ function reset_search_filters(){
         //Cookies.set("animaltype_filters","");
         //Cookies.set("status_filters","");
         //Cookies.set("cohort_filters","");
-        //Cookies.set("species_filters","");
-
+        //Cookies.set("species_filters","");*/
+        
+	$.each(Cookies.get("filters").split(","), function(ind, head) {
+                var divs = Cookies.get(head+"_filters_div").split(",");
+                $.each(divs, function(i, divhead) {
+			Cookies.set($.trim(divhead), "");
+			Cookies.set($.trim(divhead)+"_val", "");
+                });
+	});
         setup_labcas_search(get_var["search"], "all", 0);
 }
 function fill_collections_public_data(data){
@@ -654,9 +661,9 @@ function fill_datasets_facets(data){
 	console.log("Data_facets_output");
 	console.log(data);
     //if (Cookies.get("search_filter") != "on"){
-        generate_filters("ExperimentStatus","status_filters", data.facet_counts.facet_fields.ExperimentStatus);
-        generate_filters("Cohort","cohort_filters", data.facet_counts.facet_fields.Cohort);
-        generate_filters("Species","species_filters", data.facet_counts.facet_fields.Species);
+        //generate_filters("ExperimentStatus","status_filters", data.facet_counts.facet_fields.ExperimentStatus);
+        //generate_filters("Cohort","cohort_filters", data.facet_counts.facet_fields.Cohort);
+        //generate_filters("Species","species_filters", data.facet_counts.facet_fields.Species);
     //}
 }
 
@@ -711,14 +718,14 @@ function fill_datasets_search(data){
 function fill_files_facets(data){
 	
     //if (Cookies.get("search_filter") != "on"){
-        generate_filters("FileType","filetype_filters", data.facet_counts.facet_fields["FileType"]);
-        generate_filters("labcas.pathology:Stain","stain_filters", data.facet_counts.facet_fields["labcas.pathology:Stain"]);
-        generate_filters("labcas.pathology:NCITProcedure","procedure_filters", data.facet_counts.facet_fields["labcas.pathology:NCITProcedure"]);
-        generate_filters("labcas.pathology:Fixative","fixative_filters", data.facet_counts.facet_fields["labcas.pathology:Fixative"]);
-        generate_filters("labcas.pathology:NCITOrganCode","ncitorgan_filters", data.facet_counts.facet_fields["labcas.pathology:NCITOrganCode"]);
-        generate_filters("labcas.pathology:Gender","gender_filters", data.facet_counts.facet_fields["labcas.pathology:Gender"]);
-        generate_filters("labcas.pathology:ScanStatus","scan_filters", data.facet_counts.facet_fields["labcas.pathology:ScanStatus"]);
-        generate_filters("labcas.pathology:AnimalType","animaltype_filters", data.facet_counts.facet_fields["labcas.pathology:AnimalType"]);
+        //generate_filters("FileType","filetype_filters", data.facet_counts.facet_fields["FileType"]);
+        //generate_filters("labcas.pathology:Stain","stain_filters", data.facet_counts.facet_fields["labcas.pathology:Stain"]);
+        //generate_filters("labcas.pathology:NCITProcedure","procedure_filters", data.facet_counts.facet_fields["labcas.pathology:NCITProcedure"]);
+        //generate_filters("labcas.pathology:Fixative","fixative_filters", data.facet_counts.facet_fields["labcas.pathology:Fixative"]);
+        //generate_filters("labcas.pathology:NCITOrganCode","ncitorgan_filters", data.facet_counts.facet_fields["labcas.pathology:NCITOrganCode"]);
+        //generate_filters("labcas.pathology:Gender","gender_filters", data.facet_counts.facet_fields["labcas.pathology:Gender"]);
+        //generate_filters("labcas.pathology:ScanStatus","scan_filters", data.facet_counts.facet_fields["labcas.pathology:ScanStatus"]);
+        //generate_filters("labcas.pathology:AnimalType","animaltype_filters", data.facet_counts.facet_fields["labcas.pathology:AnimalType"]);
     //}
 }
 function fill_files_search(data){
@@ -772,9 +779,21 @@ function fill_files_search(data){
 	});              
 	$("#files_len").html(size); 
 }
-function generate_filters(field_type, placeholder, data){
+function generate_filters(field_type, placeholder, data, display, head){
 	var filters = [];
 	var counts = [];
+
+	$("#filter_options").append(
+		'<div class="card-header '+head+'_card">'+
+		    '<h5 class="card-title">'+display+'</h5>'+
+		    '<hr style="margin-top: .5em; margin-bottom: 0">'+
+		'</div>'+
+		'<div class="card-body '+head+'_card" style="padding: 0px 15px 10px 15px">'+
+		       '<form id="'+placeholder+'">'+
+			'</form>'+
+		'</div>'
+	);
+
 	$("#"+placeholder).html("");
         $.each(data, function(key, obj) {
             if ($.isNumeric(obj)){
@@ -811,18 +830,52 @@ function generate_filters(field_type, placeholder, data){
             setup_labcas_search(Cookies.get('search'), "all", 0);
         });
 }
+
+function generate_categories(field_id, data){
+	$('#'+field_id).empty();
+	$("#filter_options").empty();
+	$.each(Cookies.get("filters").split(","), function(ind, head) {
+		if (Cookies.get("faceted_categories_selected") == head){
+			$('#'+field_id).append("<option value='"+head+"' selected>"+head+" Filters</option>");
+		}else{
+			$('#'+field_id).append("<option value='"+head+"'>"+head+" Filters</option>");
+		}
+		var ids = Cookies.get(head+"_filters_id").split(",");
+		var displays = Cookies.get(head+"_filters_display").split(",");
+		var divs = Cookies.get(head+"_filters_div").split(",");
+		$.each(ids, function(i, idhead) {
+			generate_filters(idhead,$.trim(divs[i]), data.facet_counts.facet_fields[idhead], $.trim(displays[i]), $.trim(head));
+		});
+	});
+}
 function fill_collections_facets(data){
 	//console.log("DATA");
 	//console.log(data);
 	//console.log("DATA3");
 	
     //if (Cookies.get("search_filter") != "on"){
-	generate_filters("Organ","organ_filters", data.facet_counts.facet_fields.Organ);
-	generate_filters("LeadPI","pi_filters", data.facet_counts.facet_fields.LeadPI);
-	generate_filters("Discipline","disc_filters", data.facet_counts.facet_fields.Discipline);
-	generate_filters("Institution","institution_filters", data.facet_counts.facet_fields.Institution);
-	generate_filters("Study","study_filters", data.facet_counts.facet_fields.Study);
-	generate_filters("CollaborativeGroup","collaborative_filters", data.facet_counts.facet_fields.CollaborativeGroup);
+	generate_categories("faceted_categories", data);
+	$("#faceted_categories").change(function(){
+		$.each(Cookies.get("filters").split(","), function(ind, head) {
+			$("."+head+"_card").hide();
+		});
+		$(this).find("option:selected").each(function(){
+		    var optionValue = $(this).attr("value");
+	 	    Cookies.set("faceted_categories_selected", optionValue);
+		    $("."+optionValue+"_card").show();
+		});
+		reset_search_filters();
+	});
+	$.each(Cookies.get("filters").split(","), function(ind, head) {
+		$("."+head+"_card").hide();
+	});
+	$("."+Cookies.get("faceted_categories_selected")+"_card").show();
+	//generate_filters("Organ","organ_filters", data.facet_counts.facet_fields.Organ);
+	//generate_filters("LeadPI","pi_filters", data.facet_counts.facet_fields.LeadPI);
+	//generate_filters("Discipline","disc_filters", data.facet_counts.facet_fields.Discipline);
+	//generate_filters("Institution","institution_filters", data.facet_counts.facet_fields.Institution);
+	//generate_filters("Study","study_filters", data.facet_counts.facet_fields.Study);
+	//generate_filters("CollaborativeGroup","collaborative_filters", data.facet_counts.facet_fields.CollaborativeGroup);
     //}
 }
 function fill_collections_search(data){
@@ -880,23 +933,31 @@ function fill_collections_search(data){
 function setup_labcas_search(query, divid, cpage){
     console.log("Searching...");
 
-	var collection_filters = Cookies.get('organ_filters')+Cookies.get('pi_filters')+Cookies.get('disc_filters')+Cookies.get('study_filters')+Cookies.get('institution_filters')+Cookies.get('collaborative_filters')
+	//var collection_filters = Cookies.get('organ_filters')+Cookies.get('pi_filters')+Cookies.get('disc_filters')+Cookies.get('study_filters')+Cookies.get('institution_filters')+Cookies.get('collaborative_filters')
+	var collection_filters = "";
+	var collection_facets = [];
+	$.each(Cookies.get("filters").split(","), function(ind, head) {
+		var divs = Cookies.get(head+"_filters_div").split(",");
+		$.each(divs, function(i, divhead) {
+			collection_filters += Cookies.get($.trim(divhead));
+		});
+		collection_facets = collection_facets.concat(Cookies.get(head+"_filters_id").split(","));
+	});
 	//var data_filters = Cookies.get('species_filters')+Cookies.get('cohort_filters')+Cookies.get('status_filters')
 	var data_filters = "";
 	//var file_filters = Cookies.get("filetype_filters")+Cookies.get("stain_filters")+Cookies.get("procedure_filters")+Cookies.get("fixative_filters")+Cookies.get("ncitorgan_filters")+Cookies.get("gender_filters")+Cookies.get("scan_filters")+Cookies.get("animaltype_filters")+Cookies.get('organ_filters')+Cookies.get('pi_filters')+Cookies.get('disc_filters');
 	//var file_filters = Cookies.get("filetype_filters")+Cookies.get("stain_filters")+Cookies.get("procedure_filters")+Cookies.get("fixative_filters")+Cookies.get("ncitorgan_filters")+Cookies.get("gender_filters")+Cookies.get("scan_filters")+Cookies.get("animaltype_filters")+Cookies.get('organ_filters')+Cookies.get('pi_filters')+Cookies.get('disc_filters');
-	var file_filters = Cookies.get("gender_filters")
+	//var file_filters = Cookies.get("gender_filters")
 
-	var collection_facets = ['Organ','LeadPI', 'Discipline','Study','Institution','CollaborativeGroup'];
 	//var dataset_facets = ['ExperimentStatus','Species','Cohort'];
-	var dataset_facets = [];
+	//var dataset_facets = [];
 	//var file_facets = ['labcas.pathology:Stain','labcas.pathology:NCITProcedure','labcas.pathology:Fixative','labcas.pathology:NCITOrganCode','FileType','labcas.pathology:Gender','labcas.pathology:ScanStatus','labcas.pathology:AnimalType'];
-	var file_facets = ['labcas.pathology:Gender'];
+	//var file_facets = ['labcas.pathology:Gender'];
 
     if (divid == "collections_search" || divid == "all"){
-		console.log(Cookies.get('environment')+"/data-access-api/collections/select?q=*"+query+"*"+collection_filters+data_filters+file_filters+"&wt=json&indent=true&start="+cpage*10);
+		console.log(Cookies.get('environment')+"/data-access-api/collections/select?q=*"+query+"*"+collection_filters+"&wt=json&indent=true&start="+cpage*10);
 		$.ajax({
-			url: Cookies.get('environment')+"/data-access-api/collections/select?q=*"+query+"*"+collection_filters+data_filters+file_filters+"&wt=json&indent=true&start="+cpage*10,	
+			url: Cookies.get('environment')+"/data-access-api/collections/select?q=*"+query+"*"+collection_filters+"&wt=json&indent=true&start="+cpage*10,	
 			beforeSend: function(xhr) {
 				if(Cookies.get('token') && Cookies.get('token') != "None"){
 					xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
@@ -912,9 +973,9 @@ function setup_labcas_search(query, divid, cpage){
 				 window.location.replace("/labcas-ui/application/pages/login.html");
 			 }
 		});
-		console.log(Cookies.get('environment')+"/data-access-api/collections/select?q=*:*"+collection_filters+data_filters+file_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&facet.field="+dataset_facets.join("&facet.field=")+"&facet.field="+file_facets.join("&facet.field=")+"&wt=json&rows=0");
+		console.log(Cookies.get('environment')+"/data-access-api/collections/select?q=*:*"+collection_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&wt=json&rows=0");
 		$.ajax({
-			url: Cookies.get('environment')+"/data-access-api/collections/select?q=*:*"+collection_filters+data_filters+file_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&facet.field="+dataset_facets.join("&facet.field=")+"&facet.field="+file_facets.join("&facet.field=")+"&wt=json&rows=0",
+			url: Cookies.get('environment')+"/data-access-api/collections/select?q=*:*"+collection_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&wt=json&rows=0",
 			beforeSend: function(xhr) {
 				if(Cookies.get('token') && Cookies.get('token') != "None"){
 					xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
@@ -932,10 +993,10 @@ function setup_labcas_search(query, divid, cpage){
 		});
     }
     if (divid == "datasets_search" || divid == "all"){
-	console.log(Cookies.get('environment')+"/data-access-api/datasets/select?q=*"+query+"*"+collection_filters+data_filters+file_filters+"&wt=json&indent=true&start="+cpage*10);
-	console.log(Cookies.get('environment')+"/data-access-api/datasets/select?q=*:*"+collection_filters+data_filters+file_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&facet.field="+dataset_facets.join("&facet.field=")+"&facet.field="+file_facets.join("&facet.field=")+"&wt=json&rows=0");
+	console.log(Cookies.get('environment')+"/data-access-api/datasets/select?q=*"+query+"*"+collection_filters+"&wt=json&indent=true&start="+cpage*10);
+	console.log(Cookies.get('environment')+"/data-access-api/datasets/select?q=*:*"+collection_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&wt=json&rows=0");
         $.ajax({
-            url: Cookies.get('environment')+"/data-access-api/datasets/select?q=*"+query+"*"+collection_filters+data_filters+file_filters+"&wt=json&indent=true&start="+cpage*10,
+            url: Cookies.get('environment')+"/data-access-api/datasets/select?q=*"+query+"*"+collection_filters+"&wt=json&indent=true&start="+cpage*10,
             beforeSend: function(xhr) {
                 if(Cookies.get('token') && Cookies.get('token') != "None"){
 					xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
@@ -953,7 +1014,7 @@ function setup_labcas_search(query, divid, cpage){
              }
         });
         $.ajax({
-	    url: Cookies.get('environment')+"/data-access-api/datasets/select?q=*:*"+collection_filters+data_filters+file_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&facet.field="+dataset_facets.join("&facet.field=")+"&facet.field="+file_facets.join("&facet.field=")+"&wt=json&rows=0",
+	    url: Cookies.get('environment')+"/data-access-api/datasets/select?q=*:*"+collection_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&wt=json&rows=0",
             beforeSend: function(xhr) {
                 if(Cookies.get('token') && Cookies.get('token') != "None"){
 					xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
@@ -973,7 +1034,7 @@ function setup_labcas_search(query, divid, cpage){
     }
     if (divid == "files_search" || divid == "all"){
 		$.ajax({
-			url: Cookies.get('environment')+"/data-access-api/files/select?q=*"+query+"*"+collection_filters+data_filters+file_filters+"&wt=json&indent=true&start="+cpage*10,
+			url: Cookies.get('environment')+"/data-access-api/files/select?q=*"+query+"*"+collection_filters+"&wt=json&indent=true&start="+cpage*10,
 			xhrFields: {
 					withCredentials: true
 			  },
@@ -994,7 +1055,7 @@ function setup_labcas_search(query, divid, cpage){
 		});
 
 		$.ajax({
-			url: Cookies.get('environment')+"/data-access-api/files/select?q=*:*"+collection_filters+data_filters+file_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&facet.field="+dataset_facets.join("&facet.field=")+"&facet.field="+file_facets.join("&facet.field=")+"&wt=json&rows=0",
+			url: Cookies.get('environment')+"/data-access-api/files/select?q=*:*"+collection_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&wt=json&rows=0",
 			xhrFields: {
 					withCredentials: true
 			  },

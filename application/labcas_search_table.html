@@ -214,10 +214,13 @@
                         <div class="col-md-3">
                             <div class="card ">
                                 <div class="card-header">
-                                    <h4 class="card-title">Faceted Filters (<a href="#" onclick="reset_search_filters();">Reset</a>)</h4>
+                                    <h4 class="card-title"><select id="faceted_categories"  data-style="btn-default btn-outline" data-menu-style="dropdown-blue"></select>
+(<a href="#" onclick="reset_search_filters();">Reset</a>)</h4>
                                     <hr style="margin-top: .5em; margin-bottom: 0; height: 1px; color:#333;background-color:#333;">
                                 </div>
-                                <div class="card-header">
+                            </div>
+                            <div class="card " id="filter_options">
+                                <!--<div class="card-header">
                                     <h5 class="card-title">Organ </h5>
                                     <hr style="margin-top: .5em; margin-bottom: 0">
                                 </div>
@@ -225,8 +228,6 @@
                                        <form id="organ_filters">
                                         </form>
                                 </div>
-                            <!--</div>
-                            <div class="card ">-->
                                 <div class="card-header">
                                     <h5 class="card-title">Discipline</h5>
                                     <hr  style="margin-top: .5em; margin-bottom: 0">
@@ -234,10 +235,10 @@
                                 <div class="card-body" style="padding: 0px 15px 10px 15px">
                                        <form id="disc_filters">
                                         </form>
-                                </div>
+                                </div>-->
                             <!--</div>
                             <div class="card ">-->
-                                <div class="card-header">
+                               <!-- <div class="card-header">
                                     <h5 class="card-title">LeadPI</h5>
                                     <hr style="margin-top: .5em; margin-bottom: 0">
                                 </div>
@@ -270,7 +271,7 @@
                                         </form>
                                 </div>
                             <!--</div>
-                            <div class="card ">
+                            <!--<div class="card ">
                                 <div class="card-header">
                                     <h4 class="card-title">Dataset Filters (<a href="#" onclick="reset_search_filters();">Reset</a>)</h4>
                                     <hr style="margin-top: .5em; margin-bottom: 0; height: 1px; color:#333;background-color:#333;">
@@ -305,7 +306,7 @@
                                     <h4 class="card-title">File Filters (<a href="#" onclick="reset_search_filters();">Reset</a>)</h4>
                                     <hr style="margin-top: .5em; margin-bottom: 0; height: 1px; color:#333;background-color:#333;">
                                 </div>                          -->
-                                <div class="card-header">
+                               <!-- <div class="card-header">
                                     <h5 class="card-title">Gender </h5>
                                     <hr style="margin-top: .5em; margin-bottom: 0">
                                 </div>
@@ -314,7 +315,7 @@
                                         </form>
                                 </div>
 				<!--<div class="card-header">
-                                    <h5 class="card-title">Fixative </h5>
+                                  <!--  <h5 class="card-title">Fixative </h5>
                                     <hr style="margin-top: .5em; margin-bottom: 0">
                                 </div>
                                 <div class="card-body" style="padding: 0px 15px 10px 15px">
@@ -563,7 +564,7 @@
 <!--<script src="../assets/js/demo.js"></script>-->
 <script src="../assets/js/plugins/js.cookie.js"></script>
 <script src="../assets/js/labcas/labcas-sidebar.js"></script>
-<script src="../assets/js/labcas/authentication.js?96"></script>
+<script src="../assets/js/labcas/authentication.js?103"></script>
 <script src="../assets/js/labcas/utils.js?10"></script>
 <script src="../assets/js/labcas/search.js?2"></script>
 <script type="text/javascript">
