@@ -20,7 +20,6 @@
 .labcas-footer-links li + li {
     margin-left: 15px;
 }
-
 @media (min-width: 768px) {
     .labcas-footer {
         text-align: left;

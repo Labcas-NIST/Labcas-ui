@@ -61,7 +61,14 @@ function reset_search_filters(){
                 var divs = Cookies.get(head+"_filters_div").split(",");
                 $.each(divs, function(i, divhead) {
 			Cookies.set($.trim(divhead), "");
-			Cookies.set($.trim(divhead)+"_val", "");
+			if(divhead.includes("_num_")){
+				Cookies.set($.trim(divhead)+"_0","");
+				Cookies.set($.trim(divhead)+"_1","");
+				Cookies.set($.trim(divhead)+"_max_0","");
+				Cookies.set($.trim(divhead)+"_max_1","");
+			}else{
+				Cookies.set($.trim(divhead)+"_val", "");
+			}
                 });
 	});
         setup_labcas_search(get_var["search"], "all", 0);
@@ -795,40 +802,138 @@ function generate_filters(field_type, placeholder, data, display, head){
 	);
 
 	$("#"+placeholder).html("");
-        $.each(data, function(key, obj) {
-            if ($.isNumeric(obj)){
-                counts.push(obj);
-            }else{
-                filters.push(obj);
-            }
-        });
-        $.each(filters, function(i, o){
-	    if (counts[i] > 0){
-		var checked = "";
-		if (Cookies.get(placeholder+"_val") && Cookies.get(placeholder+"_val").includes($.trim(o))){
-			checked = "checked";
+
+	console.log(data);
+	if (placeholder.includes("_num_")){
+		var min = 100000000;
+		var max = -1;
+		var left = 0;
+		var right = 100;
+		var sum = 0;
+		var addflag = false;
+		$.each(data, function(key, obj) {
+                    if (Number.isInteger(obj)){
+			if(addflag){
+				sum += obj;
+			}
+                    }else{
+			if(!isNaN(obj)){
+				if(min > +obj){
+					min = +obj;
+				}
+				if (max < +obj){
+					max = +obj;
+				}
+				if(((Cookies.get(placeholder+"_0") && Cookies.get(placeholder+"_0") <= +obj) || (!Cookies.get(placeholder+"_0")))
+					&& (Cookies.get(placeholder+"_1") && Cookies.get(placeholder+"_1") >= +obj) || (!Cookies.get(placeholder+"_1"))){
+					addflag = true;
+				}else{
+					addflag = false;
+				}
+			}
+                    }
+                });
+		if (Cookies.get(placeholder+"_max_0")){
+			min = Cookies.get(placeholder+"_max_0");
+		}else{
+			Cookies.set(placeholder+"_max_0", Math.floor(min));
+			left = min;
 		}
-		    $("#"+placeholder).append($(' <div class="row"><div class="col-md-9">'+$.trim(o)+" ("+$.trim(counts[i])+')</div><div class="col-md-3"><input type="checkbox" '+checked+' name="'+placeholder+'[]" value="'+$.trim(o)+'" data-toggle="switch" data-on-color="info" data-off-color="info" data-on-text="<i class=\'fa fa-check\'></i>" data-off-text="<i class=\'fa fa-times\'></i>"><span class="toggle"></span></div></div>'));
-	    }
-        });
-        $('input[name="'+placeholder+'[]"]').change(function() {
-            var field_val = [];
-            $("input[name='"+placeholder+"[]']").each(function (index, obj) {
-                if(this.checked) {
-                    field_val.push(this.value);
-                }
-            });
-            var field_search = "";
-            if (field_val.length > 0){
-		var str_field_val = field_val.map(x => encodeURI(escapeRegExp(String(x))));
+		if (Cookies.get(placeholder+"_max_1")){
+			max = Cookies.get(placeholder+"_max_1");
+		}else{
+			Cookies.set(placeholder+"_max_1", Math.floor(max));
+			right = max;
+		}
+		if (Cookies.get(placeholder+"_0")){
+			left = Cookies.get(placeholder+"_0");
+		}else{
+			Cookies.set(placeholder+"_0", Math.floor(min));
+			left = min;
+		}
+		if (Cookies.get(placeholder+"_1")){
+			right = Cookies.get(placeholder+"_1");
+		}else{
+			Cookies.set(placeholder+"_1", Math.floor(max));
+			right = max;
+		}
+		$("#"+placeholder).append($('<div class="row"><div class="col-md-12" id="'+placeholder+'_count" style="text-align: center"></div></div><div class="row"><div class="col-md-2" style="text-align: left;" id="'+placeholder+'_0"></div><div class="col-md-8"><div id="'+placeholder+'_slider" class="slider-success"></div></div><div class="col-md-2"  style="text-align: right;" id="'+placeholder+'_1"></div></div>'));
 		
-                field_search = "&fq=("+encodeURI(escapeRegExp(field_type)).replace(/:/g,'%3A')+":"+str_field_val.join(" OR "+encodeURI(escapeRegExp(field_type))+":")+")";
-            }
-            Cookies.set(placeholder, field_search);
-            Cookies.set(placeholder+"_val",field_val);
-            Cookies.set("search_filter", "on");
-            setup_labcas_search(Cookies.get('search'), "all", 0);
-        });
+		var slider = document.getElementById(placeholder+'_slider');
+
+		var slider_left = document.getElementById(placeholder+'_0');
+		var slider_right = document.getElementById(placeholder+'_1');
+		noUiSlider.create(slider, {
+		    start: [left, right],
+		    connect: true,
+		    range: {
+			min: +min,
+			max: +max
+		    },
+		    step: 1
+		});
+		document.getElementById(placeholder+'_count').innerHTML = "("+sum+")";
+		slider.noUiSlider.on('update', function (values, handle) {
+		    if (handle == 0){
+			slider_left.innerHTML = Math.floor(values[handle]);
+		    }else if(handle == 1){
+			slider_right.innerHTML = Math.floor(values[handle]);
+		    }
+		});
+		slider.noUiSlider.on('end', function (values, handle) {
+		    if (handle == 0){
+			Cookies.set(placeholder+"_0", Math.floor(values[handle]));
+		    }else if(handle == 1){
+			Cookies.set(placeholder+"_1", Math.floor(values[handle]));
+		    }
+
+		    var str_field_val = encodeURI("["+Cookies.get(placeholder+"_0")+" TO "+Cookies.get(placeholder+"_1")+"]");
+		    var field_search = "&fq="+encodeURI(escapeRegExp(field_type)).replace(/:/g,'%3A')+":"+str_field_val;
+		    if (Cookies.get(placeholder+"_0") == Cookies.get(placeholder+"_max_0") && Cookies.get(placeholder+"_1") == Cookies.get(placeholder+"_max_1")){
+			field_search = "";
+		    }
+                    Cookies.set(placeholder, field_search);
+                    Cookies.set("search_filter", "on");
+                    setup_labcas_search(Cookies.get('search'), "all", 0);
+                });
+
+	}else{
+		$.each(data, function(key, obj) {
+		    if (Number.isInteger(obj)){
+			counts.push(obj);
+		    }else{
+			filters.push(obj);
+		    }
+		});
+		$.each(filters, function(i, o){
+		    if (counts[i] > 0){
+			var checked = "";
+			if (Cookies.get(placeholder+"_val") && Cookies.get(placeholder+"_val").includes($.trim(o))){
+				checked = "checked";
+			}
+			$("#"+placeholder).append($(' <div class="row"><div class="col-md-9">'+$.trim(o)+" ("+$.trim(counts[i])+')</div><div class="col-md-3"><input type="checkbox" '+checked+' name="'+placeholder+'[]" value="'+$.trim(o)+'" data-toggle="switch" data-on-color="info" data-off-color="info" data-on-text="<i class=\'fa fa-check\'></i>" data-off-text="<i class=\'fa fa-times\'></i>"><span class="toggle"></span></div></div>'));
+		    }
+		});
+	
+		$('input[name="'+placeholder+'[]"]').change(function() {
+		    var field_val = [];
+		    $("input[name='"+placeholder+"[]']").each(function (index, obj) {
+			if(this.checked) {
+			    field_val.push(this.value);
+			}
+		    });
+		    var field_search = "";
+		    if (field_val.length > 0){
+			var str_field_val = field_val.map(x => encodeURI(escapeRegExp(String(x))));
+			
+			field_search = "&fq=("+encodeURI(escapeRegExp(field_type)).replace(/:/g,'%3A')+":"+str_field_val.join(" OR "+encodeURI(escapeRegExp(field_type))+":")+")";
+		    }
+		    Cookies.set(placeholder, field_search);
+		    Cookies.set(placeholder+"_val",field_val);
+		    Cookies.set("search_filter", "on");
+		    setup_labcas_search(Cookies.get('search'), "all", 0);
+		});
+	}
 }
 
 function generate_categories(field_id, data){
@@ -850,7 +955,7 @@ function generate_categories(field_id, data){
 }
 function fill_collections_facets(data){
 	//console.log("DATA");
-	//console.log(data);
+	console.log(data);
 	//console.log("DATA3");
 	
     //if (Cookies.get("search_filter") != "on"){
@@ -859,6 +964,7 @@ function fill_collections_facets(data){
 		$.each(Cookies.get("filters").split(","), function(ind, head) {
 			$("."+head+"_card").hide();
 		});
+		$(".Core_card").show();
 		$(this).find("option:selected").each(function(){
 		    var optionValue = $(this).attr("value");
 	 	    Cookies.set("faceted_categories_selected", optionValue);
@@ -869,6 +975,7 @@ function fill_collections_facets(data){
 	$.each(Cookies.get("filters").split(","), function(ind, head) {
 		$("."+head+"_card").hide();
 	});
+	$(".Core_card").show();
 	$("."+Cookies.get("faceted_categories_selected")+"_card").show();
 	//generate_filters("Organ","organ_filters", data.facet_counts.facet_fields.Organ);
 	//generate_filters("LeadPI","pi_filters", data.facet_counts.facet_fields.LeadPI);
@@ -973,9 +1080,9 @@ function setup_labcas_search(query, divid, cpage){
 				 window.location.replace("/labcas-ui/application/pages/login.html");
 			 }
 		});
-		console.log(Cookies.get('environment')+"/data-access-api/collections/select?q=*:*"+collection_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&wt=json&rows=0");
+		console.log(Cookies.get('environment')+"/data-access-api/files/select?q=*:*"+collection_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&wt=json&rows=0");
 		$.ajax({
-			url: Cookies.get('environment')+"/data-access-api/collections/select?q=*:*"+collection_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&wt=json&rows=0",
+			url: Cookies.get('environment')+"/data-access-api/files/select?q=*:*"+collection_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&wt=json&rows=0",
 			beforeSend: function(xhr) {
 				if(Cookies.get('token') && Cookies.get('token') != "None"){
 					xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
