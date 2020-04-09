@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
     <!-- CSS Files -->
     <link href="../assets/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="../assets/css/light-bootstrap-dashboard.css?v=2.0.2" rel="stylesheet" />
+    <link href="../assets/css/light-bootstrap-dashboard.css?v=2.0.2&3" rel="stylesheet" />
     <!-- CSS Just for demo purpose, don't include it in your project -->
     <link href="../assets/css/labcas/custom.css?2" rel="stylesheet" />
 </head>
@@ -126,12 +126,12 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card-footer ">
+                                <!--<div class="card-footer ">
                                     <hr>
                                     <div class="stats">
                                         <i class="fa fa-refresh"></i> Updated Now
                                     </div>
-                                </div>
+                                </div>-->
                             </div>
                         </div>
                         <div class="col-lg-3 col-sm-6">
@@ -151,12 +151,12 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card-footer ">
+                                <!--<div class="card-footer ">
                                     <hr>
                                     <div class="stats">
                                         <i class="fa fa-refresh"></i> Updated now
                                     </div>
-                                </div>
+                                </div>-->
                             </div>
                         </div>
                         <div class="col-lg-3 col-sm-6">
@@ -176,12 +176,12 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card-footer ">
+                                <!--<div class="card-footer ">
                                     <hr>
                                     <div class="stats">
                                         <i class="fa fa-refresh"></i> Updated now
                                     </div>
-                                </div>
+                                </div>-->
                             </div>
                         </div>
                         <div class="col-lg-3 col-sm-6">
@@ -201,12 +201,12 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card-footer ">
+                                <!--<div class="card-footer ">
                                     <hr>
                                     <div class="stats">
                                         <i class="fa fa-refresh"></i> Updated now
                                     </div>
-                                </div>
+                                </div>-->
                             </div>
                         </div>
                     </div>
@@ -215,7 +215,7 @@
                             <div class="card ">
                                 <div class="card-header">
                                     <h4 class="card-title"><select id="faceted_categories"  data-style="btn-default btn-outline" data-menu-style="dropdown-blue"></select>
-(<a href="#" onclick="reset_search_filters();">Reset</a>)</h4>
+<a href="#" id="filter_reset" onclick="reset_search_filters();">*&nbsp;&nbsp;&nbsp;<i class="nc-icon nc-refresh-02" title="Reset Filters"></i></a></h4>
                                     <hr style="margin-top: .5em; margin-bottom: 0; height: 1px; color:#333;background-color:#333;">
                                 </div>
                             </div>
@@ -391,7 +391,7 @@
                                             <th data-field="discipline" data-sortable="true" data-visible="false">Discipline</th>
                                             <th data-field="datacustodian" data-sortable="true" data-visible="false">Data Custodian</th>
                                             <th data-field="organ" data-sortable="false">Organ</th>
-                                            <th data-field="actions" class="td-actions text-right" data-events="operateEvents" data-formatter="">Actions</th>
+                                            <th data-field="actions" class="td-actions" data-events="operateEvents" data-formatter="">Actions</th>
                                         </thead>
 													<tbody>
 													</tbody>
@@ -401,13 +401,13 @@
 										</div>
 										
 								</div>
-								<div class="card-footer ">
+								<!--<div class="card-footer ">
 									<hr>
 									<div class="stats">
 										<i class="now-ui-icons loader_refresh spin"></i> Updated 3 minutes ago
 									
 									</div>
-								</div>
+								</div>-->
 							</div>
 							<div class="card card-tasks">
 								<div class="card-header ">
@@ -423,7 +423,7 @@
                                             <th data-field="state"></th>
                                             <th data-field="dataset" data-sortable="true">Dataset</th>
                                             <th data-field="collection" data-sortable="true">Collection</th>
-                                            <th data-field="actions" class="td-actions text-right" data-events="operateEvents" data-formatter="">Actions</th>
+                                            <th data-field="actions" class="td-actions" data-events="operateEvents" data-formatter="">Actions</th>
                                         </thead>
 													<tbody>
 													</tbody>
@@ -435,13 +435,13 @@
 									
 								
 								</div>
-								<div class="card-footer ">
+								<!--<div class="card-footer ">
 									<hr>
 									<div class="stats">
 										<i class="now-ui-icons loader_refresh spin"></i> Updated 3 minutes ago
 									
 									</div>
-								</div>
+								</div>-->
 							</div>
 							<div class="card card-tasks">
 								<div class="card-header ">
@@ -461,7 +461,7 @@
                                             <th data-field="description" data-sortable="true">Description</th>
                                             <th data-field="thumb" data-sortable="true">Thumb</th>
                                             <th data-field="size" data-sortable="true">Size</th>
-                                            <th data-field="actions" class="td-actions text-right" data-events="operateEvents" data-formatter="">Actions</th>
+                                            <th data-field="actions" class="td-actions" data-events="operateEvents" data-formatter="">Actions</th>
                                         </thead>
 
 													<tbody>
@@ -471,13 +471,13 @@
 											<ul class="pagination pagination-no-border" id='files_search_pagination_bottom' style="float: right;"></ul>
 										</div>
 								</div>
-								<div class="card-footer ">
+								<!--<div class="card-footer ">
 									<hr>
 									<div class="stats">
 										<i class="now-ui-icons loader_refresh spin"></i> Updated 3 minutes ago
 									
 									</div>
-								</div>
+								</div>-->
 							</div>
 
                                                 
@@ -564,14 +564,15 @@
 <script src="../assets/js/demo.js"></script>
 <script src="../assets/js/plugins/js.cookie.js"></script>
 <script src="../assets/js/labcas/labcas-sidebar.js"></script>
-<script src="../assets/js/labcas/authentication.js?111"></script>
+<script src="../assets/js/labcas/authentication.js?114"></script>
 <script src="../assets/js/labcas/utils.js?11"></script>
 <script src="../assets/js/labcas/search.js?2"></script>
 <script type="text/javascript">
     $(document).ready(function() {
 	initCookies();
 
-	reset_search_filters();
+	//reset_search_filters();
+	initiate_search();
         
         $.get( "sidebar.html?3", function( data ) {
             $( "#sidebar_placeholder" ).append(data);

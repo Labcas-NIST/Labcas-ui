@@ -12,8 +12,8 @@ function initCookies(){
 			  dataType: 'json',
 			  async: false,
 			  success: function(json) {
-			Cookies.set("user", "Public");
-			Cookies.set("userletters", "PU");
+			Cookies.set("user", "Sign in");
+			//Cookies.set("userletters", "PU");
 			$.each( json, function( key, val ) {
 				Cookies.set(key, val);
 			});

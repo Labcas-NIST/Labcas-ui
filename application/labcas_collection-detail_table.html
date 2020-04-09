@@ -15,7 +15,7 @@
     <link href="../assets/css/bootstrap.min.css" rel="stylesheet" />
     <link href="../assets/css/light-bootstrap-dashboard.css?v=2.0.1&2" rel="stylesheet" />
     <!-- CSS Just for demo purpose, don't include it in your project -->
-    <link href="../assets/css/labcas/custom.css" rel="stylesheet" />
+    <link href="../assets/css/labcas/custom.css?2" rel="stylesheet" />
 </head>
 
 <body class="sidebar-mini">
@@ -361,7 +361,6 @@
         $("#breadcrumb_collection").html(get_var["collection_id"].replace(/_/g," "));
         $.get( "sidebar.html?3", function( data ) {
             $( "#sidebar_placeholder" ).append(data);
-            $( "#username_placeholder" ).html(Cookies.get('user'));
             $( "#username_placeholder_second" ).html(Cookies.get('user'));
         });
 		
