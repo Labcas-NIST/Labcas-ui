@@ -19,9 +19,29 @@ Array.prototype.unique = function() {
 function initiate_search(){
       var get_var = get_url_vars();
         Cookies.set("search", get_var["search"]);
+        $.each(Cookies.get("filters").split(","), function(ind, head) {
+                var divs = Cookies.get(head+"_filters_div").split(",");
+                $.each(divs, function(i, divhead) {
+                        Cookies.set($.trim(divhead), "");
+                        if(divhead.includes("_num_")){
+                                if (!Cookies.get($.trim(divhead)+"_0")){
+                                        Cookies.set($.trim(divhead)+"_0","");
+                                        Cookies.set($.trim(divhead)+"_1","");
+                                        Cookies.set($.trim(divhead)+"_max_0","");
+                                        Cookies.set($.trim(divhead)+"_max_1","");
+                                }
+                        }else{
+                                if (!Cookies.get($.trim(divhead)+"_val")){
+                                        Cookies.set($.trim(divhead)+"_val", "");
+                                }
+                        }
+                });
+        });
+
         setup_labcas_search(get_var["search"], "all", 0);
-	$("#favorites_len").html(user_data['FavoriteFiles'].length+user_data['FavoriteDatasets'].length+user_data['FavoriteCollections'].length);
+        $("#favorites_len").html(user_data['FavoriteFiles'].length+user_data['FavoriteDatasets'].length+user_data['FavoriteCollections'].length);
 }
+
 function reset_search_filters(){
       var get_var = get_url_vars();
         Cookies.set("search", get_var["search"]);
@@ -77,7 +97,8 @@ function reset_search_filters(){
 			}
                 });
 	});
-        setup_labcas_search(get_var["search"], "all", 0);
+	Cookies.set("search", "*");
+        setup_labcas_search("*", "all", 0);
 }
 function fill_collections_public_data(data){
 	$.each(data.response.docs, function(index, obj) {
@@ -281,7 +302,11 @@ function fill_collection_details_data(data){
 	obj.ProtocolName = protocols;
 	obj.Consortium = obj.Consortium? "<a href='"+Cookies.get('environment_url')+"'>"+obj.Consortium+"</a>" : "";
 	
-	var hide_headers = Cookies.get('collection_header_hide').split(',');
+	//var hide_headers = Cookies.get('collection_header_hide').split(',');  //Hiding now since we only want to display extended fields
+	var extended_headers = [];
+	if (Cookies.get('collection_header_extend_'+obj.id)){
+		extended_headers = Cookies.get('collection_header_extend_'+obj.id).split(',');
+	}
 	var show_headers = Cookies.get('collection_header_order').split(',');
 	var collapse_headers = Cookies.get('collapsible_headers').split(',');
 	var collection_id_append = Cookies.get('collection_id_append').split(',');
@@ -313,7 +338,7 @@ function fill_collection_details_data(data){
 			"</tr>");
 	});
 	$.each(obj, function(key, value) {
-		if (show_headers.includes(key) || hide_headers.includes(key)){
+		if (show_headers.includes(key) || !extended_headers.includes(key)){
 			return;
 		}
 		
@@ -353,7 +378,11 @@ function fill_dataset_details_data(data){
 	var collectionname = data.response.docs[0].CollectionName;
 	$("#collection_name").html("<a href=\"/labcas-ui/application/labcas_collection-detail_table.html?collection_id="+collectionid+"\">"+collectionname+"</a>");
 	
-	var hide_headers = Cookies.get('dataset_header_hide').split(',');
+	//var hide_headers = Cookies.get('dataset_header_hide').split(','); //Hiding since we only want to show extended headers
+	var extended_headers = [];
+        if (Cookies.get('dataset_header_extend_'+collectionid)){
+                extended_headers = Cookies.get('dataset_header_extend_'+collectionid).split(',');
+        }
     var show_headers = Cookies.get('dataset_header_order').split(',');
     var collection_id_append = Cookies.get('dataset_id_append').split(',');
 	
@@ -387,7 +416,7 @@ function fill_dataset_details_data(data){
     });
 	
 	$.each(data.response.docs[0], function(key, value) {
-		if (show_headers.includes(key) || hide_headers.includes(key)){
+		if (show_headers.includes(key) || !extended_headers.includes(key)){
             return;
         }
 		if ($.isArray(value)){
@@ -964,7 +993,7 @@ function fill_collections_facets(data){
 	console.log(data);
 	//console.log("DATA3");
 	
-   	if (Cookies.get("search_filter") == "on"){
+   	if (Cookies.get("search_filter") == "on" || (Cookies.get("search") && Cookies.get("search") != "*")){
 		$('#filter_reset').show();
 	}else{
 		$('#filter_reset').hide();
@@ -1090,9 +1119,9 @@ function setup_labcas_search(query, divid, cpage){
 				 window.location.replace("/labcas-ui/application/pages/login.html");
 			 }
 		});
-		console.log(Cookies.get('environment')+"/data-access-api/files/select?q=*:*"+collection_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&wt=json&rows=0");
+		console.log(Cookies.get('environment')+"/data-access-api/files/select?q=*"+query+"*"+collection_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&wt=json&rows=0");
 		$.ajax({
-			url: Cookies.get('environment')+"/data-access-api/files/select?q=*:*"+collection_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&wt=json&rows=0",
+			url: Cookies.get('environment')+"/data-access-api/files/select?q=*"+query+"*"+collection_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&wt=json&rows=0",
 			beforeSend: function(xhr) {
 				if(Cookies.get('token') && Cookies.get('token') != "None"){
 					xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
@@ -1131,7 +1160,7 @@ function setup_labcas_search(query, divid, cpage){
              }
         });
         $.ajax({
-	    url: Cookies.get('environment')+"/data-access-api/datasets/select?q=*:*"+collection_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&wt=json&rows=0",
+	    url: Cookies.get('environment')+"/data-access-api/datasets/select?q=*"+query+"*"+collection_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&wt=json&rows=0",
             beforeSend: function(xhr) {
                 if(Cookies.get('token') && Cookies.get('token') != "None"){
 					xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
@@ -1172,7 +1201,7 @@ function setup_labcas_search(query, divid, cpage){
 		});
 
 		$.ajax({
-			url: Cookies.get('environment')+"/data-access-api/files/select?q=*:*"+collection_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&wt=json&rows=0",
+			url: Cookies.get('environment')+"/data-access-api/files/select?q=*"+query+"*"+collection_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&wt=json&rows=0",
 			xhrFields: {
 					withCredentials: true
 			  },
