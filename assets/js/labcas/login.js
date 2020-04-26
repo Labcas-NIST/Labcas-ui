@@ -15,7 +15,7 @@ $('#loginform').submit(function (e) {
                 },
                 type: 'GET',
                 success: function (data) {
-                	
+			Cookies.set("logout_alert","Off");
 			Cookies.set("token", data);
 			Cookies.set("JasonWebToken", data);
 			//Get user data, then redirect
