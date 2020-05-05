@@ -20,11 +20,15 @@ function initiate_search(){
       var get_var = get_url_vars();
 	if(Cookies.get("search")){
         	Cookies.set("search", get_var["search"]);
+	}else{
+		Cookies.set("search", "*");
 	}
-        /*$.each(Cookies.get("filters").split(","), function(ind, head) {
+        $.each(Cookies.get("filters").split(","), function(ind, head) {
                 var divs = Cookies.get(head+"_filters_div").split(",");
                 $.each(divs, function(i, divhead) {
-                        Cookies.set($.trim(divhead), "");
+			if (!Cookies.get($.trim(divhead))){
+				Cookies.set($.trim(divhead), "");
+			}
                         if(divhead.includes("_num_")){
                                 if (!Cookies.get($.trim(divhead)+"_0")){
                                         Cookies.set($.trim(divhead)+"_0","");
@@ -38,7 +42,7 @@ function initiate_search(){
                                 }
                         }
                 });
-        });*/
+        });
 
         setup_labcas_search(Cookies.get("search"), "all", 0);
         $("#favorites_len").html(user_data['FavoriteFiles'].length+user_data['FavoriteDatasets'].length+user_data['FavoriteCollections'].length);
@@ -448,6 +452,10 @@ function fill_file_details_data(data){
 		var url = data.response.docs[0].FileUrl;
 		fileurl = "<a href='"+url+"'>"+url+"</a>";
 	}
+	var filesize = "";
+	if (data.response.docs[0].FileSize){
+		filesize = humanFileSize(data.response.docs[0].FileSize, true);
+	}
 	$.each(data.response.docs[0], function(key, value) {
 		if (key == "_version_"){
 			return;
@@ -458,6 +466,9 @@ function fill_file_details_data(data){
 		if (key == "FileUrl"){
 			value = fileurl;
 		}
+		if (key == "FileSize"){
+			value = filesize;
+		}
           $("#filedetails-table tbody").append(
             "<tr>"+
 				"<td class='text-right'  valign='top' style='padding: 2px 8px;' width='20%'>"+key.replace( /([A-Z])/g, " $1" )+":</td>"+
@@ -467,8 +478,8 @@ function fill_file_details_data(data){
 			"</tr>");
 		
     });
-    $("#file_details_len").html(Object.keys(data.response.docs[0]).length);
-    
+    //$("#file_details_len").html(Object.keys(data.response.docs[0]).length);
+    $("#filesize").html(filesize); 
     $("#download_icon").attr("onclick","location.href='"+Cookies.get('environment')+"/data-access-api/download?id="+html_safe_id+"';");
 
 }
@@ -527,14 +538,13 @@ function fill_files_data(data){
 			thumb = "<img width='50' height='50' src='/labcas-ui/assets/"+value.ThumbnailRelativePath+"'/>";
 		}
         var html_safe_id = encodeURI(escapeRegExp(value.id));
+		var filesize = "";
+		if (value.FileSize){
+			filesize = humanFileSize(value.FileSize, true);
+		}
 		$("#files-table tbody").append(
 		"<tr>"+
-			"<td><!--<div class=\"form-check\">"+
-				"<label class=\"form-check-label\">"+
-					"<input class=\"form-check-input\" type=\"checkbox\" value=''>"+
-					"<span class=\"form-check-sign\"></span>"+
-				"</label>"+
-			"</div>--></td>"+
+			"<td></td>"+
 			"<td class='text-left'>"+
 				"<a href=\"/labcas-ui/application/labcas_file-detail_table.html?file_id="+
 					html_safe_id+"\">"+
@@ -551,7 +561,7 @@ function fill_files_data(data){
 					thumb+
 			"</td>"+
 			"<td class='text-left'>"+
-					value.FileSize+
+					filesize+
 			"</td>"+
 			"<td class=\"td-actions text-right\">"+
 				"<button type=\"button\" rel=\"favoritebutton\" title=\"Favorite\" onclick=\"save_favorite('"+value.id+"', 'FavoriteFiles')\" class=\"btn "+color+" btn-simple btn-link\">"+
@@ -804,6 +814,11 @@ function fill_files_search(data){
 	  if ('ThumbnailRelativePath' in obj){
 		thumb = "<img width='50' height='50' src='/labcas-ui/assets/"+obj.ThumbnailRelativePath+"'/>";
   	  }
+	  var filesize = "";
+	  if (obj.FileSize){
+  		filesize = humanFileSize(obj.FileSize, true);
+          }
+
 	  $("#search-file-table tbody").append(
 		"<tr>"+
 			"<td class='text-left'>"+
@@ -822,7 +837,7 @@ function fill_files_search(data){
 					thumb+
 			"</td>"+
 			"<td class='text-left'>"+
-					obj.FileSize+
+					filesize+
 			"</td>"+
 			"<td class=\"td-actions\">"+
 				"<button type=\"button\" rel=\"tooltip\" title=\"Favorite\" onclick=\"save_favorite('"+obj.id+"', 'FavoriteFiles')\" class=\"btn "+color+" btn-simple btn-link\">"+
@@ -1290,6 +1305,10 @@ function fill_files_starred(data){
 		  if ('ThumbnailRelativePath' in obj){
 			thumb = "<img width='50' height='50' src='/labcas-ui/assets/"+obj.ThumbnailRelativePath+"'/>";
 		  }
+		var filesize = "";
+		  if (obj.FileSize){
+			filesize = humanFileSize(obj.FileSize, true);
+		  }     
 		  $("#starred-file-table tbody").append(
 			"<tr>"+
 				"<td><!--<div class=\"form-check\">"+
@@ -1314,7 +1333,7 @@ function fill_files_starred(data){
 						thumb+
 				"</td>"+
 				"<td class='text-left'>"+
-						obj.FileSize+
+						filesize+
 				"</td>"+
 				"<td class=\"td-actions\">"+
 					"<button type=\"button\" rel=\"tooltip\" title=\"Favorite\" onclick=\"save_favorite('"+obj.id+"', 'FavoriteFiles')\" class=\"btn "+color+" btn-simple btn-link\">"+
