@@ -355,3 +355,34 @@ function humanFileSize(bytes, si) {
     } while(Math.abs(bytes) >= thresh && u < units.length - 1);
     return bytes.toFixed(1)+' '+units[u];
 }
+function wait(ms) {
+    var start = Date.now(),
+        now = start;
+    while (now - start < ms) {
+      now = Date.now();
+    }
+}
+function download_files(formname){
+    $('#' + formname + ' input[type="checkbox"]').each(function() {
+        if ($(this).is(":checked")) {
+            //alert($(this).val());
+            
+            var dataurl = Cookies.get('environment')+"/data-access-api/download?id="+$(this).val();
+	    console.log("Downloading "+dataurl);
+	    window.location = dataurl;
+	    wait(2000);
+            /*$.ajax({
+		url: Cookies.get('environment')+"/data-access-api/download?id="+$(this).val(),
+		type: 'GET',
+		beforeSend: function() {
+		    console.log("Downloading ");
+		},
+		complete: function() {
+	            //console.log("Downloading "+$(this).val());
+	            console.log("Downloading "+dataurl);
+		    window.location = dataurl;
+		}
+	    });*/
+        }
+    });
+}

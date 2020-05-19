@@ -1,5 +1,4 @@
-var root_app = "";
-var test = "";
+var page_files = {};
 Array.prototype.contains = function(v) {
       for (var i = 0; i < this.length; i++) {
               if (this[i] === v) return true;
@@ -53,41 +52,6 @@ function reset_search_filters(){
         Cookies.set("search", get_var["search"]);
         Cookies.set("search_filter", "off");
 
-        /*Cookies.set("organ_filters_val", "");
-        Cookies.set("pi_filters_val", "");
-        Cookies.set("disc_filters_val", "");
-        Cookies.set("gender_filters_val","");
-	Cookies.set("institution_filters_val","");
-	Cookies.set("study_filters_val","");
-	Cookies.set("collaborative_filters_val","");
-        //Cookies.set("filetype_filters_val","");
-        //Cookies.set("stain_filters_val","");
-        //Cookies.set("procedure_filters_val","");
-        //Cookies.set("fixative_filters_val","");
-        //Cookies.set("ncitorgan_filters_val","");
-        //Cookies.set("scan_filters_val","");
-        //Cookies.set("animaltype_filters_val","");
-        //Cookies.set("status_filters_val","");
-        //Cookies.set("cohort_filters_val","");
-        //Cookies.set("species_filters_val","");
-        
-        Cookies.set("organ_filters", "");
-        Cookies.set("pi_filters", "");
-        Cookies.set("disc_filters", "");
-        Cookies.set("gender_filters","");
-	Cookies.set("institution_filters","");
-	Cookies.set("study_filters","");
-	Cookies.set("collaborative_filters","");
-        //Cookies.set("filetype_filters","");
-        //Cookies.set("stain_filters","");
-        //Cookies.set("procedure_filters","");
-        //Cookies.set("fixative_filters","");
-        //Cookies.set("ncitorgan_filters","");
-        //Cookies.set("scan_filters","");
-        //Cookies.set("animaltype_filters","");
-        //Cookies.set("status_filters","");
-        //Cookies.set("cohort_filters","");
-        //Cookies.set("species_filters","");*/
         
 	$.each(Cookies.get("filters").split(","), function(ind, head) {
                 var divs = Cookies.get(head+"_filters_div").split(",");
@@ -121,18 +85,13 @@ function fill_collections_public_data(data){
 		
 			if (Cookies.get('environment').includes("edrn-labcas")){
 				var obj_arr = generate_edrn_links(obj);
-				//institutions = obj_arr[0].join(",");
 				protocols = obj_arr[3].join(",");
-				//pis = obj_arr[1].join(",");
 				orgs = obj_arr[2].join(",");
 			}else if(Cookies.get('environment').includes("mcl-labcas") || Cookies.get('environment').includes("labcas-dev")){
 				var obj_arr = generate_mcl_links(obj);
 				protocols = obj_arr[3].join(",");
-				//institutions = obj_arr[0].join(",");
-				//pis = obj_arr[1].join(",");
 				orgs = obj_arr[2].join(",");
 			}
-			//console.log(institutions);
 			  $("#collection-table tbody").append(
 				"<tr>"+
 					"<td></td><td>"+
@@ -150,7 +109,6 @@ function fill_collections_public_data(data){
 							"</button>"+
 						"</td>"+
 				"</tr>");
-			  //console.log(obj);
 		}
     });
     $table.bootstrapTable({
@@ -204,15 +162,11 @@ function fill_collections_data(data){
     	
     	if (Cookies.get('environment').includes("edrn-labcas")){
 			var obj_arr = generate_edrn_links(obj);
-			//institutions = obj_arr[0].join(", ");
 			protocols = obj_arr[3].join(", ");
-			//pis = obj_arr[1].join(", ");
 			orgs = obj_arr[2].join(", ");
 		}else if(Cookies.get('environment').includes("mcl-labcas") || Cookies.get('environment').includes("labcas-dev")){
 			var obj_arr = generate_mcl_links(obj);
 			protocols = obj_arr[3].join(", ");
-			//institutions = obj_arr[0].join(", ");
-			//pis = obj_arr[1].join(", ");
 			orgs = obj_arr[2].join(", ");
 		}
 		console.log(protocols);
@@ -290,8 +244,6 @@ function fill_collection_details_data(data){
 	
 	if (Cookies.get('environment').includes("edrn-labcas")){
 		var obj_arr = generate_edrn_links(obj);
-		//institutions = obj_arr[0].join(", ");
-		//pis = obj_arr[1].join(", ");
 		protocols = obj_arr[3].join(",");
 		orgs = obj_arr[2].join(", ");
 	}else if(Cookies.get('environment').includes("mcl-labcas") || Cookies.get('environment').includes("labcas-dev")){
@@ -308,7 +260,6 @@ function fill_collection_details_data(data){
 	obj.ProtocolName = protocols;
 	obj.Consortium = obj.Consortium? "<a href='"+Cookies.get('environment_url')+"'>"+obj.Consortium+"</a>" : "";
 	
-	//var hide_headers = Cookies.get('collection_header_hide').split(',');  //Hiding now since we only want to display extended fields
 	var extended_headers = [];
 	if (Cookies.get('collection_header_extend_'+obj.id)){
 		extended_headers = Cookies.get('collection_header_extend_'+obj.id).split(',');
@@ -478,7 +429,6 @@ function fill_file_details_data(data){
 			"</tr>");
 		
     });
-    //$("#file_details_len").html(Object.keys(data.response.docs[0]).length);
     $("#filesize").html(filesize); 
     $("#download_icon").attr("onclick","location.href='"+Cookies.get('environment')+"/data-access-api/download?id="+html_safe_id+"';");
 
@@ -542,9 +492,10 @@ function fill_files_data(data){
 		if (value.FileSize){
 			filesize = humanFileSize(value.FileSize, true);
 		}
+		
 		$("#files-table tbody").append(
 		"<tr>"+
-			"<td></td>"+
+			"<td><center><input type='checkbox' class='form-check-input' value='"+html_safe_id+"'></center></td>"+
 			"<td class='text-left'>"+
 				"<a href=\"/labcas-ui/application/labcas_file-detail_table.html?file_id="+
 					html_safe_id+"\">"+
@@ -639,8 +590,6 @@ function setup_labcas_data(datatype, query, dataset_query){
 			dataType: 'json',
 			processData: false,
 			success: function (data) {
-                //console.log(Cookies.get('environment')+"/data-access-api/datasets/select?q="+dataset_query+"&wt=json&indent=true&rows=2147483647");
-                //console.log(Cookies.get('token'));
                 fill_datasets_data(data);
 			},
 			error: function(e){
@@ -706,7 +655,6 @@ function setup_labcas_dataset_data(datatype, query, file_query, cpage){
 }
 
 function setup_labcas_file_data(datatype, query, file_query){
-    //console.log( Cookies.get('environment')+"/data-access-api/files/select?q="+query+"&wt=json&indent=true");
     $.ajax({
         url: Cookies.get('environment')+"/data-access-api/files/select?q="+query+"&wt=json&indent=true",
         xhrFields: {
@@ -740,11 +688,6 @@ function setup_labcas_file_data(datatype, query, file_query){
 function fill_datasets_facets(data){
 	console.log("Data_facets_output");
 	console.log(data);
-    //if (Cookies.get("search_filter") != "on"){
-        //generate_filters("ExperimentStatus","status_filters", data.facet_counts.facet_fields.ExperimentStatus);
-        //generate_filters("Cohort","cohort_filters", data.facet_counts.facet_fields.Cohort);
-        //generate_filters("Species","species_filters", data.facet_counts.facet_fields.Species);
-    //}
 }
 
 function fill_datasets_search(data){
@@ -786,16 +729,6 @@ function fill_datasets_search(data){
 
 function fill_files_facets(data){
 	
-    //if (Cookies.get("search_filter") != "on"){
-        //generate_filters("FileType","filetype_filters", data.facet_counts.facet_fields["FileType"]);
-        //generate_filters("labcas.pathology:Stain","stain_filters", data.facet_counts.facet_fields["labcas.pathology:Stain"]);
-        //generate_filters("labcas.pathology:NCITProcedure","procedure_filters", data.facet_counts.facet_fields["labcas.pathology:NCITProcedure"]);
-        //generate_filters("labcas.pathology:Fixative","fixative_filters", data.facet_counts.facet_fields["labcas.pathology:Fixative"]);
-        //generate_filters("labcas.pathology:NCITOrganCode","ncitorgan_filters", data.facet_counts.facet_fields["labcas.pathology:NCITOrganCode"]);
-        //generate_filters("labcas.pathology:Gender","gender_filters", data.facet_counts.facet_fields["labcas.pathology:Gender"]);
-        //generate_filters("labcas.pathology:ScanStatus","scan_filters", data.facet_counts.facet_fields["labcas.pathology:ScanStatus"]);
-        //generate_filters("labcas.pathology:AnimalType","animaltype_filters", data.facet_counts.facet_fields["labcas.pathology:AnimalType"]);
-    //}
 }
 function fill_files_search(data){
 	var size = data.response.numFound;
@@ -857,7 +790,7 @@ function generate_filters(field_type, placeholder, data, display, head){
 		    '<h5 class="card-title">'+display+'</h5>'+
 		    '<hr style="margin-top: .5em; margin-bottom: 0">'+
 		'</div>'+
-		'<div class="card-body '+head+'_card" style="padding: 0px 15px 10px 15px">'+
+		'<div id="'+placeholder+'_card" class="card-body '+head+'_card" style="padding: 0px 15px 10px 15px; height: 20px; overflow-y: auto;">'+
 		       '<form id="'+placeholder+'">'+
 			'</form>'+
 		'</div>'
@@ -967,6 +900,7 @@ function generate_filters(field_type, placeholder, data, display, head){
 			filters.push(obj);
 		    }
 		});
+                var filter_count = 0;
 		$.each(filters, function(i, o){
 		    if (counts[i] > 0){
 			var checked = "";
@@ -974,8 +908,14 @@ function generate_filters(field_type, placeholder, data, display, head){
 				checked = "checked";
 			}
 			$("#"+placeholder).append($(' <div class="row"><div class="col-md-9">'+$.trim(o)+" ("+$.trim(counts[i])+')</div><div class="col-md-3"><input type="checkbox" '+checked+' name="'+placeholder+'[]" value="'+$.trim(o)+'" data-toggle="switch" data-on-color="info" data-off-color="info" data-on-text="<i class=\'fa fa-check\'></i>" data-off-text="<i class=\'fa fa-times\'></i>"><span class="toggle"></span></div></div>'));
+			filter_count += 1;
 		    }
 		});
+		var filter_height = filter_count*50;
+		if (filter_height > 100){
+			filter_height = 100;
+		}
+		$('#'+placeholder+'_card').css("height",filter_height.toString()+"px");
 	
 		$('input[name="'+placeholder+'[]"]').change(function() {
 		    var field_val = [];
@@ -1047,17 +987,11 @@ function fill_collections_search(data){
 	var cpage = data.response.start;
 	load_pagination("collections_search",size,cpage);
 	$("#search-collection-table tbody").empty();
-    //var organ_filter = [];
-    //var pi_filter = [];
-    //var disc_filter = [];
 	$.each(data.response.docs, function(key, obj) {
 	  var color = "btn-info";
 	  if(user_data["FavoriteCollections"].includes(obj.id)){
 			color = "btn-success";
 	  }
-      //organ_filter.push(String(obj.Organ));
-      //disc_filter.push(String(obj.Discipline));
-      //pi_filter.push(String(obj.LeadPI));
 	  $("#search-collection-table tbody").append(
 		"<tr>"+
 			"<td>"+
@@ -1077,16 +1011,12 @@ function fill_collections_search(data){
 		"</tr>");	
 	});                                                                     
     $("#collections_len").html(size); 
-    //organ_filter = organ_filter.unique();
-    //disc_filter = disc_filter.unique();
-    //pi_filter = pi_filter.unique();
 }
 
 
 function setup_labcas_search(query, divid, cpage){
     console.log("Searching...");
 
-	//var collection_filters = Cookies.get('organ_filters')+Cookies.get('pi_filters')+Cookies.get('disc_filters')+Cookies.get('study_filters')+Cookies.get('institution_filters')+Cookies.get('collaborative_filters')
 	var collection_filters = "";
 	var collection_facets = [];
 	$.each(Cookies.get("filters").split(","), function(ind, head) {
@@ -1096,20 +1026,7 @@ function setup_labcas_search(query, divid, cpage){
 		});
 		collection_facets = collection_facets.concat(Cookies.get(head+"_filters_id").split(","));
 	});
-	//var data_filters = Cookies.get('species_filters')+Cookies.get('cohort_filters')+Cookies.get('status_filters')
 	var data_filters = "";
-	//var file_filters = Cookies.get("filetype_filters")+Cookies.get("stain_filters")+Cookies.get("procedure_filters")+Cookies.get("fixative_filters")+Cookies.get("ncitorgan_filters")+Cookies.get("gender_filters")+Cookies.get("scan_filters")+Cookies.get("animaltype_filters")+Cookies.get('organ_filters')+Cookies.get('pi_filters')+Cookies.get('disc_filters');
-	//var file_filters = Cookies.get("filetype_filters")+Cookies.get("stain_filters")+Cookies.get("procedure_filters")+Cookies.get("fixative_filters")+Cookies.get("ncitorgan_filters")+Cookies.get("gender_filters")+Cookies.get("scan_filters")+Cookies.get("animaltype_filters")+Cookies.get('organ_filters')+Cookies.get('pi_filters')+Cookies.get('disc_filters');
-	//var file_filters = Cookies.get("gender_filters")
-
-	//var dataset_facets = ['ExperimentStatus','Species','Cohort'];
-	//var dataset_facets = [];
-	//var file_facets = ['labcas.pathology:Stain','labcas.pathology:NCITProcedure','labcas.pathology:Fixative','labcas.pathology:NCITOrganCode','FileType','labcas.pathology:Gender','labcas.pathology:ScanStatus','labcas.pathology:AnimalType'];
-	//var file_facets = ['labcas.pathology:Gender'];
-	//if (query != '*'){
-		//query = encodeURI(query);
-		//query = encodeURI(escapeRegExp(query));
-	//}
     if (divid == "collections_search" || divid == "all"){
 		console.log(Cookies.get('environment')+"/data-access-api/collections/select?q="+query+""+collection_filters+"&wt=json&indent=true&start="+cpage*10);
 		$.ajax({
@@ -1257,8 +1174,6 @@ function setup_labcas_search(query, divid, cpage){
 function fill_datasets_starred(data){
 	var size = data.response.numFound;
 	var cpage = data.response.start;
-	//load_pagination("datasets_search",size,cpage);
-	//console.log(data);
 	$("#starred-dataset-table tbody").empty();
 	$.each(data.response.docs, function(key, obj) {
 	  if(user_data["FavoriteDatasets"].includes(obj.id)){
@@ -1292,11 +1207,8 @@ function fill_datasets_starred(data){
 function fill_files_starred(data){
 	var size = data.response.numFound;
 	var cpage = data.response.start;
-	//load_pagination("files_search",size,cpage);
-	//console.log(data);
 	$("#starred-file-table tbody").empty();
 	$.each(data.response.docs, function(key, obj) {
-	  //if(user_data["FavoriteFiles"].includes(obj.id)){
 		  var color = "btn-success";
 	  
 		  var filetype = obj.FileType ? obj.FileType.join(",") : "";
@@ -1349,7 +1261,6 @@ function fill_files_starred(data){
 function fill_collections_starred(data){
 	var size = data.response.numFound;
 	var cpage = data.response.start;
-	//load_pagination("collections_search",size,cpage);
 	$("#starred-collection-table tbody").empty();
 	
 	console.log(data.response.docs);
@@ -1442,7 +1353,6 @@ function setup_labcas_starred(query, divid, cpage){
                    Cookies.set("logout_alert","On");
                    alert(formatTimeOfDay($.now()) + ": Login expired, please login...");
 		}
-                 //window.location.replace("/labcas-ui/application/pages/login.html");
              }
         });
     }
@@ -1470,7 +1380,6 @@ function setup_labcas_starred(query, divid, cpage){
                                    Cookies.set("logout_alert","On");
 				   alert(formatTimeOfDay($.now()) + ": Login expired, please login...");
 				}
-				 //window.location.replace("/labcas-ui/application/pages/login.html");
 			 
 			 }
 		});
