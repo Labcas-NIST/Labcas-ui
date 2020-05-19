@@ -451,12 +451,14 @@
 									<p class="card-category">Explore or Download</p>
 								</div>
 								<div class="card-body">
-								
+								<button type="submit" onclick="download_files('search-file-table');" class="btn btn-primary">Download</button>
+
 										<div id="icon-style">
 											<ul class="pagination pagination-no-border" id='files_search_pagination_top' style="float: right;"></ul>
 											<div class="table-full-width">
 												<table class="table" id="search-file-table" style="table-layout: fixed;">
                                          <thead>                                                        
+					    <th>Select</th>
                                             <th data-field="file" data-sortable="true">File</th>
                                             <th data-field="type" data-sortable="true">Type</th>
                                             <th data-field="description" data-sortable="true">Description</th>

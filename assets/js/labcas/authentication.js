@@ -751,12 +751,14 @@ function fill_files_search(data){
 	  if (obj.FileSize){
   		filesize = humanFileSize(obj.FileSize, true);
           }
+	  var html_safe_id = encodeURI(escapeRegExp(obj.id));
 
 	  $("#search-file-table tbody").append(
 		"<tr>"+
+			"<td><center><input type='checkbox' class='form-check-input' value='"+html_safe_id+"'></center></td>"+
 			"<td class='text-left'>"+
 				"<a href=\"/labcas-ui/application/labcas_file-detail_table.html?file_id="+
-					obj.id+"\">"+
+					html_safe_id+"\">"+
 					obj.FileName+
 				"</a>"+
 			"</td>"+

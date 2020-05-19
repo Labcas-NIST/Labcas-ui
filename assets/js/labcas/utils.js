@@ -156,7 +156,7 @@ function dataset_compare_sort(a, b) {
   const idA = a.id.toUpperCase();
   const idB = b.id.toUpperCase();
 
-  let comparison = 0;
+  var comparison = 0;
   if (idA > idB) {
     comparison = 1;
   } else if (idA < idB) {
@@ -190,7 +190,11 @@ function generate_mcl_links(obj){
                 for (var i = 0; i < obj.ProtocolName.length; i++) {
                         o = $.trim(obj.ProtocolName[i]);
                         if (o != ""){
-                                inst_url = o.replace(/\./g,"").replace(/\(/g,"").replace(/\)/g,"").replace(/ - /g," ").toLowerCase().replace(/ /g,"-");
+                                inst_url = o.replace(/\./g,"-").replace(/\(/g,"-").replace(/\)/g,"-").replace(/ - /g,"-").replace(/:/g,"-").replace(/,/g,"-").replace(/\//g,"-").toLowerCase().replace(/ /g,"-");
+     				while (inst_url.includes("--") || inst_url.startsWith("-") || inst_url.endsWith("-")){
+					inst_url = inst_url.replace(/--/g,"-");
+					inst_url = inst_url.trim("-");
+				}
                         }
                         protocols.push("<a href='"+Cookies.get('protocol_url')+inst_url+"'>"+o+"</a>");
 
