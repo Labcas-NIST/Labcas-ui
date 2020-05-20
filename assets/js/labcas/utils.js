@@ -373,7 +373,7 @@ function download_files(formname){
             
             var dataurl = Cookies.get('environment')+"/data-access-api/download?id="+$(this).val();
 	    console.log("Downloading "+dataurl);
-	    window.location = dataurl;
+	    window.open(dataurl);
 	    wait(2000);
             /*$.ajax({
 		url: Cookies.get('environment')+"/data-access-api/download?id="+$(this).val(),
