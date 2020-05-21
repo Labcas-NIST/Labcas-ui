@@ -95,7 +95,7 @@ function fill_collections_public_data(data){
 			  $("#collection-table tbody").append(
 				"<tr>"+
 					"<td></td><td>"+
-					"<a href=\"/labcas-ui/application/labcas_collection-detail_table.html?collection_id="+
+					"<a href=\"/labcas-ui/c/index.html?collection_id="+
 						obj.id+"\">"+
 					obj.CollectionName+"</a></td>"+
 					"<td>"+pis+"</td>"+
@@ -178,7 +178,7 @@ function fill_collections_data(data){
           $("#collection-table tbody").append(
             "<tr>"+
                 "<td></td><td>"+
-                "<a href=\"/labcas-ui/application/labcas_collection-detail_table.html?collection_id="+
+                "<a href=\"/labcas-ui/c/index.html?collection_id="+
                     obj.id+"\">"+
                 obj.CollectionName+"</a></td>"+
                 "<td>"+pis+"</td>"+
@@ -333,7 +333,7 @@ function fill_dataset_details_data(data){
 	
 	var collectionid = data.response.docs[0].CollectionId;
 	var collectionname = data.response.docs[0].CollectionName;
-	$("#collection_name").html("<a href=\"/labcas-ui/application/labcas_collection-detail_table.html?collection_id="+collectionid+"\">"+collectionname+"</a>");
+	$("#collection_name").html("<a href=\"/labcas-ui/c/index.html?collection_id="+collectionid+"\">"+collectionname+"</a>");
 	
 	//var hide_headers = Cookies.get('dataset_header_hide').split(','); //Hiding since we only want to show extended headers
 	var extended_headers = [];
@@ -453,7 +453,7 @@ function fill_datasets_data(data){
 						"</label>"+
 					"</div>--></td>"+
 					"<td class='text-left' valign='middle' style='padding: 0px 8px; vertical-align: middle;'>"+
-                        "<a href=\"/labcas-ui/application/labcas_dataset-detail_table.html?dataset_id="+
+                        "<a href=\"/labcas-ui/d/index.html?dataset_id="+
                             value.id+"\">"+
                             value.DatasetName+
                         "</a>"+
@@ -497,7 +497,7 @@ function fill_files_data(data){
 		"<tr>"+
 			"<td><center><input type='checkbox' class='form-check-input' value='"+html_safe_id+"'></center></td>"+
 			"<td class='text-left'>"+
-				"<a href=\"/labcas-ui/application/labcas_file-detail_table.html?file_id="+
+				"<a href=\"/labcas-ui/f/index.html?file_id="+
 					html_safe_id+"\">"+
 					value.FileName+
 				"</a>"+
@@ -709,10 +709,10 @@ function fill_datasets_search(data){
 	  $("#search-dataset-table tbody").append(
 		"<tr>"+
 			"<td>"+
-			"<a href=\"/labcas-ui/application/labcas_dataset-detail_table.html?dataset_id="+
+			"<a href=\"/labcas-ui/d/index.html?dataset_id="+
                     obj.id+"\">"+
                 obj.DatasetName+"</a></td>"+
-                "<td><a href=\"/labcas-ui/application/labcas_collection-detail_table.html?collection_id="+
+                "<td><a href=\"/labcas-ui/c/index.html?collection_id="+
                     obj.CollectionId+"\">"+
                     	obj.CollectionName+"</a></td>"+
                 "<!--<td>"+obj.DatasetVersion+"</td>-->"+
@@ -757,7 +757,7 @@ function fill_files_search(data){
 		"<tr>"+
 			"<td><center><input type='checkbox' class='form-check-input' value='"+html_safe_id+"'></center></td>"+
 			"<td class='text-left'>"+
-				"<a href=\"/labcas-ui/application/labcas_file-detail_table.html?file_id="+
+				"<a href=\"/labcas-ui/f/index.html?file_id="+
 					html_safe_id+"\">"+
 					obj.FileName+
 				"</a>"+
@@ -997,7 +997,7 @@ function fill_collections_search(data){
 	  $("#search-collection-table tbody").append(
 		"<tr>"+
 			"<td>"+
-			"<a href=\"/labcas-ui/application/labcas_collection-detail_table.html?collection_id="+
+			"<a href=\"/labcas-ui/c/index.html?collection_id="+
                     obj.id+"\">"+
                 obj.CollectionName+"</a></td>"+
                 "<td>"+obj.LeadPI+"</td>"+
@@ -1190,10 +1190,10 @@ function fill_datasets_starred(data){
 						"<span class=\"form-check-sign\"></span>"+
 					"</label>"+
 				"</div>--></td><td>"+
-				"<a href=\"/labcas-ui/application/labcas_dataset-detail_table.html?dataset_id="+
+				"<a href=\"/labcas-ui/d/index.html?dataset_id="+
 						obj.id+"\">"+
 					obj.DatasetName+"</a></td>"+
-					"<td><a href=\"/labcas-ui/application/labcas_collection-detail_table.html?collection_id="+
+					"<td><a href=\"/labcas-ui/c/index.html?collection_id="+
 						obj.CollectionId+"\">"+
 							obj.CollectionName+"</a></td>"+
 				"<td class=\"td-actions\">"+
@@ -1232,7 +1232,7 @@ function fill_files_starred(data){
 					"</label>"+
 				"</div>--></td>"+
 				"<td class='text-left'>"+
-					"<a href=\"/labcas-ui/application/labcas_file-detail_table.html?file_id="+
+					"<a href=\"/labcas-ui/f/index.html?file_id="+
 						obj.id+"\">"+
 						obj.FileName+
 					"</a>"+
@@ -1278,7 +1278,7 @@ function fill_collections_starred(data){
 						"<span class=\"form-check-sign\"></span>"+
 					"</label>"+
 				"</div>--></td><td>"+
-				"<a href=\"/labcas-ui/application/labcas_collection-detail_table.html?collection_id="+
+				"<a href=\"/labcas-ui/c/index.html?collection_id="+
 						obj.id+"\">"+
 					obj.CollectionName+"</a></td>"+
 					"<td>"+obj.LeadPI+"</td>"+
