@@ -435,13 +435,13 @@ function setup_labcas_analytics(){
 					},
 					error: function(){
 						 alert("Login expired, please login...");
-						 window.location.replace("/labcas-ui/application/pages/login.html");
+						 window.location.replace("/labcas-ui/index.html");
 					 }
 				});
 			},
 			error: function(){
 				 alert("Login expired, please login...");
-				 window.location.replace("/labcas-ui/application/pages/login.html");
+				 window.location.replace("/labcas-ui/index.html");
 			 }
 		});
 
@@ -461,7 +461,7 @@ function setup_labcas_analytics(){
 			},
 			error: function(){
 				 alert("Login expired, please login...");
-				 window.location.replace("/labcas-ui/application/pages/login.html");
+				 window.location.replace("/labcas-ui/index.html");
 			 
 			 }
 		});

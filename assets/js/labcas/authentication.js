@@ -565,7 +565,7 @@ function setup_labcas_data(datatype, query, dataset_query){
 						   Cookies.set("logout_alert","On");
 						    alert(formatTimeOfDay($.now()) + ": Login expired, please login...");
 						}
-						 window.location.replace("/labcas-ui/application/pages/login.html");
+						 window.location.replace("/labcas-ui/index.html");
 					 }
 				});
             }
@@ -575,7 +575,7 @@ function setup_labcas_data(datatype, query, dataset_query){
                      Cookies.set("logout_alert","On");
 		     alert(formatTimeOfDay($.now()) + ": Login expired, please login...");
 		}
-             window.location.replace("/labcas-ui/application/pages/login.html");
+             window.location.replace("/labcas-ui/index.html");
          }
     });
     if (datatype == "collectiondatasets"){
@@ -597,7 +597,7 @@ function setup_labcas_data(datatype, query, dataset_query){
                                    Cookies.set("logout_alert","On");
 				 alert(formatTimeOfDay($.now()) + ": Login expired, please login...");
 			}
-                 window.location.replace("/labcas-ui/application/pages/login.html");
+                 window.location.replace("/labcas-ui/index.html");
 			 }
 		});
     }
@@ -623,7 +623,7 @@ function setup_labcas_dataset_data(datatype, query, file_query, cpage){
                                    Cookies.set("logout_alert","On");
 				    alert(formatTimeOfDay($.now()) + ": Login expired, please login...");
 				}
-				 window.location.replace("/labcas-ui/application/pages/login.html");
+				 window.location.replace("/labcas-ui/index.html");
 			 
 			 }
 		});
@@ -648,7 +648,7 @@ function setup_labcas_dataset_data(datatype, query, file_query, cpage){
                                    Cookies.set("logout_alert","On");
 			     alert(formatTimeOfDay($.now()) + ": Login expired, please login...");
 		}
-             window.location.replace("/labcas-ui/application/pages/login.html");
+             window.location.replace("/labcas-ui/index.html");
              
          }
     });
@@ -674,7 +674,7 @@ function setup_labcas_file_data(datatype, query, file_query){
 		   Cookies.set("logout_alert","On");
 		     alert(formatTimeOfDay($.now()) + ": Login expired, please login...");
 		}
-             window.location.replace("/labcas-ui/application/pages/login.html");
+             window.location.replace("/labcas-ui/index.html");
              
          }
     });
@@ -1048,7 +1048,7 @@ function setup_labcas_search(query, divid, cpage){
                                    Cookies.set("logout_alert","On");
 					 alert(formatTimeOfDay($.now()) + ": Login expired, please login...");
 				}
-				 window.location.replace("/labcas-ui/application/pages/login.html");
+				 window.location.replace("/labcas-ui/index.html");
 			 }
 		});
 		console.log(Cookies.get('environment')+"/data-access-api/files/select?q="+query+""+collection_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&wt=json&rows=0");
@@ -1069,7 +1069,7 @@ function setup_labcas_search(query, divid, cpage){
                                    Cookies.set("logout_alert","On");
 				 alert(formatTimeOfDay($.now()) + ": Login expired, please login...");
 				}
-				 window.location.replace("/labcas-ui/application/pages/login.html");
+				 window.location.replace("/labcas-ui/index.html");
 			 }
 		});
     }
@@ -1094,7 +1094,7 @@ function setup_labcas_search(query, divid, cpage){
 			   Cookies.set("logout_alert","On");
 			 alert(formatTimeOfDay($.now()) + ": Login expired, please login...");
 		}
-                 window.location.replace("/labcas-ui/application/pages/login.html");
+                 window.location.replace("/labcas-ui/index.html");
              }
         });
         $.ajax({
@@ -1115,7 +1115,7 @@ function setup_labcas_search(query, divid, cpage){
 			   Cookies.set("logout_alert","On");
 			 alert(formatTimeOfDay($.now()) + ": Login expired, please login...");
 		}
-                 window.location.replace("/labcas-ui/application/pages/login.html");
+                 window.location.replace("/labcas-ui/index.html");
              }
         });
     }
@@ -1139,7 +1139,7 @@ function setup_labcas_search(query, divid, cpage){
                                    Cookies.set("logout_alert","On");
 				    alert(formatTimeOfDay($.now()) + ": Login expired, please login...");
 				}
-				 window.location.replace("/labcas-ui/application/pages/login.html");
+				 window.location.replace("/labcas-ui/index.html");
 			 
 			 }
 		});
@@ -1163,7 +1163,7 @@ function setup_labcas_search(query, divid, cpage){
                                    Cookies.set("logout_alert","On");
 				   alert(formatTimeOfDay($.now()) + ": Login expired, please login...");
 				}
-				 window.location.replace("/labcas-ui/application/pages/login.html");
+				 window.location.replace("/labcas-ui/index.html");
 			 
 			 }
 		});
@@ -1332,7 +1332,7 @@ function setup_labcas_starred(query, divid, cpage){
 				   Cookies.set("logout_alert","On");
 				   alert(formatTimeOfDay($.now()) + ": Login expired, please login...");
 				}
-				 window.location.replace("/labcas-ui/application/pages/login.html");
+				 window.location.replace("/labcas-ui/index.html");
 			 }
 		});
     }
