@@ -360,13 +360,13 @@
 	initCookies();
         //setup_labcas_data("collectiondatasets",'id:"1.0_Athena-IHC4_with_Swedish_Breast_Cancer_Study"', 'id:1.0_Athena-IHC4_with_Swedish_Breast_Cancer_Study.*');
         var get_var = get_url_vars();
+        Cookies.set("login_redirect", "/labcas-ui/c/index.html?collection_id="+get_var["collection_id"]);
         setup_labcas_data("collectiondatasets",'id:"'+get_var["collection_id"]+'"', 'id:'+get_var["collection_id"]+'*');
         $("#breadcrumb_collection").html(get_var["collection_id"].replace(/_/g," "));
         $.get( "/labcas-ui/sidebar.html?4", function( data ) {
             $( "#sidebar_placeholder" ).append(data);
             $( "#username_placeholder_second" ).html(Cookies.get('user'));
-        });
-		
+        });		
     });
 </script>
 

@@ -60,7 +60,11 @@ $('#loginform').submit(function (e) {
 					console.log("userdata");
 					console.log(user_data);
 					Cookies.set("userdata",  JSON.stringify(user_data));
-					window.location.replace("/labcas-ui/m/index.html");
+					if (Cookies.get("login_redirect")){
+						window.location.replace(Cookies.get("login_redirect"));
+					}else{
+						window.location.replace("/labcas-ui/m/index.html");
+					}
 				},
 				error: function(){
 					 //alert("Login expired, please login...");

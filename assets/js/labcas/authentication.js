@@ -231,6 +231,13 @@ function fill_collections_data(data){
     });
 }
 function fill_collection_details_data(data){
+        if(!data.response.docs[0]){
+                if(!Cookies.get("token")){
+	  	    Cookies.set("logout_alert","On");
+		    alert(formatTimeOfDay($.now()) + ": Logged out, need to login to see data...");
+		    window.location.replace("/labcas-ui/index.html");
+		}
+        }
 	var collectioname = data.response.docs[0].CollectionName;
 	$("#collectiontitle").html(collectioname);
 	if (collectioname.length > 35){
