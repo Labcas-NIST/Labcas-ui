@@ -231,8 +231,9 @@ function fill_collections_data(data){
     });
 }
 function fill_collection_details_data(data){
+	console.log(data);
         if(!data.response.docs[0]){
-                if(!Cookies.get("token")){
+                if(!Cookies.get("token") || Cookies.get("token") == "None"){
 	  	    Cookies.set("logout_alert","On");
 		    alert(formatTimeOfDay($.now()) + ": Logged out, need to login to see data...");
 		    window.location.replace("/labcas-ui/index.html");
