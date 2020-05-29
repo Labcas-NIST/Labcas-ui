@@ -1,13 +1,30 @@
 Cookies.set("token", "None");
+$(document).ready(function(){
+console.log("WHAT");
+$.getJSON( '/labcas-ui/assets/conf/environment.cfg', function(json) {
+		console.log("OK22");
+	$.each( json, function( key, val ) {
+		console.log(key);
+		Cookies.set(key, val);
+	});
+        $('#loginerror').html(Cookies.get("login_msg"));
+}, 'text').done(function(d) {
+                alert("done");
+            }).fail(function(d, textStatus, error) {
+                console.error("getJSON failed, status: " + textStatus + ", error: "+error);
+            }).always(function(d) {
+                alert("complete");
+            });
+});
 $('#loginform').submit(function (e) {
     e.preventDefault();
-    $.getJSON( '/labcas-ui/assets/conf/environment.cfg?34', function(json) {
+    //$.getJSON( '/labcas-ui/assets/conf/environment.cfg?34', function(json) {
         //console.log(json);
-		Cookies.set("user", $('#username').val());
-		Cookies.set("userletters", $('#username').val().substr(0, 2).toUpperCase());
-		$.each( json, function( key, val ) {
-			Cookies.set(key, val);
-		});
+	Cookies.set("user", $('#username').val());
+	Cookies.set("userletters", $('#username').val().substr(0, 2).toUpperCase());
+	/*$.each( json, function( key, val ) {
+		Cookies.set(key, val);
+	});*/
         $.ajax({
             url: Cookies.get('environment')+"/data-access-api/auth",
                 beforeSend: function(xhr) {
@@ -54,8 +71,10 @@ $('#loginform').submit(function (e) {
                 error: function(){
                     //localStorage.setItem('token', "None");
                     Cookies.set("token", "None");
-                    alert("Could not login. Please make sure you have an account or reach out to EDRN JPL Support.");
+                    //alert("Could not login. Please make sure you have an account or reach out to EDRN JPL Support.");
+                    $('#alertHTML').html(Cookies.get("error_msg"));
+                    $('#errorModal').modal('show');
                 }
         }); 
-    }, 'text');
+    //}, 'text');
 });

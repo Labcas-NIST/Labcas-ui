@@ -33,6 +33,23 @@ The above copyright notice and this permission notice shall be included in all c
 </head>
 
 <body>
+		<div class="modal fade modal-mini modal-primary" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" style="max-width: 620px">
+                            <div class="modal-content" style="width: 620px">
+                                <div class="modal-header justify-content-center">
+                                    <div class="modal-profile">
+                                        <i class="nc-icon nc-bell-55"></i>
+                                    </div>
+                                </div>
+                                <div class="modal-body">
+                                    <p><div id="alertHTML"></div></p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-link btn-simple" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
     <div class="wrapper wrapper-full-page">
         <!-- Navbar -->
         <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute">
@@ -75,8 +92,9 @@ The above copyright notice and this permission notice shall be included in all c
         <div class="full-page  section-image" data-color="black" data-image="/labcas-ui/assets/img/full-screen-image-2.jpg" ;>
             <!--   you can change the color of the filter page using: data-color="blue | purple | green | orange | red | rose " -->
             <div class="content">
+
                 <div class="container">
-                    <div class="col-md-4 col-sm-6 ml-auto mr-auto">
+                    <div class="col-md-6 col-sm-6 ml-auto mr-auto">
                         <form class="form" id="loginform" method="" action="/labcas-ui/m/index.html">
                             <div class="card card-login card-hidden">
                                 <div class="card-header ">
@@ -106,12 +124,21 @@ The above copyright notice and this permission notice shall be included in all c
                                 <div class="card-footer ml-auto mr-auto">
                                     <button type="submit" class="btn btn-warning btn-wd">Login</button>
                                 </div>
+
+                                <div id="loginerror" class="card-footer ml-auto mr-auto">
+				<!--	<B>Forgot your password?</B><br>
+If you have forgotten your password, <a href='https://mcl.nci.nih.gov/mail_password_form?userid='>we can send you a new one</a>.<br>
+<B>Want to join?</B><br>
+If you'd like to join the MCL Consortium, <a href='https://mcl.nci.nih.gov/register'>register here</a>.
+-->
+                                </div>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
+        <div>
         <footer class="footer">
             <div class="container">
                 <nav>
@@ -184,7 +211,7 @@ The above copyright notice and this permission notice shall be included in all c
 <!-- Light Dashboard DEMO methods, don't include it in your project! -->
 <script src="/labcas-ui/assets/js/demo.js"></script>
 <script src="/labcas-ui/assets/js/plugins/js.cookie.js"></script>
-<script src="/labcas-ui/assets/js/labcas/login.js?49"></script> <script>
+<script src="/labcas-ui/assets/js/labcas/login.js?50"></script> <script>
     $(document).ready(function() {
     	
         
