@@ -9,11 +9,11 @@ $.getJSON( '/labcas-ui/assets/conf/environment.cfg', function(json) {
 	});
         $('#loginerror').html(Cookies.get("login_msg"));
 }, 'text').done(function(d) {
-                alert("done");
+                console.log("Config done");
             }).fail(function(d, textStatus, error) {
-                console.error("getJSON failed, status: " + textStatus + ", error: "+error);
+                console.error("Config failed, status: " + textStatus + ", error: "+error);
             }).always(function(d) {
-                alert("complete");
+                console.log("Config complete");
             });
 });
 $('#loginform').submit(function (e) {
