@@ -503,7 +503,7 @@ function fill_files_data(data){
 		
 		$("#files-table tbody").append(
 		"<tr>"+
-			"<td><center><input type='checkbox' class='form-check-input' value='"+html_safe_id+"'></center></td>"+
+			//"<td><center><input type='checkbox' class='form-check-input' value='"+html_safe_id+"'></center></td>"+
 			"<td class='text-left'>"+
 				"<a href=\"/labcas-ui/f/index.html?file_id="+
 					html_safe_id+"\">"+
@@ -763,7 +763,7 @@ function fill_files_search(data){
 
 	  $("#search-file-table tbody").append(
 		"<tr>"+
-			"<td><center><input type='checkbox' class='form-check-input' value='"+html_safe_id+"'></center></td>"+
+			//"<td><center><input type='checkbox' class='form-check-input' value='"+html_safe_id+"'></center></td>"+
 			"<td class='text-left'>"+
 				"<a href=\"/labcas-ui/f/index.html?file_id="+
 					html_safe_id+"\">"+
@@ -901,6 +901,7 @@ function generate_filters(field_type, placeholder, data, display, head){
                     Cookies.set("search_filter", "on");
                     setup_labcas_search(Cookies.get('search'), "all", 0);
                 });
+		$('#'+placeholder+'_card').css("height","100px");
 
 	}else{
 		$.each(data, function(key, obj) {
