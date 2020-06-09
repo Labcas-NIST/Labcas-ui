@@ -222,10 +222,14 @@ function generate_edrn_links(obj){
 			if (o != ""){
 				inst_split = o.replace(".","").toLowerCase().split(" ");
 				inst_url = $.trim(obj.InstitutionId[i]);
-				for (var c = 0; c < 7; c++) {
+				for (var c = 0; c < inst_split.length; c++) {
 					if (!inst_split[c]){
+						continue;
+					}
+					if ((inst_url.length+$.trim(inst_split[c]).length+1) > 50){
 						break;
 					}
+
 					inst_url += "-"+$.trim(inst_split[c]);
 				}
 				
@@ -242,17 +246,25 @@ function generate_edrn_links(obj){
 	if (obj.ProtocolName){
 		for (var i = 0; i < obj.ProtocolName.length; i++) {
 			o = $.trim(obj.ProtocolName[i]);
+			console.log((inst_url.length+$.trim(inst_split[c]).length+1));
 			if (o != ""){
 				inst_split = o.replace(".","").replace(":","").toLowerCase().split(" ");
 				inst_url = $.trim(obj.ProtocolId[i]);
-				for (var c = 0; c < 7; c++) {
-					if (!inst_split[c]){
-						break;
+				if (o == "No Associated Protocol"){
+					inst_url = o;
+					protocols.push(o);
+				}else{
+					for (var c = 0; c < inst_split.length; c++) {
+						if (!inst_split[c]){
+							continue;
+						}
+						if ((inst_url.length+$.trim(inst_split[c]).length+1) > 50){
+							break;
+						}
+						inst_url += "-"+$.trim(inst_split[c]);
 					}
-					inst_url += "-"+$.trim(inst_split[c]);
+					protocols.push("<a href='"+Cookies.get('protocol_url')+inst_url+"'>"+o+"</a>");
 				}
-				protocols.push("<a href='"+Cookies.get('protocol_url')+inst_url+"'>"+o+"</a>");
-			
 			}
 		}
 	}
