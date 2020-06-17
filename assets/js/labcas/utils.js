@@ -248,7 +248,14 @@ function generate_edrn_links(obj){
 			o = $.trim(obj.ProtocolName[i]);
 			console.log((inst_url.length+$.trim(inst_split[c]).length+1));
 			if (o != ""){
-				inst_split = o.replace(".","").replace(":","").toLowerCase().split(" ");
+				inst_url_clean = o.replace(/\./g,"-").replace(/'/g,"-").replace(/&/,"-").replace(/;/,"-").replace(/#/,"-").replace(/\(/g,"-").replace(/\)/g,"-").replace(/ - /g,"-").replace(/:/g,"-").replace(/,/g,"-").replace(/\//g,"-").toLowerCase().replace(/ /g,"-");
+				/*while (inst_url_clean.includes("--") || inst_url_clean.startsWith("-") || inst_url_clean.endsWith("-")){
+                                        inst_url_clean = inst_url_clean.replace(/--/g,"-");
+                                        inst_url_clean = inst_url_clean.trim("-");
+                                }*/
+
+				inst_split = inst_url_clean.toLowerCase().split("-");
+
 				inst_url = $.trim(obj.ProtocolId[i]);
 				if (o == "No Associated Protocol"){
 					inst_url = o;

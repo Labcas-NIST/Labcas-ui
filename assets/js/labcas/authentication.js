@@ -538,12 +538,12 @@ function fill_files_data(data){
 }
 
 function setup_labcas_data(datatype, query, dataset_query){	
+	console.log("HERE");
     console.log(Cookies.get('environment'));
     $.ajax({
         url: Cookies.get('environment')+"/data-access-api/collections/select?q="+query+"&wt=json&indent=true&rows=2147483647&sort=id%20asc",
         beforeSend: function(xhr) { 
         	if(Cookies.get('token') && Cookies.get('token') != "None"){
-        		console.log("HERE");
             	xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
             }
         },
@@ -588,6 +588,7 @@ function setup_labcas_data(datatype, query, dataset_query){
          }
     });
     if (datatype == "collectiondatasets"){
+	console.log(Cookies.get('environment')+"/data-access-api/datasets/select?q="+dataset_query+"&wt=json&indent=true&rows=2147483647");
     	$.ajax({
 			url: Cookies.get('environment')+"/data-access-api/datasets/select?q="+dataset_query+"&wt=json&indent=true&rows=2147483647",
 			beforeSend: function(xhr) { 
@@ -839,70 +840,72 @@ function generate_filters(field_type, placeholder, data, display, head){
 			}
                     }
                 });
-		if (Cookies.get(placeholder+"_max_0")){
-			min = Cookies.get(placeholder+"_max_0");
-		}else{
-			Cookies.set(placeholder+"_max_0", Math.floor(min));
-			left = min;
-		}
-		if (Cookies.get(placeholder+"_max_1")){
-			max = Cookies.get(placeholder+"_max_1");
-		}else{
-			Cookies.set(placeholder+"_max_1", Math.floor(max));
-			right = max;
-		}
-		if (Cookies.get(placeholder+"_0")){
-			left = Cookies.get(placeholder+"_0");
-		}else{
-			Cookies.set(placeholder+"_0", Math.floor(min));
-			left = min;
-		}
-		if (Cookies.get(placeholder+"_1")){
-			right = Cookies.get(placeholder+"_1");
-		}else{
-			Cookies.set(placeholder+"_1", Math.floor(max));
-			right = max;
-		}
-		$("#"+placeholder).append($('<div class="row"><div class="col-md-12" id="'+placeholder+'_count" style="text-align: center"></div></div><div class="row"><div class="col-md-2" style="text-align: left;" id="'+placeholder+'_0"></div><div class="col-md-8"><div id="'+placeholder+'_slider" class="slider-success"></div></div><div class="col-md-2"  style="text-align: right;" id="'+placeholder+'_1"></div></div>'));
-		
-		var slider = document.getElementById(placeholder+'_slider');
+		if (min != 100000000 && max != -1){
+			if (Cookies.get(placeholder+"_max_0")){
+				min = Cookies.get(placeholder+"_max_0");
+			}else{
+				Cookies.set(placeholder+"_max_0", Math.floor(min));
+				left = min;
+			}
+			if (Cookies.get(placeholder+"_max_1")){
+				max = Cookies.get(placeholder+"_max_1");
+			}else{
+				Cookies.set(placeholder+"_max_1", Math.floor(max));
+				right = max;
+			}
+			if (Cookies.get(placeholder+"_0")){
+				left = Cookies.get(placeholder+"_0");
+			}else{
+				Cookies.set(placeholder+"_0", Math.floor(min));
+				left = min;
+			}
+			if (Cookies.get(placeholder+"_1")){
+				right = Cookies.get(placeholder+"_1");
+			}else{
+				Cookies.set(placeholder+"_1", Math.floor(max));
+				right = max;
+			}
+			$("#"+placeholder).append($('<div class="row"><div class="col-md-12" id="'+placeholder+'_count" style="text-align: center"></div></div><div class="row"><div class="col-md-2" style="text-align: left;" id="'+placeholder+'_0"></div><div class="col-md-8"><div id="'+placeholder+'_slider" class="slider-success"></div></div><div class="col-md-2"  style="text-align: right;" id="'+placeholder+'_1"></div></div>'));
+			
+			var slider = document.getElementById(placeholder+'_slider');
 
-		var slider_left = document.getElementById(placeholder+'_0');
-		var slider_right = document.getElementById(placeholder+'_1');
-		noUiSlider.create(slider, {
-		    start: [left, right],
-		    connect: true,
-		    range: {
-			min: +min,
-			max: +max
-		    },
-		    step: 1
-		});
-		document.getElementById(placeholder+'_count').innerHTML = "("+sum+")";
-		slider.noUiSlider.on('update', function (values, handle) {
-		    if (handle == 0){
-			slider_left.innerHTML = Math.floor(values[handle]);
-		    }else if(handle == 1){
-			slider_right.innerHTML = Math.floor(values[handle]);
-		    }
-		});
-		slider.noUiSlider.on('end', function (values, handle) {
-		    if (handle == 0){
-			Cookies.set(placeholder+"_0", Math.floor(values[handle]));
-		    }else if(handle == 1){
-			Cookies.set(placeholder+"_1", Math.floor(values[handle]));
-		    }
+			var slider_left = document.getElementById(placeholder+'_0');
+			var slider_right = document.getElementById(placeholder+'_1');
+			noUiSlider.create(slider, {
+			    start: [left, right],
+			    connect: true,
+			    range: {
+				min: +min,
+				max: +max
+			    },
+			    step: 1
+			});
+			document.getElementById(placeholder+'_count').innerHTML = "("+sum+")";
+			slider.noUiSlider.on('update', function (values, handle) {
+			    if (handle == 0){
+				slider_left.innerHTML = Math.floor(values[handle]);
+			    }else if(handle == 1){
+				slider_right.innerHTML = Math.floor(values[handle]);
+			    }
+			});
+			slider.noUiSlider.on('end', function (values, handle) {
+			    if (handle == 0){
+				Cookies.set(placeholder+"_0", Math.floor(values[handle]));
+			    }else if(handle == 1){
+				Cookies.set(placeholder+"_1", Math.floor(values[handle]));
+			    }
 
-		    var str_field_val = encodeURI("["+Cookies.get(placeholder+"_0")+" TO "+Cookies.get(placeholder+"_1")+"]");
-		    var field_search = "&fq="+encodeURI(escapeRegExp(field_type)).replace(/:/g,'%3A')+":"+str_field_val;
-		    if (Cookies.get(placeholder+"_0") == Cookies.get(placeholder+"_max_0") && Cookies.get(placeholder+"_1") == Cookies.get(placeholder+"_max_1")){
-			field_search = "";
-		    }
-                    Cookies.set(placeholder, field_search);
-                    Cookies.set("search_filter", "on");
-                    setup_labcas_search(Cookies.get('search'), "all", 0);
-                });
-		$('#'+placeholder+'_card').css("height","100px");
+			    var str_field_val = encodeURI("["+Cookies.get(placeholder+"_0")+" TO "+Cookies.get(placeholder+"_1")+"]");
+			    var field_search = "&fq="+encodeURI(escapeRegExp(field_type)).replace(/:/g,'%3A')+":"+str_field_val;
+			    if (Cookies.get(placeholder+"_0") == Cookies.get(placeholder+"_max_0") && Cookies.get(placeholder+"_1") == Cookies.get(placeholder+"_max_1")){
+				field_search = "";
+			    }
+			    Cookies.set(placeholder, field_search);
+			    Cookies.set("search_filter", "on");
+			    setup_labcas_search(Cookies.get('search'), "all", 0);
+			});
+			$('#'+placeholder+'_card').css("height","100px");
+		}
 
 	}else{
 		$.each(data, function(key, obj) {
