@@ -4,6 +4,16 @@ $().ready(function() {
 		user_data = JSON.parse(Cookies.get("userdata"));
 	}
 	console.log(user_data);
+
+	// Toggle plus minus icon on show hide of collapse element
+	$(".collapse.show").each(function(){	
+        	$(this).prev(".btn").find(".fa").addClass("fa-minus").removeClass("fa-plus");
+        });
+	$(".collapse").on('show.bs.collapse', function(){
+        	$(this).prev(".btn").find(".fa").removeClass("fa-plus").addClass("fa-minus");
+        }).on('hide.bs.collapse', function(){
+        	$(this).prev(".btn").find(".fa").removeClass("fa-minus").addClass("fa-plus");
+        });
 });
 function initCookies(){
 	if(!Cookies.get("token") || Cookies.get("token") == "None"){
@@ -58,7 +68,7 @@ function writeUserData(udata){
         contentType:"application/json",
         dataType: 'json',
         success: function (data) {
-            console.log(data);
+            //console.log(data);
             Cookies.set("userdata",  udata);
             window.location.reload();
         },
@@ -111,7 +121,7 @@ function save_favorite(labcas_id, labcas_type){
         dataType: 'json',
         success: function (data) {
 			var user_data_tmp = data;
-			console.log(user_data_tmp);
+			//console.log(user_data_tmp);
 			var user_collection = [];
 			if (user_data_tmp['response'] && user_data_tmp['response']['docs'][0]){
 				user_data_tmp = user_data_tmp['response']['docs'][0];
@@ -246,7 +256,7 @@ function generate_edrn_links(obj){
 	if (obj.ProtocolName){
 		for (var i = 0; i < obj.ProtocolName.length; i++) {
 			o = $.trim(obj.ProtocolName[i]);
-			console.log((inst_url.length+$.trim(inst_split[c]).length+1));
+			//console.log((inst_url.length+$.trim(inst_split[c]).length+1));
 			if (o != ""){
 				inst_url_clean = o.replace(/\./g,"-").replace(/'/g,"-").replace(/&/,"-").replace(/;/,"-").replace(/#/,"-").replace(/\(/g,"-").replace(/\)/g,"-").replace(/ - /g,"-").replace(/:/g,"-").replace(/,/g,"-").replace(/\//g,"-").toLowerCase().replace(/ /g,"-");
 				/*while (inst_url_clean.includes("--") || inst_url_clean.startsWith("-") || inst_url_clean.endsWith("-")){
@@ -344,7 +354,7 @@ function load_pagination(divid, size, cpage){
 function paginate(divid, cpage){
 	var get_var = get_url_vars();
 	if (divid == 'files'){
-		setup_labcas_dataset_data("datasetfiles",'id:"'+get_var["dataset_id"]+'"', 'id:'+get_var["dataset_id"]+'*', cpage-1); 
+		setup_labcas_dataset_data("datasetfiles",'id:"'+get_var["dataset_id"]+'"', 'DatasetId:"'+get_var["dataset_id"]+'"', cpage-1); 
 	}else if (divid == 'collections_search' || divid == 'datasets_search' || divid == 'files_search'){
 		setup_labcas_search(get_var["search"], divid, cpage-1);
 	}
@@ -408,4 +418,26 @@ function download_files(formname){
 	    });*/
         }
     });
+}
+function reset_search_filters(){
+      var get_var = get_url_vars();
+        Cookies.set("search", get_var["search"]);
+        Cookies.set("search_filter", "off");
+
+
+        $.each(Cookies.get("filters").split(","), function(ind, head) {
+                var divs = Cookies.get(head+"_filters_div").split(",");
+                $.each(divs, function(i, divhead) {
+                        Cookies.set($.trim(divhead), "");
+                        if(divhead.includes("_num_")){
+                                Cookies.set($.trim(divhead)+"_0","");
+                                Cookies.set($.trim(divhead)+"_1","");
+                                Cookies.set($.trim(divhead)+"_max_0","");
+                                Cookies.set($.trim(divhead)+"_max_1","");
+                        }else{
+                                Cookies.set($.trim(divhead)+"_val", "");
+                        }
+                });
+        });
+        Cookies.set("search", "*");
 }

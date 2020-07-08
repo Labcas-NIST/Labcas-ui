@@ -36,7 +36,7 @@ function init_labcas_sunburst_distribution(div_field, collections, collection_da
 
 
 
-function init_labcas_data_distribution(div, second_graph_organ){ //acronym, name, count, date
+function init_labcas_data_distribution(div, second_graph_organ, ftype){ //acronym, name, count, date
 	var data = [{
 	  values: second_graph_organ[1],
 	  text: second_graph_organ[0],
@@ -49,7 +49,27 @@ function init_labcas_data_distribution(div, second_graph_organ){ //acronym, name
 	  height: 200,
 	  showlegend: false
 	};
-	Plotly.newPlot(div, data, layout,{displayModeBar: false, responsize: true});
+	myplot = Plotly.newPlot(div, data, layout,{displayModeBar: false, responsize: true});
+	document.getElementById(div).on('plotly_click', function(data){
+		var pts = '';
+		    for(var i=0; i < data.points.length; i++){
+			pts = 'label(country) = '+ data.points[0].text + '\nvalue(%) = ' + data.points[0].value;
+			label = data.points[0].text;
+			field_search = "&fq=("+encodeURI(escapeRegExp(ftype)).replace(/:/g,'%3A')+":"+encodeURI(escapeRegExp(String(label)))+")";
+			reset_search_filters();
+			Cookies.set(div, field_search);
+			filter_list = [];
+			filter_list.push(String(label));
+			Cookies.set(div+"_val",filter_list);
+			Cookies.set("search_filter", "on");
+			Cookies.set('search','');
+			console.log(div);
+			console.log(div+"_val");
+			window.location.replace("/labcas-ui/s/index.html");
+		    }
+			//console.log(data);
+		    //alert('Closest point clicked:\n\n'+pts+" OK "+div);
+	});
 }
 
 function init_labcas_data_boxplot(div, second_graph,xlabel, ylabel){
@@ -191,10 +211,10 @@ function fill_collections_analytics(data){
 	});
 	
 	
-	init_labcas_data_distribution("organ_distribution", second_graph_organ);
-	init_labcas_data_distribution("collabgroup_distribution", second_graph_collabgroup);
+	init_labcas_data_distribution("organ_filters", second_graph_organ, "Organ");
+	init_labcas_data_distribution("datacategory_filters", second_graph_collabgroup, "DataCategory");
 	/*init_labcas_data_boxplot("labcas_boxplot_distribution",second_graph_leadpi);*/
-	init_labcas_data_distribution("labcas_discipline_distribution", second_graph_discipline);
+	init_labcas_data_distribution("disc_filters", second_graph_discipline, "Discipline");
 	
 }
 function fill_datasets_analytics(data){

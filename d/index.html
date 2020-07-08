@@ -330,7 +330,7 @@
         var get_var = get_url_vars();
         console.log(get_var["dataset_id"]);
 	get_var["dataset_id"] = get_var["dataset_id"].replace(/\\\./g,'.');
-        setup_labcas_dataset_data("datasetfiles",'id:"'+get_var["dataset_id"]+'"', 'id:'+get_var["dataset_id"]+'*', 0);
+        setup_labcas_dataset_data("datasetfiles",'id:"'+get_var["dataset_id"]+'"', 'DatasetId:"'+get_var["dataset_id"]+'"', 0);
         
         var breadcrumb = '<li class="breadcrumb-item"><a href="/labcas-ui/m/index.html">Home</a></li>';
 		var data_split = get_var["dataset_id"].split("/");
