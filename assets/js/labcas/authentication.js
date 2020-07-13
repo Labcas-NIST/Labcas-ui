@@ -416,7 +416,8 @@ function fill_file_details_data(data){
 		
     });
     $("#filesize").html(filesize); 
-    $("#download_icon").attr("onclick","location.href='"+Cookies.get('environment')+"/data-access-api/download?id="+html_safe_id+"';");
+    //$("#download_icon").attr("onclick","location.href='"+Cookies.get('environment')+"/data-access-api/download?id="+html_safe_id+"';");
+    $("#download_icon").attr("onclick","download_file('"+html_safe_id+"','single');");
 
 }
 function fill_datasets_data(data){
@@ -533,7 +534,8 @@ function fill_files_data(data){
 				"<button type=\"button\" rel=\"favoritebutton\" title=\"Favorite\" onclick=\"save_favorite('"+value.id+"', 'FavoriteFiles')\" class=\"btn "+color+" btn-simple btn-link\">"+
 					"<i class=\"fa fa-star\"></i>"+
 				"</button>"+
-				"<button type=\"button\" rel=\"downloadbutton\" title=\"Download\" class=\"btn btn-danger btn-simple btn-link\" onclick=\"location.href='"+Cookies.get('environment')+"/data-access-api/download?id="+html_safe_id+"'\">"+
+				//"<button type=\"button\" rel=\"downloadbutton\" title=\"Download\" class=\"btn btn-danger btn-simple btn-link\" onclick=\"location.href='"+Cookies.get('environment')+"/data-access-api/download?id="+html_safe_id+"'\">"+
+				"<button type=\"button\" rel=\"downloadbutton\" title=\"Download\" class=\"btn btn-danger btn-simple btn-link\" onclick=\"download_file('"+html_safe_id+"','single')\">"+
 					"<i class=\"fa fa-download\"></i>"+
 				"</button>"+
 			"</td>"+

@@ -395,15 +395,40 @@ function wait(ms) {
       now = Date.now();
     }
 }
+/*function download(dataurl){
+	//alert("4:"+dataurl);
+	
+	//window.open(dataurl);	
+	//window.location.href = dataurl;	
+}*/
+function download_file(val, type){
+	var dataurl = Cookies.get('environment')+"/data-access-api/download?id="+val;
+        //console.log("Downloading7 "+dataurl);
+	//download(data, strFileName, strMimeType);
+	/*var button = document.createElement("input");
+	button.onclick = download(dataurl);*/
+	if (UrlExists(dataurl)){
+		if (type == "multiple"){
+			window.open(dataurl, '_blank');
+		}else{
+			location.href = dataurl;
+		}
+	}else{
+		alert("Error: The following file not available for download. Please reach out to ic-portal@jpl.nasa.gov.<br>"+dataurl);
+	}
+	
+}
 function download_files(formname){
+    var download_list = [];
     $('#' + formname + ' input[type="checkbox"]').each(function() {
         if ($(this).is(":checked")) {
             //alert($(this).val());
-            
-            var dataurl = Cookies.get('environment')+"/data-access-api/download?id="+$(this).val();
-	    console.log("Downloading "+dataurl);
-	    window.open(dataurl);
-	    wait(1000);
+            download_list.push($(this).val());
+            //var dataurl = Cookies.get('environment')+"/data-access-api/download?id="+$(this).val();
+	    //console.log("Downloading2 "+dataurl);
+		
+	    //window.open(dataurl, '_parent');
+	    //wait(1000);
             /*$.ajax({
 		url: Cookies.get('environment')+"/data-access-api/download?id="+$(this).val(),
 		type: 'GET',
@@ -418,6 +443,10 @@ function download_files(formname){
 	    });*/
         }
     });
+    var get_var = get_url_vars();
+    Cookies.set("login_redirect", "/labcas-ui/d/index.html?dataset_id="+get_var["dataset_id"])
+    Cookies.set('download_list',JSON.stringify(download_list));
+    window.location.replace("/labcas-ui/download.html");
 }
 function reset_search_filters(){
       var get_var = get_url_vars();
@@ -440,4 +469,11 @@ function reset_search_filters(){
                 });
         });
         Cookies.set("search", "*");
+}
+function UrlExists(url)
+{
+    var http = new XMLHttpRequest();
+    http.open('HEAD', url, false);
+    http.send();
+    return http.status!=404;
 }

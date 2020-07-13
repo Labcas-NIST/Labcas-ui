@@ -1,0 +1,44 @@
+<html>
+<header>
+<script src="/labcas-ui/assets/js/plugins/js.cookie.js"></script>
+<script src="/labcas-ui/assets/js/core/jquery-3.5.1.min.js" type="text/javascript"></script>
+<script src="/labcas-ui/assets/js/labcas/utils.js?102"></script>
+<!--<script src="/labcas-ui/assets/js/labcas/download.js"></script>-->
+<script>
+	var files = JSON.parse(Cookies.get("download_list"));
+	if (files && files.length > 0){
+		wait(2000);
+		//console.log("Reloading100...");
+		//download_file(files.pop());
+		//var dataurl = Cookies.get('environment')+"/data-access-api/download?id="+files.pop();
+		//console.log("Downloading13 "+dataurl);
+		//console.log("Downloading12 "+dataurl.substring(dataurl. lastIndexOf('/')+1));
+		//if (UrlExists(dataurl)){
+		//	window.open(dataurl, '_blank');
+		//}
+		//download(dataurl, dataurl.substring(dataurl. lastIndexOf('/')+1));
+		/*if (dataurl.includes("EX13-0870-1-HE-EH.svs")){
+
+		}else{
+			var file_path = dataurl;
+			var a = document.createElement('A');
+			a.href = file_path;
+			a.download = file_path.substr(file_path.lastIndexOf('/') + 1);
+			a.target = "_blank";
+			document.body.appendChild(a);
+			a.click();
+			document.body.removeChild(a);
+		//}*/
+		download_file(files.pop(),"multiple");
+		Cookies.set("download_list",JSON.stringify(files));
+		window.location.reload();
+	}else{
+		console.log("Going back...");
+		window.location.replace(Cookies.get("login_redirect"));
+	}
+</script>
+</header>
+<body>
+<center><H4>Downloading your files... please wait, window will redirect back to previous page!</H4></center>
+</body>
+</html>
