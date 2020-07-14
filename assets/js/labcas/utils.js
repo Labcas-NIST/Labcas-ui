@@ -414,7 +414,7 @@ function download_file(val, type){
 			location.href = dataurl;
 		}
 	}else{
-		alert("Error: The following file not available for download. Please reach out to ic-portal@jpl.nasa.gov.<br>"+dataurl);
+		alert("Error! The following file not available for download:\n"+decodeURI(val).replace(/\\/g,'')+'\n\nPlease reach out to ic-portal@jpl.nasa.gov.');
 	}
 	
 }
@@ -475,5 +475,5 @@ function UrlExists(url)
     var http = new XMLHttpRequest();
     http.open('HEAD', url, false);
     http.send();
-    return http.status!=404;
+    return http.status!=404 && http.status !=500;
 }
