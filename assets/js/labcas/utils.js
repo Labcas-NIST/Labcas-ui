@@ -395,21 +395,44 @@ function wait(ms) {
       now = Date.now();
     }
 }
-/*function download(dataurl){
-	//alert("4:"+dataurl);
-	
-	//window.open(dataurl);	
-	//window.location.href = dataurl;	
-}*/
+
+
+function checkWindow(win){
+
+	if(!win || win.closed || typeof win.closed=='undefined') 
+	{ 
+		// Internet Explorer 6-11
+		var isIE = /*@cc_on!@*/false || !!document.documentMode;
+
+		var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
+		var isFirefox = typeof InstallTrigger !== 'undefined';
+
+		var isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+		if( isChrome ){
+			alert("Download blocked. To fix this for Chrome:\nGo to Preferences->Site Settings->Pop-ups->Allow->Add:\n"+window.location.hostname);	
+		}else if ( isSafari ){
+			alert("Download blocked. To fix this for Safari:\nGo to Safari->Preferences->Security->Uncheck \"Block pop-up windows\"");
+		}else if ( isFirefox ){
+			alert("Download blocked. To fix this for Firefox:\nGo to Firefox->Preferences->Content->Pop-ups->Exceptions->Add: "+window.location.hostname);
+		}else if ( isIE ){
+			alert("Download blocked. Please fix this for Internet Explorer.");
+		}else{
+			alert("Download blocked. Please fix this for your respective browser.");
+		}
+		return "popup_blocked";
+	}
+	return "worked";
+}
 function download_file(val, type){
 	var dataurl = Cookies.get('environment')+"/data-access-api/download?id="+val;
-        //console.log("Downloading7 "+dataurl);
-	//download(data, strFileName, strMimeType);
-	/*var button = document.createElement("input");
-	button.onclick = download(dataurl);*/
 	if (UrlExists(dataurl)){
 		if (type == "multiple"){
-			window.open(dataurl, '_blank');
+			win = window.open(dataurl, '_blank');
+			outcome = checkWindow(win);
+			/*if (outcome == "worked"){
+				win.close();
+			}*/
+			return outcome;
 		}else{
 			location.href = dataurl;
 		}
@@ -469,6 +492,7 @@ function reset_search_filters(){
                 });
         });
         Cookies.set("search", "*");
+	window.history.replaceState({}, document.title, "/" + "labcas-ui/s/index.html?search=*");
 }
 function UrlExists(url)
 {

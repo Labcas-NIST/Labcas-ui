@@ -13,13 +13,13 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
     <!-- CSS Files -->
     <link href="/labcas-ui/assets/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="/labcas-ui/assets/css/light-bootstrap-dashboard.css?v=2.0.2&3" rel="stylesheet" />
+    <link href="/labcas-ui/assets/css/light-bootstrap-dashboard.css?v=2.0.5" rel="stylesheet" />
     <!-- CSS Just for demo purpose, don't include it in your project -->
     <link href="/labcas-ui/assets/css/labcas/custom.css?2" rel="stylesheet" />
 </head>
 
 <body class="sidebar-mini">
-    <div class="wrapper">
+    <div class="wrapper" style="min-height: 370px">
         <div id='sidebar_placeholder'></div>
         <div class="main-panel">
             <!-- Navbar -->
@@ -107,12 +107,12 @@
                 </div>
             </nav>
             <!-- End Navbar -->
-            <div class="content">
+            <div class="content" style="margin-top: -20px">
                 <div class="container-fluid">
-                    <div class="row">
+                    <div class="row" style="margin-bottom: 5px">
                         <div class="col-lg-3 col-sm-6">
-                            <div class="card card-stats">
-                                <div class="card-body ">
+                            <div class="card card-stats" style="margin-bottom: 0px; height:60px">
+                                <div class="card-body " style="padding:0; padding-right: 10px">
                                     <div class="row">
                                         <div class="col-5">
                                             <div class="icon-big text-center icon-warning">
@@ -136,8 +136,8 @@
                             </div>
                         </div>
                         <div class="col-lg-3 col-sm-6">
-                            <div class="card card-stats">
-                                <div class="card-body ">
+                            <div class="card card-stats" style="margin-bottom: 0px; height:60px">
+                                <div class="card-body " style="padding:0; padding-right: 10px">
                                     <div class="row">
                                         <div class="col-5">
                                             <div class="icon-big text-center icon-warning">
@@ -161,8 +161,8 @@
                             </div>
                         </div>
                         <div class="col-lg-3 col-sm-6">
-                            <div class="card card-stats">
-                                <div class="card-body ">
+                            <div class="card card-stats" style="margin-bottom: 0px; height:60px">
+                                <div class="card-body " style="padding:0; padding-right: 10px">
                                     <div class="row">
                                         <div class="col-5">
                                             <div class="icon-big text-center icon-warning">
@@ -186,11 +186,11 @@
                             </div>
                         </div>
                         <div class="col-lg-3 col-sm-6">
-                            <div class="card card-stats">
-                                <div class="card-body ">
+                            <div class="card card-stats" style="margin-bottom: 0px; height:60px">
+                                <div class="card-body " style="padding:0; padding-right: 10px">
                                     <div class="row">
                                         <div class="col-5">
-                                            <div class="icon-big text-center icon-warning">
+                                            <div class="icon-big text-center icon-warning" style="line-height: 0">
                                                 <i class="fa fa-star text-success"></i>
                                             </div>
                                         </div>
@@ -211,6 +211,45 @@
                             </div>
                         </div>
                     </div>
+		    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card ">
+                                <div class="card-header" style="padding:0; padding-left: 5px">
+                                    <h4 class="card-title"><div id="datasettitle"></div></h4>
+                                     <p class="card-category">Collections by Organ</p>
+                                </div>
+                                <div class="card-body" style="padding:0; padding-left: 5px">
+                                            <div id="organ_distribution"/>
+
+                                </div>
+                            </div>
+			</div>
+                        </div>
+			<div class="col-md-4">
+                            <div class="card ">
+                                <div class="card-header" style="padding:0; padding-left: 5px">
+                                    <h4 class="card-title"><div id="datasettitle"></div></h4>
+                                     <p class="card-category"># Files by Lead PI</p>
+                                </div>
+                                <div class="card-body" style="padding:0; padding-left: 5px">
+                                            <div id="labcas_boxplot_distribution"/>
+                                </div>
+                            </div>
+                          </div>
+			</div>
+			<div class="col-md-4">
+                            <div class="card ">
+                                <div class="card-header" style="padding:0; padding-left: 5px">
+                                    <h4 class="card-title"><div id="datasettitle"></div></h4>
+                                     <p class="card-category"># Files per File Type</p>
+                                </div>
+                                <div class="card-body" style="padding:0; padding-left: 5px">
+                                           <div id="labcas_filetype_distribution"/>
+                                 </div>
+                            </div>
+                          </div>
+                      </div>
+		    </div>
                     <div class="row">
                         <div class="col-md-3">
                             <div class="card ">
@@ -564,25 +603,28 @@
 <!--  Full Calendar   -->
 <script src="/labcas-ui/assets/js/plugins/fullcalendar.min.js"></script>
 <!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
-<script src="/labcas-ui/assets/js/light-bootstrap-dashboard.js?v=2.0.1" type="text/javascript"></script>
+<script src="/labcas-ui/assets/js/light-bootstrap-dashboard.js?v=2.0.5" type="text/javascript"></script>
 <!-- Light Dashboard DEMO methods, don't include it in your project! -->
 <script src="/labcas-ui/assets/js/demo.js"></script>
 <script src="/labcas-ui/assets/js/plugins/js.cookie.js"></script>
 <script src="/labcas-ui/assets/js/labcas/labcas-sidebar.js"></script>
-<script src="/labcas-ui/assets/js/labcas/authentication.js?102"></script>
-<script src="/labcas-ui/assets/js/labcas/utils.js?101"></script>
+<script src="/labcas-ui/assets/js/labcas/authentication.js?103"></script>
+<script src="/labcas-ui/assets/js/labcas/utils.js?103"></script>
 <script src="/labcas-ui/assets/js/labcas/search.js?100"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="/labcas-ui/assets/js/labcas/dashboard_search.js?2"></script>
 <script type="text/javascript">
     $(document).ready(function() {
 	initCookies();
 
 	//reset_search_filters();
 	initiate_search();
-        
+
         $.get( "/labcas-ui/sidebar.html?4", function( data ) {
             $( "#sidebar_placeholder" ).append(data);
             $( "#username_placeholder" ).html(Cookies.get('user'));
             $( "#username_placeholder_second" ).html(Cookies.get('user'));
+		$(".sidebar .nav div").html("<br>");
         });
 		
     });

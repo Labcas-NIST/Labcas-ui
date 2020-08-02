@@ -511,7 +511,7 @@ function fill_files_data(data){
 		
 		$("#files-table tbody").append(
 		"<tr>"+
-			//"<td><center><input type='checkbox' class='form-check-input' value='"+html_safe_id+"'></center></td>"+
+			"<td><center><input type='checkbox' class='form-check-input' value='"+html_safe_id+"'></center></td>"+
 			"<td class='text-left'>"+
 				"<a href=\"/labcas-ui/f/index.html?file_id="+
 					html_safe_id+"\">"+
@@ -546,8 +546,6 @@ function fill_files_data(data){
 }
 
 function setup_labcas_data(datatype, query, dataset_query){	
-	//console.log("HERE");
-    //console.log(Cookies.get('environment'));
     $.ajax({
         url: Cookies.get('environment')+"/data-access-api/collections/select?q="+query+"&wt=json&indent=true&rows=2147483647&sort=id%20asc",
         beforeSend: function(xhr) { 
@@ -926,6 +924,14 @@ function generate_filters(field_type, placeholder, data, display, head){
 		});
                 var filter_count = 0;
 		$.each(filters, function(i, o){
+			if (Cookies.get(placeholder+"_val") && Cookies.get(placeholder+"_val") != ""){
+			console.log("Filter");
+			console.log(placeholder+"_val");
+			console.log("Placeholder");
+			console.log(Cookies.get(placeholder+"_val"));
+			console.log("O");
+			console.log(o);
+			}
 		    if (counts[i] > 0){
 			var checked = "";
 			if (Cookies.get(placeholder+"_val") && Cookies.get(placeholder+"_val").includes($.trim(o))){
@@ -1055,6 +1061,7 @@ function setup_labcas_search(query, divid, cpage){
 	var data_filters = "";
     if (divid == "collections_search" || divid == "all"){
 		console.log(Cookies.get('environment')+"/data-access-api/collections/select?q="+query+""+collection_filters+"&wt=json&indent=true&start="+cpage*10);
+		setup_labcas_analytics(query, collection_filters);
 		$.ajax({
 			url: Cookies.get('environment')+"/data-access-api/collections/select?q="+query+""+collection_filters+"&wt=json&indent=true&sort=id%20asc&start="+cpage*10,	
 			beforeSend: function(xhr) {
