@@ -1,13 +1,12 @@
 Cookies.set("token", "None");
 $(document).ready(function(){
 console.log("WHAT");
-$.getJSON( '/labcas-ui/assets/conf/environment.cfg', function(json) {
+$.getJSON( '/labcas-ui/assets/conf/environment.cfg?2', function(json) {
 		console.log("OK22");
 	$.each( json, function( key, val ) {
 		console.log(key);
 		Cookies.set(key, val);
 	});
-        $('#loginerror').html(Cookies.get("login_msg"));
 }, 'text').done(function(d) {
                 console.log("Config done");
             }).fail(function(d, textStatus, error) {
@@ -15,6 +14,14 @@ $.getJSON( '/labcas-ui/assets/conf/environment.cfg', function(json) {
             }).always(function(d) {
                 console.log("Config complete");
             });
+	$.getJSON( '/labcas-ui/assets/conf/context.cfg', function(json) {
+
+                $.each( json, function( key, val ) {
+                        console.log(key);
+                        localStorage.setItem(key, val);
+                });
+                $('#loginerror').html(localStorage.getItem("login_msg"));
+        }, 'text')
 });
 $('#loginform').submit(function (e) {
     e.preventDefault();
@@ -76,7 +83,7 @@ $('#loginform').submit(function (e) {
                     //localStorage.setItem('token', "None");
                     Cookies.set("token", "None");
                     //alert("Could not login. Please make sure you have an account or reach out to EDRN JPL Support.");
-                    $('#alertHTML').html(Cookies.get("error_msg"));
+                    $('#alertHTML').html(localStorage.getItem("error_msg"));
                     $('#errorModal').modal('show');
                 }
         }); 
