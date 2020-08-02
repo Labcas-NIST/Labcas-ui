@@ -229,7 +229,7 @@ function generate_edrn_links(obj){
 	if (obj.Institution){
 		for (var i = 0; i < obj.Institution.length; i++) {
 			o = $.trim(obj.Institution[i]);
-			if (o != ""){
+			if (o != "" && obj.InstitutionId && obj.InstitutionId[i] && $.trim(obj.InstitutionId[i]) != ""){
 				inst_split = o.replace(".","").toLowerCase().split(" ");
 				inst_url = $.trim(obj.InstitutionId[i]);
 				for (var c = 0; c < inst_split.length; c++) {
@@ -257,7 +257,7 @@ function generate_edrn_links(obj){
 		for (var i = 0; i < obj.ProtocolName.length; i++) {
 			o = $.trim(obj.ProtocolName[i]);
 			//console.log((inst_url.length+$.trim(inst_split[c]).length+1));
-			if (o != ""){
+			if (o != "" && o != "Unknown"){
 				inst_url_clean = o.replace(/\./g,"-").replace(/'/g,"-").replace(/&/,"-").replace(/;/,"-").replace(/#/,"-").replace(/\(/g,"-").replace(/\)/g,"-").replace(/ - /g,"-").replace(/:/g,"-").replace(/,/g,"-").replace(/\//g,"-").toLowerCase().replace(/ /g,"-");
 				/*while (inst_url_clean.includes("--") || inst_url_clean.startsWith("-") || inst_url_clean.endsWith("-")){
                                         inst_url_clean = inst_url_clean.replace(/--/g,"-");

@@ -268,7 +268,7 @@ function fill_collection_details_data(data){
 		if (collection_id_append.includes(head)){
 			value += " ("+obj[head+"Id"]+")";
 		}else if (collapse_headers.includes(head)){
-            if (value.length > 20){
+            if (value && value.length > 20){
                 value = "<nobr>"+value.substring(0, 20) + "<a data-toggle='collapse' id='#"+head+"Less' href='#"+head+"Collapse' role='button' aria-expanded='false' onclick='document.getElementById(\"#"+head+"Less\").style.display = \"none\";'>... More</a></nobr><div class='collapse' id='"+head+"Collapse'>" + value.substring(20) + " <a data-toggle='collapse' href='#"+head+"Collapse' role='button' aria-expanded='false' onclick='document.getElementById(\"#"+head+"Less\").style.display = \"block\";'>Less</a></div>";
             }
         }
@@ -451,14 +451,14 @@ function fill_datasets_data(data){
 				collapse_button = '<button id="'+prev_dataset_id+'_button" style="height:25px; position: absolute; top: 30%; transform: translateY(-50%);" type="button" class="btn btn-link" data-toggle="collapse" data-target="#'+prev_dataset_id+'"><i class="fa fa-plus"></i></button>';
 				collapse_dict[prev_dataset_id] = 1;
 			}
-			dataset_html += "<div class='row' style='border-bottom:1px solid #ccc; height:25px; margin-left: 0px; margin-right: 0px;'>"+
+			dataset_html += "<div class='row' style='border-bottom:1px solid #ccc; margin-left: 0px; margin-right: 0px;'>"+
 					"<div class='col-md-1'><!--<div class=\"form-check\">"+
 						"<label class=\"form-check-label\">"+
 							"<input class=\"form-check-input\" type=\"checkbox\" value=''>"+
 							"<span class=\"form-check-sign\"></span>"+
 						"</label>"+
 					"</div>-->"+collapse_button+"</div>"+
-					"<div class='text-left col-md-10' valign='middle' style='padding: 0px 8px; vertical-align: middle;height: 25px'>"+
+					"<div class='text-left col-md-10' valign='middle' style='padding: 0px 8px; vertical-align: middle;'>"+
                         "<a href=\"/labcas-ui/d/index.html?dataset_id="+
                             value.id+"\">"+
                             value.DatasetName+
@@ -622,6 +622,7 @@ function setup_labcas_data(datatype, query, dataset_query){
 }
 function setup_labcas_dataset_data(datatype, query, file_query, cpage){
     if (cpage == 0){ //if this isn't a pagination request and a default load
+		console.log(Cookies.get('environment')+"/data-access-api/datasets/select?q="+query+"&wt=json&indent=true");
 		$.ajax({
 			url: Cookies.get('environment')+"/data-access-api/datasets/select?q="+query+"&wt=json&indent=true",
 			xhrFields: {
