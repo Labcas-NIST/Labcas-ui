@@ -1,4 +1,5 @@
 var page_files = {};
+var test_var;
 Array.prototype.contains = function(v) {
       for (var i = 0; i < this.length; i++) {
               if (this[i] === v) return true;
@@ -282,6 +283,7 @@ function fill_collection_details_data(data){
 	});
 	$.each(obj, function(key, value) {
 		if (show_headers.includes(key) || !extended_headers.includes(key)){
+		//if (show_headers.includes(key)){
 			return;
 		}
 		
@@ -360,6 +362,7 @@ function fill_dataset_details_data(data){
 	
 	$.each(data.response.docs[0], function(key, value) {
 		if (show_headers.includes(key) || !extended_headers.includes(key)){
+		//if (show_headers.includes(key)){
             return;
         }
 		if ($.isArray(value)){
@@ -367,7 +370,11 @@ function fill_dataset_details_data(data){
 		}
 		if (typeof value == "string"){
 			value = value.replace(/% /g,'_labcasPercent_');
-			value = decodeURIComponent(value);
+			try { 
+				value = decodeURIComponent(value);
+			} catch(e) { 
+			  console.error(e); 
+			}
 			value = value.replace(/\+/g,"&nbsp;").replace(/_labcasPercent_/g,'% ');
         }
         
@@ -419,6 +426,45 @@ function fill_file_details_data(data){
     //$("#download_icon").attr("onclick","location.href='"+Cookies.get('environment')+"/data-access-api/download?id="+html_safe_id+"';");
     $("#download_icon").attr("onclick","download_file('"+html_safe_id+"','single');");
 
+}
+function fill_datasets_children(data){
+	data.response.docs.sort(dataset_compare_sort);
+        var dataset_html = "";
+	var flag = "";
+        $.each(data.response.docs, function(key, value) {
+			if (flag == ""){
+				flag = true;
+				return;
+			}
+                        var color = "#0000FF";
+                        if(user_data["FavoriteDatasets"].includes(value.id)){
+                                color = "#87CB16 !important";
+                        }       
+			value.DatasetName = "&nbsp;&nbsp;&nbsp;&nbsp;".repeat(value.id.split("/").length - 2)+"<span>&#8226;</span>"+value.DatasetName;
+			dataset_html += "<div class='row' style='border-bottom:1px solid #ccc; margin-left: 0px; margin-right: 0px;'>"+
+                                        "<div class='col-md-1'><!--<div class=\"form-check\">"+
+                                                "<label class=\"form-check-label\">"+
+                                                        "<input class=\"form-check-input\" type=\"checkbox\" value=''>"+
+                                                        "<span class=\"form-check-sign\"></span>"+
+                                                "</label>"+
+                                        "</div>--></div>"+
+                                        "<div class='text-left col-md-10' valign='middle' style='padding: 0px 8px; vertical-align: middle;'>"+
+                        "<a href=\"/labcas-ui/d/index.html?dataset_id="+
+                            value.id+"\">"+
+                            value.DatasetName+
+                        "</a>"+
+                                        "</div>"+
+                                        "<div class=\"td-actions col-md-1 text-right\" valign='middle' style='padding: 0px 8px; vertical-align: middle; height: 25px'>"+
+                                                "<button type=\"button\" rel=\"tooltip\" title=\"Favorite\" onclick=\"save_favorite('"+value.id+"', 'FavoriteDatasets')\" class=\"btn btn-simple btn-link\" style='position: absolute;left: 5px; top: 50%; transform: translateY(-50%); color: "+color+"'>"+
+                                                        "<i class=\"fa fa-star\"></i>"+
+                                                "</button>"+
+                                        "</div>"+
+                                "</div>";
+                });
+	if ( dataset_html != ""){
+		$("#children-datasets").show();
+	}
+        $("#children-datasets-section").append(dataset_html);
 }
 function fill_datasets_data(data){
 	
@@ -549,7 +595,7 @@ function setup_labcas_data(datatype, query, dataset_query){
 	//console.log("HERE");
     //console.log(Cookies.get('environment'));
     $.ajax({
-        url: Cookies.get('environment')+"/data-access-api/collections/select?q="+query+"&wt=json&indent=true&rows=2147483647&sort=id%20asc",
+        url: Cookies.get('environment')+"/data-access-api/collections/select?q="+query+"&wt=json&indent=true&rows=10000&sort=id%20asc",
         beforeSend: function(xhr) { 
         	if(Cookies.get('token') && Cookies.get('token') != "None"){
             	xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
@@ -596,9 +642,9 @@ function setup_labcas_data(datatype, query, dataset_query){
          }
     });
     if (datatype == "collectiondatasets"){
-	console.log(Cookies.get('environment')+"/data-access-api/datasets/select?q="+dataset_query+"&wt=json&indent=true&rows=2147483647");
+	console.log(Cookies.get('environment')+"/data-access-api/datasets/select?q="+dataset_query+"&wt=json&indent=true&rows=10000");
     	$.ajax({
-			url: Cookies.get('environment')+"/data-access-api/datasets/select?q="+dataset_query+"&wt=json&indent=true&rows=2147483647",
+			url: Cookies.get('environment')+"/data-access-api/datasets/select?q="+dataset_query+"&wt=json&indent=true&rows=10000",
 			beforeSend: function(xhr) { 
 				if(Cookies.get('token') && Cookies.get('token') != "None"){
 					xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
@@ -620,6 +666,34 @@ function setup_labcas_data(datatype, query, dataset_query){
 		});
     }
 }
+function populate_dataset_children(query){
+	query = query.replace(/id:/,'DatasetParentId')+"%5C%2A";
+	console.log(Cookies.get('environment')+"/data-access-api/datasets/select?q="+query+"&wt=json&indent=true&rows=10000&sort=id%20asc");
+	$.ajax({
+		url: Cookies.get('environment')+"/data-access-api/datasets/select?q="+query+"&wt=json&indent=true&rows=10000&sort=id%20asc",
+		xhrFields: {
+				withCredentials: true
+		  },
+		beforeSend: function(xhr, settings) {
+			if(Cookies.get('token') && Cookies.get('token') != "None"){
+				xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token'));
+			}
+		},
+		dataType: 'json',
+		success: function (data) {
+			fill_datasets_children(data);
+
+		},
+		error: function(e){
+			if (!(Cookies.get("logout_alert") && Cookies.get("logout_alert") == "On")){
+			   Cookies.set("logout_alert","On");
+			    alert(formatTimeOfDay($.now()) + ": Login expired, please login...");
+			}
+			 window.location.replace("/labcas-ui/index.html");
+
+		 }
+	});
+}
 function setup_labcas_dataset_data(datatype, query, file_query, cpage){
     if (cpage == 0){ //if this isn't a pagination request and a default load
 		console.log(Cookies.get('environment')+"/data-access-api/datasets/select?q="+query+"&wt=json&indent=true");
@@ -636,6 +710,7 @@ function setup_labcas_dataset_data(datatype, query, file_query, cpage){
 			dataType: 'json',
 			success: function (data) {
 				fill_dataset_details_data(data);
+				populate_dataset_children(query);
 			},
 			error: function(e){
 				if (!(Cookies.get("logout_alert") && Cookies.get("logout_alert") == "On")){
@@ -1075,9 +1150,12 @@ function setup_labcas_search(query, divid, cpage){
 				 window.location.replace("/labcas-ui/index.html");
 			 }
 		});
-		console.log(Cookies.get('environment')+"/data-access-api/files/select?q="+query+""+collection_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&wt=json&rows=0");
+		console.log("/data-access-api/files/select?q="+query+""+collection_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&wt=json&rows=0");
+		console.log("HERE3");
+		console.log("data");
+		console.log(Cookies.get('token'));
 		$.ajax({
-			url: Cookies.get('environment')+"/data-access-api/files/select?q="+query+""+collection_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&wt=json&rows=0",
+			url: "/data-access-api/files/select?q="+query+""+collection_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&wt=json&rows=0",
 			beforeSend: function(xhr) {
 				if(Cookies.get('token') && Cookies.get('token') != "None"){
 					xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
@@ -1089,7 +1167,11 @@ function setup_labcas_search(query, divid, cpage){
 				console.log("GOT HERE");
 				fill_collections_facets(data);
 			},
-			error: function(e){
+			error: function (xhr, ajaxOptions, thrownError) {
+				console.log("RIGHTY");
+				console.log(xhr.responseText);
+				console.log(xhr.status);
+				console.log(thrownError);
 				if (!(Cookies.get("logout_alert") && Cookies.get("logout_alert") == "On")){
                                    Cookies.set("logout_alert","On");
 				 alert(formatTimeOfDay($.now()) + ": Login expired, please login...");

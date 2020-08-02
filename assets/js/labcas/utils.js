@@ -244,7 +244,7 @@ function generate_edrn_links(obj){
 				}
 				
 				leadpi = $.trim(obj.LeadPI[i]).toLowerCase().split(" ");
-				if (obj.LeadPI[i].includes("+")){
+				if (obj.LeadPI[i] && obj.LeadPI[i].includes("+")){
 					leadpi = $.trim(obj.LeadPI[i]).toLowerCase().split("+");
 				}
 				pis.push("<a href='"+Cookies.get('institution_url')+inst_url+"/"+leadpi[1]+"-"+leadpi[0]+"'>"+obj.LeadPI[i]+"</a>");
