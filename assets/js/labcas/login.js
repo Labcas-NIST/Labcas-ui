@@ -15,13 +15,13 @@ $.getJSON( '/labcas-ui/assets/conf/environment.cfg?2', function(json) {
                 console.log("Config complete");
             });
 	$.getJSON( '/labcas-ui/assets/conf/context.cfg', function(json) {
-		
-		$.each( json, function( key, val ) {
-			console.log(key);
-			localStorage.setItem(key, val);
-		});
-		$('#loginerror').html(localStorage.getItem("login_msg"));
-	}, 'text')
+
+                $.each( json, function( key, val ) {
+                        console.log(key);
+                        localStorage.setItem(key, val);
+                });
+                $('#loginerror').html(localStorage.getItem("login_msg"));
+        }, 'text')
 });
 $('#loginform').submit(function (e) {
     e.preventDefault();
