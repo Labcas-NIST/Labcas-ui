@@ -10,7 +10,7 @@
     <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
     <!--     Fonts and icons     -->
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="/labcas-ui/assets/css/font-awesome.min.css" />
     <!-- CSS Files -->
     <link href="/labcas-ui/assets/css/bootstrap.min.css" rel="stylesheet" />
     <link href="/labcas-ui/assets/css/light-bootstrap-dashboard.css?v=2.0.1" rel="stylesheet" />
@@ -186,6 +186,45 @@
                             </div>
                         </div>
                     </div>
+		   <div class="row">
+		       <div class="col-md-4">
+                            <div class="card ">
+                                <div class="card-header">
+                                    <h4 class="card-title"><div id="datasettitle"></div></h4>
+                                     <p class="card-category"># Discipline by Collection</p>
+                                </div>
+                                <div class="card-body">
+                                            <div id="disc_filters"/>
+                                </div>
+                            </div>
+                          </div>
+					  </div>
+                        <div class="col-md-4">
+                            <div class="card ">
+                                <div class="card-header">
+                                    <h4 class="card-title"><div id="datasettitle"></div></h4>
+                                     <p class="card-category">Collections by Organ</p>
+                                </div>
+                                <div class="card-body">
+                                            <div id="organ_filters"/>
+                                             
+                                </div>
+                            </div>
+                          </div>
+			</div>
+                        <div class="col-md-4">
+                            <div class="card ">
+                                <div class="card-header">
+                                    <h4 class="card-title"><div id="datasettitle"></div></h4>
+                                     <p class="card-category">Collections by Data Category</p>
+                                </div>
+                                <div class="card-body">
+                                          <div id="datacategory_filters"/>
+                                </div>
+                            </div>
+                          </div>
+			</div>
+		    </div>
                     <div class="row">
                         <div class="col-md-4">
                             <div class="card ">
@@ -224,47 +263,8 @@
                             </div>
                           </div>
 		      </div>
-				</div>
+		   </div>
 
-					<div class="row">
-					  <div class="col-md-4">
-                            <div class="card ">
-                                <div class="card-header">
-                                    <h4 class="card-title"><div id="datasettitle"></div></h4>
-                                     <p class="card-category"># Discipline by Collection</p>
-                                </div>
-                                <div class="card-body">
-                                            <div id="disc_filters"/>
-                                </div>
-                            </div>
-                          </div>
-					  </div>
-                        <div class="col-md-4">
-                            <div class="card ">
-                                <div class="card-header">
-                                    <h4 class="card-title"><div id="datasettitle"></div></h4>
-                                     <p class="card-category">Collections by Organ</p>
-                                </div>
-                                <div class="card-body">
-                                            <div id="organ_filters"/>
-                                             
-                                </div>
-                            </div>
-                          </div>
-					  </div>
-                        <div class="col-md-4">
-                            <div class="card ">
-                                <div class="card-header">
-                                    <h4 class="card-title"><div id="datasettitle"></div></h4>
-                                     <p class="card-category">Collections by Data Category</p>
-                                </div>
-                                <div class="card-body">
-                                          <div id="datacategory_filters"/>
-                                </div>
-                            </div>
-                          </div>
-					  </div>
-				    </div>
 						
 					</div>
 				</div>
@@ -294,7 +294,7 @@
                     U.S. Government Sponsorship Acknowledged.
                 </p>
                 <p>
-                    Licensed under <a href='https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html'>GPLv2</a>.
+                    Labcas version 2.0, Licensed under <a href='https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html'>GPLv2</a>.
                     <a href='https://mcl-labcas.jpl.nasa.gov/ui/static/plupload-2.1.9.zip'>Get Plupload</a>.
                 </p>
         

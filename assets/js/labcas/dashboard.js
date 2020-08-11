@@ -57,12 +57,12 @@ function init_labcas_data_distribution(div, second_graph_organ, ftype){ //acrony
 			label = data.points[0].text;
 			field_search = "&fq=("+encodeURI(escapeRegExp(ftype)).replace(/:/g,'%3A')+":"+encodeURI(escapeRegExp(String(label)))+")";
 			reset_search_filters();
-			Cookies.set(div, field_search);
+			localStorage.setItem(div, field_search);
 			filter_list = [];
 			filter_list.push(String(label));
-			Cookies.set(div+"_val",filter_list);
-			Cookies.set("search_filter", "on");
-			Cookies.set('search','');
+			localStorage.setItem(div+"_val",filter_list);
+			localStorage.setItem("search_filter", "on");
+			localStorage.setItem('search','');
 			console.log(div);
 			console.log(div+"_val");
 			window.location.replace("/labcas-ui/s/index.html");
@@ -230,7 +230,7 @@ function fill_datasets_analytics(data){
 	  datadict[collection] = (datadict[collection] || 0) + 1;
 	});*/
 	
-	//var parentName = Cookies.get('environment').replace("https://","").replace(".jpl.nasa.gov","").split("-").join(" ").trim();
+	//var parentName = localStorage.getItem('environment').replace("https://","").replace(".jpl.nasa.gov","").split("-").join(" ").trim();
 	var cl = [];
 	var cdc = [];
 	var cla = [];
@@ -423,9 +423,9 @@ function setup_labcas_analytics(){
     console.log("Analyzing...");
     //collection data
     
-        console.log(Cookies.get('environment')+"/data-access-api/collections/select?q=*&wt=json&indent=true");
+        console.log(localStorage.getItem('environment')+"/data-access-api/collections/select?q=*&wt=json&indent=true");
 		$.ajax({
-			url: Cookies.get('environment')+"/data-access-api/collections/select?q=*&wt=json&indent=true&rows=2147483647",	
+			url: localStorage.getItem('environment')+"/data-access-api/collections/select?q=*&wt=json&indent=true&rows=2147483647",	
 			beforeSend: function(xhr) {
 				if(Cookies.get('token') && Cookies.get('token') != "None"){
 					xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token'));
@@ -437,10 +437,10 @@ function setup_labcas_analytics(){
 				fill_collections_analytics(data); 
 		
 				//dataset data
-				console.log(Cookies.get('environment')+"/data-access-api/datasets/select?q=*&facet=true&facet.limit=-1&facet.field=CollectionName&facet.field=LeadPI&facet.field=ProtocolID&facet.field=ProtocolId&wt=json&rows=0");
+				console.log(localStorage.getItem('environment')+"/data-access-api/datasets/select?q=*&facet=true&facet.limit=-1&facet.field=CollectionName&facet.field=LeadPI&facet.field=ProtocolID&facet.field=ProtocolId&wt=json&rows=0");
 				$.ajax({
-					//url: Cookies.get('environment')+"/data-access-api/datasets/select?q=*&wt=json&indent=true&rows=2147483647",
-					url: Cookies.get('environment')+"/data-access-api/datasets/select?q=*&facet=true&facet.limit=-1&facet.field=CollectionName&facet.field=ProtocolID&facet.field=ProtocolId&facet.field=LeadPI&wt=json&rows=0",
+					//url: localStorage.getItem('environment')+"/data-access-api/datasets/select?q=*&wt=json&indent=true&rows=2147483647",
+					url: localStorage.getItem('environment')+"/data-access-api/datasets/select?q=*&facet=true&facet.limit=-1&facet.field=CollectionName&facet.field=ProtocolID&facet.field=ProtocolId&facet.field=LeadPI&wt=json&rows=0",
 					beforeSend: function(xhr) {
 						if(Cookies.get('token') && Cookies.get('token') != "None"){
 							xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token'));
@@ -467,8 +467,8 @@ function setup_labcas_analytics(){
 
     //files data
 		$.ajax({
-			//url: Cookies.get('environment')+"/data-access-api/files/select?q=*&wt=json&indent=true",
-			url: Cookies.get('environment')+"/data-access-api/files/select?q=*&facet=true&facet.limit=-1&facet.field=FileType&facet.field=LeadPI&wt=json&rows=0",
+			//url: localStorage.getItem('environment')+"/data-access-api/files/select?q=*&wt=json&indent=true",
+			url: localStorage.getItem('environment')+"/data-access-api/files/select?q=*&facet=true&facet.limit=-1&facet.field=FileType&facet.field=LeadPI&wt=json&rows=0",
 			beforeSend: function(xhr, settings) { 
 				if(Cookies.get('token') && Cookies.get('token') != "None"){
 					xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token'));

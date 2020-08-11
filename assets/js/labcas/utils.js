@@ -25,7 +25,7 @@ function initCookies(){
 			Cookies.set("user", "Sign in");
 			//Cookies.set("userletters", "PU");
 			$.each( json, function( key, val ) {
-				Cookies.set(key, val);
+				localStorage.setItem(key, val);
 			});
 	
 			user_data = {"FavoriteCollections":[],"FavoriteDatasets":[],"FavoriteFiles":[]};
@@ -59,7 +59,7 @@ function initCookies(){
 
 function writeUserData(udata){
 	$.ajax({
-        url: Cookies.get('environment')+"/data-access-api/userdata/create",
+        url: localStorage.getItem('environment')+"/data-access-api/userdata/create",
         beforeSend: function(xhr) { 
             xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
         },
@@ -81,7 +81,7 @@ function writeUserData(udata){
 }
 function getUserData(){
 	$.ajax({
-		url: Cookies.get('environment')+"/data-access-api/userdata/read?id="+Cookies.get('user'),
+		url: localStorage.getItem('environment')+"/data-access-api/userdata/read?id="+Cookies.get('user'),
 		beforeSend: function(xhr) { 
 			xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
 		},
@@ -113,7 +113,7 @@ function getUserData(){
 function save_favorite(labcas_id, labcas_type){
 	var user_id = Cookies.get('user');
 	$.ajax({
-        url: Cookies.get('environment')+"/data-access-api/userdata/read?id="+user_id,
+        url: localStorage.getItem('environment')+"/data-access-api/userdata/read?id="+user_id,
         beforeSend: function(xhr) { 
             xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
         },
@@ -191,8 +191,8 @@ function generate_mcl_links(obj){
 			if (obj.LeadPI[i].includes("+")){
 				leadpi = $.trim(obj.LeadPI[i]).toLowerCase().split("+");
 			}
-			pis.push("<a href='"+Cookies.get('leadpi_url')+leadpi[1]+"-"+leadpi[0]+"'>"+obj.LeadPI[i]+"</a>");
-			institutions.push("<a href='"+Cookies.get('institution_url')+inst_url+"'>"+o+"</a>");
+			pis.push("<a href='"+localStorage.getItem('leadpi_url')+leadpi[1]+"-"+leadpi[0]+"'>"+obj.LeadPI[i]+"</a>");
+			institutions.push("<a href='"+localStorage.getItem('institution_url')+inst_url+"'>"+o+"</a>");
 			
 		}
 	}
@@ -206,7 +206,7 @@ function generate_mcl_links(obj){
 					inst_url = inst_url.trim("-");
 				}
                         }
-                        protocols.push("<a href='"+Cookies.get('protocol_url')+inst_url+"'>"+o+"</a>");
+                        protocols.push("<a href='"+localStorage.getItem('protocol_url')+inst_url+"'>"+o+"</a>");
 
                 }
         }
@@ -214,7 +214,7 @@ function generate_mcl_links(obj){
 		for (var i = 0; i < obj.Organ.length; i++) {
 			o = $.trim(obj.Organ[i]);
 			if (o != ""){
-				orgs.push("<a href='"+Cookies.get('organ_url')+o.toLowerCase()+"'>"+o+"</a>");
+				orgs.push("<a href='"+localStorage.getItem('organ_url')+o.toLowerCase()+"'>"+o+"</a>");
 			}
 		}
 	}
@@ -247,8 +247,8 @@ function generate_edrn_links(obj){
 				if (obj.LeadPI[i] && obj.LeadPI[i].includes("+")){
 					leadpi = $.trim(obj.LeadPI[i]).toLowerCase().split("+");
 				}
-				pis.push("<a href='"+Cookies.get('institution_url')+inst_url+"/"+leadpi[1]+"-"+leadpi[0]+"'>"+obj.LeadPI[i]+"</a>");
-				institutions.push("<a href='"+Cookies.get('institution_url')+inst_url+"'>"+o+"</a>");
+				pis.push("<a href='"+localStorage.getItem('institution_url')+inst_url+"/"+leadpi[1]+"-"+leadpi[0]+"'>"+obj.LeadPI[i]+"</a>");
+				institutions.push("<a href='"+localStorage.getItem('institution_url')+inst_url+"'>"+o+"</a>");
 			
 			}
 		}
@@ -280,7 +280,7 @@ function generate_edrn_links(obj){
 						}
 						inst_url += "-"+$.trim(inst_split[c]);
 					}
-					protocols.push("<a href='"+Cookies.get('protocol_url')+inst_url+"'>"+o+"</a>");
+					protocols.push("<a href='"+localStorage.getItem('protocol_url')+inst_url+"'>"+o+"</a>");
 				}
 			}
 		}
@@ -290,7 +290,7 @@ function generate_edrn_links(obj){
 		for (var i = 0; i < obj.Organ.length; i++) {
 			o = $.trim(obj.Organ[i]);
 			if (o != ""){
-				orgs.push("<a href='"+Cookies.get('organ_url')+o+"'>"+o+"</a>");
+				orgs.push("<a href='"+localStorage.getItem('organ_url')+o+"'>"+o+"</a>");
 			}
 		}
 	}
@@ -406,25 +406,44 @@ function checkWindow(win){
 
 		var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
 		var isFirefox = typeof InstallTrigger !== 'undefined';
-
 		var isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+		var isEdge = window.navigator.userAgent.indexOf("Edge") > -1;
+
+
 		if( isChrome ){
-			alert("Download blocked. To fix this for Chrome:\nGo to Preferences->Site Settings->Pop-ups->Allow->Add:\n"+window.location.hostname);	
+			if ( isMacintosh() ){
+				$('#alertHTML').html("Download blocked. To fix this for Chrome:<br>The path required is \"Chrome\" → Preferences → Privacy and security → <br>Site Settings → Content, Pop-ups and redirects → Allow, Add:<br>"+window.location.hostname);
+			}
+			if ( isWindows() ){
+				$('#alertHTML').html("Download blocked. To fix this for Chrome:<br>The path required is (⋮) → Settings → Privacy and security → <br>Site Settings → Content, Pop-ups and redirects → Allow, Add:<br>"+window.location.hostname);
+			}
+	
+			//alert("Download blocked. To fix this for Chrome:\nGo to Preferences→Site Settings→Pop-ups→Allow→Add:\n"+window.location.hostname);	
+			if ( isEdge ){
+				$('#alertHTML').html("Download blocked. To fix this for Chrome:<br>The path is \"⋯\" → Settings → Privacy and security → Pop-ups and redirects → Allow, add, "+window.location.hostname+", Add");
+			}
 		}else if ( isSafari ){
-			alert("Download blocked. To fix this for Safari:\nGo to Safari->Preferences->Security->Uncheck \"Block pop-up windows\"");
+			$('#alertHTML').html("Download blocked. To fix this for Safari:<br>The path is \"Safari\" → Preferences → Websites → Pop-up Windows → "+window.location.hostname+" → Drop-down menu, \"Allow\"");
+			//alert("Download blocked. To fix this for Safari:\nGo to Safari→Preferences→Security→Uncheck \"Block pop-up windows\"");
 		}else if ( isFirefox ){
-			alert("Download blocked. To fix this for Firefox:\nGo to Firefox->Preferences->Content->Pop-ups->Exceptions->Add: "+window.location.hostname);
+			if ( isMacintosh() ){
+				$('#alertHTML').html("Download blocked. To fix this for Firefox:<br>The path is \"Firefox\" → Preferences → Privacy & Security → Block pop-up windows, \"Exceptions…\" → add "+window.location.hostname+", \"Allow\", Save Changes.: ");
+			}if ( isWindows() ){
+				$('#alertHTML').html("Download blocked. To fix this for Firefox:<br>The path is (☰) → Options → Privacy & Security → Block pop-up windows, \"Exceptions…\" → add "+window.location.hostname+", \"Allow\", Save Changes.: ");
+			}
 		}else if ( isIE ){
-			alert("Download blocked. Please fix this for Internet Explorer.");
+			$('#alertHTML').html("Download blocked. Please fix this for Internet Explorer.");
 		}else{
-			alert("Download blocked. Please fix this for your respective browser.");
+			$('#alertHTML').html("Download blocked. Please fix this for your respective browser.");
 		}
+		$('#errorModal').modal('show');
 		return "popup_blocked";
 	}
 	return "worked";
 }
 function download_file(val, type){
-	var dataurl = Cookies.get('environment')+"/data-access-api/download?id="+val;
+	var dataurl = localStorage.getItem('environment')+"/data-access-api/download?id="+val;
+	console.log(dataurl);
 	if (UrlExists(dataurl)){
 		if (type == "multiple"){
 			win = window.open(dataurl, '_blank');
@@ -445,54 +464,47 @@ function download_files(formname){
     var download_list = [];
     $('#' + formname + ' input[type="checkbox"]').each(function() {
         if ($(this).is(":checked")) {
-            //alert($(this).val());
             download_list.push($(this).val());
-            //var dataurl = Cookies.get('environment')+"/data-access-api/download?id="+$(this).val();
-	    //console.log("Downloading2 "+dataurl);
-		
-	    //window.open(dataurl, '_parent');
-	    //wait(1000);
-            /*$.ajax({
-		url: Cookies.get('environment')+"/data-access-api/download?id="+$(this).val(),
-		type: 'GET',
-		beforeSend: function() {
-		    console.log("Downloading ");
-		},
-		complete: function() {
-	            //console.log("Downloading "+$(this).val());
-	            console.log("Downloading "+dataurl);
-		    window.location = dataurl;
-		}
-	    });*/
         }
     });
     var get_var = get_url_vars();
-    Cookies.set("login_redirect", "/labcas-ui/d/index.html?dataset_id="+get_var["dataset_id"])
-    Cookies.set('download_list',JSON.stringify(download_list));
+    if (get_var["dataset_id"] && get_var["dataset_id"] != "undefined"){
+	    Cookies.set("login_redirect", "/labcas-ui/d/index.html?dataset_id="+get_var["dataset_id"])
+    }else if (get_var["search"]){
+	    Cookies.set("login_redirect", "/labcas-ui/s/index.html?search="+get_var["search"])
+    }
+    localStorage.setItem('download_list',JSON.stringify(download_list));
     window.location.replace("/labcas-ui/download.html");
 }
 function reset_search_filters(){
       var get_var = get_url_vars();
-        Cookies.set("search", get_var["search"]);
-        Cookies.set("search_filter", "off");
+        localStorage.setItem("search", get_var["search"]);
+        localStorage.setItem("search_filter", "off");
 
 
-        $.each(Cookies.get("filters").split(","), function(ind, head) {
-                var divs = Cookies.get(head+"_filters_div").split(",");
+        $.each(localStorage.getItem("filters").split(","), function(ind, head) {
+                var divs = localStorage.getItem(head+"_filters_div").split(",");
                 $.each(divs, function(i, divhead) {
-                        Cookies.set($.trim(divhead), "");
+                        localStorage.setItem($.trim(divhead), "");
                         if(divhead.includes("_num_")){
-                                Cookies.set($.trim(divhead)+"_0","");
-                                Cookies.set($.trim(divhead)+"_1","");
-                                Cookies.set($.trim(divhead)+"_max_0","");
-                                Cookies.set($.trim(divhead)+"_max_1","");
+                                localStorage.setItem($.trim(divhead)+"_0","");
+                                localStorage.setItem($.trim(divhead)+"_1","");
+                                localStorage.setItem($.trim(divhead)+"_max_0","");
+                                localStorage.setItem($.trim(divhead)+"_max_1","");
                         }else{
-                                Cookies.set($.trim(divhead)+"_val", "");
+                                localStorage.setItem($.trim(divhead)+"_val", "");
                         }
                 });
         });
-        Cookies.set("search", "*");
+        localStorage.setItem("search", "*");
 	window.history.replaceState({}, document.title, "/" + "labcas-ui/s/index.html?search=*");
+}
+function isMacintosh() {
+  return navigator.platform.indexOf('Mac') > -1
+}
+
+function isWindows() {
+  return navigator.platform.indexOf('Win') > -1
 }
 function UrlExists(url)
 {

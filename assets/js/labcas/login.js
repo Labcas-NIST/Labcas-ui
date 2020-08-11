@@ -5,7 +5,7 @@ $.getJSON( '/labcas-ui/assets/conf/environment.cfg?2', function(json) {
 		console.log("OK22");
 	$.each( json, function( key, val ) {
 		console.log(key);
-		Cookies.set(key, val);
+		localStorage.setItem(key, val);
 	});
 }, 'text').done(function(d) {
                 console.log("Config done");
@@ -33,7 +33,7 @@ $('#loginform').submit(function (e) {
 		Cookies.set(key, val);
 	});*/
         $.ajax({
-            url: Cookies.get('environment')+"/data-access-api/auth",
+            url: localStorage.getItem('environment')+"/data-access-api/auth",
                 beforeSend: function(xhr) {
                     xhr.setRequestHeader("Authorization", "Basic " + btoa($('#username').val() + ":" + $('#password').val()));
                 },
@@ -44,7 +44,7 @@ $('#loginform').submit(function (e) {
 			Cookies.set("JasonWebToken", data);
 			//Get user data, then redirect
 			$.ajax({
-				url: Cookies.get('environment')+"/data-access-api/userdata/read?id="+Cookies.get('user'),
+				url: localStorage.getItem('environment')+"/data-access-api/userdata/read?id="+Cookies.get('user'),
 				beforeSend: function(xhr) { 
 					xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
 				},

@@ -18,33 +18,33 @@ Array.prototype.unique = function() {
 }
 function initiate_search(){
       var get_var = get_url_vars();
-	if(Cookies.get("search")){
-        	Cookies.set("search", get_var["search"]);
+	if(localStorage.getItem("search")){
+        	localStorage.setItem("search", get_var["search"]);
 	}else{
-		Cookies.set("search", "*");
+		localStorage.setItem("search", "*");
 	}
-        $.each(Cookies.get("filters").split(","), function(ind, head) {
-                var divs = Cookies.get(head+"_filters_div").split(",");
+        $.each(localStorage.getItem("filters").split(","), function(ind, head) {
+                var divs = localStorage.getItem(head+"_filters_div").split(",");
                 $.each(divs, function(i, divhead) {
-			if (!Cookies.get($.trim(divhead))){
-				Cookies.set($.trim(divhead), "");
+			if (!localStorage.getItem($.trim(divhead))){
+				localStorage.setItem($.trim(divhead), "");
 			}
                         if(divhead.includes("_num_")){
-                                if (!Cookies.get($.trim(divhead)+"_0")){
-                                        Cookies.set($.trim(divhead)+"_0","");
-                                        Cookies.set($.trim(divhead)+"_1","");
-                                        Cookies.set($.trim(divhead)+"_max_0","");
-                                        Cookies.set($.trim(divhead)+"_max_1","");
+                                if (!localStorage.getItem($.trim(divhead)+"_0")){
+                                        localStorage.setItem($.trim(divhead)+"_0","");
+                                        localStorage.setItem($.trim(divhead)+"_1","");
+                                        localStorage.setItem($.trim(divhead)+"_max_0","");
+                                        localStorage.setItem($.trim(divhead)+"_max_1","");
                                 }
                         }else{
-                                if (!Cookies.get($.trim(divhead)+"_val")){
-                                        Cookies.set($.trim(divhead)+"_val", "");
+                                if (!localStorage.getItem($.trim(divhead)+"_val")){
+                                        localStorage.setItem($.trim(divhead)+"_val", "");
                                 }
                         }
                 });
         });
 
-        setup_labcas_search(Cookies.get("search"), "all", 0);
+        setup_labcas_search(localStorage.getItem("search"), "all", 0);
         $("#favorites_len").html(user_data['FavoriteFiles'].length+user_data['FavoriteDatasets'].length+user_data['FavoriteCollections'].length);
 }
 
@@ -62,11 +62,11 @@ function fill_collections_public_data(data){
 			var pis = obj.LeadPI? obj.LeadPI.join(",") : "";
 			var orgs = obj.Organ? obj.Organ.join(",") : "";
 		
-			if (Cookies.get('environment').includes("edrn-labcas")){
+			if (localStorage.getItem('environment').includes("edrn-labcas")){
 				var obj_arr = generate_edrn_links(obj);
 				protocols = obj_arr[3].join(",");
 				orgs = obj_arr[2].join(",");
-			}else if(Cookies.get('environment').includes("mcl-labcas") || Cookies.get('environment').includes("labcas-dev")){
+			}else if(localStorage.getItem('environment').includes("mcl-labcas") || localStorage.getItem('environment').includes("labcas-dev")){
 				var obj_arr = generate_mcl_links(obj);
 				protocols = obj_arr[3].join(",");
 				orgs = obj_arr[2].join(",");
@@ -80,7 +80,7 @@ function fill_collections_public_data(data){
 					"<td>"+pis+"</td>"+
 					"<td>"+institutions+"</td>"+
 					"<td>"+obj.Discipline+"</td>"+
-					"<td>"+obj.DataCustodian+"</td>"+
+					//"<td>"+obj.DataCustodian+"</td>"+
 					"<td>"+orgs+"</td>"+
 					"<td class=\"td-actions\">"+
 							"<button type=\"button\" rel=\"tooltip\" title=\"Favorite\" onclick=\"save_favorite('"+obj.id+"', 'FavoriteCollections')\" class=\"btn "+color+" btn-simple btn-link\">"+
@@ -90,6 +90,7 @@ function fill_collections_public_data(data){
 				"</tr>");
 		}
     });
+    $('#loading').hide(500);
     $table.bootstrapTable({
             toolbar: ".toolbar",
             clickToSelect: true,
@@ -139,11 +140,11 @@ function fill_collections_data(data){
     	var orgs = obj.Organ? obj.Organ.join(", ") : "";
     	var protocols = obj.ProtocolName? obj.ProtocolName.join(", ") : "";
     	
-    	if (Cookies.get('environment').includes("edrn-labcas")){
+    	if (localStorage.getItem('environment').includes("edrn-labcas")){
 			var obj_arr = generate_edrn_links(obj);
 			protocols = obj_arr[3].join(", ");
 			orgs = obj_arr[2].join(", ");
-		}else if(Cookies.get('environment').includes("mcl-labcas") || Cookies.get('environment').includes("labcas-dev")){
+		}else if(localStorage.getItem('environment').includes("mcl-labcas") || localStorage.getItem('environment').includes("labcas-dev")){
 			var obj_arr = generate_mcl_links(obj);
 			protocols = obj_arr[3].join(", ");
 			orgs = obj_arr[2].join(", ");
@@ -161,10 +162,10 @@ function fill_collections_data(data){
                     obj.id+"\">"+
                 obj.CollectionName+"</a></td>"+
                 "<td>"+pis+"</td>"+
-                "<td>"+protocols+"</td>"+
+                //"<td>"+protocols+"</td>"+
                 "<td>"+institutions+"</td>"+
                 "<td>"+obj.Discipline+"</td>"+
-                "<td>"+obj.DataCustodian+"</td>"+
+                //"<td>"+obj.DataCustodian+"</td>"+
                 "<td>"+orgs+"</td>"+
                 "<td class=\"td-actions\">"+
 						"<button type=\"button\" rel=\"tooltip\" title=\"Favorite\" onclick=\"save_favorite('"+obj.id+"', 'FavoriteCollections')\" class=\"btn "+color+" btn-simple btn-link\">"+
@@ -174,6 +175,7 @@ function fill_collections_data(data){
             "</tr>");
           //console.log(obj);
     });
+    $('#loading').hide(500);
     $table.bootstrapTable({
             toolbar: ".toolbar",
             clickToSelect: true,
@@ -213,7 +215,7 @@ function fill_collection_details_data(data){
 	//console.log(data);
         if(!data.response.docs[0]){
                 if(!Cookies.get("token") || Cookies.get("token") == "None"){
-	  	    Cookies.set("logout_alert","On");
+	  	    localStorage.setItem("logout_alert","On");
 		    alert(formatTimeOfDay($.now()) + ": Logged out, need to login to see data...");
 		    window.location.replace("/labcas-ui/index.html");
 		}
@@ -229,11 +231,11 @@ function fill_collection_details_data(data){
 	var pis = obj.LeadPI? obj.LeadPI.join(", ") : "";
 	var orgs = obj.Organ? obj.Organ.join(", ") : "";
 	
-	if (Cookies.get('environment').includes("edrn-labcas")){
+	if (localStorage.getItem('environment').includes("edrn-labcas")){
 		var obj_arr = generate_edrn_links(obj);
 		protocols = obj_arr[3].join(",");
 		orgs = obj_arr[2].join(", ");
-	}else if(Cookies.get('environment').includes("mcl-labcas") || Cookies.get('environment').includes("labcas-dev")){
+	}else if(localStorage.getItem('environment').includes("mcl-labcas") || localStorage.getItem('environment').includes("labcas-dev")){
 		var obj_arr = generate_mcl_links(obj);
 		protocols = obj_arr[3].join(",");
 		institutions = obj_arr[0].join(", ");
@@ -245,18 +247,21 @@ function fill_collection_details_data(data){
 	obj.LeadPI = pis;
 	obj.Organ = orgs;
 	obj.ProtocolName = protocols;
-	obj.Consortium = obj.Consortium? "<a href='"+Cookies.get('environment_url')+"'>"+obj.Consortium+"</a>" : "";
+	obj.Consortium = obj.Consortium? "<a href='"+localStorage.getItem('environment_url')+"'>"+obj.Consortium+"</a>" : "";
 	
 	var extended_headers = [];
-	if (Cookies.get('collection_header_extend_'+obj.id)){
-		extended_headers = Cookies.get('collection_header_extend_'+obj.id).split(',');
+	if (localStorage.getItem('collection_header_extend_'+obj.id)){
+		extended_headers = localStorage.getItem('collection_header_extend_'+obj.id).split(',');
 	}
-	var show_headers = Cookies.get('collection_header_order').split(',');
-	var collapse_headers = Cookies.get('collapsible_headers').split(',');
-	var collection_id_append = Cookies.get('collection_id_append').split(',');
+	var show_headers = localStorage.getItem('collection_header_order').split(',');
+	var collapse_headers = localStorage.getItem('collapsible_headers').split(',');
+	var collection_id_append = localStorage.getItem('collection_id_append').split(',');
 	
 	$.each(show_headers, function(ind, head) {
 		var value = obj[head];
+		if (typeof  value === "undefined") {
+			value = "";
+		}
 		//console.log(value);
 		if ($.isArray(value)){
 			value = value.join(",");
@@ -286,7 +291,9 @@ function fill_collection_details_data(data){
 		//if (show_headers.includes(key)){
 			return;
 		}
-		
+		if (typeof  value === "undefined") {
+                        value = "";
+                }
 		if ($.isArray(value)){
 			value = value.join(",");
 		}
@@ -309,7 +316,8 @@ function fill_collection_details_data(data){
 			"</tr>");
 		
     });
-    
+
+	$('#loading_collection').hide(500);    
 }
 function fill_dataset_details_data(data){
 	var datasetname = data.response.docs[0].DatasetName;
@@ -323,16 +331,19 @@ function fill_dataset_details_data(data){
 	var collectionname = data.response.docs[0].CollectionName;
 	$("#collection_name").html("<a href=\"/labcas-ui/c/index.html?collection_id="+collectionid+"\">"+collectionname+"</a>");
 	
-	//var hide_headers = Cookies.get('dataset_header_hide').split(','); //Hiding since we only want to show extended headers
+	//var hide_headers = localStorage.getItem('dataset_header_hide').split(','); //Hiding since we only want to show extended headers
 	var extended_headers = [];
-        if (Cookies.get('dataset_header_extend_'+collectionid)){
-                extended_headers = Cookies.get('dataset_header_extend_'+collectionid).split(',');
+        if (localStorage.getItem('dataset_header_extend_'+collectionid)){
+                extended_headers = localStorage.getItem('dataset_header_extend_'+collectionid).split(',');
         }
-    var show_headers = Cookies.get('dataset_header_order').split(',');
-    var collection_id_append = Cookies.get('dataset_id_append').split(',');
+    var show_headers = localStorage.getItem('dataset_header_order').split(',');
+    var collection_id_append = localStorage.getItem('dataset_id_append').split(',');
 	
 	$.each(show_headers, function(ind, head) {
         var value = data.response.docs[0][head];
+	if (typeof  value === "undefined") {
+                        value = "";
+                }
         //console.log(head);
         //console.log(value);
         if (!value){
@@ -362,9 +373,12 @@ function fill_dataset_details_data(data){
 	
 	$.each(data.response.docs[0], function(key, value) {
 		if (show_headers.includes(key) || !extended_headers.includes(key)){
-		//if (show_headers.includes(key)){
-            return;
-        }
+			//if (show_headers.includes(key)){
+		    return;
+		}
+		if (typeof  value === "undefined") {
+                        value = "";
+                }
 		if ($.isArray(value)){
 			value = value.join(",");
 		}
@@ -391,6 +405,7 @@ function fill_dataset_details_data(data){
 function fill_file_details_data(data){
 	$("#filetitle").html(data.response.docs[0].FileName);
 	var html_safe_id = encodeURI(escapeRegExp(data.response.docs[0].id));
+	//var html_safe_id = encodeURI(data.response.docs[0].id);
 	var fileurl = "";
 	if (data.response.docs[0].FileUrl){
 		var url = data.response.docs[0].FileUrl;
@@ -423,9 +438,10 @@ function fill_file_details_data(data){
 		
     });
     $("#filesize").html(filesize); 
-    //$("#download_icon").attr("onclick","location.href='"+Cookies.get('environment')+"/data-access-api/download?id="+html_safe_id+"';");
+    //$("#download_icon").attr("onclick","location.href='"+localStorage.getItem('environment')+"/data-access-api/download?id="+html_safe_id+"';");
     $("#download_icon").attr("onclick","download_file('"+html_safe_id+"','single');");
 
+	$('#loading').hide(500);
 }
 function fill_datasets_children(data){
 	data.response.docs.sort(dataset_compare_sort);
@@ -529,6 +545,7 @@ function fill_datasets_data(data){
 	});
 	    $("#collection_datasets_len").html(data.response.numFound); 
 	    $("#collection_favorites_len").html(user_data['FavoriteFiles'].length+user_data['FavoriteDatasets'].length+user_data['FavoriteCollections'].length);
+	$('#loading_dataset').hide(500);
 	
 }
 function fill_files_data(data){
@@ -536,6 +553,7 @@ function fill_files_data(data){
 	var cpage = data.response.start;
 	load_pagination("files",size,cpage);
 	$("#files-table tbody").empty();
+	var download_list = JSON.parse(localStorage.getItem("download_list"));
 	$.each(data.response.docs, function(key, value) {
 	
 		var color = "btn-info";
@@ -545,24 +563,35 @@ function fill_files_data(data){
 		
 		var thumb = "";
 		var filetype = value.FileType ? value.FileType.join(",") : "";
+		var site = value.Site ? value.Site.join(",") : "";
 		var description = value.Description? value.Description.join(",") : "";
 		if ('ThumbnailRelativePath' in value){
 			thumb = "<img width='50' height='50' src='/labcas-ui/assets/"+value.ThumbnailRelativePath+"'/>";
 		}
         var html_safe_id = encodeURI(escapeRegExp(value.id));
+        //var html_safe_id = encodeURI(value.id);
 		var filesize = "";
 		if (value.FileSize){
 			filesize = humanFileSize(value.FileSize, true);
 		}
-		
+		var checked = "";
+		//console.log(html_safe_id);
+		//console.log(download_list);
+		if ( download_list &&  download_list.includes(html_safe_id) ){
+			//console.log("HERE");
+			checked = "checked";
+		}
 		$("#files-table tbody").append(
 		"<tr>"+
-			"<td><center><input type='checkbox' class='form-check-input' value='"+html_safe_id+"'></center></td>"+
+			"<td><center><input type='checkbox' class='form-check-input' value='"+html_safe_id+"' "+checked+"></center></td>"+
 			"<td class='text-left'>"+
 				"<a href=\"/labcas-ui/f/index.html?file_id="+
 					html_safe_id+"\">"+
 					value.FileName+
 				"</a>"+
+			"</td>"+
+			"<td class='text-left'>"+
+					site +
 			"</td>"+
 			"<td class='text-left'>"+
 					filetype +
@@ -580,7 +609,7 @@ function fill_files_data(data){
 				"<button type=\"button\" rel=\"favoritebutton\" title=\"Favorite\" onclick=\"save_favorite('"+value.id+"', 'FavoriteFiles')\" class=\"btn "+color+" btn-simple btn-link\">"+
 					"<i class=\"fa fa-star\"></i>"+
 				"</button>"+
-				//"<button type=\"button\" rel=\"downloadbutton\" title=\"Download\" class=\"btn btn-danger btn-simple btn-link\" onclick=\"location.href='"+Cookies.get('environment')+"/data-access-api/download?id="+html_safe_id+"'\">"+
+				//"<button type=\"button\" rel=\"downloadbutton\" title=\"Download\" class=\"btn btn-danger btn-simple btn-link\" onclick=\"location.href='"+localStorage.getItem('environment')+"/data-access-api/download?id="+html_safe_id+"'\">"+
 				"<button type=\"button\" rel=\"downloadbutton\" title=\"Download\" class=\"btn btn-danger btn-simple btn-link\" onclick=\"download_file('"+html_safe_id+"','single')\">"+
 					"<i class=\"fa fa-download\"></i>"+
 				"</button>"+
@@ -589,11 +618,12 @@ function fill_files_data(data){
 	});                                                                     
     $("#dataset_files_len").html(size); 
     $("#dataset_favorites_len").html(user_data['FavoriteFiles'].length+user_data['FavoriteDatasets'].length+user_data['FavoriteCollections'].length);
+	$('#loading_file').hide(500);
 }
 
 function setup_labcas_data(datatype, query, dataset_query){	
     $.ajax({
-        url: Cookies.get('environment')+"/data-access-api/collections/select?q="+query+"&wt=json&indent=true&rows=10000&sort=id%20asc",
+        url: localStorage.getItem('environment')+"/data-access-api/collections/select?q="+query+"&wt=json&indent=true&rows=10000&sort=id%20asc",
         beforeSend: function(xhr) { 
         	if(Cookies.get('token') && Cookies.get('token') != "None"){
             	xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
@@ -609,7 +639,7 @@ function setup_labcas_data(datatype, query, dataset_query){
             }else if (datatype == "collectiondatasets"){
                 fill_collection_details_data(data);
                 $.ajax({
-					url: Cookies.get('environment')+"/data-access-api/files/select?q="+dataset_query+"&wt=json&indent=true",
+					url: localStorage.getItem('environment')+"/data-access-api/files/select?q="+dataset_query+"&wt=json&indent=true",
 					beforeSend: function(xhr) { 
 						if(Cookies.get('token') && Cookies.get('token') != "None"){
 							xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
@@ -622,8 +652,8 @@ function setup_labcas_data(datatype, query, dataset_query){
 						$("#collection_files_len").html(data.response.numFound);
 					},
 					error: function(e){
-						if (!(Cookies.get("logout_alert") && Cookies.get("logout_alert") == "On")){
-						   Cookies.set("logout_alert","On");
+						if (!(localStorage.getItem("logout_alert") && localStorage.getItem("logout_alert") == "On")){
+						   localStorage.setItem("logout_alert","On");
 						    alert(formatTimeOfDay($.now()) + ": Login expired, please login...");
 						}
 						 window.location.replace("/labcas-ui/index.html");
@@ -632,17 +662,17 @@ function setup_labcas_data(datatype, query, dataset_query){
             }
         },
         error: function(e){
-		if (!(Cookies.get("logout_alert") && Cookies.get("logout_alert") == "On")){
-                     Cookies.set("logout_alert","On");
+		if (!(localStorage.getItem("logout_alert") && localStorage.getItem("logout_alert") == "On")){
+                     localStorage.setItem("logout_alert","On");
 		     alert(formatTimeOfDay($.now()) + ": Login expired, please login...");
 		}
              window.location.replace("/labcas-ui/index.html");
          }
     });
     if (datatype == "collectiondatasets"){
-	console.log(Cookies.get('environment')+"/data-access-api/datasets/select?q="+dataset_query+"&wt=json&indent=true&rows=10000");
+	console.log(localStorage.getItem('environment')+"/data-access-api/datasets/select?q="+dataset_query+"&wt=json&indent=true&rows=10000");
     	$.ajax({
-			url: Cookies.get('environment')+"/data-access-api/datasets/select?q="+dataset_query+"&wt=json&indent=true&rows=10000",
+			url: localStorage.getItem('environment')+"/data-access-api/datasets/select?q="+dataset_query+"&wt=json&indent=true&rows=10000",
 			beforeSend: function(xhr) { 
 				if(Cookies.get('token') && Cookies.get('token') != "None"){
 					xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
@@ -655,8 +685,8 @@ function setup_labcas_data(datatype, query, dataset_query){
                 fill_datasets_data(data);
 			},
 			error: function(e){
-			if (!(Cookies.get("logout_alert") && Cookies.get("logout_alert") == "On")){
-                                   Cookies.set("logout_alert","On");
+			if (!(localStorage.getItem("logout_alert") && localStorage.getItem("logout_alert") == "On")){
+                                   localStorage.setItem("logout_alert","On");
 				 alert(formatTimeOfDay($.now()) + ": Login expired, please login...");
 			}
                  window.location.replace("/labcas-ui/index.html");
@@ -666,9 +696,9 @@ function setup_labcas_data(datatype, query, dataset_query){
 }
 function populate_dataset_children(query){
 	query = query.replace(/id:/,'DatasetParentId')+"%5C%2A";
-	console.log(Cookies.get('environment')+"/data-access-api/datasets/select?q="+query+"&wt=json&indent=true&rows=10000&sort=id%20asc");
+	console.log(localStorage.getItem('environment')+"/data-access-api/datasets/select?q="+query+"&wt=json&indent=true&rows=10000&sort=id%20asc");
 	$.ajax({
-		url: Cookies.get('environment')+"/data-access-api/datasets/select?q="+query+"&wt=json&indent=true&rows=10000&sort=id%20asc",
+		url: localStorage.getItem('environment')+"/data-access-api/datasets/select?q="+query+"&wt=json&indent=true&rows=10000&sort=id%20asc",
 		xhrFields: {
 				withCredentials: true
 		  },
@@ -683,20 +713,21 @@ function populate_dataset_children(query){
 
 		},
 		error: function(e){
-			if (!(Cookies.get("logout_alert") && Cookies.get("logout_alert") == "On")){
-			   Cookies.set("logout_alert","On");
+			if (!(localStorage.getItem("logout_alert") && localStorage.getItem("logout_alert") == "On")){
+			   localStorage.setItem("logout_alert","On");
 			    alert(formatTimeOfDay($.now()) + ": Login expired, please login...");
 			}
 			 window.location.replace("/labcas-ui/index.html");
 
 		 }
 	});
+	$('#loading_dataset').hide(500);
 }
 function setup_labcas_dataset_data(datatype, query, file_query, cpage){
     if (cpage == 0){ //if this isn't a pagination request and a default load
-		console.log(Cookies.get('environment')+"/data-access-api/datasets/select?q="+query+"&wt=json&indent=true");
+		console.log(localStorage.getItem('environment')+"/data-access-api/datasets/select?q="+query+"&wt=json&indent=true");
 		$.ajax({
-			url: Cookies.get('environment')+"/data-access-api/datasets/select?q="+query+"&wt=json&indent=true",
+			url: localStorage.getItem('environment')+"/data-access-api/datasets/select?q="+query+"&wt=json&indent=true",
 			xhrFields: {
 					withCredentials: true
 			  },
@@ -711,8 +742,8 @@ function setup_labcas_dataset_data(datatype, query, file_query, cpage){
 				populate_dataset_children(query);
 			},
 			error: function(e){
-				if (!(Cookies.get("logout_alert") && Cookies.get("logout_alert") == "On")){
-                                   Cookies.set("logout_alert","On");
+				if (!(localStorage.getItem("logout_alert") && localStorage.getItem("logout_alert") == "On")){
+                                   localStorage.setItem("logout_alert","On");
 				    alert(formatTimeOfDay($.now()) + ": Login expired, please login...");
 				}
 				 window.location.replace("/labcas-ui/index.html");
@@ -722,7 +753,7 @@ function setup_labcas_dataset_data(datatype, query, file_query, cpage){
     }
     
     $.ajax({
-        url: Cookies.get('environment')+"/data-access-api/files/select?q="+file_query+"&wt=json&indent=true&start="+cpage*10,
+        url: localStorage.getItem('environment')+"/data-access-api/files/select?q="+file_query+"&wt=json&indent=true&start="+cpage*10,
         xhrFields: {
                 withCredentials: true
           },
@@ -736,8 +767,8 @@ function setup_labcas_dataset_data(datatype, query, file_query, cpage){
             fill_files_data(data);
         },
         error: function(e){
-		if (!(Cookies.get("logout_alert") && Cookies.get("logout_alert") == "On")){
-                                   Cookies.set("logout_alert","On");
+		if (!(localStorage.getItem("logout_alert") && localStorage.getItem("logout_alert") == "On")){
+                                   localStorage.setItem("logout_alert","On");
 			     alert(formatTimeOfDay($.now()) + ": Login expired, please login...");
 		}
              window.location.replace("/labcas-ui/index.html");
@@ -748,7 +779,7 @@ function setup_labcas_dataset_data(datatype, query, file_query, cpage){
 
 function setup_labcas_file_data(datatype, query, file_query){
     $.ajax({
-        url: Cookies.get('environment')+"/data-access-api/files/select?q="+query+"&wt=json&indent=true",
+        url: localStorage.getItem('environment')+"/data-access-api/files/select?q="+query+"&wt=json&indent=true",
         xhrFields: {
                 withCredentials: true
           },
@@ -762,8 +793,8 @@ function setup_labcas_file_data(datatype, query, file_query){
             fill_file_details_data(data);
         },
         error: function(e){
-		if (!(Cookies.get("logout_alert") && Cookies.get("logout_alert") == "On")){
-		   Cookies.set("logout_alert","On");
+		if (!(localStorage.getItem("logout_alert") && localStorage.getItem("logout_alert") == "On")){
+		   localStorage.setItem("logout_alert","On");
 		     alert(formatTimeOfDay($.now()) + ": Login expired, please login...");
 		}
              window.location.replace("/labcas-ui/index.html");
@@ -817,6 +848,7 @@ function fill_datasets_search(data){
 	});                
 
 	$("#datasets_len").html(size); 
+	$('#loading_dataset').hide(500);
 }
 
 function fill_files_facets(data){
@@ -835,6 +867,7 @@ function fill_files_search(data){
 
 	  var thumb = "";
 	  var filetype = obj.FileType ? obj.FileType.join(",") : "";
+	  var site = obj.Site ? obj.Site.join(",") : "";
 	  var description = obj.Description? obj.Description.join(",") : "";
 	  if ('ThumbnailRelativePath' in obj){
 		thumb = "<img width='50' height='50' src='/labcas-ui/assets/"+obj.ThumbnailRelativePath+"'/>";
@@ -844,10 +877,18 @@ function fill_files_search(data){
   		filesize = humanFileSize(obj.FileSize, true);
           }
 	  var html_safe_id = encodeURI(escapeRegExp(obj.id));
+	  var checked = "";
+	  var download_list = JSON.parse(localStorage.getItem("download_list"));
+	  //console.log(html_safe_id);
+	  //console.log(download_list);
+	  if ( download_list &&  download_list.includes(html_safe_id) ){
+		//console.log("HERE");
+		checked = "checked";
+      	  }
 
 	  $("#search-file-table tbody").append(
 		"<tr>"+
-			//"<td><center><input type='checkbox' class='form-check-input' value='"+html_safe_id+"'></center></td>"+
+			"<td><center><input type='checkbox' class='form-check-input' value='"+html_safe_id+"' "+checked+"></center></td>"+
 			"<td class='text-left'>"+
 				"<a href=\"/labcas-ui/f/index.html?file_id="+
 					html_safe_id+"\">"+
@@ -856,6 +897,9 @@ function fill_files_search(data){
 			"</td>"+
 			"<td class='text-left'>"+
 					filetype +
+			"</td>"+
+			"<td class='text-left'>"+
+					site +
 			"</td>"+
 			"<td class='text-left'>"+
 					description +
@@ -874,6 +918,7 @@ function fill_files_search(data){
 		"</tr>");	
 	});              
 	$("#files_len").html(size); 
+	$('#loading_file').hide(500);
 }
 function generate_filters(field_type, placeholder, data, display, head){
 	var filters = [];
@@ -913,8 +958,8 @@ function generate_filters(field_type, placeholder, data, display, head){
 				if (max < +obj){
 					max = +obj;
 				}
-				if(((Cookies.get(placeholder+"_0") && Cookies.get(placeholder+"_0") <= +obj) || (!Cookies.get(placeholder+"_0")))
-					&& (Cookies.get(placeholder+"_1") && Cookies.get(placeholder+"_1") >= +obj) || (!Cookies.get(placeholder+"_1"))){
+				if(((localStorage.getItem(placeholder+"_0") && localStorage.getItem(placeholder+"_0") <= +obj) || (!localStorage.getItem(placeholder+"_0")))
+					&& (localStorage.getItem(placeholder+"_1") && localStorage.getItem(placeholder+"_1") >= +obj) || (!localStorage.getItem(placeholder+"_1"))){
 					addflag = true;
 				}else{
 					addflag = false;
@@ -923,28 +968,28 @@ function generate_filters(field_type, placeholder, data, display, head){
                     }
                 });
 		if (min != 100000000 && max != -1){
-			if (Cookies.get(placeholder+"_max_0")){
-				min = Cookies.get(placeholder+"_max_0");
+			if (localStorage.getItem(placeholder+"_max_0")){
+				min = localStorage.getItem(placeholder+"_max_0");
 			}else{
-				Cookies.set(placeholder+"_max_0", Math.floor(min));
+				localStorage.setItem(placeholder+"_max_0", Math.floor(min));
 				left = min;
 			}
-			if (Cookies.get(placeholder+"_max_1")){
-				max = Cookies.get(placeholder+"_max_1");
+			if (localStorage.getItem(placeholder+"_max_1")){
+				max = localStorage.getItem(placeholder+"_max_1");
 			}else{
-				Cookies.set(placeholder+"_max_1", Math.floor(max));
+				localStorage.setItem(placeholder+"_max_1", Math.floor(max));
 				right = max;
 			}
-			if (Cookies.get(placeholder+"_0")){
-				left = Cookies.get(placeholder+"_0");
+			if (localStorage.getItem(placeholder+"_0")){
+				left = localStorage.getItem(placeholder+"_0");
 			}else{
-				Cookies.set(placeholder+"_0", Math.floor(min));
+				localStorage.setItem(placeholder+"_0", Math.floor(min));
 				left = min;
 			}
-			if (Cookies.get(placeholder+"_1")){
-				right = Cookies.get(placeholder+"_1");
+			if (localStorage.getItem(placeholder+"_1")){
+				right = localStorage.getItem(placeholder+"_1");
 			}else{
-				Cookies.set(placeholder+"_1", Math.floor(max));
+				localStorage.setItem(placeholder+"_1", Math.floor(max));
 				right = max;
 			}
 			$("#"+placeholder).append($('<div class="row"><div class="col-md-12" id="'+placeholder+'_count" style="text-align: center"></div></div><div class="row"><div class="col-md-2" style="text-align: left;" id="'+placeholder+'_0"></div><div class="col-md-8"><div id="'+placeholder+'_slider" class="slider-success"></div></div><div class="col-md-2"  style="text-align: right;" id="'+placeholder+'_1"></div></div>'));
@@ -972,19 +1017,19 @@ function generate_filters(field_type, placeholder, data, display, head){
 			});
 			slider.noUiSlider.on('end', function (values, handle) {
 			    if (handle == 0){
-				Cookies.set(placeholder+"_0", Math.floor(values[handle]));
+				localStorage.setItem(placeholder+"_0", Math.floor(values[handle]));
 			    }else if(handle == 1){
-				Cookies.set(placeholder+"_1", Math.floor(values[handle]));
+				localStorage.setItem(placeholder+"_1", Math.floor(values[handle]));
 			    }
 
-			    var str_field_val = encodeURI("["+Cookies.get(placeholder+"_0")+" TO "+Cookies.get(placeholder+"_1")+"]");
+			    var str_field_val = encodeURI("["+localStorage.getItem(placeholder+"_0")+" TO "+localStorage.getItem(placeholder+"_1")+"]");
 			    var field_search = "&fq="+encodeURI(escapeRegExp(field_type)).replace(/:/g,'%3A')+":"+str_field_val;
-			    if (Cookies.get(placeholder+"_0") == Cookies.get(placeholder+"_max_0") && Cookies.get(placeholder+"_1") == Cookies.get(placeholder+"_max_1")){
+			    if (localStorage.getItem(placeholder+"_0") == localStorage.getItem(placeholder+"_max_0") && localStorage.getItem(placeholder+"_1") == localStorage.getItem(placeholder+"_max_1")){
 				field_search = "";
 			    }
-			    Cookies.set(placeholder, field_search);
-			    Cookies.set("search_filter", "on");
-			    setup_labcas_search(Cookies.get('search'), "all", 0);
+			    localStorage.setItem(placeholder, field_search);
+			    localStorage.setItem("search_filter", "on");
+			    setup_labcas_search(localStorage.getItem('search'), "all", 0);
 			});
 			$('#'+placeholder+'_card').css("height","100px");
 		}
@@ -999,17 +1044,11 @@ function generate_filters(field_type, placeholder, data, display, head){
 		});
                 var filter_count = 0;
 		$.each(filters, function(i, o){
-			if (Cookies.get(placeholder+"_val") && Cookies.get(placeholder+"_val") != ""){
-			console.log("Filter");
-			console.log(placeholder+"_val");
-			console.log("Placeholder");
-			console.log(Cookies.get(placeholder+"_val"));
-			console.log("O");
-			console.log(o);
+			if (localStorage.getItem(placeholder+"_val") && localStorage.getItem(placeholder+"_val") != ""){
 			}
 		    if (counts[i] > 0){
 			var checked = "";
-			if (Cookies.get(placeholder+"_val") && Cookies.get(placeholder+"_val").includes($.trim(o))){
+			if (localStorage.getItem(placeholder+"_val") && localStorage.getItem(placeholder+"_val").includes($.trim(o))){
 				checked = "checked";
 			}
 			$("#"+placeholder).append($(' <div class="row"><div class="col-md-9">'+$.trim(o)+" ("+$.trim(counts[i])+')</div><div class="col-md-3"><input type="checkbox" '+checked+' name="'+placeholder+'[]" value="'+$.trim(o)+'" data-toggle="switch" data-on-color="info" data-off-color="info" data-on-text="<i class=\'fa fa-check\'></i>" data-off-text="<i class=\'fa fa-times\'></i>"><span class="toggle"></span></div></div>'));
@@ -1035,10 +1074,10 @@ function generate_filters(field_type, placeholder, data, display, head){
 			
 			field_search = "&fq=("+encodeURI(escapeRegExp(field_type)).replace(/:/g,'%3A')+":"+str_field_val.join(" OR "+encodeURI(escapeRegExp(field_type))+":")+")";
 		    }
-		    Cookies.set(placeholder, field_search);
-		    Cookies.set(placeholder+"_val",field_val);
-		    Cookies.set("search_filter", "on");
-		    setup_labcas_search(Cookies.get('search'), "all", 0);
+		    localStorage.setItem(placeholder, field_search);
+		    localStorage.setItem(placeholder+"_val",field_val);
+		    localStorage.setItem("search_filter", "on");
+		    setup_labcas_search(localStorage.getItem('search'), "all", 0);
 		});
 	}
 }
@@ -1046,15 +1085,15 @@ function generate_filters(field_type, placeholder, data, display, head){
 function generate_categories(field_id, data){
 	$('#'+field_id).empty();
 	$("#filter_options").empty();
-	$.each(Cookies.get("filters").split(","), function(ind, head) {
-		if (Cookies.get("faceted_categories_selected") == head){
+	$.each(localStorage.getItem("filters").split(","), function(ind, head) {
+		if (localStorage.getItem("faceted_categories_selected") == head){
 			$('#'+field_id).append("<option value='"+head+"' selected>"+head+" Filters</option>");
 		}else{
 			$('#'+field_id).append("<option value='"+head+"'>"+head+" Filters</option>");
 		}
-		var ids = Cookies.get(head+"_filters_id").split(",");
-		var displays = Cookies.get(head+"_filters_display").split(",");
-		var divs = Cookies.get(head+"_filters_div").split(",");
+		var ids = localStorage.getItem(head+"_filters_id").split(",");
+		var displays = localStorage.getItem(head+"_filters_display").split(",");
+		var divs = localStorage.getItem(head+"_filters_div").split(",");
 		$.each(ids, function(i, idhead) {
 			generate_filters(idhead,$.trim(divs[i]), data.facet_counts.facet_fields[idhead], $.trim(displays[i]), $.trim(head));
 		});
@@ -1063,30 +1102,30 @@ function generate_categories(field_id, data){
 function fill_collections_facets(data){
 	//console.log(data);
 	
-   	if (Cookies.get("search_filter") == "on" || (Cookies.get("search") && Cookies.get("search") != "*")){
+   	if (localStorage.getItem("search_filter") == "on" || (localStorage.getItem("search") && localStorage.getItem("search") != "*")){
 		$('#filter_reset').show();
 	}else{
 		$('#filter_reset').hide();
 	}
 	generate_categories("faceted_categories", data);
 	$("#faceted_categories").change(function(){
-		$.each(Cookies.get("filters").split(","), function(ind, head) {
+		$.each(localStorage.getItem("filters").split(","), function(ind, head) {
 			$("."+head+"_card").hide();
 		});
 		$(".Core_card").show();
 		$(this).find("option:selected").each(function(){
 		    var optionValue = $(this).attr("value");
-	 	    Cookies.set("faceted_categories_selected", optionValue);
+	 	    localStorage.setItem("faceted_categories_selected", optionValue);
 		    $("."+optionValue+"_card").show();
 		});
 		reset_search_filters();
 		setup_labcas_search("*", "all", 0);
 	});
-	$.each(Cookies.get("filters").split(","), function(ind, head) {
+	$.each(localStorage.getItem("filters").split(","), function(ind, head) {
 		$("."+head+"_card").hide();
 	});
 	$(".Core_card").show();
-	$("."+Cookies.get("faceted_categories_selected")+"_card").show();
+	$("."+localStorage.getItem("faceted_categories_selected")+"_card").show();
 }
 function fill_collections_search(data){
 	var size = data.response.numFound;
@@ -1108,7 +1147,7 @@ function fill_collections_search(data){
                 "<td>"+obj.LeadPI+"</td>"+
                 "<td>"+obj.Institution+"</td>"+
                 "<td>"+obj.Discipline+"</td>"+
-                "<td>"+obj.DataCustodian+"</td>"+
+                //"<td>"+obj.DataCustodian+"</td>"+
                 "<td>"+obj.Organ+"</td>"+
 			"<td class=\"td-actions\">"+
 				"<button type=\"button\" rel=\"tooltip\" title=\"Favorite\"  onclick=\"save_favorite('"+obj.id+"', 'FavoriteCollections')\" class=\"btn "+color+" btn-simple btn-link\">"+
@@ -1118,6 +1157,7 @@ function fill_collections_search(data){
 		"</tr>");	
 	});                                                                     
     $("#collections_len").html(size); 
+    $('#loading_collection').hide(500);
 }
 
 
@@ -1126,19 +1166,19 @@ function setup_labcas_search(query, divid, cpage){
 
 	var collection_filters = "";
 	var collection_facets = [];
-	$.each(Cookies.get("filters").split(","), function(ind, head) {
-		var divs = Cookies.get(head+"_filters_div").split(",");
+	$.each(localStorage.getItem("filters").split(","), function(ind, head) {
+		var divs = localStorage.getItem(head+"_filters_div").split(",");
 		$.each(divs, function(i, divhead) {
-			collection_filters += Cookies.get($.trim(divhead));
+			collection_filters += localStorage.getItem($.trim(divhead));
 		});
-		collection_facets = collection_facets.concat(Cookies.get(head+"_filters_id").split(","));
+		collection_facets = collection_facets.concat(localStorage.getItem(head+"_filters_id").split(","));
 	});
 	var data_filters = "";
     if (divid == "collections_search" || divid == "all"){
-		console.log(Cookies.get('environment')+"/data-access-api/collections/select?q="+query+""+collection_filters+"&wt=json&indent=true&start="+cpage*10);
+		console.log(localStorage.getItem('environment')+"/data-access-api/collections/select?q="+query+""+collection_filters+"&wt=json&indent=true&start="+cpage*10);
 		setup_labcas_analytics(query, collection_filters);
 		$.ajax({
-			url: Cookies.get('environment')+"/data-access-api/collections/select?q="+query+""+collection_filters+"&wt=json&indent=true&sort=id%20asc&start="+cpage*10,	
+			url: localStorage.getItem('environment')+"/data-access-api/collections/select?q="+query+""+collection_filters+"&wt=json&indent=true&sort=id%20asc&start="+cpage*10,	
 			beforeSend: function(xhr) {
 				if(Cookies.get('token') && Cookies.get('token') != "None"){
 					xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
@@ -1150,8 +1190,8 @@ function setup_labcas_search(query, divid, cpage){
 				fill_collections_search(data);
 			},
 			error: function(e){
-				if (!(Cookies.get("logout_alert") && Cookies.get("logout_alert") == "On")){
-                                   Cookies.set("logout_alert","On");
+				if (!(localStorage.getItem("logout_alert") && localStorage.getItem("logout_alert") == "On")){
+                                   localStorage.setItem("logout_alert","On");
 					 alert(formatTimeOfDay($.now()) + ": Login expired, please login...");
 				}
 				 window.location.replace("/labcas-ui/index.html");
@@ -1179,8 +1219,8 @@ function setup_labcas_search(query, divid, cpage){
 				console.log(xhr.responseText);
 				console.log(xhr.status);
 				console.log(thrownError);
-				if (!(Cookies.get("logout_alert") && Cookies.get("logout_alert") == "On")){
-                                   Cookies.set("logout_alert","On");
+				if (!(localStorage.getItem("logout_alert") && localStorage.getItem("logout_alert") == "On")){
+                                   localStorage.setItem("logout_alert","On");
 				 alert(formatTimeOfDay($.now()) + ": Login expired, please login...");
 				}
 				 window.location.replace("/labcas-ui/index.html");
@@ -1188,10 +1228,11 @@ function setup_labcas_search(query, divid, cpage){
 		});
     }
     if (divid == "datasets_search" || divid == "all"){
-	//console.log(Cookies.get('environment')+"/data-access-api/datasets/select?q="+query+""+collection_filters+"&wt=json&indent=true&start="+cpage*10);
-	console.log(Cookies.get('environment')+"/data-access-api/datasets/select?q=*:*"+collection_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&wt=json&rows=0");
+	wait(1000);
+	//console.log(localStorage.getItem('environment')+"/data-access-api/datasets/select?q="+query+""+collection_filters+"&wt=json&indent=true&start="+cpage*10);
+	console.log(localStorage.getItem('environment')+"/data-access-api/datasets/select?q=*:*"+collection_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&wt=json&rows=0");
         $.ajax({
-            url: Cookies.get('environment')+"/data-access-api/datasets/select?q="+query+""+collection_filters+"&wt=json&indent=true&start="+cpage*10,
+            url: localStorage.getItem('environment')+"/data-access-api/datasets/select?q="+query+""+collection_filters+"&wt=json&indent=true&start="+cpage*10,
             beforeSend: function(xhr) {
                 if(Cookies.get('token') && Cookies.get('token') != "None"){
 					xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
@@ -1204,15 +1245,15 @@ function setup_labcas_search(query, divid, cpage){
                 fill_datasets_search(data);
             },
             error: function(e){
-		if (!(Cookies.get("logout_alert") && Cookies.get("logout_alert") == "On")){
-			   Cookies.set("logout_alert","On");
+		if (!(localStorage.getItem("logout_alert") && localStorage.getItem("logout_alert") == "On")){
+			   localStorage.setItem("logout_alert","On");
 			 alert(formatTimeOfDay($.now()) + ": Login expired, please login...");
 		}
                  window.location.replace("/labcas-ui/index.html");
              }
         });
-        $.ajax({
-	    url: Cookies.get('environment')+"/data-access-api/datasets/select?q="+query+""+collection_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&wt=json&rows=0",
+        /*$.ajax({
+	    url: localStorage.getItem('environment')+"/data-access-api/datasets/select?q="+query+""+collection_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&wt=json&rows=0",
             beforeSend: function(xhr) {
                 if(Cookies.get('token') && Cookies.get('token') != "None"){
 					xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
@@ -1225,17 +1266,18 @@ function setup_labcas_search(query, divid, cpage){
                 fill_datasets_facets(data);
             },
             error: function(e){
-		if (!(Cookies.get("logout_alert") && Cookies.get("logout_alert") == "On")){
-			   Cookies.set("logout_alert","On");
+		if (!(localStorage.getItem("logout_alert") && localStorage.getItem("logout_alert") == "On")){
+			   localStorage.setItem("logout_alert","On");
 			 alert(formatTimeOfDay($.now()) + ": Login expired, please login...");
 		}
                  window.location.replace("/labcas-ui/index.html");
              }
-        });
+        });*/
     }
     if (divid == "files_search" || divid == "all"){
+		wait(1000);
 		$.ajax({
-			url: Cookies.get('environment')+"/data-access-api/files/select?q="+query+""+collection_filters+"&wt=json&indent=true&start="+cpage*10,
+			url: localStorage.getItem('environment')+"/data-access-api/files/select?q="+query+""+collection_filters+"&wt=json&indent=true&start="+cpage*10,
 			xhrFields: {
 					withCredentials: true
 			  },
@@ -1249,8 +1291,8 @@ function setup_labcas_search(query, divid, cpage){
 				fill_files_search(data);
 			},
 			error: function(e){
-				if (!(Cookies.get("logout_alert") && Cookies.get("logout_alert") == "On")){
-                                   Cookies.set("logout_alert","On");
+				if (!(localStorage.getItem("logout_alert") && localStorage.getItem("logout_alert") == "On")){
+                                   localStorage.setItem("logout_alert","On");
 				    alert(formatTimeOfDay($.now()) + ": Login expired, please login...");
 				}
 				 window.location.replace("/labcas-ui/index.html");
@@ -1258,8 +1300,8 @@ function setup_labcas_search(query, divid, cpage){
 			 }
 		});
 
-		$.ajax({
-			url: Cookies.get('environment')+"/data-access-api/files/select?q="+query+""+collection_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&wt=json&rows=0",
+		/*$.ajax({
+			url: localStorage.getItem('environment')+"/data-access-api/files/select?q="+query+""+collection_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&wt=json&rows=0",
 			xhrFields: {
 					withCredentials: true
 			  },
@@ -1273,14 +1315,14 @@ function setup_labcas_search(query, divid, cpage){
 				fill_files_facets(data);
 			},
 			error: function(e){
-				if (!(Cookies.get("logout_alert") && Cookies.get("logout_alert") == "On")){
-                                   Cookies.set("logout_alert","On");
+				if (!(localStorage.getItem("logout_alert") && localStorage.getItem("logout_alert") == "On")){
+                                   localStorage.setItem("logout_alert","On");
 				   alert(formatTimeOfDay($.now()) + ": Login expired, please login...");
 				}
 				 window.location.replace("/labcas-ui/index.html");
 			 
 			 }
-		});
+		});*/
 	}
 }
 /* End Search Section */
@@ -1399,7 +1441,7 @@ function fill_collections_starred(data){
 					"<td>"+obj.LeadPI+"</td>"+
 					"<td>"+obj.Institution+"</td>"+
 					"<td>"+obj.Discipline+"</td>"+
-					"<td>"+obj.DataCustodian+"</td>"+
+					//"<td>"+obj.DataCustodian+"</td>"+
 					"<td>"+obj.Organ+"</td>"+
 				"<td class=\"td-actions\">"+
 					"<button type=\"button\" rel=\"tooltip\" title=\"Favorite\"  onclick=\"save_favorite('"+obj.id+"', 'FavoriteCollections')\" class=\"btn "+color+" btn-simple btn-link\">"+
@@ -1410,6 +1452,7 @@ function fill_collections_starred(data){
 		}
 	});                                                                     
     $("#collections_len").html(size); 
+    $('#loading').hide(500);
     
 }
 
@@ -1429,9 +1472,9 @@ function setup_labcas_starred(query, divid, cpage){
 	}
     //console.log("Loading data...");
     if (divid == "collections_starred" || divid == "all"){
-        console.log(Cookies.get('environment')+"/data-access-api/collections/select?q=*"+collection_starred_search+"&wt=json&indent=true&start="+cpage*10);
+        console.log(localStorage.getItem('environment')+"/data-access-api/collections/select?q=*"+collection_starred_search+"&wt=json&indent=true&start="+cpage*10);
 		$.ajax({
-			url: Cookies.get('environment')+"/data-access-api/collections/select?q=*"+collection_starred_search+"&wt=json&indent=true&sort=id%20asc&start="+cpage*10,	
+			url: localStorage.getItem('environment')+"/data-access-api/collections/select?q=*"+collection_starred_search+"&wt=json&indent=true&sort=id%20asc&start="+cpage*10,	
 			beforeSend: function(xhr) {
 				if(Cookies.get('token') && Cookies.get('token') != "None"){
 					xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
@@ -1443,8 +1486,8 @@ function setup_labcas_starred(query, divid, cpage){
 				fill_collections_starred(data);
 			},
 			error: function(e){
-				if (!(Cookies.get("logout_alert") && Cookies.get("logout_alert") == "On")){
-				   Cookies.set("logout_alert","On");
+				if (!(localStorage.getItem("logout_alert") && localStorage.getItem("logout_alert") == "On")){
+				   localStorage.setItem("logout_alert","On");
 				   alert(formatTimeOfDay($.now()) + ": Login expired, please login...");
 				}
 				 window.location.replace("/labcas-ui/index.html");
@@ -1453,7 +1496,7 @@ function setup_labcas_starred(query, divid, cpage){
     }
     if (divid == "datasets_starred" || divid == "all"){
         $.ajax({
-            url: Cookies.get('environment')+"/data-access-api/datasets/select?q=*"+dataset_starred_search+"&wt=json&indent=true&start="+cpage*10,
+            url: localStorage.getItem('environment')+"/data-access-api/datasets/select?q=*"+dataset_starred_search+"&wt=json&indent=true&start="+cpage*10,
             beforeSend: function(xhr) {
                 if(Cookies.get('token') && Cookies.get('token') != "None"){
 					xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
@@ -1466,8 +1509,8 @@ function setup_labcas_starred(query, divid, cpage){
                 fill_datasets_starred(data);
             },
             error: function(e){
-		if (!(Cookies.get("logout_alert") && Cookies.get("logout_alert") == "On")){
-                   Cookies.set("logout_alert","On");
+		if (!(localStorage.getItem("logout_alert") && localStorage.getItem("logout_alert") == "On")){
+                   localStorage.setItem("logout_alert","On");
                    alert(formatTimeOfDay($.now()) + ": Login expired, please login...");
 		}
              }
@@ -1475,10 +1518,10 @@ function setup_labcas_starred(query, divid, cpage){
     }
     
     if (divid == "files_starred" || divid == "all"){
-		console.log(Cookies.get('environment')+"/data-access-api/files/select?q=*"+file_starred_search+"&wt=json&indent=true&start="+cpage*10);
+		console.log(localStorage.getItem('environment')+"/data-access-api/files/select?q=*"+file_starred_search+"&wt=json&indent=true&start="+cpage*10);
 		
 		$.ajax({
-			url: Cookies.get('environment')+"/data-access-api/files/select?q=*"+file_starred_search+"&wt=json&indent=true&start="+cpage*10,
+			url: localStorage.getItem('environment')+"/data-access-api/files/select?q=*"+file_starred_search+"&wt=json&indent=true&start="+cpage*10,
 			xhrFields: {
 					withCredentials: true
 			  },
@@ -1493,8 +1536,8 @@ function setup_labcas_starred(query, divid, cpage){
 				fill_files_starred(data);
 			},
 			error: function(e){
-				if (!(Cookies.get("logout_alert") && Cookies.get("logout_alert") == "On")){
-                                   Cookies.set("logout_alert","On");
+				if (!(localStorage.getItem("logout_alert") && localStorage.getItem("logout_alert") == "On")){
+                                   localStorage.setItem("logout_alert","On");
 				   alert(formatTimeOfDay($.now()) + ": Login expired, please login...");
 				}
 			 

@@ -10,7 +10,7 @@
     <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
     <!--     Fonts and icons     -->
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="/labcas-ui/assets/css/font-awesome.min.css" />
     <!-- CSS Files -->
     <link href="/labcas-ui/assets/css/bootstrap.min.css" rel="stylesheet" />
     <link href="/labcas-ui/assets/css/light-bootstrap-dashboard.css?v=2.0.5" rel="stylesheet" />
@@ -431,11 +431,12 @@
                                             <th data-field="leadpi" data-sortable="true">Lead PI</th>
                                             <th data-field="institution" data-sortable="true" data-visible="true">Institution</th>
                                             <th data-field="discipline" data-sortable="true" data-visible="false">Discipline</th>
-                                            <th data-field="datacustodian" data-sortable="true" data-visible="false">Data Custodian</th>
+                                            <!--<th data-field="datacustodian" data-sortable="true" data-visible="false">Data Custodian</th>-->
                                             <th data-field="organ" data-sortable="false">Organ</th>
                                             <th data-field="actions" class="td-actions" data-events="operateEvents" data-formatter="">Actions</th>
                                         </thead>
 													<tbody>
+							<center><img id="loading_collection" class="collapse show" height="50px" width="50px" src="/labcas-ui/assets/img/loading.gif"></center>
 													</tbody>
 												</table>
 											</div>
@@ -467,6 +468,7 @@
                                             <th data-field="actions" class="td-actions" data-events="operateEvents" data-formatter="">Actions</th>
                                         </thead>
 													<tbody>
+							<center><img id="loading_dataset" class="collapse show" height="50px" width="50px" src="/labcas-ui/assets/img/loading.gif"></center>
 													</tbody>
 												</table>
 											</div>
@@ -490,16 +492,17 @@
 									<p class="card-category">Explore</p>
 								</div>
 								<div class="card-body">
-								<!--<button type="submit" onclick="download_files('search-file-table');" class="btn btn-primary">Download</button>-->
+								<button type="submit" onclick="download_files('search-file-table');" class="btn btn-primary">Download</button>
 
 										<div id="icon-style">
 											<ul class="pagination pagination-no-border" id='files_search_pagination_top' style="float: right;"></ul>
 											<div class="table-full-width">
 												<table class="table" id="search-file-table" style="table-layout: fixed;">
                                          <thead>                                                        
-					    <!--<th>Select</th>-->
+					    <th>Select</th>
                                             <th data-field="file" data-sortable="true">File</th>
                                             <th data-field="type" data-sortable="true">Type</th>
+                                            <th data-field="type" data-sortable="true">Site</th>
                                             <th data-field="description" data-sortable="true">Description</th>
                                             <th data-field="thumb" data-sortable="true">Thumb</th>
                                             <th data-field="size" data-sortable="true">Size</th>
@@ -507,6 +510,7 @@
                                         </thead>
 
 													<tbody>
+							<center><img id="loading_file" class="collapse show" height="50px" width="50px" src="/labcas-ui/assets/img/loading.gif"></center>
 													</tbody>
 												</table>
 											</div>
@@ -556,7 +560,7 @@
                     U.S. Government Sponsorship Acknowledged.
                 </p>
                 <p>
-                    Licensed under <a href='https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html'>GPLv2</a>.
+                    Labcas version 2.0, Licensed under <a href='https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html'>GPLv2</a>.
                     <a href='https://mcl-labcas.jpl.nasa.gov/ui/static/plupload-2.1.9.zip'>Get Plupload</a>.
                 </p>
         
@@ -608,8 +612,8 @@
 <script src="/labcas-ui/assets/js/demo.js"></script>
 <script src="/labcas-ui/assets/js/plugins/js.cookie.js"></script>
 <script src="/labcas-ui/assets/js/labcas/labcas-sidebar.js"></script>
-<script src="/labcas-ui/assets/js/labcas/authentication.js?108"></script>
-<script src="/labcas-ui/assets/js/labcas/utils.js?103"></script>
+<script src="/labcas-ui/assets/js/labcas/authentication.js?110"></script>
+<script src="/labcas-ui/assets/js/labcas/utils.js?105"></script>
 <script src="/labcas-ui/assets/js/labcas/search.js?100"></script>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <script src="/labcas-ui/assets/js/labcas/dashboard_search.js?2"></script>
