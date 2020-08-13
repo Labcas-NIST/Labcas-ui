@@ -482,6 +482,46 @@ function fill_datasets_children(data){
 	}
         $("#children-datasets-section").append(dataset_html);
 }
+function fill_datasets_metadata(data){
+	var dataset_metadata_html = '<table class="table" id="metadatadetails-table" style="table-layout: fixed;">';
+	$.each(data.response.docs, function(key, value) {
+		console.log(key);
+		console.log(value.id);
+		var html_safe_id = encodeURI(escapeRegExp(value.id));
+		console.log(html_safe_id);
+		dataset_metadata_html+="<tr>"+
+                                "<td valign='top' style='padding: 2px 8px;' width='100%'>"+"<center><a href='#' onclick=\"download_file('"+html_safe_id+"','single');\">"+value.FileName+"</a></center>"+"</td>"+
+				"</tr>"
+	});
+	dataset_metadata_html += "</table>";
+	$('#loading_metadata').hide(500);
+	$('#metadata_div').html(dataset_metadata_html);
+}
+function query_labcas_api(url, customfunction){
+	$.ajax({
+		url: url,
+		beforeSend: function(xhr) {
+			if(Cookies.get('token') && Cookies.get('token') != "None"){
+				xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token'));
+			}
+		},
+		type: 'GET',
+		dataType: 'json',
+		processData: false,
+		success: function (data) {
+			customfunction(data);
+		},
+		error: function(e){
+			if (!(localStorage.getItem("logout_alert") && localStorage.getItem("logout_alert") == "On")){
+				   localStorage.setItem("logout_alert","On");
+				 alert(formatTimeOfDay($.now()) + ": Login expired, please login...");
+			}
+			window.location.replace("/labcas-ui/index.html");
+		 }
+	});
+	
+
+}
 function fill_datasets_data(data){
 	
 	data.response.docs.sort(dataset_compare_sort);
@@ -491,14 +531,18 @@ function fill_datasets_data(data){
 	var dataset_attr ="";
 	var collapse_button = "";
 
+        var get_var = get_url_vars();
+
 	$.each(data.response.docs, function(key, value) {
+			if (value.id.split(/\//)[1] == get_var["collection_id"]){
+				query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=DatasetId:"+value.id+"&wt=json&indent=true", fill_datasets_metadata);
+				return;
+			}
 			var color = "#0000FF";
 			if(user_data["FavoriteDatasets"].includes(value.id)){
 				color = "#87CB16 !important";
 			}
 			if (value.id.split("/").length - 2 > 0){
-				//console.log(prev_dataset_id);
-				//console.log(collapse_dict[prev_dataset_id]);
 				if (collapse_dict[prev_dataset_id] == 1){
 					dataset_html += "<div id='"+prev_dataset_id+"' class='collapse'>";
 					collapse_dict[prev_dataset_id] += 1;
@@ -546,6 +590,7 @@ function fill_datasets_data(data){
 	    $("#collection_datasets_len").html(data.response.numFound); 
 	    $("#collection_favorites_len").html(user_data['FavoriteFiles'].length+user_data['FavoriteDatasets'].length+user_data['FavoriteCollections'].length);
 	$('#loading_dataset').hide(500);
+	$('#loading_metadata').hide(500);
 	
 }
 function fill_files_data(data){
@@ -682,7 +727,7 @@ function setup_labcas_data(datatype, query, dataset_query){
 			dataType: 'json',
 			processData: false,
 			success: function (data) {
-                fill_datasets_data(data);
+				fill_datasets_data(data);
 			},
 			error: function(e){
 			if (!(localStorage.getItem("logout_alert") && localStorage.getItem("logout_alert") == "On")){

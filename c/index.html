@@ -245,28 +245,39 @@
 								</div>-->
                             </div>
                         </div>
-                        <div class="col-md-6 ml-auto mr-auto">
-                                                    <div class="card card-tasks">
-                                                        <div class="card-header ">
-                                                            <h4 class="card-title">Datasets in this Collection</h4>
-                                                            <p class="card-category">Explore or Download</p>
-                                                        </div>
-                                                        <div class="card-body">
-                                                            <div class="table-full-width">
-                                                                <div id="datasets-table">
-									<center><img id="loading_dataset" class="collapse show" height="50px" width="50px" src="/labcas-ui/assets/img/loading.gif"></center>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <!--<div class="card-footer ">
-                                                            <hr>
-                                                            <div class="stats">
-                                                                <i class="now-ui-icons loader_refresh spin"></i> Updated 3 minutes ago
-                                                            </div>
-                                                        </div>-->
-                                                    </div>
-                                                
-                                                </div>
+			<div class="col-md-6 ml-auto mr-auto">
+				<div class="col-md-12 ml-auto mr-auto">
+                                    <div class="card card-tasks">
+                                        <div class="card-header ">
+                                            <h4 class="card-title">Metadata in this Collection</h4>
+                                            <p class="card-category">Explore or Download</p>
+                                        </div>  
+                                        <div class="card-body" style="padding: 0px 15px 10px 15px">
+                                            <div class="table-full-width">
+                                                <div id="metadata_div">
+                                                        <center><img id="loading_metadata" class="collapse show" height="50px" width="50px" src="/labcas-ui/assets/img/loading.gif"></center>
+                                                </div>  
+                                            </div>  
+                                        </div>  
+                                    </div>  
+                                </div>  
+
+				<div class="col-md-12 ml-auto mr-auto">
+				    <div class="card card-tasks">
+					<div class="card-header ">
+					    <h4 class="card-title">Datasets in this Collection</h4>
+					    <p class="card-category">Explore or Download</p>
+					</div>
+					<div class="card-body">
+					    <div class="table-full-width">
+						<div id="datasets-table">
+							<center><img id="loading_dataset" class="collapse show" height="50px" width="50px" src="/labcas-ui/assets/img/loading.gif"></center>
+						</div>
+					    </div>
+					</div>
+				    </div>
+				</div>
+			</div>
                                                 </div>
                                             </div>
                                             
@@ -351,13 +362,12 @@
 <!--<script src="/labcas-ui/assets/js/demo.js"></script>-->
 <script src="/labcas-ui/assets/js/plugins/js.cookie.js"></script>
 <script src="/labcas-ui/assets/js/labcas/labcas-sidebar.js"></script>
-<script src="/labcas-ui/assets/js/labcas/authentication.js?105"></script>
+<script src="/labcas-ui/assets/js/labcas/authentication.js?106"></script>
 <script src="/labcas-ui/assets/js/labcas/utils.js?100"></script>
 <script src="/labcas-ui/assets/js/labcas/search.js?100"></script>
 <script type="text/javascript">
     $(document).ready(function() {
 	initCookies();
-        //setup_labcas_data("collectiondatasets",'id:"1.0_Athena-IHC4_with_Swedish_Breast_Cancer_Study"', 'id:1.0_Athena-IHC4_with_Swedish_Breast_Cancer_Study.*');
         var get_var = get_url_vars();
         Cookies.set("login_redirect", "/labcas-ui/c/index.html?collection_id="+get_var["collection_id"]);
 	console.log("HERE2");
