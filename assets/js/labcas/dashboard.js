@@ -14,7 +14,6 @@ function init_labcas_sunburst_distribution(div_field, collections, collection_da
 	  x: collections,
 	  y: collection_dataset_count,
 	  marker: {color:  ['rgb(165,0,38)','rgb(69,117,180)', 'rgb(116,173,209)','rgb(253,174,97)','rgb(254,224,144)','rgb(244,109,67)','rgb(224,243,248)','rgb(171,217,233)','rgb(215,48,39)','rgb(49,54,149)']},
-	  //marker: {color: data.color, size: data.size},
 	  mode: "markers",
 	  text: collection_labels,
 	  type: 'bar',
@@ -63,12 +62,8 @@ function init_labcas_data_distribution(div, second_graph_organ, ftype){ //acrony
 			localStorage.setItem(div+"_val",filter_list);
 			localStorage.setItem("search_filter", "on");
 			localStorage.setItem('search','');
-			console.log(div);
-			console.log(div+"_val");
 			window.location.replace("/labcas-ui/s/index.html");
 		    }
-			//console.log(data);
-		    //alert('Closest point clicked:\n\n'+pts+" OK "+div);
 	});
 }
 
@@ -172,12 +167,6 @@ function fill_collections_analytics(data){
 				second_graph_collabgroup_dict[y] = (second_graph_collabgroup_dict[y] || 0) + 1;
 			});
 		}
-		/*if (obj.LeadPI){
-			$.each(obj.LeadPI, function(idx, y) { 
-				y = y.trim();
-				second_graph_leadpi_dict[y] = (second_graph_leadpi_dict[y] || 0) + 1;
-			});
-		}*/
 		if (obj.Species){
 			$.each(obj.Species, function(idx, y) { 
 				y = y.trim();
@@ -191,8 +180,6 @@ function fill_collections_analytics(data){
 			});
 		}
 	});
-	console.log("HERE");
-	console.log(second_graph_discipline_dict);
 	$.each(second_graph_organ_dict, function(key, val) { 
 		second_graph_organ[0].push(key);
 		second_graph_organ[1].push(val);
@@ -201,10 +188,6 @@ function fill_collections_analytics(data){
 		second_graph_collabgroup[0].push(key);
 		second_graph_collabgroup[1].push(val);
 	});
-	/*$.each(second_graph_leadpi_dict, function(key, val) { 
-		second_graph_leadpi[0].push(key);
-		second_graph_leadpi[1].push(val);
-	});*/
 	$.each(second_graph_discipline_dict, function(key, val) { 
 		second_graph_discipline[0].push(key);
 		second_graph_discipline[1].push(val);
@@ -213,44 +196,17 @@ function fill_collections_analytics(data){
 	
 	init_labcas_data_distribution("organ_filters", second_graph_organ, "Organ");
 	init_labcas_data_distribution("datacategory_filters", second_graph_collabgroup, "DataCategory");
-	/*init_labcas_data_boxplot("labcas_boxplot_distribution",second_graph_leadpi);*/
 	init_labcas_data_distribution("disc_filters", second_graph_discipline, "Discipline");
 	
 }
 function fill_datasets_analytics(data){
 	var size = data.response.numFound;
 	$("#datasets_len").html(size);
-	console.log(data);
-	console.log(data.facet_counts.facet_fields["CollectionName"]);
-	console.log("DONE");
-	//var datadict = {};
 	
-	/*$.each(data.response.docs, function(key, obj) {
-	  var collection = obj.CollectionName;
-	  datadict[collection] = (datadict[collection] || 0) + 1;
-	});*/
-	
-	//var parentName = localStorage.getItem('environment').replace("https://","").replace(".jpl.nasa.gov","").split("-").join(" ").trim();
 	var cl = [];
 	var cdc = [];
 	var cla = [];
 	
-	 //institution, organ, collabgroup, discipline, leadpi, species, pubmed
-	/*var second_graph_institution = [[],[]];
-	var second_graph_organ = [[],[]];
-	var second_graph_collabgroup = [[],[]];
-	var second_graph_discipline = [[],[]];
-	var second_graph_leadpi = [[],[]];
-	var second_graph_pubmed = [[],[]];
-	
-	var second_graph_institution_dict = {};
-	var second_graph_organ_dict = {};
-	var second_graph_collabgroup_dict = {};
-	var second_graph_discipline_dict = {};
-	var second_graph_leadpi_dict = {};
-	var second_graph_pubmed_dict = {};
-	
-	console.log(collection_disc);*/
 	if(data.facet_counts.facet_fields["ProtocolID"]){
 		$.each(data.facet_counts.facet_fields["ProtocolID"], function(key, obj) {
 		    if (Number.isInteger(obj)){
@@ -274,64 +230,6 @@ function fill_datasets_analytics(data){
 	
 	
 
-	/*$.each(datadict, function(key, obj) {
-		cl.push(key);
-		cla.push(key);
-		cdc.push(obj);
-		
-		if ( key in collection_disc){
-			//Institution
-			$.each(collection_disc[key][0], function(idx, y) { 
-				
-				y = y.trim();
-				if (!second_graph_institution_dict[y]) {
-					second_graph_institution_dict[y] = [];
-				}
-				second_graph_institution_dict[y].push(datadict[key]);
-			});
-			//Organ
-			$.each(collection_disc[key][1], function(idx, y) { 
-				if (!second_graph_organ_dict[datadict[key]]) {
-					second_graph_organ_dict[datadict[key]] = 0;
-				}
-				second_graph_organ_dict[datadict[key]] += y;
-			});
-			//Collab
-			$.each(collection_disc[key][2], function(idx, y) { 
-				if (!second_graph_collabgroup_dict[datadict[key]]) {
-					second_graph_collabgroup_dict[datadict[key]] = 0;
-				}
-				second_graph_collabgroup_dict[datadict[key]] += y;
-			});
-			//Discipline
-			$.each(collection_disc[key][3], function(idx, y) { 
-				if (!second_graph_discipline_dict[datadict[key]]) {
-					second_graph_discipline_dict[datadict[key]] = 0;
-				}
-				second_graph_discipline_dict[datadict[key]] += y;
-			});
-			//Lead PI
-			$.each(collection_disc[key][4], function(idx, y) { 
-				y = y.trim();
-				if (!second_graph_leadpi_dict[y]) {
-					second_graph_leadpi_dict[y] = [];
-				}
-				second_graph_leadpi_dict[y].push(datadict[key]);
-			});
-			//Pubmed
-			$.each(collection_disc[key][5], function(idx, y) { 
-				if (!second_graph_pubmed_dict[datadict[key]]) {
-					second_graph_pubmed_dict[datadict[key]] = 0;
-				}
-				second_graph_pubmed_dict[datadict[key]] += y;
-			});
-		}
-		
-	});*/
-	
-	//console.log("Second Dict2");
-	//console.log(second_graph_institution_dict);
-	
 	var score = {};
 	for( var i=0,n=cdc.length; i<n; i++){
 		var datum = cdc[i];
@@ -340,11 +238,9 @@ function fill_datasets_analytics(data){
 		}
 		score[datum].push(cl[i]);
 	}
-	console.log(score);
 	var count = 0;
 	for( var key in keys=Object.keys(score).sort(function(a, b){return b-a}) ){
 	  var prop = keys[key];
-	  console.log(prop, score[prop]);
 	  if (count > 9){
 	  	break;
 	  }
@@ -359,10 +255,7 @@ function fill_datasets_analytics(data){
 	  count += 1;
 	  
 	}
-	console.log(collections);
-	console.log(collection_dataset_count);
 	init_labcas_sunburst_distribution("labcas_sunburst_distribution", collections, collection_dataset_count, collection_labels, 'Protocol ID', 'Dataset Count');
-	//init_labcas_data_boxplot(second_graph_institution_dict);
 }
 function fill_files_analytics(data){
 	var size = data.response.numFound;
@@ -399,7 +292,6 @@ function fill_files_analytics(data){
 	  }
           count += 1;
 
-          console.log(prop, score[prop]);
         }
         init_labcas_sunburst_distribution("labcas_filetype_distribution",filetypes, filetypecounts, filetypes, 'File Type', "File Count");
 
@@ -420,70 +312,68 @@ function fill_favorites_analytics(){
 	$("#favorites_len").html(user_data['FavoriteFiles'].length+user_data['FavoriteDatasets'].length+user_data['FavoriteCollections'].length);
 }
 function setup_labcas_analytics(){
-    console.log("Analyzing...");
-    //collection data
-    
-        console.log(localStorage.getItem('environment')+"/data-access-api/collections/select?q=*&wt=json&indent=true");
-		$.ajax({
-			url: localStorage.getItem('environment')+"/data-access-api/collections/select?q=*&wt=json&indent=true&rows=2147483647",	
-			beforeSend: function(xhr) {
-				if(Cookies.get('token') && Cookies.get('token') != "None"){
-					xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token'));
-				}
-			},
-			type: 'GET',
-			dataType: 'json',
-			success: function (data) {
-				fill_collections_analytics(data); 
-		
-				//dataset data
-				console.log(localStorage.getItem('environment')+"/data-access-api/datasets/select?q=*&facet=true&facet.limit=-1&facet.field=CollectionName&facet.field=LeadPI&facet.field=ProtocolID&facet.field=ProtocolId&wt=json&rows=0");
-				$.ajax({
-					//url: localStorage.getItem('environment')+"/data-access-api/datasets/select?q=*&wt=json&indent=true&rows=2147483647",
-					url: localStorage.getItem('environment')+"/data-access-api/datasets/select?q=*&facet=true&facet.limit=-1&facet.field=CollectionName&facet.field=ProtocolID&facet.field=ProtocolId&facet.field=LeadPI&wt=json&rows=0",
-					beforeSend: function(xhr) {
-						if(Cookies.get('token') && Cookies.get('token') != "None"){
-							xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token'));
-						}
+        console.log("Analyzing...");
+        //collection data
+	var collection_url = localStorage.getItem('environment')+"/data-access-api/collections/select?q=*&wt=json&indent=true&rows=2147483647";
+	console.log(collection_url);
+	$.ajax({
+		url: collection_url,	
+		beforeSend: function(xhr) {
+			if(Cookies.get('token') && Cookies.get('token') != "None"){
+				xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token'));
+			}
+		},
+		type: 'GET',
+		dataType: 'json',
+		success: function (data) {
+			fill_collections_analytics(data); 
+	
+			//dataset data
+			var dataset_url = localStorage.getItem('environment')+"/data-access-api/datasets/select?q=*&facet=true&facet.limit=-1&facet.field=CollectionName&facet.field=ProtocolID&facet.field=ProtocolId&facet.field=LeadPI&wt=json&rows=0";
+			console.log(dataset_url);
+			$.ajax({
+				url: dataset_url,
+				beforeSend: function(xhr) {
+					if(Cookies.get('token') && Cookies.get('token') != "None"){
+						xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token'));
+					}
 
-					},
-					type: 'GET',
-					dataType: 'json',
-					processData: false,
-					success: function (data) {
-						fill_datasets_analytics(data);
-					},
-					error: function(){
-						 alert("Login expired, please login...");
-						 window.location.replace("/labcas-ui/index.html");
-					 }
-				});
-			},
-			error: function(){
-				 alert("Login expired, please login...");
-				 window.location.replace("/labcas-ui/index.html");
-			 }
-		});
+				},
+				type: 'GET',
+				dataType: 'json',
+				processData: false,
+				success: function (data) {
+					fill_datasets_analytics(data);
+				},
+				error: function(){
+					 alert("Login expired, please login...");
+					 window.location.replace("/labcas-ui/index.html");
+				 }
+			});
+		},
+		error: function(){
+			 alert("Login expired, please login...");
+			 window.location.replace("/labcas-ui/index.html");
+		 }
+	});
 
-    //files data
-		$.ajax({
-			//url: localStorage.getItem('environment')+"/data-access-api/files/select?q=*&wt=json&indent=true",
-			url: localStorage.getItem('environment')+"/data-access-api/files/select?q=*&facet=true&facet.limit=-1&facet.field=FileType&facet.field=LeadPI&wt=json&rows=0",
-			beforeSend: function(xhr, settings) { 
-				if(Cookies.get('token') && Cookies.get('token') != "None"){
-					xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token'));
-				}
-			},
-			type: 'GET',
-            dataType: 'json',
-			success: function (data) {
-				fill_files_analytics(data);
-			},
-			error: function(){
-				 alert("Login expired, please login...");
-				 window.location.replace("/labcas-ui/index.html");
-			 
-			 }
-		});
-		fill_favorites_analytics();
+	$.ajax({
+		url: localStorage.getItem('environment')+"/data-access-api/files/select?q=*&facet=true&facet.limit=-1&facet.field=FileType&facet.field=LeadPI&wt=json&rows=0",
+		beforeSend: function(xhr, settings) { 
+			if(Cookies.get('token') && Cookies.get('token') != "None"){
+				xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token'));
+			}
+		},
+		type: 'GET',
+		dataType: 'json',
+		success: function (data) {
+			fill_files_analytics(data);
+		},
+		error: function(){
+			 alert("Login expired, please login...");
+			 window.location.replace("/labcas-ui/index.html");
+		 
+		 }
+	});
+	fill_favorites_analytics();
 }

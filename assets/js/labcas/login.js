@@ -24,14 +24,9 @@ $.getJSON( '/labcas-ui/assets/conf/environment.cfg?2', function(json) {
         }, 'text')
 });
 $('#loginform').submit(function (e) {
-    e.preventDefault();
-    //$.getJSON( '/labcas-ui/assets/conf/environment.cfg?34', function(json) {
-        //console.log(json);
+	e.preventDefault();
 	Cookies.set("user", $('#username').val());
 	Cookies.set("userletters", $('#username').val().substr(0, 2).toUpperCase());
-	/*$.each( json, function( key, val ) {
-		Cookies.set(key, val);
-	});*/
         $.ajax({
             url: localStorage.getItem('environment')+"/data-access-api/auth",
                 beforeSend: function(xhr) {
@@ -80,12 +75,9 @@ $('#loginform').submit(function (e) {
 			});
                 },
                 error: function(){
-                    //localStorage.setItem('token', "None");
                     Cookies.set("token", "None");
-                    //alert("Could not login. Please make sure you have an account or reach out to EDRN JPL Support.");
                     $('#alertHTML').html(localStorage.getItem("error_msg"));
                     $('#errorModal').modal('show');
                 }
         }); 
-    //}, 'text');
 });

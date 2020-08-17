@@ -23,7 +23,6 @@ function initCookies(){
 			  async: false,
 			  success: function(json) {
 			Cookies.set("user", "Sign in");
-			//Cookies.set("userletters", "PU");
 			$.each( json, function( key, val ) {
 				localStorage.setItem(key, val);
 			});
@@ -53,7 +52,6 @@ function initCookies(){
             $('#login_logout').removeClass("text-danger");
             $('#login_logout').addClass("text-success");
 		}});
-		//user_data = JSON.parse(Cookies.get("userdata"));
 	}
 }
 
@@ -158,8 +156,6 @@ function save_favorite(labcas_id, labcas_type){
              //window.location.replace("/labcas-ui/application/pages/login.html");
          }
     });
-	//writeUserData('{"id":"dliu", "FavoriteCollections":["test", "okay"], "LastLogin": "2019-10-30T12:00:00Z"}');
-	//getUserData("dliu");
 }
 
 function dataset_compare_sort(a, b) {
@@ -259,10 +255,6 @@ function generate_edrn_links(obj){
 			//console.log((inst_url.length+$.trim(inst_split[c]).length+1));
 			if (o != "" && o != "Unknown"){
 				inst_url_clean = o.replace(/\./g,"-").replace(/'/g,"-").replace(/&/,"-").replace(/;/,"-").replace(/#/,"-").replace(/\(/g,"-").replace(/\)/g,"-").replace(/ - /g,"-").replace(/:/g,"-").replace(/,/g,"-").replace(/\//g,"-").toLowerCase().replace(/ /g,"-");
-				/*while (inst_url_clean.includes("--") || inst_url_clean.startsWith("-") || inst_url_clean.endsWith("-")){
-                                        inst_url_clean = inst_url_clean.replace(/--/g,"-");
-                                        inst_url_clean = inst_url_clean.trim("-");
-                                }*/
 
 				inst_split = inst_url_clean.toLowerCase().split("-");
 
@@ -323,9 +315,6 @@ function load_pagination(divid, size, cpage){
 	}
 	if (cpage + 5 < upperbound){
 		upperbound = cpage + 5;
-		/*if (upperbound < 10){
-			upperbound =10;
-		}*/
 	}
 	if (cpage - 20 > fastbackward){
 		fastbackward = cpage - 20;
@@ -335,9 +324,6 @@ function load_pagination(divid, size, cpage){
 	}
 	$('#'+divid+"_pagination_top").append('<li class="page-item"><a class="page-link" onclick="paginate(\''+divid+'\','+fastbackward+');">«</a></li>');
 	$('#'+divid+"_pagination_bottom").append('<li class="page-item"><a class="page-link" onclick="paginate(\''+divid+'\','+fastbackward+');">«</a></li>');
-	//console.log(cpage);
-	//console.log(lowerbound);
-	//console.log(upperbound);
 	for(var idx=lowerbound;idx<upperbound+1;idx++){
 		if (parseInt(idx) == parseInt(cpage)+1){
 			$('#'+divid+"_pagination_top").append('<li class="page-item active"><a class="page-link" onclick="paginate(\''+divid+'\','+idx+');">'+idx+'</a></li>');
@@ -418,13 +404,11 @@ function checkWindow(win){
 				$('#alertHTML').html("Download blocked. To fix this for Chrome:<br>The path required is (⋮) → Settings → Privacy and security → <br>Site Settings → Content, Pop-ups and redirects → Allow, Add:<br>"+window.location.hostname);
 			}
 	
-			//alert("Download blocked. To fix this for Chrome:\nGo to Preferences→Site Settings→Pop-ups→Allow→Add:\n"+window.location.hostname);	
 			if ( isEdge ){
 				$('#alertHTML').html("Download blocked. To fix this for Chrome:<br>The path is \"⋯\" → Settings → Privacy and security → Pop-ups and redirects → Allow, add, "+window.location.hostname+", Add");
 			}
 		}else if ( isSafari ){
 			$('#alertHTML').html("Download blocked. To fix this for Safari:<br>The path is \"Safari\" → Preferences → Websites → Pop-up Windows → "+window.location.hostname+" → Drop-down menu, \"Allow\"");
-			//alert("Download blocked. To fix this for Safari:\nGo to Safari→Preferences→Security→Uncheck \"Block pop-up windows\"");
 		}else if ( isFirefox ){
 			if ( isMacintosh() ){
 				$('#alertHTML').html("Download blocked. To fix this for Firefox:<br>The path is \"Firefox\" → Preferences → Privacy & Security → Block pop-up windows, \"Exceptions…\" → add "+window.location.hostname+", \"Allow\", Save Changes.: ");
@@ -448,9 +432,6 @@ function download_file(val, type){
 		if (type == "multiple"){
 			win = window.open(dataurl, '_blank');
 			outcome = checkWindow(win);
-			/*if (outcome == "worked"){
-				win.close();
-			}*/
 			return outcome;
 		}else{
 			location.href = dataurl;
