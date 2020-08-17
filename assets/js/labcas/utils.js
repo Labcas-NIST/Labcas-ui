@@ -1,7 +1,7 @@
 var user_data = {};
 $().ready(function() {
-	if(Cookies.get("userdata") && Cookies.get("userdata") != "None"){
-		user_data = JSON.parse(Cookies.get("userdata"));
+	if(localStorage.getItem("userdata") && localStorage.getItem("userdata") != "None"){
+		user_data = JSON.parse(localStorage.getItem("userdata"));
 	}
 	console.log(user_data);
 
@@ -28,8 +28,8 @@ function initCookies(){
 			});
 	
 			user_data = {"FavoriteCollections":[],"FavoriteDatasets":[],"FavoriteFiles":[]};
-			if(Cookies.get("userdata") && Cookies.get("userdata") != "None"){
-				var data = Cookies.get("userdata");
+			if(localStorage.getItem("userdata") && localStorage.getItem("userdata") != "None"){
+				var data = localStorage.getItem("userdata");
 			
 				if (data['response'] && data['response']['docs'] && data['response']['docs'][0]){
 					user_data = data['response']['docs'][0];
@@ -46,11 +46,11 @@ function initCookies(){
 			}
 			console.log("userdata");
 			console.log(user_data);
-			Cookies.set("userdata",  JSON.stringify(user_data));
+			localStorage.setItem("userdata",  JSON.stringify(user_data));
 			Cookies.remove('JasonWebToken');
-            $('#login_logout').html('<i class="nc-icon nc-button-power"></i> Log in')
-            $('#login_logout').removeClass("text-danger");
-            $('#login_logout').addClass("text-success");
+		        $('#login_logout').html('<i class="nc-icon nc-button-power"></i> Log in')
+		        $('#login_logout').removeClass("text-danger");
+		        $('#login_logout').addClass("text-success");
 		}});
 	}
 }
@@ -67,7 +67,7 @@ function writeUserData(udata){
         dataType: 'json',
         success: function (data) {
             //console.log(data);
-            Cookies.set("userdata",  udata);
+            localStorage.setItem("userdata",  udata);
             window.location.reload();
         },
         error: function(){
@@ -99,7 +99,7 @@ function getUserData(){
 			if (!user_data_tmp["FavoriteFiles"]){
 				user_data_tmp["FavoriteFiles"] = [];
 			}
-			Cookies.set("userdata",  JSON.stringify(user_data_tmp));
+			localStorage.setItem("userdata",  JSON.stringify(user_data_tmp));
 		},
 		error: function(){
 			 //alert("Login expired, please login...");

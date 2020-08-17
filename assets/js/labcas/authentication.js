@@ -45,7 +45,7 @@ function initiate_search(){
         });
 
         setup_labcas_search(localStorage.getItem("search"), "all", 0);
-        $("#favorites_len").html(user_data['FavoriteFiles'].length+user_data['FavoriteDatasets'].length+user_data['FavoriteCollections'].length);
+        $("#collection_favorites_len").html(user_data['FavoriteFiles'].length+user_data['FavoriteDatasets'].length+user_data['FavoriteCollections'].length);
 }
 
 function fill_collections_public_data(data){
@@ -317,7 +317,7 @@ function fill_dataset_details_data(data){
 	if (datasetname.length > 25){
 		datasetname = datasetname.slice(0,25);
 	}
-	$("#dataset_name").html(datasetname);
+	$("#collection_datasets_len").html(datasetname);
 	
 	var collectionid = data.response.docs[0].CollectionId;
 	var collectionname = data.response.docs[0].CollectionName;
@@ -642,8 +642,8 @@ function fill_files_data(data){
 			"</td>"+
 		"</tr>");	
 	});                                                                     
-    $("#dataset_files_len").html(size); 
-    $("#dataset_favorites_len").html(user_data['FavoriteFiles'].length+user_data['FavoriteDatasets'].length+user_data['FavoriteCollections'].length);
+    $("#collection_files_len").html(size); 
+    $("#collection_favorites_len").html(user_data['FavoriteFiles'].length+user_data['FavoriteDatasets'].length+user_data['FavoriteCollections'].length);
 	$('#loading_file').hide(500);
 }
 
@@ -873,7 +873,7 @@ function fill_datasets_search(data){
 		"</tr>");	
 	});                
 
-	$("#datasets_len").html(size); 
+	$("#collection_datasets_len").html(size); 
 	$('#loading_dataset').hide(500);
 }
 
@@ -942,7 +942,7 @@ function fill_files_search(data){
 			"</td>"+
 		"</tr>");	
 	});              
-	$("#files_len").html(size); 
+	$("#collection_files_len").html(size); 
 	$('#loading_file').hide(500);
 }
 function generate_filters(field_type, placeholder, data, display, head){
@@ -1180,7 +1180,7 @@ function fill_collections_search(data){
 			"</td>"+
 		"</tr>");	
 	});                                                                     
-    $("#collections_len").html(size); 
+    $("#collection_name").html(size); 
     $('#loading_collection').hide(500);
 }
 

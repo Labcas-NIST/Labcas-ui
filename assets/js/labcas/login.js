@@ -1,8 +1,6 @@
 Cookies.set("token", "None");
 $(document).ready(function(){
-console.log("WHAT");
 $.getJSON( '/labcas-ui/assets/conf/environment.cfg?2', function(json) {
-		console.log("OK22");
 	$.each( json, function( key, val ) {
 		console.log(key);
 		localStorage.setItem(key, val);
@@ -14,14 +12,7 @@ $.getJSON( '/labcas-ui/assets/conf/environment.cfg?2', function(json) {
             }).always(function(d) {
                 console.log("Config complete");
             });
-	$.getJSON( '/labcas-ui/assets/conf/context.cfg', function(json) {
-
-                $.each( json, function( key, val ) {
-                        console.log(key);
-                        localStorage.setItem(key, val);
-                });
-                $('#loginerror').html(localStorage.getItem("login_msg"));
-        }, 'text')
+	$('#loginerror').html(localStorage.getItem("login_msg"));
 });
 $('#loginform').submit(function (e) {
 	e.preventDefault();
@@ -61,7 +52,7 @@ $('#loginform').submit(function (e) {
 					}
 					console.log("userdata");
 					console.log(user_data);
-					Cookies.set("userdata",  JSON.stringify(user_data));
+					localStorage.setItem("userdata",  JSON.stringify(user_data));
 					if (Cookies.get("login_redirect")){
 						window.location.replace(Cookies.get("login_redirect"));
 					}else{
