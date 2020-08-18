@@ -213,19 +213,13 @@
 <script src="/labcas-ui/assets/js/demo.js"></script>
 <script src="/labcas-ui/assets/js/plugins/js.cookie.js"></script>
 <script src="/labcas-ui/assets/js/labcas/labcas-sidebar.js"></script>
-<script src="/labcas-ui/assets/js/labcas/authentication.js?110"></script>
+<script src="/labcas-ui/assets/js/labcas/authentication.js?111"></script>
 <script src="/labcas-ui/assets/js/labcas/utils.js?105"></script>
 <script src="/labcas-ui/assets/js/labcas/search.js?100"></script>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <script src="/labcas-ui/assets/js/labcas/dashboard_search.js?2"></script>
 <script type="text/javascript">
-    $(document).ready(function() {
-	initCookies();
-
 	$( "#head_template" ).load("/labcas-ui/templates.html #head_template");
-        $( "#nav_template" ).load("/labcas-ui/templates.html?2 #nav_template", function() {
-            $( "#username_placeholder_second" ).html(Cookies.get('user'));
-        });
         $( "#favorite_stat_template" ).load("/labcas-ui/templates.html #favorite_stat_template");
         $( "#file_stat_template" ).load("/labcas-ui/templates.html #file_stat_template");
         $( "#dataset_stat_template" ).load("/labcas-ui/templates.html #dataset_stat_template");
@@ -233,6 +227,12 @@
 
         $( "#footer_template" ).load("/labcas-ui/templates.html #footer_template");
         $( "#sidebar_placeholder" ).load("/labcas-ui/sidebar.html?8", );
+
+    $(document).ready(function() {
+	initCookies();
+        $( "#nav_template" ).load("/labcas-ui/templates.html?2 #nav_template", function() {
+            $( "#username_placeholder_second" ).html(Cookies.get('user'));
+        });
 
 	initiate_search();
 		
