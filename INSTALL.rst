@@ -13,7 +13,7 @@ To run Labcas's (EDRN's or MCL's) Portal 2.0+, you'll need the following:
 
 
 🏃‍♀️ Getting Started
-=================
+=========================
 
 To get up and running quickly with the portal, try this::
 
@@ -21,15 +21,15 @@ To get up and running quickly with the portal, try this::
     # move labcas-ui folder to apache root directory
 
 
-🌳<200d>♀️ Configuration
-======================
+🌳‍♀️ Configuration
+=======================
 
 Go into labcas-ui/assets/conf/environment.cfg and modify the json's environment 
 variable, links, etc that is specific to your environment/context.
 
 
 💁‍♀️ Public Web Server (Reverse Proxy)
-=======================================
+===========================================
 
 The next and final step is then to make the service available to the public internet.
 You typically do this by running a separate web server, load balancer,
