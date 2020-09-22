@@ -7,12 +7,12 @@
 	    <title>Labcas 2.0</title>
 	    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
 	    <!--     Fonts and icons     -->
+	    <link href="/labcas-ui/assets/css/introjs.css?7" rel="stylesheet" />
 	    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
 	    <link rel="stylesheet" href="/labcas-ui/assets/css/font-awesome.min.css" />
 	    <!-- CSS Files -->
 	    <link href="/labcas-ui/assets/css/bootstrap.min.css" rel="stylesheet" />
 	    <link href="/labcas-ui/assets/css/light-bootstrap-dashboard.css?v=2.0.1" rel="stylesheet" />
-	    <!-- CSS Just for demo purpose, don't include it in your project -->
 	    <link href="/labcas-ui/assets/css/labcas/custom.css?2" rel="stylesheet" />
 	</head>
 </div>
@@ -28,18 +28,18 @@
                         <span class="navbar-toggler-bar burger-lines"></span>
                     </button>
                     <div class="collapse navbar-collapse justify-content-end">
-                        <div style="margin-right: 0px">
+                        <div style="margin-right: 0px" data-step=1 data-intro='Free text search for Labcas collections, datasets, and files'>
                         <ul class="nav navbar-nav mr-auto">
                             <form class="navbar-form navbar-left navbar-search-form" role="search" action="javascript:search();">
                                 <div class="input-group">
-                                    <i class="nc-icon nc-zoom-split"></i>
+                                    <i class="nc-icon nc-zoom-split w3-xxxlarge" ></i>
                                     <input id="search_text" type="text" value="" class="form-control" placeholder="Labcas Full Search...">
                                 </div>
                             </form>
                         </ul>
                         </div>
 
-                        <ul class="navbar-nav">
+                        <ul class="navbar-nav" >
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <B><span id="username_placeholder_second"></span></B>
@@ -141,6 +141,8 @@
 
 <div id="footer_template">
 	<div class='container'>
+		<div class="row">
+		<div class="col-md-10">
                 <ul class='labcas-footer-links'>
 
                     <li>
@@ -163,10 +165,20 @@
                     California Institute of Technology. <small>ALL RIGHTS RESERVED.</small>
                     U.S. Government Sponsorship Acknowledged.
                 </p>
-                <p>
+		</div>
+		<div class="col-md-2">
+		    <button onclick="introJs().start();" type="button" class="btn btn-wd btn-info btn-outline" style="top: 50%; transform: translateY(50%);">
+			    <font size=4>Tutorial?</font>
+			    <span class="btn-label">
+				<i class="nc-icon nc-button-play icon-bold"></i>
+			    </span>
+			</button>
+		</div>
+		</div>
+                <!--<p>
                     Labcas version 2.0, Licensed under <a href='https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html'>GPLv2</a>.
                     <a href='https://mcl-labcas.jpl.nasa.gov/ui/static/plupload-2.1.9.zip'>Get Plupload</a>.
-                </p>
+                </p>-->
 
 	</div>
 </div>

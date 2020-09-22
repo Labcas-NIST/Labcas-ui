@@ -218,59 +218,58 @@
                                                         <div class="card-body">
                                                         	
                                                         	<ul role="tablist" class="nav nav-tabs">
-																<li role="presentation" class="nav-item show active">
-																	<a class="nav-link" id="info-tab" href="#icon-info" data-toggle="tab"><i class="nc-icon nc-chart text-warning"></i> Collections</a>
-																</li>
-																<li class="nav-item">
-																	<a class="nav-link" id="account-tab" href="#icon-account" data-toggle="tab"><i class="nc-icon nc-vector text-danger"></i> Datasets</a>
-																</li>
-																<li class="nav-item">
-																	<a class="nav-link" id="style-tab" href="#icon-style" data-toggle="tab"><i class="nc-icon nc-single-copy-04 text-success"></i> Files</a>
-																</li>
-															</ul>
-															<div class="tab-content">
-																<div id="icon-info" class="tab-pane fade show active" role="tabpanel" aria-labelledby="info-tab">
-																	<ul class="pagination pagination-no-border" id='collections_search_pagination_top' style="float: right;"></ul>
-																	<div class="table-full-width">
-																		<table class="table" id="starred-collection-table">
-	<thead>
-                                            <th data-field="state"></th>
-                                            <th data-field="collection" data-sortable="true">Collection</th>
-                                            <th data-field="leadpi" data-sortable="true">Lead PI</th>
-                                            <th data-field="institution" data-sortable="true" data-visible="true">Institution</th>
-                                            <th data-field="discipline" data-sortable="true" data-visible="false">Discipline</th>
-                                            <!--<th data-field="datacustodian" data-sortable="true" data-visible="false">Data Custodian</th>-->
-                                            <th data-field="organ" data-sortable="false">Organ</th>
-                                            <th data-field="actions" class="td-actions" data-events="operateEvents" data-formatter="">Actions</th>
-                                        </thead>
-
-																			<tbody>
-							<center><img id="loading" class="collapse show" height="50px" width="50px" src="/labcas-ui/assets/img/loading.gif"></center>
-																			</tbody>
-																		</table>
-																	</div>
-																	<ul class="pagination pagination-no-border" id='collections_search_pagination_bottom' style="float: right;"></ul>
-																</div>
-																<div id="icon-account" class="tab-pane fade" role="tabpanel" aria-labelledby="account-tab">
-																	<ul class="pagination pagination-no-border" id='datasets_search_pagination_top' style="float: right;"></ul>
-																	<div class="table-full-width">
-																		<table class="table" id="starred-dataset-table" style="table-layout: fixed;">
-	<thead>
-                                            <th data-field="state"></th>
-                                            <th data-field="dataset" data-sortable="true">Dataset</th>
-                                            <th data-field="collection" data-sortable="true">Collection</th>
-                                            <th data-field="actions" class="td-actions" data-events="operateEvents" data-formatter="">Actions</th>
-                                        </thead>
-																			<tbody>
-																			</tbody>
-																		</table>
-																	</div>
-																	<ul class="pagination pagination-no-border" id='datasets_search_pagination_bottom' style="float: right;"></ul>
-																</div>
-																<div id="icon-style" class="tab-pane fade" role="tabpanel" aria-labelledby="style-tab">
-																	<ul class="pagination pagination-no-border" id='files_search_pagination_top' style="float: right;"></ul>
-																	<div class="table-full-width">
-																		<table class="table" id="starred-file-table" style="table-layout: fixed;">
+									<li role="presentation" class="nav-item show active">
+										<a class="nav-link" id="info-tab" href="#icon-info" data-toggle="tab"><i class="nc-icon nc-chart text-warning"></i> Collections</a>
+									</li>
+									<li class="nav-item">
+										<a class="nav-link" id="account-tab" href="#icon-account" data-toggle="tab"><i class="nc-icon nc-vector text-danger"></i> Datasets</a>
+									</li>
+									<li class="nav-item">
+										<a class="nav-link" id="style-tab" href="#icon-style" data-toggle="tab"><i class="nc-icon nc-single-copy-04 text-success"></i> Files</a>
+									</li>
+								</ul>
+								<div class="tab-content">
+									<div id="icon-info" class="tab-pane fade show active" role="tabpanel" aria-labelledby="info-tab">
+										<ul class="pagination pagination-no-border" id='collections_search_pagination_top' style="float: right;"></ul>
+										<div class="table-full-width">
+											<table class="table" id="starred-collection-table">
+											<thead>
+											    <th data-field="state"></th>
+											    <th data-field="collection" data-sortable="true">Collection</th>
+											    <th data-field="organ" data-sortable="false">Organ</th>
+											    <th data-field="discipline" data-sortable="true" data-visible="false">Discipline</th>
+											    <th data-field="institution" data-sortable="true" data-visible="true">Institution</th>
+											    <!--<th data-field="datacustodian" data-sortable="true" data-visible="false">Data Custodian</th>-->
+											    <th data-field="leadpi" data-sortable="true">Lead PI</th>
+											    <th data-field="actions" class="td-actions" data-events="operateEvents" data-formatter="">Actions</th>
+											</thead>
+											<tbody>
+												<center><img id="loading" class="collapse show" height="50px" width="50px" src="/labcas-ui/assets/img/loading.gif"></center>
+											</tbody>
+										</table>
+									</div>
+									<ul class="pagination pagination-no-border" id='collections_search_pagination_bottom' style="float: right;"></ul>
+								</div>
+								<div id="icon-account" class="tab-pane fade" role="tabpanel" aria-labelledby="account-tab">
+									<ul class="pagination pagination-no-border" id='datasets_search_pagination_top' style="float: right;"></ul>
+									<div class="table-full-width">
+										<table class="table" id="starred-dataset-table" style="table-layout: fixed;">
+										<thead>
+										    <th data-field="state"></th>
+										    <th data-field="dataset" data-sortable="true">Dataset</th>
+										    <th data-field="collection" data-sortable="true">Collection</th>
+										    <th data-field="actions" class="td-actions" data-events="operateEvents" data-formatter="">Actions</th>
+										</thead>
+										<tbody>
+										</tbody>
+									</table>
+								</div>
+								<ul class="pagination pagination-no-border" id='datasets_search_pagination_bottom' style="float: right;"></ul>
+							</div>
+							<div id="icon-style" class="tab-pane fade" role="tabpanel" aria-labelledby="style-tab">
+								<ul class="pagination pagination-no-border" id='files_search_pagination_top' style="float: right;"></ul>
+								<div class="table-full-width">
+									<table class="table" id="starred-file-table" style="table-layout: fixed;">
 		<thead>
                                             <th data-field="state"></th>
                                             <th data-field="file" data-sortable="true">File</th>

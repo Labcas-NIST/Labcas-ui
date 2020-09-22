@@ -23,7 +23,7 @@
                                 </div>
                                 <div class="card-body table-full-width">
 					    <form class="navbar-form navbar-left navbar-search-form" role="search" action="javascript:search();">
-						<div class="input-group" style="margin-left: auto; margin-right: auto; width: 20%; border-style: solid; border-width: .5px; border-color: silver; border-radius: 5px;">
+						<div class="input-group" style="margin-left: auto; margin-right: auto; width: 20%; border-style: solid; border-width: .5px; border-color: silver; border-radius: 5px;" data-step=7 data-intro='Main Labcas search for Labcas collections, datasets, and files'>
 						    <div class='col-md-1'><i class="nc-icon nc-zoom-split"></i></div>
 						    <div class='col-md-11'><input id="search_text" type="text" class="form-control" placeholder="Labcas Full Search..." style="width:100%"></div>
 						</div>
@@ -31,14 +31,15 @@
 					    </form>
                                     <div class="toolbar">
                                     </div>
-                                    <table id="collection-table" class="table">
+
+                                    <table id="collection-table" class="table" data-step=8 data-intro='Labcas list of collections'>
                                         <thead>
                                             <th data-field="state"></th>
                                             <th data-field="collection" data-sortable="true">Collection</th>
-                                            <th data-field="leadpi" data-sortable="true">Lead PI</th>
-                                            <th data-field="institution" data-sortable="true" data-visible="true">Institution</th>
-                                            <th data-field="discipline" data-sortable="true" data-visible="false">Discipline</th>
                                             <th data-field="organ" data-sortable="false">Organ</th>
+                                            <th data-field="discipline" data-sortable="true" data-visible="true">Discipline</th>
+                                            <th data-field="institution" data-sortable="true" data-visible="true">Institution</th>
+                                            <th data-field="leadpi" data-sortable="true">Lead PI</th>
                                             <th data-field="actions" class="td-actions text-right" data-events="operateEvents" data-formatter="">Actions</th>
                                         </thead>
                                         <tbody>
@@ -99,10 +100,11 @@
 <!-- Light Dashboard DEMO methods, don't include it in your project! -->
 <script src="/labcas-ui/assets/js/demo.js"></script>
 <script src="/labcas-ui/assets/js/plugins/js.cookie.js"></script>
-<script src="/labcas-ui/assets/js/labcas/authentication.js?102"></script>
+<script src="/labcas-ui/assets/js/labcas/authentication.js?103"></script>
 <script src="/labcas-ui/assets/js/labcas/labcas-sidebar.js"></script>
 <script src="/labcas-ui/assets/js/labcas/utils.js?103"></script>
 <script src="/labcas-ui/assets/js/labcas/search.js?100"></script>
+<script src="/labcas-ui/assets/js/intro.js?101"></script>
 <script type="text/javascript">
     
     var $table = $('#collection-table');
@@ -121,12 +123,12 @@
 	initCookies();
 	//Lead header scripts
     	
-	$( "#head_template" ).load("/labcas-ui/templates.html #head_template");
-	$( "#nav_template" ).load("/labcas-ui/templates.html?2 #nav_template", function() {
+	$( "#head_template" ).load("/labcas-ui/templates.html?11 #head_template");
+	$( "#nav_template" ).load("/labcas-ui/templates.html?11 #nav_template", function() {
             $( "#username_placeholder_second" ).html(Cookies.get('user'));
 	});
 	$( "#footer_template" ).load("/labcas-ui/templates.html #footer_template");
-	$( "#sidebar_placeholder" ).load("/labcas-ui/sidebar.html?8", );
+	$( "#sidebar_placeholder" ).load("/labcas-ui/sidebar.html?11", );
 
     	setup_labcas_data("collections","*:*");
         window.operateEvents = {
@@ -151,6 +153,7 @@
             }
         };
 
+	introJs().setOption("overlayOpacity", 0);
         
     });
 </script>

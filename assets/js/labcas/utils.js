@@ -107,7 +107,31 @@ function getUserData(){
 		 }
 	});
 }
+function query_labcas_api(url, customfunction){
+        $.ajax({
+                url: url,
+                beforeSend: function(xhr) {
+                        if(Cookies.get('token') && Cookies.get('token') != "None"){
+                                xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token'));
+                        }
+                },
+                type: 'GET',
+                dataType: 'json',
+                processData: false,
+                success: function (data) {
+                        customfunction(data);
+                },
+                error: function(e){
+                        if (!(localStorage.getItem("logout_alert") && localStorage.getItem("logout_alert") == "On")){
+                                   localStorage.setItem("logout_alert","On");
+                                 alert(formatTimeOfDay($.now()) + ": Login expired, please login...");
+                        }
+                        window.location.replace("/labcas-ui/index.html");
+                 }
+        });
 
+
+}
 function save_favorite(labcas_id, labcas_type){
 	var user_id = Cookies.get('user');
 	$.ajax({
@@ -425,6 +449,17 @@ function checkWindow(win){
 	}
 	return "worked";
 }
+
+function checkSize(filecount, filesize, threshold){
+	$('#sizeHTML').html("There are <B><font color='red'>"+filecount+"</font></B> files with total size of <B><font color='red'>"+filesize+"</font></B>. This is more than the <B><font color='red'>"+threshold+"</font></B> recommended download size from a web browser. If you'd like to proceed, the browser will initiate a series of download, please ensure to keep your browser and internet connection open over the duration of the download. Alternatively, you may download the below script (requires curl pre-installed) that can be run through your command prompt/terminal instead with minimal interferance.");
+	$('#sizeModal').modal('show');
+}
+
+function resume_download(){
+	localStorage.setItem('download_size',0);
+	window.location.replace("/labcas-ui/download.html");
+}
+
 function download_file(val, type){
 	var dataurl = localStorage.getItem('environment')+"/data-access-api/download?id="+val;
 	console.log(dataurl);
@@ -443,9 +478,11 @@ function download_file(val, type){
 }
 function download_files(formname){
     var download_list = [];
+    var download_size = 0;
     $('#' + formname + ' input[type="checkbox"]').each(function() {
         if ($(this).is(":checked")) {
             download_list.push($(this).val());
+	    download_size += parseInt(this.getAttribute("data-valuesize"));
         }
     });
     var get_var = get_url_vars();
@@ -455,8 +492,69 @@ function download_files(formname){
 	    Cookies.set("login_redirect", "/labcas-ui/s/index.html?search="+get_var["search"])
     }
     localStorage.setItem('download_list',JSON.stringify(download_list));
+    localStorage.setItem('download_size',download_size);
     window.location.replace("/labcas-ui/download.html");
 }
+function download_dataset(dataset){
+	console.log(localStorage.getItem('environment')+"/data-access-api/files/select?q=DatasetId:"+dataset+"&wt=json&indent=true&rows=10000");
+	query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=DatasetId:"+dataset+"&wt=json&indent=true&rows=10000", generate_dataset_file_list);
+}
+function generate_dataset_file_list(data){
+	var download_list = [];
+	var download_size = 0;
+	$.each(data.response.docs, function(key, value) {
+                console.log(key);
+                console.log(value.id);
+                var html_safe_id = encodeURI(escapeRegExp(value.id));
+                console.log(html_safe_id);
+		download_list.push(html_safe_id);
+		download_size += value.FileSize;
+        });
+	localStorage.setItem('download_list',JSON.stringify(download_list));
+	localStorage.setItem('download_size',download_size);
+	window.location.replace("/labcas-ui/download.html");
+}
+function download_script(filename) {
+  var element = document.createElement('a');
+  if (isMacintosh() || isLinux()){
+	  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(localStorage.getItem("download_script").replace('----labcaspass----',"Bearer " + Cookies.get('token'))));
+	  element.setAttribute('download', "labcas_download.sh");
+  }else if(isWindows()){
+	  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(localStorage.getItem("download_script_win").replace('----labcaspass----',"Bearer " + Cookies.get('token'))));
+	  element.setAttribute('download', "labcas_download.ps1");
+  }
+
+  element.style.display = 'none';
+  document.body.appendChild(element);
+
+  element.click();
+
+  document.body.removeChild(element);
+  if (isMacintosh() || isLinux()){
+	  $('#fileHTML').html("Now that you've downloaded the download script, you will also need to click below to download the script file list. Make sure the downloaded file list is stored in the same folder as the earlier download script. <B><font color=red>Please also ensure no previous file named files.csv are in the same folder directory.</font></B> In order to run the download, open a terminal, navigate to the folder of your download script and files.csv, then type:<br><center>sh labcas_download.sh</center>");
+  }else if(isWindows()){
+	  $('#fileHTML').html("Now that you've downloaded the download script, you will also need to click below to download the script file list. Make sure the downloaded file list is stored in the same folder as the earlier download script. <B><font color=red>Please also ensure no previous file named files.csv are in the same folder directory.</font></B> In order to run the download, right click on the data_download.ps1 file and select \"Run with PowerShell\".");
+
+  }
+        $('#fileModal').modal('show');
+}
+function download_script_files() {
+  var element = document.createElement('a');
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.parse(localStorage.getItem("download_list")).join("\n"+localStorage.getItem('environment')+"/data-access-api/download?id=")));
+  element.setAttribute('download', "files.csv");
+
+  element.style.display = 'none';
+  document.body.appendChild(element);
+
+  element.click();
+
+  document.body.removeChild(element);
+
+  localStorage.setItem("download_list",JSON.stringify([]));
+   window.location.reload();
+
+}
+
 function reset_search_filters(){
       var get_var = get_url_vars();
         localStorage.setItem("search", get_var["search"]);
@@ -487,6 +585,9 @@ function isMacintosh() {
 function isWindows() {
   return navigator.platform.indexOf('Win') > -1
 }
+function isLinux() {
+  return navigator.platform.indexOf('Linux') > -1
+}
 function UrlExists(url)
 {
     var http = new XMLHttpRequest();
@@ -494,3 +595,4 @@ function UrlExists(url)
     http.send();
     return http.status!=404 && http.status !=500;
 }
+
