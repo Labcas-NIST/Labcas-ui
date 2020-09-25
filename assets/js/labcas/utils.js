@@ -444,6 +444,7 @@ function checkWindow(win){
 		}else{
 			$('#alertHTML').html("Download blocked. Please fix this for your respective browser.");
 		}
+		$('#errorModal').modal({backdrop: 'static', keyboard: false});
 		$('#errorModal').modal('show');
 		return "popup_blocked";
 	}
@@ -452,6 +453,7 @@ function checkWindow(win){
 
 function checkSize(filecount, filesize, threshold){
 	$('#sizeHTML').html("There are <B><font color='red'>"+filecount+"</font></B> files with total size of <B><font color='red'>"+filesize+"</font></B>. This is more than the <B><font color='red'>"+threshold+"</font></B> recommended download size from a web browser. If you'd like to proceed, the browser will initiate a series of download, please ensure to keep your browser and internet connection open over the duration of the download. Alternatively, you may download the below script (requires curl pre-installed) that can be run through your command prompt/terminal instead with minimal interferance.");
+	$('#sizeModal').modal({backdrop: 'static', keyboard: false});
 	$('#sizeModal').modal('show');
 }
 
@@ -531,11 +533,12 @@ function download_script(filename) {
 
   document.body.removeChild(element);
   if (isMacintosh() || isLinux()){
-	  $('#fileHTML').html("Now that you've downloaded the download script, you will also need to click below to download the script file list. Make sure the downloaded file list is stored in the same folder as the earlier download script. <B><font color=red>Please also ensure no previous file named files.csv are in the same folder directory.</font></B> In order to run the download, open a terminal, navigate to the folder of your download script and files.csv, then type:<br><center>sh labcas_download.sh</center>");
+	  $('#fileHTML').html("Now that you've downloaded the download script, you will also need to click below to download the script file list. Make sure the downloaded file list is stored in the same folder as the earlier download script. <B><font color=red>Please also ensure no previous file named files.csv are in the same folder directory.</font></B> In order to run the download, open a terminal, navigate to the folder of your download script and files.csv, then type:<br>sh labcas_download.sh");
   }else if(isWindows()){
 	  $('#fileHTML').html("Now that you've downloaded the download script, you will also need to click below to download the script file list. Make sure the downloaded file list is stored in the same folder as the earlier download script. <B><font color=red>Please also ensure no previous file named files.csv are in the same folder directory.</font></B> In order to run the download, right click on the data_download.ps1 file and select \"Run with PowerShell\".");
 
   }
+	$('#fileModal').modal({backdrop: 'static', keyboard: false});
         $('#fileModal').modal('show');
 }
 function download_script_files() {

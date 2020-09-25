@@ -478,6 +478,7 @@ function fill_datasets_metadata(data){
 		dataset_metadata_html+="<tr>"+
                                 "<td valign='top' style='padding: 2px 8px;' width='100%'>"+"<center><a href='#' onclick=\"download_file('"+html_safe_id+"','single');\">"+value.FileName+"</a></center>"+"</td>"+
 				"</tr>"
+		size += 1;
 	});
 	dataset_metadata_html += "</table>";
 	$('#loading_metadata').hide(500);
@@ -493,10 +494,11 @@ function fill_datasets_data(data){
 	var collapse_button = "";
 
         var get_var = get_url_vars();
-
+        var metadata_exists = false;
 	$.each(data.response.docs, function(key, value) {
 		if (value.id.split(/\//)[1] == get_var["collection_id"]){
 			query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=DatasetId:"+value.id+"&wt=json&indent=true", fill_datasets_metadata);
+			metadata_exists = true;
 			return;
 		}
 		var html_safe_id = encodeURI(escapeRegExp(value.id));
@@ -542,6 +544,12 @@ function fill_datasets_data(data){
 				"</div>"+
 			"</div>";
 	});                                                                     
+	if (!metadata_exists){
+                $('#collection_level_files').hide();
+        }
+	if ( dataset_html == "" ){
+		$('#datasets_in_collection').hide();
+	}
 	if (prev_dataset_id != ""){
 		dataset_html += "</div>";
 	}
