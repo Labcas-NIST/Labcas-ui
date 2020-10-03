@@ -19,7 +19,7 @@ Architectural notes coming soon
 Assets
 ------
 assets/conf contains json configuration files specific for each environment the 
-labcas-ui 2.0 portal is deployed in. EDRN, MCL, and Labcas-dev are the three versions 
+labcas-ui 2.1 portal is deployed in. EDRN, MCL, and Labcas-dev are the three versions 
 currently deployed which displays each consortium's relevant data within the portal. 
 Configurations include base url links, sort/show/hide fields for each of the three 
 hierarchical detail pages (collection, dataset, file), search filter fields, and 

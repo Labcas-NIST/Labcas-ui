@@ -87,6 +87,48 @@
 				</div>
 		 	</div>
 		</div>
+
+		<div id='children-files' style="display: none" class="col-md-12 ml-auto mr-auto">
+                            <div class="card card-tasks">
+                                <div class="card-header ">
+                                    <h4 class="card-title" id="files-title">Files in this Collection</h4>
+
+                                </div>
+                                <div class="card-body">
+                                <button type="submit" onclick="download_files('files-table');" class="btn btn-primary">Download Selected</button>
+                                <button type="submit" onclick="download_dataset(dataset_id)" class="btn btn-primary">Download All</button>
+                                <ul class="pagination pagination-no-border" id='files_pagination_top' style="float: right;"></ul>
+                                    <div class="table-full-width">
+                                        <table class="table" id="files-table">
+                                                <thead>
+                                                        <th>Select</th>
+                                                        <th>Name</th>
+                                                        <th>Site</th>
+                                                        <th>Type</th>
+                                                        <th>Description</th>
+                                                        <th>Thumbnail</th>
+                                                        <th>Size</th>
+                                                        <th>Action</th>
+                                                </thead>
+                                            <tbody>
+                                <center><img id="loading_file" class="collapse show" height="50px" width="50px" src="/labcas-ui/assets/img/loading.gif"></center>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="card-footer ">
+                                    <hr>
+                                    <div class="stats">
+                                        <i class="now-ui-icons loader_refresh spin"></i>
+                                        <ul class="pagination pagination-no-border" id='files_pagination_bottom' style="float: right;"></ul>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
 	    </div>
 	    </div>
 	</div>
@@ -139,7 +181,7 @@
 <!--<script src="/labcas-ui/assets/js/demo.js"></script>-->
 <script src="/labcas-ui/assets/js/plugins/js.cookie.js"></script>
 <script src="/labcas-ui/assets/js/labcas/labcas-sidebar.js"></script>
-<script src="/labcas-ui/assets/js/labcas/authentication.js?109"></script>
+<script src="/labcas-ui/assets/js/labcas/authentication.js?112"></script>
 <script src="/labcas-ui/assets/js/labcas/utils.js?101"></script>
 <script src="/labcas-ui/assets/js/labcas/search.js?100"></script>
 <script type="text/javascript">

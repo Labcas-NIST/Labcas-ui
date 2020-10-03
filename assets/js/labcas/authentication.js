@@ -310,6 +310,8 @@ function fill_collection_details_data(data){
     });
 
 	$('#loading_collection').hide(500);    
+
+
 }
 function fill_dataset_details_data(data){
 	var datasetname = data.response.docs[0].DatasetName;
@@ -468,7 +470,79 @@ function fill_datasets_children(data){
 	}
         $("#children-datasets-section").append(dataset_html);
 }
-function fill_datasets_metadata(data){
+function fill_collection_level_files(data){
+	console.log("Metadata size");
+	var size = data.response.numFound;
+	console.log(size);
+        var cpage = data.response.start;
+        load_pagination("files",size,cpage);
+        $("#files-table tbody").empty();
+        var download_list = JSON.parse(localStorage.getItem("download_list"));
+        $.each(data.response.docs, function(key, value) {
+
+                var color = "btn-info";
+                if(user_data["FavoriteFiles"].includes(value.id)){
+                        color = "btn-success";
+                }
+
+                var thumb = "";
+                var filetype = value.FileType ? value.FileType.join(",") : "";
+                var site = value.Site ? value.Site.join(",") : "";
+                var description = value.Description? value.Description.join(",") : "";
+                if ('ThumbnailRelativePath' in value){
+                        thumb = "<img width='50' height='50' src='/labcas-ui/assets/"+value.ThumbnailRelativePath+"'/>";
+                }
+                var html_safe_id = encodeURI(escapeRegExp(value.id));
+                var filesize = "";
+                var filesizenum = 0;
+                if (value.FileSize){
+                        filesize = humanFileSize(value.FileSize, true);
+                        filesizenum = value.FileSize;
+                }
+                var checked = "";
+                if ( download_list &&  download_list.includes(html_safe_id) ){
+                        checked = "checked";
+                }
+                $("#files-table tbody").append(
+                "<tr>"+
+                        "<td><center><input type='checkbox' class='form-check-input' value='"+html_safe_id+"' "+checked+" data-valuesize='"+filesizenum+"'></center></td>"+
+                        "<td class='text-left'>"+
+                                "<a href=\"/labcas-ui/f/index.html?file_id="+
+                                        html_safe_id+"\">"+
+                                        value.FileName+
+                                "</a>"+
+                        "</td>"+
+                        "<td class='text-left'>"+
+                                        site +
+                        "</td>"+
+                        "<td class='text-left'>"+
+                                        filetype +
+                        "</td>"+
+                        "<td class='text-left'>"+
+                                        description +
+                        "</td>"+
+                        "<td class='text-left'>"+
+                                        thumb+
+                        "</td>"+
+                        "<td class='text-left'>"+
+                                        filesize+
+                        "</td>"+
+                        "<td class=\"td-actions text-right\">"+
+                                "<button type=\"button\" rel=\"favoritebutton\" title=\"Favorite\" onclick=\"save_favorite('"+value.id+"', 'FavoriteFiles')\" class=\"btn "+color+" btn-simple btn-link\">"+
+                                        "<i class=\"fa fa-star\"></i>"+
+                                "</button>"+
+                                "<button type=\"button\" rel=\"downloadbutton\" title=\"Download\" class=\"btn btn-danger btn-simple btn-link\" onclick=\"download_file('"+html_safe_id+"','single')\">"+
+                                        "<i class=\"fa fa-download\"></i>"+
+                                "</button>"+
+                        "</td>"+
+                "</tr>");
+        });
+    if (size > 0){
+	$("#children-files").show();
+    }
+	$('#loading_file').hide(500);
+}
+function fill_collection_metadata(data){
 	var dataset_metadata_html = '<table class="table" id="metadatadetails-table" style="table-layout: fixed;">';
 	$.each(data.response.docs, function(key, value) {
 		console.log(key);
@@ -476,7 +550,8 @@ function fill_datasets_metadata(data){
 		var html_safe_id = encodeURI(escapeRegExp(value.id));
 		console.log(html_safe_id);
 		dataset_metadata_html+="<tr>"+
-                                "<td valign='top' style='padding: 2px 8px;' width='100%'>"+"<center><a href='#' onclick=\"download_file('"+html_safe_id+"','single');\">"+value.FileName+"</a></center>"+"</td>"+
+                                "<td valign='top' style='padding: 2px 8px;' width='80%'>"+"<center><a href='/labcas-ui/f/index.html?file_id="+html_safe_id+"'>"+value.FileName+"</a></center>"+"</td>"+
+                                "<td valign='top' style='padding: 2px 8px;' width='20%'>"+"<center><a href='#' onclick=\"download_file('"+html_safe_id+"','single');\">"+"<i class=\"fa fa-download\"></i>"+"</a></center>"+"</td>"+
 				"</tr>"
 		size += 1;
 	});
@@ -495,11 +570,15 @@ function fill_datasets_data(data){
 
         var get_var = get_url_vars();
         var metadata_exists = false;
+        var collection_file_exists = false;
 	$.each(data.response.docs, function(key, value) {
 		if (value.id.split(/\//)[1] == get_var["collection_id"]){
-			query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=DatasetId:"+value.id+"&wt=json&indent=true", fill_datasets_metadata);
-			metadata_exists = true;
+			query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=DatasetId:"+value.id+"&wt=json&indent=true", fill_collection_level_files);
+			collection_file_exists = true;
 			return;
+		} else if(value.id.split(/\//)[1].toLowerCase() == "documentation"){
+			query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=DatasetId:"+value.id+"&wt=json&indent=true", fill_collection_metadata);
+			metadata_exists = true;
 		}
 		var html_safe_id = encodeURI(escapeRegExp(value.id));
 		var color = "#0000FF";
@@ -546,6 +625,9 @@ function fill_datasets_data(data){
 	});                                                                     
 	if (!metadata_exists){
                 $('#collection_level_files').hide();
+        }
+	if (!collection_file_exists){
+                $('#children-files').hide();
         }
 	if ( dataset_html == "" ){
 		$('#datasets_in_collection').hide();

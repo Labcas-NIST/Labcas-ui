@@ -5,7 +5,7 @@
 To run Labcas's (EDRN's or MCL's) Portal 2.0+, you'll need the following:
 
 • A Docker environment
-• The Labcas 2.0 code, ``https://github.com/EDRN/labcas-ui.git``
+• The Labcas 2.1 code, ``https://github.com/EDRN/labcas-ui.git``
 • Docker has access to a labcas JWT/Solr API (Currently edrn/mcl/labcas-dev apis 
   are available within JPL servers)
 • A public web server (such as Apache HTTPD, NGINX, AWS Elastic Load Balancer,

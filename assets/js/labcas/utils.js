@@ -452,7 +452,7 @@ function checkWindow(win){
 }
 
 function checkSize(filecount, filesize, threshold){
-	$('#sizeHTML').html("There are <B><font color='red'>"+filecount+"</font></B> files with total size of <B><font color='red'>"+filesize+"</font></B>. This is more than the <B><font color='red'>"+threshold+"</font></B> recommended download size from a web browser. If you'd like to proceed, the browser will initiate a series of download, please ensure to keep your browser and internet connection open over the duration of the download. Alternatively, you may download the below script (requires curl pre-installed) that can be run through your command prompt/terminal instead with minimal interferance.");
+	$('#sizeHTML').html("There are <B><font color='red'>"+filecount+"</font></B> files with total size of <B><font color='red'>"+filesize+"</font></B>. This is more than the <B><font color='red'>"+threshold+"</font></B> recommended download size from a web browser. If you'd like to proceed, the browser will initiate a series of downloads, please keep your browser and internet connection open for the duration of the download. Alternatively, you may download the below script that can be run through your command prompt/terminal instead with minimal interferance.");
 	$('#sizeModal').modal({backdrop: 'static', keyboard: false});
 	$('#sizeModal').modal('show');
 }
@@ -554,7 +554,8 @@ function download_script_files() {
   document.body.removeChild(element);
 
   localStorage.setItem("download_list",JSON.stringify([]));
-   window.location.reload();
+  $('#download_list_link').hide();
+   //window.location.reload();
 
 }
 
