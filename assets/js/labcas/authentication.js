@@ -543,6 +543,7 @@ function fill_collection_level_files(data){
 	$('#loading_file').hide(500);
 }
 function fill_collection_metadata(data){
+	
 	var dataset_metadata_html = '<table class="table" id="metadatadetails-table" style="table-layout: fixed;">';
 	$.each(data.response.docs, function(key, value) {
 		console.log(key);
@@ -550,10 +551,9 @@ function fill_collection_metadata(data){
 		var html_safe_id = encodeURI(escapeRegExp(value.id));
 		console.log(html_safe_id);
 		dataset_metadata_html+="<tr>"+
-                                "<td valign='top' style='padding: 2px 8px;' width='80%'>"+"<center><a href='/labcas-ui/f/index.html?file_id="+html_safe_id+"'>"+value.FileName+"</a></center>"+"</td>"+
+                                "<td valign='top' style='padding: 2px 8px;' width='80%'>"+"<a href='/labcas-ui/f/index.html?file_id="+html_safe_id+"'>"+value.FileName+"</a>"+"</td>"+
                                 "<td valign='top' style='padding: 2px 8px;' width='20%'>"+"<center><a href='#' onclick=\"download_file('"+html_safe_id+"','single');\">"+"<i class=\"fa fa-download\"></i>"+"</a></center>"+"</td>"+
 				"</tr>"
-		size += 1;
 	});
 	dataset_metadata_html += "</table>";
 	$('#loading_metadata').hide(500);
@@ -576,9 +576,12 @@ function fill_datasets_data(data){
 			query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=DatasetId:"+value.id+"&wt=json&indent=true", fill_collection_level_files);
 			collection_file_exists = true;
 			return;
-		} else if(value.id.split(/\//)[1].toLowerCase() == "documentation"){
+		}
+		else if(value.id.split(/\//)[1].toLowerCase() == "documentation"){
+			console.log("HERE");
 			query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=DatasetId:"+value.id+"&wt=json&indent=true", fill_collection_metadata);
 			metadata_exists = true;
+			return;
 		}
 		var html_safe_id = encodeURI(escapeRegExp(value.id));
 		var color = "#0000FF";
