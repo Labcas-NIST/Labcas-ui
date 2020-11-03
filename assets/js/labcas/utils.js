@@ -637,3 +637,14 @@ function setupBootstrapTable(table){
     });
 
 }
+
+//IntroJS Trigger
+function introWizard(check_first_time){
+	if(check_first_time){
+		if (localStorage.getItem("first_time_user") == "false"){
+			return;
+		}
+	}
+	localStorage.setItem("first_time_user","false");
+	introJs().start();
+}

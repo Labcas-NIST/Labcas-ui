@@ -38,11 +38,14 @@ $('#loginform').submit(function (e) {
 				dataType: 'json',
 				success: function (data) {
 					user_data = {"FavoriteCollections":[],"FavoriteDatasets":[],"FavoriteFiles":[]};
+					first_time_user = false;
 					if (data['response'] && data['response']['docs'] && data['response']['docs'][0]){
 						user_data = data['response']['docs'][0];
 					}
 					if (!user_data["FavoriteCollections"]){
 						user_data["FavoriteCollections"] = [];
+						//first time user
+						first_time_user = true;	
 					}
 					if (!user_data["FavoriteDatasets"]){
 						user_data["FavoriteDatasets"] = [];
@@ -53,6 +56,9 @@ $('#loginform').submit(function (e) {
 					console.log("userdata");
 					console.log(user_data);
 					localStorage.setItem("userdata",  JSON.stringify(user_data));
+
+					writeUserData(JSON.stringify(user_data))
+					localStorage.setItem("first_time_user",  first_time_user);
 					if (Cookies.get("login_redirect")){
 						window.location.replace(Cookies.get("login_redirect"));
 					}else{
