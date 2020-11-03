@@ -74,7 +74,7 @@
 					<table class="table" id="files-table">
 						<thead>
 							<th>Select</th>
-							<th>Name</th>
+							<th data-field="name" data-sortable="true">Name</th>
 							<th>Site</th>
 							<th>Type</th>
 							<th>Description</th>
@@ -152,7 +152,7 @@
 <!-- Light Dashboard DEMO methods, don't include it in your project! -->
 <script src="/labcas-ui/assets/js/plugins/js.cookie.js"></script>
 <script src="/labcas-ui/assets/js/labcas/labcas-sidebar.js"></script>
-<script src="/labcas-ui/assets/js/labcas/utils.js?107"></script>
+<script src="/labcas-ui/assets/js/labcas/utils.js?108"></script>
 <script src="/labcas-ui/assets/js/labcas/authentication.js?113"></script>
 <script src="/labcas-ui/assets/js/labcas/search.js?100"></script>
 
@@ -167,7 +167,7 @@
         });
         $( "#favorite_stat_template" ).load("/labcas-ui/templates.html #favorite_stat_template");
         $( "#file_stat_template" ).load("/labcas-ui/templates.html #file_stat_template");
-        $( "#dataset_stat_template" ).load("/labcas-ui/templates.html #dataset_stat_template");
+        $( "#dataset_stat_template" ).load("/labcas-ui/templates.html #dataset_name_template");
         $( "#collection_stat_template" ).load("/labcas-ui/templates.html #collection_stat_template");
 
         $( "#footer_template" ).load("/labcas-ui/templates.html #footer_template");
@@ -193,6 +193,7 @@
 		}
 	}
 	$('#breadcrumb').html(breadcrumb);
+
 							
     });
 </script>

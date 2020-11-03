@@ -8,7 +8,18 @@
 <body class="sidebar-mini">
     <div class="wrapper" style="min-height: 370px">
         <div id='sidebar_placeholder'></div>
-        <div class="main-panel">
+        <div id='load'>
+		<br><br>
+		<br><br>
+		<br><br>
+		<br><br>
+		<br><br>
+		<br><br>
+		<br><br>
+		<br><br>
+		<center><img class="collapse show" height="200px" width="200px" src="/labcas-ui/assets/img/loading.gif?2"></center>
+	</div>
+        <div id="main-panel" class="main-panel" style="visibility:hidden">
             <!-- Navbar -->
             <div id="nav_template"></div>
             <!-- End Navbar -->
@@ -219,6 +230,17 @@
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <script src="/labcas-ui/assets/js/labcas/dashboard_search.js?2"></script>
 <script type="text/javascript">
+	document.onreadystatechange = function () {
+	  var state = document.readyState
+	  if (state == 'interactive') {
+	       document.getElementById('main-panel').style.visibility="hidden";
+	  } else if (state == 'complete') {
+	      setTimeout(function(){
+		 document.getElementById('load').style.display="none";
+		 document.getElementById('main-panel').style.visibility="visible";
+	      },1000);
+	  }
+	}
 	$( "#head_template" ).load("/labcas-ui/templates.html #head_template");
         $( "#favorite_stat_template" ).load("/labcas-ui/templates.html #favorite_stat_template");
         $( "#file_stat_template" ).load("/labcas-ui/templates.html #file_stat_template");
