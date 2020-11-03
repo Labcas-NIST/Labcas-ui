@@ -20,7 +20,6 @@
 .labcas-footer-links li + li {
     margin-left: 15px;
 }
-
 @media (min-width: 768px) {
     .labcas-footer {
         text-align: left;
@@ -29,3 +28,26 @@
         margin-bottom: 0;
     }
 }
+
+input::-webkit-input-placeholder {
+color: gray !important;
+}
+ 
+input:-moz-placeholder { /* Firefox 18- */
+color: gray !important;  
+}
+ 
+input::-moz-placeholder {  /* Firefox 19+ */
+color: gray !important;  
+}
+ 
+input:-ms-input-placeholder {  
+color: gray !important;  
+}
+.bs-example{
+margin: 20px;
+}
+.accordion .fa{
+margin-right: 0.5rem;
+}
+
