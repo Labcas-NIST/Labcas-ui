@@ -199,7 +199,7 @@
         $( "#dataset_stat_template" ).load("/labcas-ui/templates.html #dataset_stat_template");
         $( "#collection_stat_template" ).load("/labcas-ui/templates.html #collection_stat_template");
 
-        $( "#footer_template" ).load("/labcas-ui/templates.html #footer_template");
+        $( "#footer_template" ).load("/labcas-ui/templates.html #footer_template_"+localStorage.getItem("environment_name"));
         $( "#sidebar_placeholder" ).load("/labcas-ui/sidebar.html?8", );
 
 	

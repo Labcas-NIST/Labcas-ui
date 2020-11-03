@@ -127,7 +127,7 @@
 	$( "#nav_template" ).load("/labcas-ui/templates.html?11 #nav_template", function() {
             $( "#username_placeholder_second" ).html(Cookies.get('user'));
 	});
-	$( "#footer_template" ).load("/labcas-ui/templates.html #footer_template");
+	$( "#footer_template" ).load("/labcas-ui/templates.html #footer_template_"+localStorage.getItem("environment_name"));
 	$( "#sidebar_placeholder" ).load("/labcas-ui/sidebar.html?11", );
 
     	setup_labcas_data("collections","*:*");
