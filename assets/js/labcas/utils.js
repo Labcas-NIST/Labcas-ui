@@ -55,7 +55,7 @@ function initCookies(){
 	}
 }
 
-function writeUserData(udata){
+function writeUserData(udata, noreload){
 	$.ajax({
         url: localStorage.getItem('environment')+"/data-access-api/userdata/create",
         beforeSend: function(xhr) { 
@@ -68,7 +68,9 @@ function writeUserData(udata){
         success: function (data) {
             //console.log(data);
             localStorage.setItem("userdata",  udata);
-            window.location.reload();
+	    if(!noreload){
+		    window.location.reload();
+	    }
         },
         error: function(){
              //alert("Login expired, please login...");
@@ -132,7 +134,7 @@ function query_labcas_api(url, customfunction){
 
 
 }
-function save_favorite(labcas_id, labcas_type){
+function save_favorite(labcas_id, labcas_type, ele){
 	var user_id = Cookies.get('user');
 	$.ajax({
         url: localStorage.getItem('environment')+"/data-access-api/userdata/read?id="+user_id,
@@ -173,7 +175,19 @@ function save_favorite(labcas_id, labcas_type){
 			if (!user_data_tmp["FavoriteFiles"]){
 				user_data_tmp["FavoriteFiles"] = [];
 			}
-			writeUserData(JSON.stringify(user_data_tmp));
+			if ($(ele).hasClass("btn-info")){
+				$(ele).removeClass("btn-info");
+				$(ele).addClass("btn-success")
+			}else if($(ele).hasClass("btn-success")){
+                                $(ele).removeClass("btn-success")
+				$(ele).addClass("btn-info");
+			}else if($(ele).css("color") == "rgb(0, 0, 255)"){
+				$(ele).css("color","#87CB16");
+			}else if($(ele).css("color") == "rgb(135, 203, 22)"){
+				$(ele).css("color","#0000FF")
+
+			}
+			writeUserData(JSON.stringify(user_data_tmp), true);
 		},
         error: function(){
              //alert("Login expired, please login...");

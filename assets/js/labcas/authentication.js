@@ -82,7 +82,7 @@ function fill_collections_public_data(data){
 					"<td>"+institutions+"</td>"+
 					"<td>"+pis+"</td>"+
 					"<td class=\"td-actions\">"+
-							"<button type=\"button\" rel=\"tooltip\" title=\"Favorite\" onclick=\"save_favorite('"+obj.id+"', 'FavoriteCollections')\" class=\"btn "+color+" btn-simple btn-link\">"+
+							"<button type=\"button\" rel=\"tooltip\" title=\"Favorite\" onclick=\"save_favorite('"+obj.id+"', 'FavoriteCollections', this)\" class=\"btn "+color+" btn-simple btn-link\">"+
 								"<i class=\"fa fa-star\"></i>"+
 							"</button>"+
 						"</td>"+
@@ -129,7 +129,7 @@ function fill_collections_data(data){
 	//data.response.docs.sort(dataset_compare_sort);
     $.each(data.response.docs, function(index, obj) {
     	var color = "btn-info";
-		if(user_data["FavoriteCollections"].includes(obj.id)){
+	if(user_data["FavoriteCollections"].includes(obj.id)){
 			color = "btn-success";
     	}
     	
@@ -163,7 +163,7 @@ function fill_collections_data(data){
                 "<td>"+institutions+"</td>"+
                 "<td>"+pis+"</td>"+
                 "<td class=\"td-actions\">"+
-						"<button type=\"button\" rel=\"tooltip\" title=\"Favorite\" onclick=\"save_favorite('"+obj.id+"', 'FavoriteCollections')\" class=\"btn "+color+" btn-simple btn-link\">"+
+						"<button type=\"button\" rel=\"tooltip\" title=\"Favorite\" onclick=\"save_favorite('"+obj.id+"', 'FavoriteCollections', this)\" class=\"btn "+color+" btn-simple btn-link\">"+
 							"<i class=\"fa fa-star\"></i>"+
 						"</button>"+
 					"</td>"+
@@ -459,7 +459,7 @@ function fill_datasets_children(data){
                         "</a>"+
                                         "</div>"+
                                         "<div class=\"td-actions col-md-1 text-right\" valign='middle' style='padding: 0px 8px; vertical-align: middle; height: 25px'>"+
-                                                "<button type=\"button\" rel=\"tooltip\" title=\"Favorite\" onclick=\"save_favorite('"+value.id+"', 'FavoriteDatasets')\" class=\"btn btn-simple btn-link\" style='position: absolute;left: 5px; top: 50%; transform: translateY(-50%); color: "+color+"'>"+
+                                                "<button type=\"button\" rel=\"tooltip\" title=\"Favorite\" onclick=\"save_favorite('"+value.id+"', 'FavoriteDatasets', this)\" class=\"btn btn-simple btn-link\" style='position: absolute;left: 5px; top: 50%; transform: translateY(-50%); color: "+color+"'>"+
                                                         "<i class=\"fa fa-star\"></i>"+
                                                 "</button>"+
                                         "</div>"+
@@ -528,7 +528,7 @@ function fill_collection_level_files(data){
                                         filesize+
                         "</td>"+
                         "<td class=\"td-actions text-right\">"+
-                                "<button type=\"button\" rel=\"favoritebutton\" title=\"Favorite\" onclick=\"save_favorite('"+value.id+"', 'FavoriteFiles')\" class=\"btn "+color+" btn-simple btn-link\">"+
+                                "<button type=\"button\" rel=\"favoritebutton\" title=\"Favorite\" onclick=\"save_favorite('"+value.id+"', 'FavoriteFiles', this)\" class=\"btn "+color+" btn-simple btn-link\">"+
                                         "<i class=\"fa fa-star\"></i>"+
                                 "</button>"+
                                 "<button type=\"button\" rel=\"downloadbutton\" title=\"Download\" class=\"btn btn-danger btn-simple btn-link\" onclick=\"download_file('"+html_safe_id+"','single')\">"+
@@ -617,7 +617,7 @@ function fill_datasets_data(data){
 		"</a>"+
 				"</div>"+
 				"<div class=\"td-actions col-md-1 text-right\" valign='middle' style='padding: 0px 8px; vertical-align: middle; height: 25px'>"+
-					"<button type=\"button\" rel=\"tooltip\" title=\"Favorite\" onclick=\"save_favorite('"+value.id+"', 'FavoriteDatasets')\" class=\"btn btn-simple btn-link\" style='position: absolute;left: -20px; top: 50%; transform: translateY(-50%); color: "+color+"'>"+
+					"<button type=\"button\" rel=\"tooltip\" title=\"Favorite\" onclick=\"save_favorite('"+value.id+"', 'FavoriteDatasets', this)\" class=\"btn btn-simple btn-link\" style='position: absolute;left: -100px; top: 50%; transform: translateY(-50%); color: "+color+"'>"+
 						"<i class=\"fa fa-star\"></i>"+
 					"</button>"+
 					"<button type=\"button\" rel=\"downloadbutton\" title=\"Download\" class=\"btn btn-danger btn-simple btn-link\" onclick=\"download_dataset('"+html_safe_id+"')\" style='position: absolute;left: 0px; top: 50%; transform: translateY(-50%); color: green;'>"+
@@ -707,7 +707,7 @@ function fill_files_data(data){
 					filesize+
 			"</td>"+
 			"<td class=\"td-actions text-right\">"+
-				"<button type=\"button\" rel=\"favoritebutton\" title=\"Favorite\" onclick=\"save_favorite('"+value.id+"', 'FavoriteFiles')\" class=\"btn "+color+" btn-simple btn-link\">"+
+				"<button type=\"button\" rel=\"favoritebutton\" title=\"Favorite\" onclick=\"save_favorite('"+value.id+"', 'FavoriteFiles', this)\" class=\"btn "+color+" btn-simple btn-link\">"+
 					"<i class=\"fa fa-star\"></i>"+
 				"</button>"+
 				"<button type=\"button\" rel=\"downloadbutton\" title=\"Download\" class=\"btn btn-danger btn-simple btn-link\" onclick=\"download_file('"+html_safe_id+"','single')\">"+
@@ -943,7 +943,7 @@ function fill_datasets_search(data){
                     	obj.CollectionName+"</a></td>"+
                 "<!--<td>"+obj.DatasetVersion+"</td>-->"+
 			"<td class=\"td-actions\">"+
-				"<button type=\"button\" rel=\"tooltip\" title=\"Favorite\" onclick=\"save_favorite('"+obj.id+"', 'FavoriteDatasets')\" class=\"btn "+color+" btn-simple btn-link\">"+
+				"<button type=\"button\" rel=\"tooltip\" title=\"Favorite\" onclick=\"save_favorite('"+obj.id+"', 'FavoriteDatasets', this)\" class=\"btn "+color+" btn-simple btn-link\">"+
 					"<i class=\"fa fa-star\"></i>"+
 				"</button>"+
 			"</td>"+
@@ -1013,7 +1013,7 @@ function fill_files_search(data){
 					filesize+
 			"</td>"+
 			"<td class=\"td-actions\">"+
-				"<button type=\"button\" rel=\"tooltip\" title=\"Favorite\" onclick=\"save_favorite('"+obj.id+"', 'FavoriteFiles')\" class=\"btn "+color+" btn-simple btn-link\">"+
+				"<button type=\"button\" rel=\"tooltip\" title=\"Favorite\" onclick=\"save_favorite('"+obj.id+"', 'FavoriteFiles', this)\" class=\"btn "+color+" btn-simple btn-link\">"+
 					"<i class=\"fa fa-star\"></i>"+
 				"</button>"+
 			"</td>"+
@@ -1202,7 +1202,7 @@ function generate_categories(field_id, data){
 	});
 }
 function fill_collections_facets(data){
-	//console.log(data);
+	console.log(data);
 	
    	if (localStorage.getItem("search_filter") == "on" || (localStorage.getItem("search") && localStorage.getItem("search") != "*")){
 		$('#filter_reset').show();
@@ -1251,7 +1251,7 @@ function fill_collections_search(data){
                 "<td>"+obj.Institution+"</td>"+
                 "<td>"+obj.LeadPI+"</td>"+
 			"<td class=\"td-actions\">"+
-				"<button type=\"button\" rel=\"tooltip\" title=\"Favorite\"  onclick=\"save_favorite('"+obj.id+"', 'FavoriteCollections')\" class=\"btn "+color+" btn-simple btn-link\">"+
+				"<button type=\"button\" rel=\"tooltip\" title=\"Favorite\"  onclick=\"save_favorite('"+obj.id+"', 'FavoriteCollections', this)\" class=\"btn "+color+" btn-simple btn-link\">"+
 					"<i class=\"fa fa-star\"></i>"+
 				"</button>"+
 			"</td>"+
@@ -1409,7 +1409,7 @@ function fill_datasets_starred(data){
 						obj.CollectionId+"\">"+
 							obj.CollectionName+"</a></td>"+
 				"<td class=\"td-actions\">"+
-					"<button type=\"button\" rel=\"tooltip\" title=\"Favorite\" onclick=\"save_favorite('"+obj.id+"', 'FavoriteDatasets')\" class=\"btn "+color+" btn-simple btn-link\">"+
+					"<button type=\"button\" rel=\"tooltip\" title=\"Favorite\" onclick=\"save_favorite('"+obj.id+"', 'FavoriteDatasets', this)\" class=\"btn "+color+" btn-simple btn-link\">"+
 						"<i class=\"fa fa-star\"></i>"+
 					"</button>"+
 				"</td>"+
@@ -1462,7 +1462,7 @@ function fill_files_starred(data){
 						filesize+
 				"</td>"+
 				"<td class=\"td-actions\">"+
-					"<button type=\"button\" rel=\"tooltip\" title=\"Favorite\" onclick=\"save_favorite('"+obj.id+"', 'FavoriteFiles')\" class=\"btn "+color+" btn-simple btn-link\">"+
+					"<button type=\"button\" rel=\"tooltip\" title=\"Favorite\" onclick=\"save_favorite('"+obj.id+"', 'FavoriteFiles', this)\" class=\"btn "+color+" btn-simple btn-link\">"+
 						"<i class=\"fa fa-star\"></i>"+
 					"</button>"+
 				"</td>"+
@@ -1496,7 +1496,7 @@ function fill_collections_starred(data){
 					"<td>"+obj.Institution+"</td>"+
 					"<td>"+obj.LeadPI+"</td>"+
 				"<td class=\"td-actions\">"+
-					"<button type=\"button\" rel=\"tooltip\" title=\"Favorite\"  onclick=\"save_favorite('"+obj.id+"', 'FavoriteCollections')\" class=\"btn "+color+" btn-simple btn-link\">"+
+					"<button type=\"button\" rel=\"tooltip\" title=\"Favorite\"  onclick=\"save_favorite('"+obj.id+"', 'FavoriteCollections', this)\" class=\"btn "+color+" btn-simple btn-link\">"+
 						"<i class=\"fa fa-star\"></i>"+
 					"</button>"+
 				"</td>"+
