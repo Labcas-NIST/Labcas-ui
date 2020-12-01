@@ -230,7 +230,7 @@ function startApp() {
   // possible load from location
   dwvjq.utils.loadFromUri(window.location.href, myapp);
   var get_var = get_url_vars()
-  console.log(get_var["dicoms"].split(";"));
+  //console.log(get_var["dicoms"].split(";"));
   //myapp.loadURLs(["http://localhost:8000/labcas-data/dicom/IM-0003-0132.dcm","http://localhost:8000/labcas-data/dicom/IM-0003-0133.dcm"]);
   myapp.loadURLs(JSON.parse(localStorage.getItem('dicoms')), [{name:"Authorization", value:"Bearer "+Cookies.get('token')}]);
   //myapp.loadURLs(["https://edrn-labcas.jpl.nasa.gov/data-access-api/download?id=Automated_System_For_Breast_Cancer_Biomarker_Analysis/C0001/RAW/C0001_MG_DAT_LCC%5C.dcm"],[{name:"Authorization", value:"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJMYWJDQVMiLCJzdWIiOiJ1aWQ9ZGxpdSxkYz1lZHJuLGRjPWpwbCxkYz1uYXNhLGRjPWdvdiIsIm5iZiI6MTYwNjIwMjk5OSwiaXNzIjoiTGFiQ0FTIiwiZXhwIjoxNjA2MjA2NTk5LCJpYXQiOjE2MDYyMDI5OTl9.SU8EyCZ1CU7OHyce9raKDmcsB-fdJiPWQBl-SGcDCWg"}]);
