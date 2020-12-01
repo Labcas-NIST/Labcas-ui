@@ -67,8 +67,10 @@
 				    
 				</div>
 				<div class="card-body">
-				<button type="submit" onclick="download_files('files-table');" class="btn btn-primary">Download Selected</button>
-				<button type="submit" onclick="download_dataset(dataset_id)" class="btn btn-primary">Download All</button>
+				<button id="download_sel" type="submit" onclick="download_files('files-table');" class="btn btn-primary">Download Selected</button>
+				<button id="download_all" type="submit" onclick="download_dataset(dataset_id)" class="btn btn-primary">Download All</button>
+				<button id="dicom_sel" type="submit" onclick="submitDicom('files-table')" class="btn btn-success">View Selected Dicoms</button>
+				<button id="dicom_all" type="submit" onclick="submitDicom('files-table','all',dataset_id)" class="btn btn-success">View All Dicoms</button>
 				<ul class="pagination pagination-no-border" id='files_pagination_top' style="float: right;"></ul>
 				    <div class="table-full-width">
 					<table class="table" id="files-table">
@@ -152,7 +154,7 @@
 <!-- Light Dashboard DEMO methods, don't include it in your project! -->
 <script src="/labcas-ui/assets/js/plugins/js.cookie.js"></script>
 <script src="/labcas-ui/assets/js/labcas/labcas-sidebar.js"></script>
-<script src="/labcas-ui/assets/js/labcas/utils.js?108"></script>
+<script src="/labcas-ui/assets/js/labcas/utils.js?109"></script>
 <script src="/labcas-ui/assets/js/labcas/authentication.js?113"></script>
 <script src="/labcas-ui/assets/js/labcas/search.js?100"></script>
 
@@ -167,7 +169,7 @@
         });
         $( "#favorite_stat_template" ).load("/labcas-ui/templates.html #favorite_stat_template");
         $( "#file_stat_template" ).load("/labcas-ui/templates.html #file_stat_template");
-        $( "#dataset_stat_template" ).load("/labcas-ui/templates.html #dataset_name_template");
+        $( "#dataset_stat_template" ).load("/labcas-ui/templates.html?2 #dataset_name_template");
         $( "#collection_stat_template" ).load("/labcas-ui/templates.html #collection_stat_template");
 
         $( "#footer_template" ).load("/labcas-ui/templates.html #footer_template_"+localStorage.getItem("environment_name"));
@@ -175,26 +177,25 @@
 
 
         var get_var = get_url_vars();
-	get_var["dataset_id"] = get_var["dataset_id"].replace(/\\\./g,'.');
-	dataset_id = get_var["dataset_id"];
+        get_var["dataset_id"] = get_var["dataset_id"].replace(/\\\./g,'.');
+        dataset_id = get_var["dataset_id"];
 
         setup_labcas_dataset_data("datasetfiles",'id:"'+get_var["dataset_id"]+'"', 'DatasetId:"'+get_var["dataset_id"]+'"', 0);
         
         var breadcrumb = '<li class="breadcrumb-item"><a href="/labcas-ui/m/index.html">Home</a></li>';
-	var data_split = get_var["dataset_id"].split("/");
-	var url_prefix = "";
-	for (i = 0; i < data_split.length; i++) {
-		if(i == 0){
-			breadcrumb += '<li class="breadcrumb-item active" aria-current="page"><a href="/labcas-ui/c/index.html?collection_id='+data_split[i]+'">'+data_split[i].replace(/_/g," ")+'</a></li>';
-		}else if (i == data_split.length -1){
-			breadcrumb += '<li class="breadcrumb-item active" aria-current="page">'+data_split[i].replace(/_/g," ")+'</li>';
-		}else{
-			breadcrumb += '<li class="breadcrumb-item active" aria-current="page"><a href="/labcas-ui/d/index.html?dataset_id='+data_split.slice(0,i+1).join("/")+'">'+data_split[i].replace(/_/g," ")+'</a></li>';
-		}
-	}
-	$('#breadcrumb').html(breadcrumb);
-
-							
+        var data_split = get_var["dataset_id"].split("/");
+        var url_prefix = "";
+        for (i = 0; i < data_split.length; i++) {
+            if(i == 0){
+                breadcrumb += '<li class="breadcrumb-item active" aria-current="page"><a href="/labcas-ui/c/index.html?collection_id='+data_split[i]+'">'+data_split[i].replace(/_/g," ")+'</a></li>';
+            }else if (i == data_split.length -1){
+                breadcrumb += '<li class="breadcrumb-item active" aria-current="page">'+data_split[i].replace(/_/g," ")+'</li>';
+            }else{
+                breadcrumb += '<li class="breadcrumb-item active" aria-current="page"><a href="/labcas-ui/d/index.html?dataset_id='+data_split.slice(0,i+1).join("/")+'">'+data_split[i].replace(/_/g," ")+'</a></li>';
+            }
+        }
+        $('#breadcrumb').html(breadcrumb);
+                                
     });
 </script>
 

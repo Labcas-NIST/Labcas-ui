@@ -662,3 +662,53 @@ function introWizard(check_first_time){
 	localStorage.setItem("first_time_user","false");
 	introJs().start();
 }
+
+
+function generate_dicom_file_list(data){
+    var dicom_list = [];
+    var dicom_size = 0;
+    $.each(data.response.docs, function(key, value) {
+        console.log(key);
+        console.log(value.id);
+        var html_safe_id = encodeURI(escapeRegExp(value.id));
+        console.log(html_safe_id);
+        dicom_list.push(localStorage.getItem('environment')+"/data-access-api/download?id="+html_safe_id);
+    });
+    localStorage.setItem('dicoms',JSON.stringify(dicom_list));
+    var get_var = get_url_vars();
+
+    if (get_var["dataset_id"] && get_var["dataset_id"] != "undefined"){
+        Cookies.set("login_redirect", "/labcas-ui/d/index.html?dataset_id="+get_var["dataset_id"])
+    }else if (get_var["search"]){
+        Cookies.set("login_redirect", "/labcas-ui/s/index.html?search="+get_var["search"])
+    }
+    window.location.replace("/labcas-ui/i/index.html");
+}
+
+
+function submitDicom(formname, dicom, dataset){
+    var dicom_list = [];
+    console.log(dicom);
+    if (dicom && dicom != "all"){
+        dicom_list.push(localStorage.getItem('environment')+"/data-access-api/download?id="+$(dicom).val());
+    }else if(dicom && dicom == "all"){
+        query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=DatasetId:"+dataset+"&wt=json&indent=true&rows=10000", generate_dicom_file_list);
+        return;
+    }else{
+        $('#' + formname + ' input[type="checkbox"]').each(function() {
+            if ($(this).is(":checked")) {
+                dicom_list.push(localStorage.getItem('environment')+"/data-access-api/download?id="+$(this).val());
+            }
+        });
+    }
+    localStorage.setItem('dicoms',JSON.stringify(dicom_list));
+
+    var get_var = get_url_vars();
+    
+    if (get_var["dataset_id"] && get_var["dataset_id"] != "undefined"){
+	    Cookies.set("login_redirect", "/labcas-ui/d/index.html?dataset_id="+get_var["dataset_id"])
+    }else if (get_var["search"]){
+	    Cookies.set("login_redirect", "/labcas-ui/s/index.html?search="+get_var["search"])
+    }
+    window.location.replace("/labcas-ui/i/index.html");
+}

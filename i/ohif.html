@@ -3,6 +3,7 @@
 
 <head>
         <div id="head_template"></div>
+          <script src="https://unpkg.com/@ohif/viewer@1.0.3/dist/index.umd.js" crossorigin></script>
 </head>
 
 <body class="sidebar-mini">
@@ -25,9 +26,13 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <div >
-                                <div>
-                                                <iframe id="dwv_frame" frameBorder="0" height="900px" width="100%" src="#"></iframe>
+                            <div class="card ">
+                                <div class="card-header">
+                                    <h4 class="card-title"><div id="filetitle"></div></h4>
+                                     <p class="card-category">DWV Dicom Viewer</p>
+                                </div>
+                                <div class="card-body">
+                                                <div id="root"></div>
                                         
                                 </div>
                             </div>
@@ -101,30 +106,44 @@
         $( "#sidebar_placeholder" ).load("/labcas-ui/sidebar.html?8", );
 
         var get_var = get_url_vars();
+        //setup_labcas_file_data("file",'id:"'+encodeURI(get_var["file_id"])+'"', 'id:'+get_var["file_id"]+'*'); 
         
-		var breadcrumb = '<li class="breadcrumb-item"><a href="/labcas-ui/m/index.html">Home</a></li>';
-        if (Cookies.get("login_redirect").includes("dataset_id=")){
-            var dataset_id = Cookies.get("login_redirect").split("dataset_id=")[1];
-            var data_split = dataset_id.split("/");
-            var url_prefix = "";
-            for (i = 0; i < data_split.length; i++) {
-                if(i == 0){
-                    breadcrumb += '<li class="breadcrumb-item active" aria-current="page"><a href="/labcas-ui/c/index.html?collection_id='+data_split[i]+'">'+data_split[i].replace(/_/g," ")+'</a></li>';
-                }else if (i == data_split.length -1){
-                    breadcrumb += '<li class="breadcrumb-item active" aria-current="page"><a href="'+Cookies.get("login_redirect")+'">'+data_split[i].replace(/_/g," ")+'</a></li>';
-                }else{
-                    breadcrumb += '<li class="breadcrumb-item active" aria-current="page"><a href="/labcas-ui/d/index.html?dataset_id='+data_split.slice(0,i+1).join("/")+'">'+data_split[i].replace(/_/g," ")+'</a></li>';
-                }
-            }
-            breadcrumb += '<li class="breadcrumb-item active" aria-current="page">Dicom Viewer</li>';
-        }
-        if (Cookies.get("login_redirect").includes("search=")){
-            breadcrumb += '<li class="breadcrumb-item active" aria-current="page"><a href="'+Cookies.get("login_redirect")+'">Search</a></li>';
-            breadcrumb += '<li class="breadcrumb-item active" aria-current="page">Dicom Viewer</li>';
-        }
+        var breadcrumb = '<li class="breadcrumb-item"><a href="/labcas-ui/m/index.html">Home</a></li>';
+		var data_split = get_var["file_id"].split("/");
+		var url_prefix = "";
+		for (i = 0; i < data_split.length; i++) {
+			if(i == 0){
+				breadcrumb += '<li class="breadcrumb-item active" aria-current="page"><a href="/labcas-ui/c/index.html?collection_id='+data_split[i]+'">'+data_split[i].replace(/_/g," ")+'</a></li>';
+			}else if (i == data_split.length -1){
+				breadcrumb += '<li class="breadcrumb-item active" aria-current="page">'+data_split[i].replace(/_/g," ")+'</li>';
+			}else{
+				breadcrumb += '<li class="breadcrumb-item active" aria-current="page"><a href="/labcas-ui/d/index.html?dataset_id='+data_split.slice(0,i+1).join("/")+'">'+data_split[i].replace(/_/g," ")+'</a></li>';
+		  	}
+		}
 		$('#breadcrumb').html(breadcrumb);
-        $('#dwv_frame').attr('src', "/dwv/?dicoms="+localStorage.getItem("dicoms"));
+        
     });
+    var containerId = "root";
+    var componentRenderedOrUpdatedCallback = function(){
+      console.log('OHIF Viewer rendered/updated');
+    }
+    window.OHIFViewer.installViewer(
+      {
+      // routerBasename: '/',
+      servers: {
+        dicomWeb: [
+          {
+            name: 'DCM4CHEE',
+            wadoUriRoot: 'https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/wado',
+            qidoRoot: 'https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs',
+            wadoRoot: 'https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs',
+            qidoSupportsIncludeField: true,
+            imageRendering: 'wadors',
+            thumbnailRendering: 'wadors',
+          },
+        ],
+      },
+    }, containerId, componentRenderedOrUpdatedCallback);
 </script>
 
 </html>

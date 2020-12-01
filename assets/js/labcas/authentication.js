@@ -490,7 +490,7 @@ function fill_collection_level_files(data){
                 var site = value.Site ? value.Site.join(",") : "";
                 var description = value.Description? value.Description.join(",") : "";
                 if ('ThumbnailRelativePath' in value){
-                        thumb = "<img width='50' height='50' src='/labcas-ui/assets/"+value.ThumbnailRelativePath+"'/>";
+                        thumb = "<img width='50' height='50' src='"+localStorage.getItem('environment')+"/labcas-ui/assets/"+value.ThumbnailRelativePath+"'/>";
                 }
                 var html_safe_id = encodeURI(escapeRegExp(value.id));
                 var filesize = "";
@@ -578,7 +578,6 @@ function fill_datasets_data(data){
 			return;
 		}
 		else if(value.id.split(/\//)[1].toLowerCase() == "documentation"){
-			console.log("HERE");
 			query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=DatasetId:"+value.id+"&wt=json&indent=true", fill_collection_metadata);
 			metadata_exists = true;
 			return;
@@ -669,7 +668,7 @@ function fill_files_data(data){
 		var site = value.Site ? value.Site.join(",") : "";
 		var description = value.Description? value.Description.join(",") : "";
 		if ('ThumbnailRelativePath' in value){
-			thumb = "<img width='50' height='50' src='/labcas-ui/assets/"+value.ThumbnailRelativePath+"'/>";
+			thumb = "<img width='50' height='50' src='"+localStorage.getItem('environment')+"/labcas-ui/assets/"+value.ThumbnailRelativePath+"'/>";
 		}
 		var html_safe_id = encodeURI(escapeRegExp(value.id));
 		var filesize = "";
@@ -973,7 +972,7 @@ function fill_files_search(data){
 	  var site = obj.Site ? obj.Site.join(",") : "";
 	  var description = obj.Description? obj.Description.join(",") : "";
 	  if ('ThumbnailRelativePath' in obj){
-		thumb = "<img width='50' height='50' src='/labcas-ui/assets/"+obj.ThumbnailRelativePath+"'/>";
+		thumb = "<img width='50' height='50' src='"+localStorage.getItem('environment')+"/labcas-ui/assets/"+obj.ThumbnailRelativePath+"'/>";
   	  }
 	  var filesize = "";
 	  if (obj.FileSize){
@@ -1263,8 +1262,7 @@ function fill_collections_search(data){
 
 
 function setup_labcas_search(query, divid, cpage){
-    //console.log("Searching...");
-
+    console.log("Searching...");
 	var collection_filters = "";
 	var collection_facets = [];
 	$.each(localStorage.getItem("filters").split(","), function(ind, head) {
@@ -1297,12 +1295,12 @@ function setup_labcas_search(query, divid, cpage){
 				 window.location.replace("/labcas-ui/index.html");
 			 }
 		});
-		console.log("/data-access-api/files/select?q="+query+""+collection_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&wt=json&rows=0");
+		console.log(localStorage.getItem('environment')+"/data-access-api/files/select?q="+query+""+collection_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&wt=json&rows=0");
 		console.log("HERE3");
 		console.log("data");
 		console.log(Cookies.get('token'));
 		$.ajax({
-			url: "/data-access-api/files/select?q="+query+""+collection_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&wt=json&rows=0",
+			url: localStorage.getItem('environment')+"/data-access-api/files/select?q="+query+""+collection_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&wt=json&rows=0",
 			beforeSend: function(xhr) {
 				if(Cookies.get('token') && Cookies.get('token') != "None"){
 					xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
@@ -1429,7 +1427,7 @@ function fill_files_starred(data){
 		  var description = obj.Description? obj.Description.join(",") : "";
 		var thumb = "";
 		  if ('ThumbnailRelativePath' in obj){
-			thumb = "<img width='50' height='50' src='/labcas-ui/assets/"+obj.ThumbnailRelativePath+"'/>";
+			thumb = "<img width='50' height='50' src='"+localStorage.getItem('environment')+"/labcas-ui/assets/"+obj.ThumbnailRelativePath+"'/>";
 		  }
 		var filesize = "";
 		  if (obj.FileSize){
