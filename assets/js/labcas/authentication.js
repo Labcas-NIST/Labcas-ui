@@ -475,7 +475,7 @@ function fill_collection_level_files(data){
 	var size = data.response.numFound;
 	console.log(size);
         var cpage = data.response.start;
-        load_pagination("files",size,cpage);
+        load_pagination("collectionfiles",size,cpage);
         $("#files-table tbody").empty();
         var download_list = JSON.parse(localStorage.getItem("download_list"));
         $.each(data.response.docs, function(key, value) {
