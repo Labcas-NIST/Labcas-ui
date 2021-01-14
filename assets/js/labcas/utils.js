@@ -663,18 +663,36 @@ function introWizard(check_first_time){
 	introJs().start();
 }
 
-
-function generate_dicom_file_list(data){
-    var dicom_list = [];
-    var dicom_size = 0;
+function accepted_image_check(f){
+    var img_ext = [".svs",".jpg",".gif",".jpeg",".dcm",".dicom",".png",".tif",".tiff"];
+    var pass_flag = false;
+    $.each(img_ext, function(key,value){
+       if (f.toLowerCase().endsWith(value)){
+           pass_flag = true;
+           return;
+       }
+    });
+    return pass_flag;
+}
+function generate_image_file_list(data){
+    var image_list = [];
+    var image_size = 0;
+    var image_type = "image";
+    console.log(data);
     $.each(data.response.docs, function(key, value) {
         console.log(key);
         console.log(value.id);
-        var html_safe_id = encodeURI(escapeRegExp(value.id));
-        console.log(html_safe_id);
-        dicom_list.push(localStorage.getItem('environment')+"/data-access-api/download?id="+html_safe_id);
+        if ( accepted_image_check(value.id) ){
+            var html_safe_id = encodeURI(escapeRegExp(value.id));
+            if (value.id.toLowerCase().endsWith(".dcm") || value.id.toLowerCase().endsWith(".dicom")){
+                image_type = "dicoms";
+            }
+            console.log(html_safe_id);
+            image_list.push(localStorage.getItem('environment')+"/data-access-api/download?id="+html_safe_id);
+        }
     });
-    localStorage.setItem('dicoms',JSON.stringify(dicom_list));
+    
+    localStorage.setItem(image_type,JSON.stringify(image_list));
     var get_var = get_url_vars();
 
     if (get_var["dataset_id"] && get_var["dataset_id"] != "undefined"){
@@ -682,26 +700,55 @@ function generate_dicom_file_list(data){
     }else if (get_var["search"]){
         Cookies.set("login_redirect", "/labcas-ui/s/index.html?search="+get_var["search"])
     }
-    window.location.replace("/labcas-ui/i/index.html");
+    if (image_type == "dicoms"){
+       window.location.replace("/labcas-ui/i/index.html");
+    }else{
+       window.location.replace("/labcas-ui/z/index.html");
+    }
 }
 
 
-function submitDicom(formname, dicom, dataset){
-    var dicom_list = [];
-    console.log(dicom);
-    if (dicom && dicom != "all"){
-        dicom_list.push(localStorage.getItem('environment')+"/data-access-api/download?id="+$(dicom).val());
-    }else if(dicom && dicom == "all"){
-        query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=DatasetId:"+dataset+"&wt=json&indent=true&rows=10000", generate_dicom_file_list);
+function submitImage(formname, dataset){
+    if ( $('#check_all:checked').length ){
+        var get_var = get_url_vars();
+        if (get_var["dataset_id"] && get_var["dataset_id"] != "undefined"){
+            dataset = get_var["dataset_id"];
+            console.log(localStorage.getItem('environment')+"/data-access-api/files/select?q=DatasetId:"+dataset+"&wt=json&indent=true&rows=10000");
+            query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=DatasetId:"+dataset+"&wt=json&indent=true&rows=10000", generate_image_file_list);
+
+         }
+        //submitDicom('files-table','all',dataset_id)
         return;
+    }else{
+        submitImageData(formname);
+    }
+
+}
+
+function submitImageData(formname, dicom){
+    var image_list = [];
+    var image_type = "image";
+    console.log(dicom);
+    
+    if (dicom){
+        image_list.push(localStorage.getItem('environment')+"/data-access-api/download?id="+$(dicom).val());
+        if ($(dicom).val().endsWith(".dcm") || $(dicom).val().endsWith(".dicom")){
+            image_type = "dicoms";
+        }
     }else{
         $('#' + formname + ' input[type="checkbox"]').each(function() {
             if ($(this).is(":checked")) {
-                dicom_list.push(localStorage.getItem('environment')+"/data-access-api/download?id="+$(this).val());
+                image_list.push(localStorage.getItem('environment')+"/data-access-api/download?id="+$(this).val());
+                console.log("OKOK");
+                console.log($(this).val());
+                if ($(this).val().endsWith(".dcm") || $(this).val().endsWith(".dicom")){
+                    image_type = "dicoms";
+                }
             }
         });
     }
-    localStorage.setItem('dicoms',JSON.stringify(dicom_list));
+    
+    localStorage.setItem(image_type,JSON.stringify(image_list));
 
     var get_var = get_url_vars();
     
@@ -710,5 +757,47 @@ function submitDicom(formname, dicom, dataset){
     }else if (get_var["search"]){
 	    Cookies.set("login_redirect", "/labcas-ui/s/index.html?search="+get_var["search"])
     }
-    window.location.replace("/labcas-ui/i/index.html");
+    console.log(image_type);
+    if (image_type == "dicoms"){
+        window.location.replace("/labcas-ui/i/index.html");
+    }else{
+        window.location.replace("/labcas-ui/z/index.html");
+    }
+}
+
+function changeFrameSrc(frame, src){
+    $('#'+frame).attr('src', src);
+}
+
+
+function showHistImage(){
+    images = JSON.parse(localStorage.getItem('image'));
+    console.log(JSON.stringify({'token':Cookies.get('token'), 'image':images}));
+    $.ajax({
+        url: "http://david-server.local/cgi-bin/labcas_dsa_api.py",
+        type: 'POST',
+        data: JSON.stringify({'token':Cookies.get('token'), 'image':images}),
+        dataType: "json",
+        success: function (data) {
+            $.each(data['image_id_list'], function( key, val ) {
+                $("#image_list_table tbody").append("<tr><td><a href='#' onclick=\"changeFrameSrc('img_frame','http://localhost:8009/histomics#?image="+val['id']+"')\">"+val['name']+"</a></td></tr>");
+            });
+            // Updates needed to ensure css displays correctly within iframe
+            document.getElementById('img_frame').onload = function() {
+                console.log("Iframe loaded");
+            };
+            changeFrameSrc("img_frame", "http://localhost:8009/histomics#?image="+data['image_id_list'][0]['id']);
+                $('#loading_viewer').hide();
+                $('#viewer_content').show();
+                wait(1000);
+                $('#img_frame').contents().find('#h-navbar-brand').html('Image Viewer');
+        },
+        error: function(e){
+            console.log("Image view failed");
+            if (!(localStorage.getItem("logout_alert") && localStorage.getItem("logout_alert") == "On")){
+                   localStorage.setItem("logout_alert","On");
+                 alert("You are currently logged out. Redirecting you to log in.");
+            }
+        }
+    });
 }
