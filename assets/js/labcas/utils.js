@@ -387,7 +387,7 @@ function paginate(divid, cpage){
         }
 }
 function escapeRegExp(string) {
-      return string.replace(/[\.\*\?\^\$\{\}\(\)\|\[\]\\~&!":]/g, '\\$&'); // $& means the whole matched string
+      return string.replace(/[\.\*\?\^\$\{\}\(\)\|\[\]\\~&! ":]/g, '\\$&'); // $& means the whole matched string
 }
 
 function formatTimeOfDay(millisSinceEpoch) {
@@ -500,7 +500,7 @@ function download_files(formname){
     var download_size = 0;
     $('#' + formname + ' input[type="checkbox"]').each(function() {
         if ($(this).is(":checked")) {
-            download_list.push($(this).val());
+            download_list.push($(this).val().replace("&","%26"));
 	    download_size += parseInt(this.getAttribute("data-valuesize"));
         }
     });
@@ -515,6 +515,7 @@ function download_files(formname){
     window.location.replace("/labcas-ui/download.html");
 }
 function download_dataset(dataset){
+	dataset = dataset.replace("%5C%20","%20").replace("%20","%5C%20").replace(" ","%5C%20");
 	console.log(localStorage.getItem('environment')+"/data-access-api/files/select?q=DatasetId:"+dataset+"&wt=json&indent=true&rows=10000");
 	query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=DatasetId:"+dataset+"&wt=json&indent=true&rows=10000", generate_dataset_file_list);
 }
@@ -526,7 +527,7 @@ function generate_dataset_file_list(data){
                 console.log(value.id);
                 var html_safe_id = encodeURI(escapeRegExp(value.id));
                 console.log(html_safe_id);
-		download_list.push(html_safe_id);
+		download_list.push(html_safe_id.replace("&","%26"));
 		download_size += value.FileSize;
         });
 	localStorage.setItem('download_list',JSON.stringify(download_list));
