@@ -394,7 +394,7 @@ function fill_dataset_details_data(data){
 }
 function fill_file_details_data(data){
 	$("#filetitle").html(data.response.docs[0].FileName);
-	var html_safe_id = encodeURI(escapeRegExp(data.response.docs[0].id));
+	var html_safe_id = encodeURI(escapeRegExp(data.response.docs[0].id)).replace("&","%26");
 	var fileurl = "";
 	if (data.response.docs[0].FileUrl){
 		var url = data.response.docs[0].FileUrl;
@@ -670,7 +670,9 @@ function fill_files_data(data){
 		if ('ThumbnailRelativePath' in value){
 			thumb = "<img width='50' height='50' src='"+localStorage.getItem('environment')+"/labcas-ui/assets/"+value.ThumbnailRelativePath+"'/>";
 		}
-		var html_safe_id = encodeURI(escapeRegExp(value.id));
+		var html_safe_id = encodeURI(escapeRegExp(value.id)).replace("&","%26");
+		console.log("FILE Link");
+		console.log(html_safe_id);
 		var filesize = "";
 		var filesizenum = 0;
 		if (value.FileSize){
@@ -880,6 +882,8 @@ function setup_labcas_dataset_data(datatype, query, file_query, cpage){
 }
 
 function setup_labcas_file_data(datatype, query, file_query){
+	console.log("QUERY");
+	console.log(query);
     $.ajax({
         url: localStorage.getItem('environment')+"/data-access-api/files/select?q="+query+"&wt=json&indent=true",
         xhrFields: {
@@ -899,6 +903,7 @@ function setup_labcas_file_data(datatype, query, file_query){
 		   localStorage.setItem("logout_alert","On");
 		     alert("You are currently logged out. Redirecting you to log in.");
 		}
+		
              window.location.replace("/labcas-ui/index.html");
              
          }

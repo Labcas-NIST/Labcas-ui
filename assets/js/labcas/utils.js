@@ -384,7 +384,7 @@ function paginate(divid, cpage){
 	}
 }
 function escapeRegExp(string) {
-      return string.replace(/[\.\*\?\^\$\{\}\(\)\|\[\]\\~&!": ]/g, '\\$&'); // $& means the whole matched string
+      return string.replace(/[\.\*\?\^\$\{\}\(\)\|\[\]\\~&!":]/g, '\\$&'); // $& means the whole matched string
 }
 
 function formatTimeOfDay(millisSinceEpoch) {
