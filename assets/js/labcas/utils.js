@@ -381,7 +381,10 @@ function paginate(divid, cpage){
 		setup_labcas_dataset_data("datasetfiles",'id:"'+get_var["dataset_id"]+'"', 'DatasetId:"'+get_var["dataset_id"]+'"', cpage-1); 
 	}else if (divid == 'collections_search' || divid == 'datasets_search' || divid == 'files_search'){
 		setup_labcas_search(get_var["search"], divid, cpage-1);
-	}
+	}else if (divid == 'collectionfiles' ){
+                console.log("HERE");
+                query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=DatasetId:"+get_var["collection_id"]+"/"+get_var["collection_id"]+"&wt=json&indent=true&start="+(cpage-1)*10, fill_collection_level_files);
+        }
 }
 function escapeRegExp(string) {
       return string.replace(/[\.\*\?\^\$\{\}\(\)\|\[\]\\~&!":]/g, '\\$&'); // $& means the whole matched string
