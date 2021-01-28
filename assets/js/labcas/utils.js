@@ -387,7 +387,7 @@ function paginate(divid, cpage){
         }
 }
 function escapeRegExp(string) {
-      return string.replace(/[\.\*\?\^\$\{\}\(\)\|\[\]\\~&!": ]/g, '\\$&'); // $& means the whole matched string
+      return string.replace(/[\.\*\?\^\$\{\}\(\)\|\[\]\\~&! ":]/g, '\\$&'); // $& means the whole matched string
 }
 
 function formatTimeOfDay(millisSinceEpoch) {
@@ -526,7 +526,6 @@ function generate_dataset_file_list(data){
                 console.log(key);
                 console.log(value.id);
                 var html_safe_id = encodeURI(escapeRegExp(value.id));
-                console.log(html_safe_idi);
 		download_list.push(html_safe_id.replace("&","%26"));
 		download_size += value.FileSize;
         });

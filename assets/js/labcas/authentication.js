@@ -886,6 +886,8 @@ function setup_labcas_dataset_data(datatype, query, file_query, cpage){
 }
 
 function setup_labcas_file_data(datatype, query, file_query){
+	console.log("QUERY");
+	console.log(query);
     $.ajax({
         url: localStorage.getItem('environment')+"/data-access-api/files/select?q="+query+"&wt=json&indent=true",
         xhrFields: {
@@ -905,6 +907,7 @@ function setup_labcas_file_data(datatype, query, file_query){
 		   localStorage.setItem("logout_alert","On");
 		     alert("You are currently logged out. Redirecting you to log in.");
 		}
+		
              window.location.replace("/labcas-ui/index.html");
              
          }
