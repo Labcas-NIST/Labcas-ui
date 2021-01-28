@@ -257,7 +257,7 @@ function fill_datasets_analytics(data){
 	}
 	init_labcas_sunburst_distribution("labcas_sunburst_distribution", collections, collection_dataset_count, collection_labels, 'Protocol ID', 'Dataset Count');
 }
-function fill_files_analytics(data){
+/*function fill_files_analytics(data){
 	var size = data.response.numFound;
 	var filetype_count = [];
 	var filetype_type = [];
@@ -307,7 +307,7 @@ function fill_files_analytics(data){
 	init_labcas_data_boxplot("labcas_boxplot_distribution",second_graph_leadpi, "Lead PI", "File Count");
 	
 	$("#files_len").html(size);
-}
+}*/
 function fill_favorites_analytics(){
 	$("#favorites_len").html(user_data['FavoriteFiles'].length+user_data['FavoriteDatasets'].length+user_data['FavoriteCollections'].length);
 }
@@ -316,6 +316,7 @@ function setup_labcas_analytics(){
         //collection data
 	var collection_url = localStorage.getItem('environment')+"/data-access-api/collections/select?q=*&wt=json&indent=true&rows=2147483647";
 	console.log(collection_url);
+    
 	$.ajax({
 		url: collection_url,	
 		beforeSend: function(xhr) {
@@ -329,7 +330,7 @@ function setup_labcas_analytics(){
 			fill_collections_analytics(data); 
 	
 			//dataset data
-			var dataset_url = localStorage.getItem('environment')+"/data-access-api/datasets/select?q=*&facet=true&facet.limit=-1&facet.field=CollectionName&facet.field=ProtocolID&facet.field=ProtocolId&facet.field=LeadPI&wt=json&rows=0";
+			/*var dataset_url = localStorage.getItem('environment')+"/data-access-api/datasets/select?q=*&facet=true&facet.limit=-1&facet.field=CollectionName&facet.field=ProtocolID&facet.field=ProtocolId&facet.field=LeadPI&wt=json&rows=0";
 			console.log(dataset_url);
 			$.ajax({
 				url: dataset_url,
@@ -349,7 +350,7 @@ function setup_labcas_analytics(){
 					 alert("Login expired, please login...");
 					 window.location.replace("/labcas-ui/index.html");
 				 }
-			});
+			});*/
 		},
 		error: function(){
 			 alert("Login expired, please login...");
@@ -357,7 +358,7 @@ function setup_labcas_analytics(){
 		 }
 	});
 
-	$.ajax({
+	/*$.ajax({
 		url: localStorage.getItem('environment')+"/data-access-api/files/select?q=*&facet=true&facet.limit=-1&facet.field=FileType&facet.field=LeadPI&wt=json&rows=0",
 		beforeSend: function(xhr, settings) { 
 			if(Cookies.get('token') && Cookies.get('token') != "None"){
@@ -374,6 +375,6 @@ function setup_labcas_analytics(){
 			 window.location.replace("/labcas-ui/index.html");
 		 
 		 }
-	});
+	});*/
 	fill_favorites_analytics();
 }

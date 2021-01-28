@@ -2,8 +2,15 @@ Cookies.set("token", "None");
 $(document).ready(function(){
 $.getJSON( '/labcas-ui/assets/conf/environment.cfg?2', function(json) {
 	$.each( json, function( key, val ) {
-		console.log(key);
-		localStorage.setItem(key, val);
+        if (typeof val == "string"){
+            localStorage.setItem(key, val);
+        }else if(typeof val == "object"){
+            localStorage.setItem(key, JSON.stringify(val));
+        }else{
+            console.log(key);
+            console.log(typeof val);
+            console.log(val);
+        }
 	});
 }, 'text').done(function(d) {
                 console.log("Config done");

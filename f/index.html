@@ -132,7 +132,7 @@
         $( "#sidebar_placeholder" ).load("/labcas-ui/sidebar.html?8", );
 
         var get_var = get_url_vars();
-        setup_labcas_file_data("file",'id:"'+encodeURI(get_var["file_id"])+'"', 'id:'+get_var["file_id"]+'*'); 
+        setup_labcas_file_data("file",'id:"'+encodeURI(get_var["file_id"]).replace("&","%26")+'"', 'id:'+get_var["file_id"]+'*'); 
         
         var breadcrumb = '<li class="breadcrumb-item"><a href="/labcas-ui/m/index.html">Home</a></li>';
 		var data_split = get_var["file_id"].split("/");

@@ -381,7 +381,10 @@ function paginate(divid, cpage){
 		setup_labcas_dataset_data("datasetfiles",'id:"'+get_var["dataset_id"]+'"', 'DatasetId:"'+get_var["dataset_id"]+'"', cpage-1); 
 	}else if (divid == 'collections_search' || divid == 'datasets_search' || divid == 'files_search'){
 		setup_labcas_search(get_var["search"], divid, cpage-1);
-	}
+	}else if (divid == 'collectionfiles' ){
+                console.log("HERE");
+                query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=DatasetId:"+get_var["collection_id"]+"/"+get_var["collection_id"]+"&wt=json&indent=true&start="+(cpage-1)*10, fill_collection_level_files);
+        }
 }
 function escapeRegExp(string) {
       return string.replace(/[\.\*\?\^\$\{\}\(\)\|\[\]\\~&!": ]/g, '\\$&'); // $& means the whole matched string
@@ -497,8 +500,8 @@ function download_files(formname){
     var download_size = 0;
     $('#' + formname + ' input[type="checkbox"]').each(function() {
         if ($(this).is(":checked")) {
-            download_list.push($(this).val());
-	    download_size += parseInt(this.getAttribute("data-valuesize"));
+            download_list.push($(this).val().replace("&","%26"));
+	        download_size += parseInt(this.getAttribute("data-valuesize"));
         }
     });
     var get_var = get_url_vars();
@@ -512,6 +515,7 @@ function download_files(formname){
     window.location.replace("/labcas-ui/download.html");
 }
 function download_dataset(dataset){
+    dataset = dataset.replace("%5C%20","%20").replace("%20","%5C%20").replace(" ","%5C%20");
 	console.log(localStorage.getItem('environment')+"/data-access-api/files/select?q=DatasetId:"+dataset+"&wt=json&indent=true&rows=10000");
 	query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=DatasetId:"+dataset+"&wt=json&indent=true&rows=10000", generate_dataset_file_list);
 }
@@ -522,8 +526,8 @@ function generate_dataset_file_list(data){
                 console.log(key);
                 console.log(value.id);
                 var html_safe_id = encodeURI(escapeRegExp(value.id));
-                console.log(html_safe_id);
-		download_list.push(html_safe_id);
+                console.log(html_safe_idi);
+		download_list.push(html_safe_id.replace("&","%26"));
 		download_size += value.FileSize;
         });
 	localStorage.setItem('download_list',JSON.stringify(download_list));
@@ -727,6 +731,7 @@ function submitImage(formname, dataset){
 
 function submitImageData(formname, dicom){
     var image_list = [];
+    var histomics_list = [];
     var image_type = "image";
     console.log(dicom);
     
@@ -739,8 +744,7 @@ function submitImageData(formname, dicom){
         $('#' + formname + ' input[type="checkbox"]').each(function() {
             if ($(this).is(":checked")) {
                 image_list.push(localStorage.getItem('environment')+"/data-access-api/download?id="+$(this).val());
-                console.log("OKOK");
-                console.log($(this).val());
+                histomics_list.push([$(this).data("loc"),$(this).data("name"),$(this).data("version")]);
                 if ($(this).val().endsWith(".dcm") || $(this).val().endsWith(".dicom")){
                     image_type = "dicoms";
                 }
@@ -749,6 +753,7 @@ function submitImageData(formname, dicom){
     }
     
     localStorage.setItem(image_type,JSON.stringify(image_list));
+    localStorage.setItem("image_data",JSON.stringify(histomics_list));
 
     var get_var = get_url_vars();
     
@@ -767,11 +772,12 @@ function submitImageData(formname, dicom){
 
 function changeFrameSrc(frame, src){
     $('#'+frame).attr('src', src);
+    $('#img_frame').contents().find('#h-navbar-brand').html('Image Viewer');
 }
 
 
 function showHistImage(){
-    images = JSON.parse(localStorage.getItem('image'));
+    /*images = JSON.parse(localStorage.getItem('image'));
     console.log(JSON.stringify({'token':Cookies.get('token'), 'image':images}));
     $.ajax({
         url: "http://david-server.local/cgi-bin/labcas_dsa_api.py",
@@ -799,5 +805,88 @@ function showHistImage(){
                  alert("You are currently logged out. Redirecting you to log in.");
             }
         }
+    });*/
+    images = JSON.parse(localStorage.getItem('image'));
+    images_data = JSON.parse(localStorage.getItem('image_data'));
+    show_flag = true;
+    $.each(images_data, function( key, val ) {
+        orchistrate_find(val[0], val[1], val[2], show_flag);
+        show_flag = false;
+    });
+
+}
+
+function orchistrate_find(query_folder, query_file, version, show_flag){
+    var image_dsa_path = [];
+    var root_collection = "5ffe07c63466812d58b4451a";
+    var labcas_data_map = JSON.parse(localStorage.getItem("labcas_data")).collection_path_maps;
+    query_folder = query_folder.replace("/usr/local/labcas/backend/archive/","");
+    query_folder = query_folder.replace("&","%26");
+    query_file = query_file.replace("&","%26");
+    var collection_name = query_folder.split("/")[0];
+
+    console.log("start");
+    console.log(collection_name);
+    query_folder = query_folder.replace(collection_name,labcas_data_map[collection_name]);
+    console.log(query_folder);
+    image_dsa_path = query_folder.split("/");
+    console.log(image_dsa_path);
+
+    recurse_dsa(root_collection, image_dsa_path.shift(), query_file, image_dsa_path, show_flag,'collection', version);
+}
+
+function recurse_dsa(sub_folder, sub_name, query_file, image_dsa_path, show_flag, parenttype, version){
+    //console.log("recursive search");
+    //console.log(sub_folder);
+    //console.log(sub_name);
+    //console.log(localStorage.getItem("dsa_api")+"/folder?parentType="+parenttype+"&parentId="+sub_folder+"&name="+sub_name+"&limit=50&sort=lowerName&sortdir=1");
+    $.ajax({
+        url: localStorage.getItem("dsa_api")+"/folder?parentType="+parenttype+"&parentId="+sub_folder+"&name="+sub_name+"&limit=50&sort=lowerName&sortdir=1",
+        type: 'GET',
+        success: function (data) {
+            //console.log("Folder");
+            //console.log(data);
+            if (image_dsa_path.length > 0 && data.length > 0 && data[0]._id){
+                 recurse_dsa(data[0]._id, image_dsa_path.shift(), query_file, image_dsa_path, show_flag, 'folder', version);
+            }else{
+                //console.log("FILE");
+                //console.log(data);
+                if (data.length > 0 && data[0]._id){
+                    //console.log(localStorage.getItem("dsa_api")+"/item?folderId="+data[0]._id+"&name="+query_file+"&limit=50&sort=lowerName&sortdir=1");
+                    $.ajax({
+                        url: localStorage.getItem("dsa_api")+"/item?folderId="+data[0]._id+"&name="+query_file+"&limit=50&sort=lowerName&sortdir=1",
+                        type: 'GET',
+                        success: function (filedata) {
+                            //console.log("looking within file");
+                            //console.log(image_dsa_path.length);
+                            //console.log(version);
+                            //console.log("looking within file");
+                            if (filedata.length > 0 && filedata[0]._id){
+                                //console.log("looking within file 1");
+                                $("#image_list_table tbody").append("<tr><td><a href='#' onclick=\"changeFrameSrc('img_frame','"+localStorage.getItem("dsa_image_viewer")+"?image="+filedata[0]._id+"')\">"+query_file+"</a></td></tr>");
+                                if (show_flag){
+                                    $('#loading_viewer').hide();
+                                    $('#viewer_content').show();
+                                    changeFrameSrc("img_frame", localStorage.getItem("dsa_image_viewer")+"?image="+filedata[0]._id);
+                                }
+                            }else if(image_dsa_path.length == 0 && version != "null"){
+                                console.log("looking within file 2");
+                                recurse_dsa(data[0]._id, version, query_file, image_dsa_path, show_flag, 'folder', "null");
+                            }
+                            else{
+                                console.log("looking within file 3");
+                                console.log("Something went wrong in recursive file/version search through DSA");
+                            }
+                        }
+                    });
+                }else{
+                    console.log("Something went wrong in recursive folder search through DSA");
+                }
+            }
+        },
+        error: function(e){
+            console.log("failed");
+        }
     });
 }
+
