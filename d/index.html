@@ -15,7 +15,7 @@
             <div class="content" style="margin-top: -20px">
                 <div class="container-fluid">
                     <div class="row" style="margin-bottom: 5px">
-                        <div class="col-lg-3 col-sm-6" id="collection_stat_template">
+                        <div class="col-lg-3 col-sm-6" id="collection_name_template">
                         </div>
                         <div class="col-lg-3 col-sm-6" id="dataset_stat_template">
                         </div>
@@ -67,17 +67,22 @@
 				    
 				</div>
 				<div class="card-body">
-				<button id="download_sel" type="submit" onclick="download_files('files-table');" class="btn btn-primary">Download Selected</button>
-				<button id="download_all" type="submit" onclick="download_dataset(dataset_id)" class="btn btn-primary">Download All</button>
-				<button id="dicom_sel" type="submit" onclick="submitDicom('files-table')" class="btn btn-success">View Selected Dicoms</button>
-				<button id="dicom_all" type="submit" onclick="submitDicom('files-table','all',dataset_id)" class="btn btn-success">View All Dicoms</button>
+                    <table>
+                        <tr><td><button id="download_sel" type="submit" onclick="download_files('files-table');" class="btn btn-primary">Download Selected</button>
+                        <!--<button id="download_all" type="submit" onclick="download_dataset(dataset_id)" class="btn btn-primary">Download All</button>-->
+                        <button id="dicom_sel" type="submit" onclick="submitImage('files-table')" class="btn btn-success">View Selected Image(s)</button></td>
+                        <!--<button id="dicom_all" type="submit" onclick="submitDicom('files-table','all',dataset_id)" class="btn btn-success">View All Dicoms</button>-->
+                        <td>&nbsp;&nbsp;</td>
+                        <td><input id="check_all" type='checkbox'  value="all">&nbsp;All</input></td>
+                        </tr>
+                    </table>
 				<ul class="pagination pagination-no-border" id='files_pagination_top' style="float: right;"></ul>
 				    <div class="table-full-width">
 					<table class="table" id="files-table">
 						<thead>
 							<th>Select</th>
 							<th data-field="name" data-sortable="true">Name</th>
-							<th>Site</th>
+							<th>Institution</th>
 							<th>Type</th>
 							<th>Description</th>
 							<th>Thumbnail</th>
@@ -154,7 +159,7 @@
 <!-- Light Dashboard DEMO methods, don't include it in your project! -->
 <script src="/labcas-ui/assets/js/plugins/js.cookie.js"></script>
 <script src="/labcas-ui/assets/js/labcas/labcas-sidebar.js"></script>
-<script src="/labcas-ui/assets/js/labcas/utils.js?109"></script>
+<script src="/labcas-ui/assets/js/labcas/utils.js?110"></script>
 <script src="/labcas-ui/assets/js/labcas/authentication.js?113"></script>
 <script src="/labcas-ui/assets/js/labcas/search.js?100"></script>
 
@@ -170,7 +175,7 @@
         $( "#favorite_stat_template" ).load("/labcas-ui/templates.html #favorite_stat_template");
         $( "#file_stat_template" ).load("/labcas-ui/templates.html #file_stat_template");
         $( "#dataset_stat_template" ).load("/labcas-ui/templates.html?2 #dataset_name_template");
-        $( "#collection_stat_template" ).load("/labcas-ui/templates.html #collection_stat_template");
+        $( "#collection_name_template" ).load("/labcas-ui/templates.html #collection_name_template");
 
         $( "#footer_template" ).load("/labcas-ui/templates.html #footer_template_"+localStorage.getItem("environment_name"));
         $( "#sidebar_placeholder" ).load("/labcas-ui/sidebar.html?8", );
@@ -197,6 +202,26 @@
         $('#breadcrumb').html(breadcrumb);
                                 
     });
+
+    $("#check_all").change(function() {
+        if(this.checked) {
+            $('#dicom_sel').html("View All Images");
+            $('#download_sel').html("Download All");
+            $('#download_sel').attr("onclick", "download_dataset('"+dataset_id+"')");
+            $('#dicom_sel').attr("onclick","submitImage('files-table','"+dataset_id+"')");
+
+        }else{
+            $('#dicom_sel').html("View Selected Image(s)");
+            $('#dicom_sel').attr("onclick","submitImage('files-table')");
+            $('#download_sel').html("Download Selected");
+            $('#download_sel').attr("onclick", "download_files('files-table')");
+            localStorage.setItem('dicoms',JSON.stringify([]));
+            localStorage.setItem('download_list',JSON.stringify([]));
+            localStorage.setItem('download_size',0);
+            window.location.reload();
+        }
+    });
+
 </script>
 
 </html>

@@ -115,7 +115,7 @@ function fill_collections_analytics(data){
 	var second_graph_discipline = [[],[]];
 	var second_graph_leadpi = [[],[]];
 	var second_graph_pubmed = [[],[]];
-
+	console.log(data);
 	
 	$.each(data.response.docs, function(key, obj) {
 		collection_disc[obj.CollectionName] = [obj.Institution ? obj.Institution : [], obj.Organ ? obj.Organ : [], obj.CollaborativeGroup ? obj.CollaborativeGroup : [], obj.Discipline ? obj.Discipline : [], obj.LeadPI ? obj.LeadPI : [], obj.Species ? obj.Species : [], obj.PubMedID ? obj.PubMedID : []]; //institution, organ, collabgroup, discipline, leadpi, species, pubmed
@@ -202,7 +202,7 @@ function fill_collections_analytics(data){
 function fill_datasets_analytics(data){
 	var size = data.response.numFound;
 	$("#datasets_len").html(size);
-	
+	/*
 	var cl = [];
 	var cdc = [];
 	var cla = [];
@@ -255,11 +255,11 @@ function fill_datasets_analytics(data){
 	  count += 1;
 	  
 	}
-	init_labcas_sunburst_distribution("labcas_sunburst_distribution", collections, collection_dataset_count, collection_labels, 'Protocol ID', 'Dataset Count');
+	init_labcas_sunburst_distribution("labcas_sunburst_distribution", collections, collection_dataset_count, collection_labels, 'Protocol ID', 'Dataset Count');*/
 }
 function fill_files_analytics(data){
 	var size = data.response.numFound;
-	var filetype_count = [];
+	/*var filetype_count = [];
 	var filetype_type = [];
 	var filetypes = [];
 	var filetypecounts = [];
@@ -304,7 +304,7 @@ function fill_files_analytics(data){
             }
 	});
 
-	init_labcas_data_boxplot("labcas_boxplot_distribution",second_graph_leadpi, "Lead PI", "File Count");
+	init_labcas_data_boxplot("labcas_boxplot_distribution",second_graph_leadpi, "Lead PI", "File Count");*/
 	
 	$("#files_len").html(size);
 }
@@ -316,6 +316,7 @@ function setup_labcas_analytics(){
         //collection data
 	var collection_url = localStorage.getItem('environment')+"/data-access-api/collections/select?q=*&wt=json&indent=true&rows=2147483647";
 	console.log(collection_url);
+    
 	$.ajax({
 		url: collection_url,	
 		beforeSend: function(xhr) {

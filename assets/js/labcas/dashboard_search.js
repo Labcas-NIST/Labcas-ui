@@ -450,7 +450,7 @@ function fill_files_analytics(data){
 	$("#files_len").html(size);
 }
 function fill_favorites_analytics(){
-	$("#favorites_len").html(user_data['FavoriteFiles'].length+user_data['FavoriteDatasets'].length+user_data['FavoriteCollections'].length);
+	$("#collection_favorites_len").html(user_data['FavoriteFiles'].length+user_data['FavoriteDatasets'].length+user_data['FavoriteCollections'].length);
 }
 function setup_labcas_analytics(query, collection_filters){
     console.log("Analyzing...");
