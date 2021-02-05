@@ -214,14 +214,19 @@ function generate_mcl_links(obj){
 	var protocols = [];
 	var pis = [];
 	var orgs = [];
+	console.log("HERE");
+	console.log(obj);
 	if (obj.Institution){
 		for (var i = 0; i < obj.Institution.length; i++) {
 			o = $.trim(obj.Institution[i]);
 			if (o != ""){
-				inst_url = o.replace(/\./g,"").replace(/\(/g,"").replace(/\)/g,"").replace(/ - /g," ").toLowerCase().replace(/ /g,"-");
+				inst_url = o.replace(/,/g,"").replace(/\./g,"").replace(/\(/g,"").replace(/\)/g,"").replace(/ - /g," ").toLowerCase().replace(/ /g,"-");
 			}	
 			
 			leadpi = $.trim(obj.LeadPI[i]).toLowerCase().split(" ");
+			if (i > obj.LeadPI.length-1){
+				obj.LeadPI[i] = obj.LeadPI[i-1];
+			}
 			if (obj.LeadPI[i].includes("+")){
 				leadpi = $.trim(obj.LeadPI[i]).toLowerCase().split("+");
 			}
