@@ -18,10 +18,13 @@ Array.prototype.unique = function() {
 }
 function initiate_search(){
       var get_var = get_url_vars();
+	console.log(localStorage.getItem("search"));
 	if(localStorage.getItem("search")){
         	localStorage.setItem("search", get_var["search"]);
+		console.log("Search not clearned");
 	}else{
 		localStorage.setItem("search", "*");
+		console.log("Search cleared");
 	}
         $.each(localStorage.getItem("filters").split(","), function(ind, head) {
                 var divs = localStorage.getItem(head+"_filters_div").split(",");
