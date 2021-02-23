@@ -673,6 +673,7 @@ function fill_files_data(data){
         var fileloc = value.FileLocation ? value.FileLocation : "";
 		var site = value.Site ? value.Site.join(",") : "";
 		var parID = value.participantID ? value.participantID.join(",") : "";
+		var speID = value.specimen_id ? value.specimen_id.join(",") : "";
 		var description = value.Description? value.Description.join(",") : "";
 		if ('ThumbnailRelativePath' in value){
 			thumb = "<img width='50' height='50' src='"+localStorage.getItem('environment')+"/labcas-ui/assets/"+value.ThumbnailRelativePath+"'/>";
@@ -699,6 +700,9 @@ function fill_files_data(data){
 			"</td>"+
 			"<td class='text-left'>"+
 					parID +
+			"</td>"+
+			"<td class='text-left'>"+
+					speID +
 			"</td>"+
 			"<td class='text-left'>"+
 					site +
