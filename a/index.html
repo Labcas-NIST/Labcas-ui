@@ -97,7 +97,7 @@
                                         <i class="nc-icon nc-lock-circle-open"></i> Lock Screen
                                     </a>-->
                                     <a href="/labcas-ui/index.html" class="dropdown-item text-danger" id="login_logout">
-                                        <i class="nc-icon nc-button-power"></i> Log out
+                                        <i class="nc-icon nc-button-power"></i> <span id="username_placeholder_third">Log out</span>
                                     </a>
                                 </div>
                             </li>
@@ -363,6 +363,7 @@
             $( "#sidebar_placeholder" ).append(data);
             $( "#username_placeholder" ).html(Cookies.get('user'));
             $( "#username_placeholder_second" ).html(Cookies.get('user'));
+            if (Cookies.get('user') == "Sign in"){$( "#username_placeholder_third" ).html(Cookies.get('user'));}
 	    $(".sidebar .nav div").html("<br>");
         });
     });

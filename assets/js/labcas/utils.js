@@ -831,7 +831,7 @@ function showHistImage(){
 
 function orchistrate_find(query_folder, query_file, version, show_flag){
     var image_dsa_path = [];
-    var root_collection = "5ffe07c63466812d58b4451a";
+    var root_collection = "6034987d5f92b701da7ea93e";
     var labcas_data_map = JSON.parse(localStorage.getItem("labcas_data")).collection_path_maps;
     query_folder = query_folder.replace("/usr/local/labcas/backend/archive/","");
     query_folder = query_folder.replace("&","%26");

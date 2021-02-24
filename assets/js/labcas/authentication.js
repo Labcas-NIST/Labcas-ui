@@ -395,6 +395,25 @@ function fill_dataset_details_data(data){
 		
     });
 }
+function fill_ksdb_info(type, id){
+	$.ajax({
+        url: localStorage.getItem(type),
+        type: 'GET',
+        success: function (data) {
+		console.log("HERE");
+		console.log(data);
+            data = JSON.parse(data);
+	    $("#"+type+id+"").html(data[site][1]);
+
+        },
+        error: function(e){
+            if (!(localStorage.getItem("logout_alert") && localStorage.getItem("logout_alert") == "On")){
+               localStorage.setItem("logout_alert","On");
+                alert("You are currently logged out. Redirecting you to log in.");
+            }
+	 }
+    });
+}
 function fill_file_details_data(data){
 	$("#filetitle").html(data.response.docs[0].FileName);
 	var html_safe_id = encodeURI(escapeRegExp(data.response.docs[0].id)).replace("&","%26");
@@ -420,14 +439,24 @@ function fill_file_details_data(data){
 		if (key == "FileSize"){
 			value = filesize;
 		}
-          $("#filedetails-table tbody").append(
-            "<tr>"+
-				"<td class='text-right'  valign='top' style='padding: 2px 8px;' width='20%'>"+key.replace( /([A-Z])/g, " $1" )+":</td>"+
+		if (key == "SubmittingInvestigatorID"){
+			$("#filedetails-table tbody").append(
+			    "<tr>"+
+				"<td class='text-right'  valign='top' style='padding: 2px 8px;' width='20%'>"+key.replace( /([A-Z])/g, " $1" ).replace(" I D", " ID").replace(" P I"," PI").replace(/_/g," ")+":</td>"+
+				"<td class='text-left' valign='top' style='padding: 2px 8px;'><span id='SubmittingInvestigatorIDSpan"+value+"'>"+
+					value+
+				"</span></td>"+
+			"</tr>");
+			//fill_ksdb_info("ksdb_institution_site_api", value);
+		}else{
+			$("#filedetails-table tbody").append(
+			    "<tr>"+
+				"<td class='text-right'  valign='top' style='padding: 2px 8px;' width='20%'>"+key.replace( /([A-Z])/g, " $1" ).replace(" I D", " ID").replace(" P I"," PI").replace(/_/g," ")+":</td>"+
 				"<td class='text-left' valign='top' style='padding: 2px 8px;'>"+
 					value+
 				"</td>"+
 			"</tr>");
-		
+		}
     });
     $("#filesize").html(filesize); 
     $("#download_icon").attr("onclick","download_file('"+html_safe_id+"','single');");
