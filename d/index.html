@@ -111,10 +111,10 @@
 			</div>
 		    </div>
 	    </div>
-	</div>
-    </div>
     <footer role='contentinfo' class='labcas-footer'  id="footer_template">
     </footer>
+	</div>
+    </div>
 
     </div>
 </div>
@@ -181,12 +181,14 @@
         $( "#collection_name_template" ).load("/labcas-ui/templates.html #collection_name_template");
 
         $( "#footer_template" ).load("/labcas-ui/templates.html #footer_template_"+localStorage.getItem("environment_name"));
-        $( "#sidebar_placeholder" ).load("/labcas-ui/sidebar.html?8", );
+        $( "#sidebar_placeholder" ).load("/labcas-ui/sidebar.html?8");
 
 
         var get_var = get_url_vars();
         get_var["dataset_id"] = get_var["dataset_id"].replace(/\\\./g,'.');
         dataset_id = get_var["dataset_id"];
+
+	Cookies.set("login_redirect", "/labcas-ui/d/index.html?dataset_id="+get_var["dataset_id"])
 
         setup_labcas_dataset_data("datasetfiles",'id:"'+get_var["dataset_id"]+'"', 'DatasetId:"'+get_var["dataset_id"]+'"', 0);
         

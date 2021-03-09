@@ -129,7 +129,7 @@
             if (Cookies.get('user') == "Sign in"){$( "#username_placeholder_third" ).html(Cookies.get('user'));}
 	});
 	$( "#footer_template" ).load("/labcas-ui/templates.html #footer_template_"+localStorage.getItem("environment_name"));
-	$( "#sidebar_placeholder" ).load("/labcas-ui/sidebar.html?11", );
+	$( "#sidebar_placeholder" ).load("/labcas-ui/sidebar.html?11" );
 
     	setup_labcas_data("collections","*:*");
         window.operateEvents = {

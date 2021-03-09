@@ -886,8 +886,17 @@ function setup_labcas_dataset_data(datatype, query, file_query, cpage){
 		},
 		dataType: 'json',
 		success: function (data) {
-			fill_dataset_details_data(data);
-			populate_dataset_children(query);
+			try{
+				fill_dataset_details_data(data);
+				populate_dataset_children(query);
+			} catch (ex) {
+				if (!(localStorage.getItem("logout_alert") && localStorage.getItem("logout_alert") == "On")){
+				   localStorage.setItem("logout_alert","On");
+				     alert("You are currently logged out. Redirecting you to log in.");
+				}
+				window.location.replace("/labcas-ui/index.html");
+			}
+
 		},
 		error: function(e){
 			if (!(localStorage.getItem("logout_alert") && localStorage.getItem("logout_alert") == "On")){
@@ -940,7 +949,15 @@ function setup_labcas_file_data(datatype, query, file_query){
         },
         dataType: 'json',
         success: function (data) {
-            fill_file_details_data(data);
+	    try {
+            	fill_file_details_data(data);
+	    } catch (ex) {
+		if (!(localStorage.getItem("logout_alert") && localStorage.getItem("logout_alert") == "On")){
+                   localStorage.setItem("logout_alert","On");
+                     alert("You are currently logged out. Redirecting you to log in.");
+                }
+                window.location.replace("/labcas-ui/index.html");
+	    }
         },
         error: function(e){
 		if (!(localStorage.getItem("logout_alert") && localStorage.getItem("logout_alert") == "On")){

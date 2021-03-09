@@ -65,11 +65,11 @@
                         </div>
 		    </div>
 		</div>
+    <footer role='contentinfo' class='labcas-footer'  id="footer_template">
+    </footer>
 	    </div>
 	</div>
     </div>
-    <footer role='contentinfo' class='labcas-footer'  id="footer_template">
-    </footer>
     </div>
 </div>
                           
@@ -130,9 +130,11 @@
         });
 
 	$( "#footer_template" ).load("/labcas-ui/templates.html #footer_template_"+localStorage.getItem("environment_name"));
-        $( "#sidebar_placeholder" ).load("/labcas-ui/sidebar.html?8", );
+        $( "#sidebar_placeholder" ).load("/labcas-ui/sidebar.html?8" );
 
         var get_var = get_url_vars();
+
+	Cookies.set("login_redirect", "/labcas-ui/f/index.html?file_id="+get_var["file_id"])
         setup_labcas_file_data("file",'id:"'+encodeURI(get_var["file_id"]).replace("&","%26")+'"', 'id:'+get_var["file_id"]+'*'); 
         
         var breadcrumb = '<li class="breadcrumb-item"><a href="/labcas-ui/m/index.html">Home</a></li>';
