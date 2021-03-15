@@ -840,7 +840,10 @@ function orchistrate_find(query_folder, query_file, version, show_flag){
 
     console.log("start");
     console.log(collection_name);
-    query_folder = query_folder.replace(collection_name,labcas_data_map[collection_name]);
+    console.log(labcas_data_map);
+    if (collection_name in labcas_data_map){
+    	query_folder = query_folder.replace(collection_name,labcas_data_map[collection_name]);
+    }
     console.log(query_folder);
     image_dsa_path = query_folder.split("/");
     console.log(image_dsa_path);
@@ -852,7 +855,7 @@ function recurse_dsa(sub_folder, sub_name, query_file, image_dsa_path, show_flag
     //console.log("recursive search");
     //console.log(sub_folder);
     //console.log(sub_name);
-    //console.log(localStorage.getItem("dsa_api")+"/folder?parentType="+parenttype+"&parentId="+sub_folder+"&name="+sub_name+"&limit=50&sort=lowerName&sortdir=1");
+    console.log(localStorage.getItem("dsa_api")+"/folder?parentType="+parenttype+"&parentId="+sub_folder+"&name="+sub_name+"&limit=50&sort=lowerName&sortdir=1");
     $.ajax({
         url: localStorage.getItem("dsa_api")+"/folder?parentType="+parenttype+"&parentId="+sub_folder+"&name="+sub_name+"&limit=50&sort=lowerName&sortdir=1",
         type: 'GET',
