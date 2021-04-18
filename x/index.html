@@ -6,7 +6,7 @@
     <link rel="apple-touch-icon" sizes="76x76" href="/labcas-ui/assets/img/apple-icon.png">
     <link rel="icon" type="image/png" href="/labcas-ui/assets/img/favicon.png">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <title>Labcas 2.1</title>
+    <title>Labcas 2.2</title>
     <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
     <!--     Fonts and icons     -->
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
@@ -331,7 +331,7 @@
                     U.S. Government Sponsorship Acknowledged.
                 </p>
                 <p>
-                    Labcas version 2.1, Licensed under <a href='https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html'>GPLv2</a>.
+                    Labcas version 2.2, Licensed under <a href='https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html'>GPLv2</a>.
                     <a href='https://mcl-labcas.jpl.nasa.gov/ui/static/plupload-2.1.9.zip'>Get Plupload</a>.
                 </p>
         
@@ -396,8 +396,7 @@
         Cookies.set("pi_filter", "");
         Cookies.set("disc_filter", "");
         setup_labcas_starred(get_var["search"], "all", 0);
-
-        $.get( "/labcas-ui/sidebar.html?4", function( data ) {
+	$.get( "/labcas-ui/sidebar_"+localStorage.getItem("environment_name")+".html?9", function( data ) {
             $( "#sidebar_placeholder" ).append(data);
             $( "#username_placeholder" ).html(Cookies.get('user'));
 		$(".sidebar .nav div").html("<br>");

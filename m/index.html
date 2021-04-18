@@ -129,7 +129,7 @@
             if (Cookies.get('user') == "Sign in"){$( "#username_placeholder_third" ).html(Cookies.get('user'));}
 	});
 	$( "#footer_template" ).load("/labcas-ui/templates.html #footer_template_"+localStorage.getItem("environment_name"));
-	$( "#sidebar_placeholder" ).load("/labcas-ui/sidebar.html?11" );
+        $( "#sidebar_placeholder" ).load("/labcas-ui/sidebar_"+localStorage.getItem("environment_name")+".html?9" );
 
     	setup_labcas_data("collections","*:*");
         window.operateEvents = {
@@ -153,10 +153,10 @@
                 });
             }
         };
-
 	introJs().setOption("overlayOpacity", 0);
 	setTimeout(function(){
-		introWizard(true);
+		//introWizard(true);
+		//$('#clinical-ui-link').attr('href','https://mcl.jpl.nasa.gov/clinical-ui/index.html?session='+Cookies.get("userpass"));
               },1000);
         
     });

@@ -78,7 +78,7 @@
                     </table>
 				<ul class="pagination pagination-no-border" id='files_pagination_top' style="float: right;"></ul>
 				    <div class="table-full-width">
-					<table class="table" id="files-table" style="table-layout: fixed;">
+					<table class="table" id="files-table" style="table-layout: fixed; padding: 10px">
 						<thead>
 							<th style="width:5%">Select</th>
 							<th data-field="name" data-sortable="true">Name</th>
@@ -181,19 +181,24 @@
         $( "#collection_name_template" ).load("/labcas-ui/templates.html #collection_name_template");
 
         $( "#footer_template" ).load("/labcas-ui/templates.html #footer_template_"+localStorage.getItem("environment_name"));
-        $( "#sidebar_placeholder" ).load("/labcas-ui/sidebar.html?8");
+        $( "#sidebar_placeholder" ).load("/labcas-ui/sidebar_"+localStorage.getItem("environment_name")+".html?9" );
 
 
         var get_var = get_url_vars();
         get_var["dataset_id"] = get_var["dataset_id"].replace(/\\\./g,'.');
         dataset_id = get_var["dataset_id"];
+	dataset_id_safe = encodeURI(dataset_id);
+	if (get_var["key"]){
+		Cookies.set("token",get_var["key"]);
+		Cookies.set("user",get_var["user"]);
+                Cookies.set("userpass",get_var["session"]);
+	}
+	Cookies.set("login_redirect", "/labcas-ui/d/index.html?dataset_id="+dataset_id_safe)
 
-	Cookies.set("login_redirect", "/labcas-ui/d/index.html?dataset_id="+get_var["dataset_id"])
-
-        setup_labcas_dataset_data("datasetfiles",'id:"'+get_var["dataset_id"]+'"', 'DatasetId:"'+get_var["dataset_id"]+'"', 0);
+        setup_labcas_dataset_data("datasetfiles",'id:"'+dataset_id_safe+'"', 'DatasetId:"'+dataset_id_safe+'"', 0);
         
         var breadcrumb = '<li class="breadcrumb-item"><a href="/labcas-ui/m/index.html">Home</a></li>';
-        var data_split = get_var["dataset_id"].split("/");
+        var data_split = dataset_id_safe.split("/");
         var url_prefix = "";
         for (i = 0; i < data_split.length; i++) {
             if(i == 0){

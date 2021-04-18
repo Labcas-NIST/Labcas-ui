@@ -25,6 +25,7 @@ $('#loginform').submit(function (e) {
 	e.preventDefault();
 	Cookies.set("user", $('#username').val());
 	Cookies.set("userletters", $('#username').val().substr(0, 2).toUpperCase());
+	Cookies.set("userpass", btoa($('#username').val() + ":" + $('#password').val()));
         $.ajax({
             url: localStorage.getItem('environment')+"/data-access-api/auth",
                 beforeSend: function(xhr) {

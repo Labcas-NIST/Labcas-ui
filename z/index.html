@@ -30,13 +30,13 @@
                     <div class="wrapper" style="background:white">
                         <div class="col-md-12"><center><img id="loading_viewer" class="collapse show" height="200px" width="200px" src="/labcas-ui/assets/img/loading.gif"></center></div>
                         <div class="row" id="viewer_content">
-                            <div class="col-md-2" style="padding-left: 30px; padding-top: 20px">
-                                <table class="table" id="image_list_table">
-                                    <thead><th>Image List</th></thead>
+                            <div class="col-md-3" style="padding-left: 30px; padding-top: 20px; padding-right: 0px;">
+                                <table class="table table-hover" id="image_list_table">
+                                    <thead><th style="padding-left: 5px;">Image List</th></thead>
                                     <tbody></tbody>
                                 </table>
                             </div>
-                            <div class="col-md-10" style="overflow: hidden">
+                            <div class="col-md-9" style="overflow: hidden; padding-left: 0px">
                                         <iframe id="img_frame" style="position: relative;top: -50px; border-top:1px;" frameBorder="0" height="900px" width="100%" onload="testtest();"></iframe>
                             </div>
                         </div>
@@ -95,8 +95,8 @@
 <script src="/labcas-ui/assets/js/labcas/search.js?100"></script>
 <script type="text/javascript">
     $('#viewer_content').hide(1);
-    $(document).ready(function() {
 	initCookies();
+    $(document).ready(function() {
 
         $( "#head_template" ).load("/labcas-ui/templates.html #head_template");
         $( "#nav_template" ).load("/labcas-ui/templates.html?2 #nav_template", function() {
@@ -105,12 +105,11 @@
         });
 
 	$( "#footer_template" ).load("/labcas-ui/templates.html #footer_template_"+localStorage.getItem("environment_name"));
-        $( "#sidebar_placeholder" ).load("/labcas-ui/sidebar.html?8");
+        $( "#sidebar_placeholder" ).load("/labcas-ui/sidebar_"+localStorage.getItem("environment_name")+".html?9" );
 
-        var get_var = get_url_vars();
         
 		var breadcrumb = '<li class="breadcrumb-item"><a href="/labcas-ui/m/index.html">Home</a></li>';
-        if (Cookies.get("login_redirect").includes("dataset_id=")){
+        if (Cookies.get("login_redirect") && Cookies.get("login_redirect").includes("dataset_id=")){
             var dataset_id = Cookies.get("login_redirect").split("dataset_id=")[1];
             var data_split = dataset_id.split("/");
             var url_prefix = "";
@@ -125,7 +124,7 @@
             }
             breadcrumb += '<li class="breadcrumb-item active" aria-current="page">Image Viewer</li>';
         }
-        if (Cookies.get("login_redirect").includes("search=")){
+        if (Cookies.get("login_redirect") && Cookies.get("login_redirect").includes("search=")){
             breadcrumb += '<li class="breadcrumb-item active" aria-current="page"><a href="'+Cookies.get("login_redirect")+'">Search</a></li>';
             breadcrumb += '<li class="breadcrumb-item active" aria-current="page">Image Viewer</li>';
         }
@@ -133,7 +132,9 @@
 
         console.log("WHAT");
     });
-        showHistImage();
+        var get_var = get_url_vars();
+	console.log("ROCK");
+        showHistImage(get_var["fileid"]);
 </script>
 
 </html>

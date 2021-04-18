@@ -14,6 +14,14 @@ $().ready(function() {
         }).on('hide.bs.collapse', function(){
         	$(this).prev(".btn").find(".fa").removeClass("fa-minus").addClass("fa-plus");
         });
+
+	//Always do this, init functions
+	
+	//initiate clinical-ui-link
+	setTimeout(function(){
+		$('#clinical-ui-link').attr('href','https://mcl.jpl.nasa.gov/clinical-ui/index.html?session='+Cookies.get("userpass"));
+      },1000);
+
 });
 function initCookies(){
 	if(!Cookies.get("token") || Cookies.get("token") == "None"){
@@ -24,7 +32,11 @@ function initCookies(){
 			  success: function(json) {
 			Cookies.set("user", "Sign in");
 			$.each( json, function( key, val ) {
-				localStorage.setItem(key, val);
+				if (typeof val == "string"){
+				    localStorage.setItem(key, val);
+				}else if(typeof val == "object"){
+				    localStorage.setItem(key, JSON.stringify(val));
+				}
 			});
 	
 			user_data = {"FavoriteCollections":[],"FavoriteDatasets":[],"FavoriteFiles":[]};
@@ -335,8 +347,8 @@ function generate_edrn_links(obj){
 
 function get_url_vars(){
     var $_GET = {};
-
-    document.location.search.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function () {
+    var url_vars = document.location.search.replace("\\&","%5C%26");
+    url_vars.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function () {
         function decode(s) {
             return decodeURIComponent(s.split("+").join(" "));
         }
@@ -672,7 +684,7 @@ function introWizard(check_first_time){
 }
 
 function accepted_image_check(f){
-    var img_ext = [".svs",".jpg",".gif",".jpeg",".dcm",".dicom",".png",".tif",".tiff",".scm"];
+    var img_ext = [".svs",".jpg",".gif",".jpeg",".dcm",".dicom",".png",".tif",".tiff",".scm",".scn",".qptiff"];
     var pass_flag = false;
     $.each(img_ext, function(key,value){
        if (f.toLowerCase().endsWith(value)){
@@ -704,7 +716,7 @@ function generate_image_file_list(data){
             var version = value.DatasetVersion ? value.DatasetVersion : "";
             var loc = value.FileLocation ? value.FileLocation : "";
 
-            histomics_list.push([loc,filename,version]);
+            histomics_list.push([loc,filename,version, html_safe_id]);
         }
     });
     
@@ -725,6 +737,7 @@ function generate_image_file_list(data){
 }
 
 
+
 function submitImage(formname, dataset){
     if ( $('#check_all:checked').length ){
         var get_var = get_url_vars();
@@ -742,12 +755,44 @@ function submitImage(formname, dataset){
 
 }
 
+function submitSingleImageData(image, loc, name, version){
+        var image_list = [];
+        var histomics_list = [];
+	var image_type = "image";
+        image_list.push(localStorage.getItem('environment')+"/data-access-api/download?id="+image);
+        histomics_list.push([loc,name,version, image]);
+        if (image.endsWith(".dcm") || image.endsWith(".dicom")){
+            image_type = "dicoms";
+        }
+        localStorage.setItem(image_type,JSON.stringify(image_list));
+        localStorage.setItem("image_data",JSON.stringify(histomics_list));
+        var get_var = get_url_vars();
+
+            if (get_var["dataset_id"] && get_var["dataset_id"] != "undefined"){
+                    Cookies.set("login_redirect", "/labcas-ui/d/index.html?dataset_id="+get_var["dataset_id"])
+            }else if (get_var["search"]){
+                    Cookies.set("login_redirect", "/labcas-ui/s/index.html?search="+get_var["search"])
+            }else if (get_var["file_id"] && get_var["file_id"] != "undefined"){
+                        Cookies.set("login_redirect", "/labcas-ui/f/index.html?file_id="+get_var["file_id"])
+            }
+            console.log(image_type);
+            if (image_type == "dicoms"){
+                window.location.replace("/labcas-ui/i/index.html");
+            }else{
+                window.location.replace("/labcas-ui/z/index.html");
+            }
+
+}
+
+
 function submitImageData(formname, dicom){
     var image_list = [];
     var histomics_list = [];
     var image_type = "image";
     console.log(dicom);
-    
+   
+    //custom code for qptiff
+ 
     if (dicom){
         image_list.push(localStorage.getItem('environment')+"/data-access-api/download?id="+$(dicom).val());
         if ($(dicom).val().endsWith(".dcm") || $(dicom).val().endsWith(".dicom")){
@@ -757,7 +802,7 @@ function submitImageData(formname, dicom){
         $('#' + formname + ' input[type="checkbox"]').each(function() {
             if ($(this).is(":checked")) {
                 image_list.push(localStorage.getItem('environment')+"/data-access-api/download?id="+$(this).val());
-                histomics_list.push([$(this).data("loc"),$(this).data("name"),$(this).data("version")]);
+                histomics_list.push([$(this).data("loc"),$(this).data("name"),$(this).data("version"), $(this).val()]);
                 if ($(this).val().endsWith(".dcm") || $(this).val().endsWith(".dicom")){
                     image_type = "dicoms";
                 }
@@ -783,13 +828,14 @@ function submitImageData(formname, dicom){
     }
 }
 
-function changeFrameSrc(frame, src){
+function changeFrameSrc(frame, src, fileid){
     $('#'+frame).attr('src', src);
     $('#img_frame').contents().find('#h-navbar-brand').html('Image Viewer');
+    window.history.replaceState(null, null, "?fileid="+fileid);
 }
 
 
-function showHistImage(){
+function showHistImage(hist_image){
     /*images = JSON.parse(localStorage.getItem('image'));
     console.log(JSON.stringify({'token':Cookies.get('token'), 'image':images}));
     $.ajax({
@@ -819,20 +865,33 @@ function showHistImage(){
             }
         }
     });*/
-    images = JSON.parse(localStorage.getItem('image'));
-    images_data = JSON.parse(localStorage.getItem('image_data'));
-    show_flag = true;
-    $.each(images_data, function( key, val ) {
-        orchistrate_find(val[0], val[1], val[2], show_flag);
-        show_flag = false;
-    });
 
+    if (hist_image && hist_image != ""){
+	console.log("HEREHERE");
+	console.log(hist_image);
+	setup_labcas_file_data("fileimage",'id:"'+encodeURI(hist_image).replace("&","%26")+'"', 'id:'+hist_image+'*'); 
+    }else{
+       images = JSON.parse(localStorage.getItem('image'));
+       images_data = JSON.parse(localStorage.getItem('image_data'));
+       show_flag = true;
+       $.each(images_data, function( key, val ) {
+          orchistrate_find(val[0], val[1], val[2], show_flag, val[3]);
+          show_flag = false;
+       });
+    }
 }
 
-function orchistrate_find(query_folder, query_file, version, show_flag){
+function orchistrate_find(query_folder, query_file, version, show_flag, fileid){
     var image_dsa_path = [];
     var root_collection = "6034987d5f92b701da7ea93e";
     var labcas_data_map = JSON.parse(localStorage.getItem("labcas_data")).collection_path_maps;
+
+    //Specifically for qptiff files
+    if (query_file.endsWith(".qptiff") && query_folder.includes("mIHC_Images/")){
+       query_file = query_file.replace(".qptiff",".png");
+       query_folder = query_folder.replace("mIHC_Images/","mIHC_Images_png/");
+       console.log("Replaced mIHC"+query_folder+"-/-"+query_file);
+    }
     query_folder = query_folder.replace("/usr/local/labcas/backend/archive/","");
     query_folder = query_folder.replace("&","%26");
     query_file = query_file.replace("&","%26");
@@ -848,10 +907,10 @@ function orchistrate_find(query_folder, query_file, version, show_flag){
     image_dsa_path = query_folder.split("/");
     console.log(image_dsa_path);
 
-    recurse_dsa(root_collection, image_dsa_path.shift(), query_file, image_dsa_path, show_flag,'collection', version);
+    recurse_dsa(root_collection, image_dsa_path.shift(), query_file, image_dsa_path, show_flag,'collection', version, fileid);
 }
 
-function recurse_dsa(sub_folder, sub_name, query_file, image_dsa_path, show_flag, parenttype, version){
+function recurse_dsa(sub_folder, sub_name, query_file, image_dsa_path, show_flag, parenttype, version, fileid){
     //console.log("recursive search");
     //console.log(sub_folder);
     //console.log(sub_name);
@@ -863,7 +922,7 @@ function recurse_dsa(sub_folder, sub_name, query_file, image_dsa_path, show_flag
             //console.log("Folder");
             //console.log(data);
             if (image_dsa_path.length > 0 && data.length > 0 && data[0]._id){
-                 recurse_dsa(data[0]._id, image_dsa_path.shift(), query_file, image_dsa_path, show_flag, 'folder', version);
+                 recurse_dsa(data[0]._id, image_dsa_path.shift(), query_file, image_dsa_path, show_flag, 'folder', version, fileid);
             }else{
                 //console.log("FILE");
                 //console.log(data);
@@ -879,15 +938,17 @@ function recurse_dsa(sub_folder, sub_name, query_file, image_dsa_path, show_flag
                             //console.log("looking within file");
                             if (filedata.length > 0 && filedata[0]._id){
                                 //console.log("looking within file 1");
-                                $("#image_list_table tbody").append("<tr><td><a href='#' onclick=\"changeFrameSrc('img_frame','"+localStorage.getItem("dsa_image_viewer")+"?image="+filedata[0]._id+"')\">"+query_file+"</a></td></tr>");
+                                var download_cmd = "download_file('"+fileid+"','single');";
+                                var details_cmd = "window.open(\"/labcas-ui/f/index.html?file_id="+fileid+"\");";
+                                $("#image_list_table tbody").append("<tr ><td  style='padding-left: 5px; word-wrap: break-word;'><a style='word-wrap: break-word;' href='#' onclick=\"changeFrameSrc('img_frame','"+localStorage.getItem("dsa_image_viewer")+"?image="+filedata[0]._id+"', '"+fileid+"')\">"+decodeURIComponent(query_file)+"</a></td><td class='td-actions text-right'><button type='button' rel='detailbutton' title='Details' style='padding:0px' class='btn btn-info btn-simple btn-link' onclick='"+details_cmd+"'><i class='fa fa-info-circle'></i></button>"+'<button type="button" rel="downloadbutton" title="Download" class="btn btn-success btn-simple btn-link" onclick="'+download_cmd+'"><i class="fa fa-download"></i></button></td></tr>');
                                 if (show_flag){
                                     $('#loading_viewer').hide();
                                     $('#viewer_content').show();
-                                    changeFrameSrc("img_frame", localStorage.getItem("dsa_image_viewer")+"?image="+filedata[0]._id);
+                                    changeFrameSrc("img_frame", localStorage.getItem("dsa_image_viewer")+"?image="+filedata[0]._id, fileid);
                                 }
                             }else if(image_dsa_path.length == 0 && version != "null"){
                                 console.log("looking within file 2");
-                                recurse_dsa(data[0]._id, version, query_file, image_dsa_path, show_flag, 'folder', "null");
+                                recurse_dsa(data[0]._id, version, query_file, image_dsa_path, show_flag, 'folder', "null", fileid);
                             }
                             else{
                                 console.log("looking within file 3");

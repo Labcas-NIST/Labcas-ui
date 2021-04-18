@@ -34,6 +34,24 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-lg-3 col-sm-6" id="image_viewer_link">
+                            <div class="card card-stats">
+                                <div class="card-body ">
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <div class="icon-big text-center icon-warning">
+                                            	<a href="#" id="viewer_wrapper"><i id='viewer_icon' class="fa fa-image text-info"></i></a>
+                                            </div>
+                                        </div>
+                                        <div class="col-7">
+                                            <div class="numbers">
+                                                <p class="card-category">View Image</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="row">
                     	<div class="col-md-12">
@@ -120,6 +138,7 @@
 <script src="/labcas-ui/assets/js/labcas/utils.js?100"></script>
 <script src="/labcas-ui/assets/js/labcas/search.js?100"></script>
 <script type="text/javascript">
+	$('#image_viewer_link').hide();
     $(document).ready(function() {
 	initCookies();
 
@@ -130,11 +149,17 @@
         });
 
 	$( "#footer_template" ).load("/labcas-ui/templates.html #footer_template_"+localStorage.getItem("environment_name"));
-        $( "#sidebar_placeholder" ).load("/labcas-ui/sidebar.html?8" );
+        $( "#sidebar_placeholder" ).load("/labcas-ui/sidebar_"+localStorage.getItem("environment_name")+".html?9" );
+
 
         var get_var = get_url_vars();
 
 	Cookies.set("login_redirect", "/labcas-ui/f/index.html?file_id="+get_var["file_id"])
+	if (get_var["key"]){
+		Cookies.set("token",get_var["key"]);
+		Cookies.set("user",get_var["user"]);
+		Cookies.set("userpass",get_var["session"]);
+	}
         setup_labcas_file_data("file",'id:"'+encodeURI(get_var["file_id"]).replace("&","%26")+'"', 'id:'+get_var["file_id"]+'*'); 
         
         var breadcrumb = '<li class="breadcrumb-item"><a href="/labcas-ui/m/index.html">Home</a></li>';
