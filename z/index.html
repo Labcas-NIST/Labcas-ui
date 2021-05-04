@@ -108,6 +108,7 @@
         $( "#sidebar_placeholder" ).load("/labcas-ui/sidebar_"+localStorage.getItem("environment_name")+".html?9" );
 
         
+    });
 		var breadcrumb = '<li class="breadcrumb-item"><a href="/labcas-ui/m/index.html">Home</a></li>';
         if (Cookies.get("login_redirect") && Cookies.get("login_redirect").includes("dataset_id=")){
             var dataset_id = Cookies.get("login_redirect").split("dataset_id=")[1];
@@ -130,9 +131,8 @@
         }
 		$('#breadcrumb').html(breadcrumb);
 
-        console.log("WHAT");
-    });
         var get_var = get_url_vars();
+	Cookies.set("login_redirect", "/labcas-ui/z/index.html?fileid="+get_var["fileid"])
 	console.log("ROCK");
         showHistImage(get_var["fileid"]);
 </script>

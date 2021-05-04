@@ -598,7 +598,6 @@ function reset_search_filters(){
         localStorage.setItem("search", get_var["search"]);
         localStorage.setItem("search_filter", "off");
 
-
         $.each(localStorage.getItem("filters").split(","), function(ind, head) {
                 var divs = localStorage.getItem(head+"_filters_div").split(",");
                 $.each(divs, function(i, divhead) {
@@ -615,6 +614,58 @@ function reset_search_filters(){
         });
         localStorage.setItem("search", "*");
 	window.history.replaceState({}, document.title, "/" + "labcas-ui/s/index.html?search=*");
+}
+function set_search_filters(params){
+	reset_search_filters();
+	localStorage.setItem("search_filter", "on");
+	$.each(localStorage.getItem("filters").split(","), function(ind, head) {
+                var divs = localStorage.getItem(head+"_filters_div").split(",");
+                $.each(divs, function(i, divhead) {
+			if (params[$.trim(divhead)]){
+				localStorage.setItem($.trim(divhead), params[$.trim(divhead)]);
+			}
+                        if(divhead.includes("_num_")){
+				if (params[$.trim(divhead)+"_0"]){
+					localStorage.setItem($.trim(divhead)+"_0", params[$.trim(divhead)+"_0"]);
+					localStorage.setItem($.trim(divhead)+"_1",params[$.trim(divhead)+"_1"]);
+					localStorage.setItem($.trim(divhead)+"_max_0",params[$.trim(divhead)+"_max_0"]);
+					localStorage.setItem($.trim(divhead)+"_max_1",params[$.trim(divhead)+"_max_1"]);
+				}
+                        }else{
+				console.log(params[$.trim(divhead)+"_val"]);
+				if (params[$.trim(divhead)+"_val"]){
+					localStorage.setItem($.trim(divhead)+"_val", params[$.trim(divhead)+"_val"]);
+				}
+                        }
+                });
+        });
+	if (params["search"] && params["search"] != "*" && params["search"] != ""){
+        	localStorage.setItem("search", params["search"]);
+		window.location.replace("/labcas-ui/s/index.html?search="+params["search"]);
+	}else{
+		window.location.replace("/labcas-ui/s/index.html?search=*");
+	}
+}
+
+function get_search_filters(){
+        var get_var = get_url_vars();
+	var params = {"search":localStorage.getItem("search")}
+
+        $.each(localStorage.getItem("filters").split(","), function(ind, head) {
+                var divs = localStorage.getItem(head+"_filters_div").split(",");
+                $.each(divs, function(i, divhead) {
+                        params[$.trim(divhead)] = localStorage.getItem($.trim(divhead));
+                        if(divhead.includes("_num_")){
+                                params[$.trim(divhead)+"_0"] = localStorage.getItem($.trim(divhead)+"_0");
+                                params[$.trim(divhead)+"_1"] = localStorage.getItem($.trim(divhead)+"_1");
+                                params[$.trim(divhead)+"_max_0"] = localStorage.getItem($.trim(divhead)+"_max_0");
+                                params[$.trim(divhead)+"_max_1"] = localStorage.getItem($.trim(divhead)+"_max_1");
+                        }else{
+                                params[$.trim(divhead)+"_val"] = localStorage.getItem($.trim(divhead)+"_val");
+                        }
+                });
+        });
+	return params;
 }
 function isMacintosh() {
   return navigator.platform.indexOf('Mac') > -1
@@ -911,33 +962,20 @@ function orchistrate_find(query_folder, query_file, version, show_flag, fileid){
 }
 
 function recurse_dsa(sub_folder, sub_name, query_file, image_dsa_path, show_flag, parenttype, version, fileid){
-    //console.log("recursive search");
-    //console.log(sub_folder);
-    //console.log(sub_name);
     console.log(localStorage.getItem("dsa_api")+"/folder?parentType="+parenttype+"&parentId="+sub_folder+"&name="+sub_name+"&limit=50&sort=lowerName&sortdir=1");
     $.ajax({
         url: localStorage.getItem("dsa_api")+"/folder?parentType="+parenttype+"&parentId="+sub_folder+"&name="+sub_name+"&limit=50&sort=lowerName&sortdir=1",
         type: 'GET',
         success: function (data) {
-            //console.log("Folder");
-            //console.log(data);
             if (image_dsa_path.length > 0 && data.length > 0 && data[0]._id){
                  recurse_dsa(data[0]._id, image_dsa_path.shift(), query_file, image_dsa_path, show_flag, 'folder', version, fileid);
             }else{
-                //console.log("FILE");
-                //console.log(data);
                 if (data.length > 0 && data[0]._id){
-                    //console.log(localStorage.getItem("dsa_api")+"/item?folderId="+data[0]._id+"&name="+query_file+"&limit=50&sort=lowerName&sortdir=1");
                     $.ajax({
                         url: localStorage.getItem("dsa_api")+"/item?folderId="+data[0]._id+"&name="+query_file+"&limit=50&sort=lowerName&sortdir=1",
                         type: 'GET',
                         success: function (filedata) {
-                            //console.log("looking within file");
-                            //console.log(image_dsa_path.length);
-                            //console.log(version);
-                            //console.log("looking within file");
                             if (filedata.length > 0 && filedata[0]._id){
-                                //console.log("looking within file 1");
                                 var download_cmd = "download_file('"+fileid+"','single');";
                                 var details_cmd = "window.open(\"/labcas-ui/f/index.html?file_id="+fileid+"\");";
                                 $("#image_list_table tbody").append("<tr ><td  style='padding-left: 5px; word-wrap: break-word;'><a style='word-wrap: break-word;' href='#' onclick=\"changeFrameSrc('img_frame','"+localStorage.getItem("dsa_image_viewer")+"?image="+filedata[0]._id+"', '"+fileid+"')\">"+decodeURIComponent(query_file)+"</a></td><td class='td-actions text-right'><button type='button' rel='detailbutton' title='Details' style='padding:0px' class='btn btn-info btn-simple btn-link' onclick='"+details_cmd+"'><i class='fa fa-info-circle'></i></button>"+'<button type="button" rel="downloadbutton" title="Download" class="btn btn-success btn-simple btn-link" onclick="'+download_cmd+'"><i class="fa fa-download"></i></button></td></tr>');
@@ -947,11 +985,9 @@ function recurse_dsa(sub_folder, sub_name, query_file, image_dsa_path, show_flag
                                     changeFrameSrc("img_frame", localStorage.getItem("dsa_image_viewer")+"?image="+filedata[0]._id, fileid);
                                 }
                             }else if(image_dsa_path.length == 0 && version != "null"){
-                                console.log("looking within file 2");
                                 recurse_dsa(data[0]._id, version, query_file, image_dsa_path, show_flag, 'folder', "null", fileid);
                             }
                             else{
-                                console.log("looking within file 3");
                                 console.log("Something went wrong in recursive file/version search through DSA");
                             }
                         }
@@ -967,3 +1003,117 @@ function recurse_dsa(sub_folder, sub_name, query_file, image_dsa_path, show_flag
     });
 }
 
+function save_search_profile(){
+	var name = $('#save_profile_name').val();
+	var username = Cookies.get("user");
+	
+	var check_flag = true;
+	if (name == ""){
+		alert("Please enter a name for your search profile to be saved.");
+		check_flag = false;
+	}
+	console.log(name);
+	if (!/^[a-zA-Z 0-9]+$/.test(name)){
+		alert("Please make sure to only use letters, numbers, or space in your search profile name.");
+		check_flag = false;
+	}
+	if (check_flag){
+		var params = get_search_filters();
+		console.log(localStorage.getItem("ksdb_labcas_search_profile_save"));
+		console.log(JSON.stringify({'userid':username, 'profile_name':name, 'profile':params}));
+		localStorage.setItem("active_custom_search_profile",name);
+		$.ajax({
+			url: localStorage.getItem("ksdb_labcas_search_profile_save"),
+			type: 'POST',
+			dataType: "json",
+			data: JSON.stringify({'userid':username, 'profile_name':name, 'profile':params}),
+			success: function (data) {
+				alert("Successfully saved search profile "+name);
+				$('#saved_profiles').append("<option selected value='"+name+"'>"+name+"</option>");
+				window.location.replace("/labcas-ui/s/index.html?search="+params['search'])
+			},
+			error: function(e){
+				alert("Save failed, please reach out to "+localStorage.getItem("support_contact")+" for support.");
+			}
+		});
+	}
+}
+
+function delete_search_profile(){
+	var username = Cookies.get("user");
+	var name = $('#saved_profiles').val();
+
+	console.log(JSON.stringify({'userid':username, 'profile_name':name}));
+	$.ajax({
+		url: localStorage.getItem("ksdb_labcas_search_profile_delete"),
+		type: 'POST',
+		dataType: "json",
+		data: JSON.stringify({'userid':username, 'profile_name':name}),
+		success: function (data) {
+			alert("Successfully deleted search profile "+name);
+			$("#saved_profiles option[value='"+name+"']").remove();
+			localStorage.setItem("active_custom_search_profile","custom");
+			$('#delete_profile').hide();
+			$('#save_profile_name').show();
+                        $('#save_profile').show();
+			window.location.replace("/labcas-ui/s/index.html?search="+params['search'])
+		},
+		error: function(e){
+			alert("Save failed, please reach out to "+localStorage.getItem("support_contact")+" for support.");
+		}
+	});
+
+}
+
+function get_search_profile(name){
+	var username = Cookies.get("user");
+	console.log("search_profiles for"+username);
+	console.log(localStorage.getItem("ksdb_labcas_search_name_api")+username);
+	if (name == "" || name == "custom"){
+		$.ajax({
+			url: localStorage.getItem("ksdb_labcas_search_name_api")+username,
+			type: 'GET',
+			dataType: 'json',
+			success: function (data) {
+				$('#saved_profiles').empty();
+				$('#saved_profiles').append("<option value='custom'>Custom</option>");
+				$.each( data.search_results, function( key, val ) {
+					if (val != ""){
+					if (localStorage.getItem("active_custom_search_profile") == val){
+						$('#saved_profiles').append("<option value='"+val+"' selected>"+val+"</option>");
+						$('#save_profile_name').hide();
+						$('#save_profile').hide();
+						$('#delete_profile').show();
+					}else{
+						$('#saved_profiles').append("<option value='"+val+"'>"+val+"</option>");
+					}
+					}
+				});
+			},
+			error: function(e){
+			    console.log("Failed to grab search profiles");
+			}
+		});
+	}else{
+		console.log(localStorage.getItem("ksdb_labcas_search_profile_api")+username+localStorage.getItem("ksdb_split_key")+name);
+		$.ajax({
+                        url: localStorage.getItem("ksdb_labcas_search_profile_api")+username+localStorage.getItem("ksdb_split_key")+name,
+                        type: 'GET',
+                        success: function (data) {
+                                console.log(data);
+				data = data.replace(/'/g, '"')
+				var search_profile = JSON.parse(data);
+				console.log(search_profile);
+				localStorage.setItem("active_custom_search_profile",name);
+				set_search_filters(search_profile);
+				console.log("Success");
+				$('#save_profile_name').hide();
+				$('#save_profile').hide();
+				$('#delete_profile').show();
+			},
+                        error: function(e){
+                            console.log("Failed to grab search profiles");
+                        }
+                });
+	}
+}

@@ -584,7 +584,7 @@ function fill_collection_level_files(data){
                 var filename = value.FileName ? value.FileName : "";
                 var version = value.DatasetVersion ? value.DatasetVersion : "";
                 var fileloc = value.FileLocation ? value.FileLocation : "";
-                var site = value.Site ? value.Site.join(",") : "";
+                var site = value.Institution ? value.Institution.join(",") : "";
                 var description = value.Description? value.Description.join(",") : "";
                 if ('ThumbnailRelativePath' in value){
                         thumb = "<img width='50' height='50' src='"+localStorage.getItem('environment')+"/labcas-ui/assets/"+value.ThumbnailRelativePath+"'/>";
@@ -765,7 +765,7 @@ function fill_files_data(data){
         var filename = value.FileName ? value.FileName : "";
         var version = value.DatasetVersion ? value.DatasetVersion : "";
         var fileloc = value.FileLocation ? value.FileLocation : "";
-		var site = value.Site ? value.Site.join(",") : "";
+		var site = value.Institution ? value.Institution.join(",") : "";
 		var parID = value.participantID ? value.participantID.join(",") : "";
 		var speID = value.specimen_id ? value.specimen_id.join(",") : "";
 		var description = value.Description? value.Description.join(",") : "";
@@ -998,8 +998,8 @@ function setup_labcas_dataset_data(datatype, query, file_query, cpage){
 
 function setup_labcas_file_data(datatype, query, file_query){
 	console.log("QUERY");
-	console.log(query);
-
+	console.log(localStorage.getItem('environment')+"/data-access-api/files/select?q="+query+"&wt=json&indent=true");
+	
     $.ajax({
         url: localStorage.getItem('environment')+"/data-access-api/files/select?q="+query+"&wt=json&indent=true",
         xhrFields: {
@@ -1107,7 +1107,7 @@ function fill_files_search(data){
       var version = obj.DatasetVersion ? obj.DatasetVersion : "";
       var fileloc = obj.FileLocation ? obj.FileLocation : "";
 
-	  var site = obj.Site ? obj.Site.join(",") : "";
+	  var site = obj.Institution ? obj.Institution.join(",") : "";
 	  var description = obj.Description? obj.Description.join(",") : "";
 	  if ('ThumbnailRelativePath' in obj){
 		thumb = "<img width='50' height='50' src='"+localStorage.getItem('environment')+"/labcas-ui/assets/"+obj.ThumbnailRelativePath+"'/>";

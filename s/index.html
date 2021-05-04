@@ -76,15 +76,25 @@
 		    </div>
                     <div class="row">
                         <div class="col-md-3">
+
                             <div class="card ">
                                 <div class="card-header">
-                                    <h4 class="card-title"><select id="faceted_categories"  data-style="btn-default btn-outline" data-menu-style="dropdown-blue"></select>
-<a href="#" id="filter_reset" onclick="reset_search_filters(); setup_labcas_search('*', 'all', 0);">*&nbsp;&nbsp;&nbsp;<i class="nc-icon nc-refresh-02" title="Reset Filters"></i></a></h4>
+                                        <font size=3>Saved Searches</font>
                                     <hr style="margin-top: .5em; margin-bottom: 0; height: 1px; color:#333;background-color:#333;">
                                 </div>
-				<div class="card-footer ">
-					<font size=3>Filter Type (File Count)</font>
+                                <div class="card-footer ">
+                                    <div class='col-sm-12'><select id="saved_profiles" class="form-control input-sm" data-style="btn-default btn-outline" data-menu-style="dropdown-blue"><option value='custom'>Custom</option></select></div>
+				    <div class='col-sm-12'><input id="save_profile_name" type="text" class="form-control input-sm" placeholder="Name for your search"/></div>
+				    <div class='col-sm-12'><button id="save_profile" type="submit" onclick="save_search_profile()" class="btn btn-primary">Save Search</button><button id="delete_profile" type="submit" onclick="delete_search_profile()" class="btn btn-danger">Delete Search</button></div>
 				</div>
+                            </div>
+
+                            <div class="card " style="margin-bottom: 0px">
+                                <div class="card-header">
+                                    <h4 class="card-title"><select id="faceted_categories"  class="form-control" data-style="btn-default btn-outline" data-menu-style="dropdown-blue"></select>
+<a href="#" id="filter_reset" onclick="localStorage.setItem('active_custom_search_profile',''); reset_search_filters(); setup_labcas_search('*', 'all', 0); document.getElementById('saved_profiles').value='custom'; $('#save_profile_name').show(); $('#save_profile').show(); $('#delete_profile').hide();">*&nbsp;&nbsp;&nbsp;<i class="nc-icon nc-refresh-02" title="Reset Filters"></i></a></h4>
+                                    <hr style="margin-top: .5em; margin-bottom: 0; height: 1px; color:#333;background-color:#333;">
+                                </div>
                             </div>
                             <div class="card " id="filter_options">
                             </div>
@@ -259,7 +269,20 @@
         });
 
 	initiate_search();
-		
+	$('#delete_profile').hide();
+	$("#saved_profiles").on("change", function(e) {
+		if (this.value != "custom"){
+			get_search_profile(this.value);
+			$('#save_profile_name').hide();
+			$('#save_profile').hide();
+			$('#delete_profile').show();
+		}else{
+			$('#save_profile_name').show();
+			$('#save_profile').show();
+			$('#delete_profile').hide();
+		}
+	});
+	get_search_profile('');
     });
 </script>
 
