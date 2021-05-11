@@ -20,7 +20,7 @@ function initiate_search(){
       var get_var = get_url_vars();
 	console.log(localStorage.getItem("search"));
 	if(localStorage.getItem("search")){
-        	localStorage.setItem("search", get_var["search"]);
+        	localStorage.setItem("search", get_var["search"].replace("&","%26"));
 		console.log("Search not clearned");
 	}else{
 		localStorage.setItem("search", "*");
@@ -1116,7 +1116,7 @@ function fill_files_search(data){
 	  if (obj.FileSize){
   		filesize = humanFileSize(obj.FileSize, true);
           }
-	  var html_safe_id = encodeURI(escapeRegExp(obj.id));
+	  var html_safe_id = encodeURI(escapeRegExp(obj.id)).replace("&","%26");
 	  var checked = "";
 	  var download_list = JSON.parse(localStorage.getItem("download_list"));
 	  //console.log(html_safe_id);
@@ -1268,7 +1268,7 @@ function generate_filters(field_type, placeholder, data, display, head){
 			    }
 			    localStorage.setItem(placeholder, field_search);
 			    localStorage.setItem("search_filter", "on");
-			    setup_labcas_search(localStorage.getItem('search'), "all", 0);
+			    setup_labcas_search(localStorage.getItem('search').replace("&","%26"), "all", 0);
 			});
 			$('#'+placeholder+'_card').css("height","100px");
 		}
@@ -1316,7 +1316,7 @@ function generate_filters(field_type, placeholder, data, display, head){
 		    localStorage.setItem(placeholder, field_search);
 		    localStorage.setItem(placeholder+"_val",field_val);
 		    localStorage.setItem("search_filter", "on");
-		    setup_labcas_search(localStorage.getItem('search'), "all", 0);
+		    setup_labcas_search(localStorage.getItem('search').replace("&","%26"), "all", 0);
 		});
 	}
 }
@@ -1412,9 +1412,9 @@ function setup_labcas_search(query, divid, cpage){
 	});
 	var data_filters = "";
     if (divid == "collections_search" || divid == "all"){
-		console.log(localStorage.getItem('environment')+"/data-access-api/collections/select?q="+query+""+collection_filters+"&wt=json&indent=true&start="+cpage*10);
+		console.log(localStorage.getItem('environment')+"/data-access-api/collections/select?q=\""+query+"\""+collection_filters+"&wt=json&indent=true&start="+cpage*10);
 		$.ajax({
-			url: localStorage.getItem('environment')+"/data-access-api/collections/select?q="+query+""+collection_filters+"&wt=json&indent=true&sort=id%20asc&start="+cpage*10,	
+			url: localStorage.getItem('environment')+"/data-access-api/collections/select?q=\""+query+"\""+collection_filters+"&wt=json&indent=true&sort=id%20asc&start="+cpage*10,	
 			beforeSend: function(xhr) {
 				if(Cookies.get('token') && Cookies.get('token') != "None"){
 					xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
@@ -1433,12 +1433,12 @@ function setup_labcas_search(query, divid, cpage){
 				 window.location.replace("/labcas-ui/index.html");
 			 }
 		});
-		console.log(localStorage.getItem('environment')+"/data-access-api/files/select?q="+query+""+collection_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&wt=json&rows=0");
+		console.log(localStorage.getItem('environment')+"/data-access-api/files/select?q=\""+query+"\""+collection_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&wt=json&rows=0");
 		console.log("HERE3");
 		console.log("data");
 		console.log(Cookies.get('token'));
 		$.ajax({
-			url: localStorage.getItem('environment')+"/data-access-api/files/select?q="+query+""+collection_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&wt=json&rows=0",
+			url: localStorage.getItem('environment')+"/data-access-api/files/select?q=\""+query+"\""+collection_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&wt=json&rows=0",
 			beforeSend: function(xhr) {
 				if(Cookies.get('token') && Cookies.get('token') != "None"){
 					xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
@@ -1467,7 +1467,7 @@ function setup_labcas_search(query, divid, cpage){
 	wait(1000);
 	console.log(localStorage.getItem('environment')+"/data-access-api/datasets/select?q=*:*"+collection_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&wt=json&rows=0");
         $.ajax({
-            url: localStorage.getItem('environment')+"/data-access-api/datasets/select?q="+query+""+collection_filters+"&wt=json&indent=true&start="+cpage*10,
+            url: localStorage.getItem('environment')+"/data-access-api/datasets/select?q=\""+query+"\""+collection_filters+"&wt=json&indent=true&start="+cpage*10,
             beforeSend: function(xhr) {
                 if(Cookies.get('token') && Cookies.get('token') != "None"){
 					xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
@@ -1489,9 +1489,11 @@ function setup_labcas_search(query, divid, cpage){
         });
     }
     if (divid == "files_search" || divid == "all"){
+		console.log("Files search");
+		console.log(localStorage.getItem('environment')+"/data-access-api/files/select?q=\"*"+query+"*\""+collection_filters+"&wt=json&indent=true&start="+cpage*10);
 		wait(1000);
 		$.ajax({
-			url: localStorage.getItem('environment')+"/data-access-api/files/select?q="+query+""+collection_filters+"&wt=json&indent=true&start="+cpage*10,
+			url: localStorage.getItem('environment')+"/data-access-api/files/select?q=\"*"+query+"*\""+collection_filters+"&wt=json&indent=true&start="+cpage*10,
 			xhrFields: {
 					withCredentials: true
 			  },

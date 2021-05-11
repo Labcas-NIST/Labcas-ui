@@ -135,6 +135,17 @@
 	Cookies.set("login_redirect", "/labcas-ui/z/index.html?fileid="+get_var["fileid"])
 	console.log("ROCK");
         showHistImage(get_var["fileid"]);
+
+	window.onbeforeunload = function (event) {
+	    if (typeof event == 'undefined') {
+		event = window.event;
+	    }
+	    if (event) {
+		localStorage.setItem("image_data","");
+		localStorage.setItem("image","");
+	    }
+	};
+
 </script>
 
 </html>
