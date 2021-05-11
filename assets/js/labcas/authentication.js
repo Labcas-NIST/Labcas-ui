@@ -1401,6 +1401,9 @@ function fill_collections_search(data){
 
 function setup_labcas_search(query, divid, cpage){
     console.log("Searching...");
+	if (query != "*"){
+	   query = '"'+query+'"';
+	}
 	var collection_filters = "";
 	var collection_facets = [];
 	$.each(localStorage.getItem("filters").split(","), function(ind, head) {
@@ -1412,9 +1415,9 @@ function setup_labcas_search(query, divid, cpage){
 	});
 	var data_filters = "";
     if (divid == "collections_search" || divid == "all"){
-		console.log(localStorage.getItem('environment')+"/data-access-api/collections/select?q=\""+query+"\""+collection_filters+"&wt=json&indent=true&start="+cpage*10);
+		console.log(localStorage.getItem('environment')+"/data-access-api/collections/select?q="+query+""+collection_filters+"&wt=json&indent=true&start="+cpage*10);
 		$.ajax({
-			url: localStorage.getItem('environment')+"/data-access-api/collections/select?q=\""+query+"\""+collection_filters+"&wt=json&indent=true&sort=id%20asc&start="+cpage*10,	
+			url: localStorage.getItem('environment')+"/data-access-api/collections/select?q="+query+""+collection_filters+"&wt=json&indent=true&sort=id%20asc&start="+cpage*10,	
 			beforeSend: function(xhr) {
 				if(Cookies.get('token') && Cookies.get('token') != "None"){
 					xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
@@ -1433,12 +1436,12 @@ function setup_labcas_search(query, divid, cpage){
 				 window.location.replace("/labcas-ui/index.html");
 			 }
 		});
-		console.log(localStorage.getItem('environment')+"/data-access-api/files/select?q=\""+query+"\""+collection_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&wt=json&rows=0");
+		console.log(localStorage.getItem('environment')+"/data-access-api/files/select?q="+query+""+collection_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&wt=json&rows=0");
 		console.log("HERE3");
 		console.log("data");
 		console.log(Cookies.get('token'));
 		$.ajax({
-			url: localStorage.getItem('environment')+"/data-access-api/files/select?q=\""+query+"\""+collection_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&wt=json&rows=0",
+			url: localStorage.getItem('environment')+"/data-access-api/files/select?q="+query+""+collection_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&wt=json&rows=0",
 			beforeSend: function(xhr) {
 				if(Cookies.get('token') && Cookies.get('token') != "None"){
 					xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
@@ -1467,7 +1470,7 @@ function setup_labcas_search(query, divid, cpage){
 	wait(1000);
 	console.log(localStorage.getItem('environment')+"/data-access-api/datasets/select?q=*:*"+collection_filters+"&facet=true&facet.limit=-1&facet.field="+collection_facets.join("&facet.field=")+"&wt=json&rows=0");
         $.ajax({
-            url: localStorage.getItem('environment')+"/data-access-api/datasets/select?q=\""+query+"\""+collection_filters+"&wt=json&indent=true&start="+cpage*10,
+            url: localStorage.getItem('environment')+"/data-access-api/datasets/select?q="+query+""+collection_filters+"&wt=json&indent=true&start="+cpage*10,
             beforeSend: function(xhr) {
                 if(Cookies.get('token') && Cookies.get('token') != "None"){
 					xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
@@ -1490,10 +1493,10 @@ function setup_labcas_search(query, divid, cpage){
     }
     if (divid == "files_search" || divid == "all"){
 		console.log("Files search");
-		console.log(localStorage.getItem('environment')+"/data-access-api/files/select?q=\"*"+query+"*\""+collection_filters+"&wt=json&indent=true&start="+cpage*10);
+		console.log(localStorage.getItem('environment')+"/data-access-api/files/select?q="+query+""+collection_filters+"&wt=json&indent=true&start="+cpage*10);
 		wait(1000);
 		$.ajax({
-			url: localStorage.getItem('environment')+"/data-access-api/files/select?q=\"*"+query+"*\""+collection_filters+"&wt=json&indent=true&start="+cpage*10,
+			url: localStorage.getItem('environment')+"/data-access-api/files/select?q="+query+""+collection_filters+"&wt=json&indent=true&start="+cpage*10,
 			xhrFields: {
 					withCredentials: true
 			  },
