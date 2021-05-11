@@ -1056,7 +1056,7 @@ function delete_search_profile(){
 			$('#delete_profile').hide();
 			$('#save_profile_name').show();
                         $('#save_profile').show();
-			window.location.replace("/labcas-ui/s/index.html?search="+params['search'])
+			window.location.replace("/labcas-ui/s/index.html?search=*")
 		},
 		error: function(e){
 			alert("Save failed, please reach out to "+localStorage.getItem("support_contact")+" for support.");
