@@ -226,11 +226,15 @@ function fill_collection_details_data(data){
 	var institutions = obj.Institution? obj.Institution.join(", ") : "";
 	var pis = obj.LeadPI? obj.LeadPI.join(", ") : "";
 	var orgs = obj.Organ? obj.Organ.join(", ") : "";
-	
+	var proids = [];
 	if (localStorage.getItem('environment').includes("edrn-labcas")){
 		var obj_arr = generate_edrn_links(obj);
 		protocols = obj_arr[3].join(",");
 		orgs = obj_arr[2].join(", ");
+                var proids = obj.ProtocolId? obj.ProtocolId : [];
+                $.each(proids, function(ind, pid) {
+                        get_protocol_info("2", pid, "shortname", populate_collection_details_protocol_shortname);
+		});
 	}else if(localStorage.getItem('environment').includes("mcl-labcas") || localStorage.getItem('environment').includes("labcas-dev")){
 		var obj_arr = generate_mcl_links(obj);
 		protocols = obj_arr[3].join(",");

@@ -1068,6 +1068,36 @@ function delete_search_profile(){
 
 }
 
+function populate_collection_details_protocol_shortname(shortname){
+	$("#collectiondetails-table tbody").append(
+            "<tr>"+
+		"<td class='text-right' valign='top' style='padding: 2px 8px;' width='30%'>Abbreviated Name:</td>"+
+		"<td class='text-left' valign='top' style='padding: 2px 8px;'>"+
+			shortname+
+		"</td>"+
+	"</tr>");
+}
+
+function get_protocol_info(program, pid, field, func){
+	console.log("GETTING PROTOCOL DATA1");
+	console.log(localStorage.getItem("ksdb_labcas_search_protocol_api")+program+localStorage.getItem("ksdb_split_key")+pid);
+	$.ajax({
+		url: localStorage.getItem("ksdb_labcas_search_protocol_api")+program+localStorage.getItem("ksdb_split_key")+pid,
+		type: 'GET',
+		dataType: 'json',
+		success: function (data) {
+			console.log("WOKRED");
+			wait(1000);
+			if (data.length > 0){
+				func(data[0].fields[field]);
+			}
+		},
+		error: function(e){
+		    console.log("Failed to grab search ksdb protocol data");
+		}
+	});
+
+}
 function get_search_profile(name){
 	var username = Cookies.get("user");
 	console.log("search_profiles for"+username);
