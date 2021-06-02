@@ -13,6 +13,8 @@
             <div id="nav_template"></div>
             <!-- End Navbar -->
             <div class="content">
+                <br>
+                <br>
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-lg-3 col-sm-6">
@@ -175,7 +177,9 @@
 		  	}
 		}
 		$('#breadcrumb').html(breadcrumb);
-        
+        	setTimeout(function(){
+                init_file_checkboxes('none');
+              },1000);
     });
 </script>
 

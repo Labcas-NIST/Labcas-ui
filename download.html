@@ -23,6 +23,7 @@
 <script>
 	
 	$().ready(function() {
+<<<<<<< HEAD
 		if (Cookies.get('user') == "Sign in"){
 			usage_agreement();
 		}else{
@@ -48,6 +49,28 @@
 					localStorage.setItem("download_list",JSON.stringify(files));
 					window.location.reload();
 				}
+=======
+		var files = JSON.parse(localStorage.getItem("download_list"));
+		var filesize = parseInt(localStorage.getItem("download_size"));
+		var filecount = Object.keys(files).length;
+		if (files && filecount > 0){
+			if ( filesize > 1000000000 ){
+				console.log("Files");
+				console.log(files);
+				console.log(filesize);
+				checkSize(Object.keys(files).length, humanFileSize(filesize), "1Gb");
+				return;
+			}
+			var download_type = "multiple";
+			if (filecount == 1){
+				download_type = "single";	
+			}
+			var first_file = Object.keys(files)[0];
+			var flag = download_file(first_file,download_type);
+			delete files[first_file];
+			wait(2000);
+			if (flag && flag == "popup_blocked"){
+>>>>>>> 4cb2dd81901a0eb96c8dae53dad0aa11f33a9429
 			}else{
 				console.log("Going back...");
 				window.location.replace(Cookies.get("login_redirect"));
