@@ -29,8 +29,7 @@
 						</div>
 						<center><i>While searching, use * for wildcards</i></center>
 					    </form>
-                                    <div class="toolbar">
-                                    </div>
+                                    <div id="loggedout_msg"><br><center><font color=green>Public data only - Please <a href="/labcas-ui/index.html">login</a> to see additional data.</font></center></div>
 
                                     <table id="collection-table" class="table" data-step=9 data-intro='Labcas list of collections'>
                                         <thead>
@@ -126,7 +125,11 @@
 	$( "#head_template" ).load("/labcas-ui/templates.html?11 #head_template");
 	$( "#nav_template" ).load("/labcas-ui/templates.html?11 #nav_template", function() {
             $( "#username_placeholder_second" ).html(Cookies.get('user'));
-            if (Cookies.get('user') == "Sign in"){$( "#username_placeholder_third" ).html(Cookies.get('user'));}
+            if (Cookies.get('user') == "Sign in"){$( "#username_placeholder_third" ).html(Cookies.get('user')); 
+		$("#loggedout_msg").show();
+	    }else{
+		$("#loggedout_msg").hide();
+		}
 	});
 	$( "#footer_template" ).load("/labcas-ui/templates.html #footer_template_"+localStorage.getItem("environment_name"));
         $( "#sidebar_placeholder" ).load("/labcas-ui/sidebar_"+localStorage.getItem("environment_name")+".html?9" );

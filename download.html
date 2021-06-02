@@ -23,31 +23,35 @@
 <script>
 	
 	$().ready(function() {
-		var files = JSON.parse(localStorage.getItem("download_list"));
-		var filesize = parseInt(localStorage.getItem("download_size"));
-		var filecount = files.length;
-		if (files && filecount > 0){
-			if ( filesize > 1000000000 ){
-				console.log("Files");
-				console.log(files);
-				console.log(filesize);
-				checkSize(files.length, humanFileSize(filesize), "1Gb");
-				return;
-			}
-			var download_type = "multiple";
-			if (filecount == 1){
-				download_type = "single";	
-			}
-			var flag = download_file(files.pop(),download_type);
-			wait(2000);
-			if (flag && flag == "popup_blocked"){
-			}else{
-				localStorage.setItem("download_list",JSON.stringify(files));
-				window.location.reload();
-			}
+		if (Cookies.get('user') == "Sign in"){
+			usage_agreement();
 		}else{
-			console.log("Going back...");
-			window.location.replace(Cookies.get("login_redirect"));
+			var files = JSON.parse(localStorage.getItem("download_list"));
+			var filesize = parseInt(localStorage.getItem("download_size"));
+			var filecount = files.length;
+			if (files && filecount > 0){
+				if ( filesize > 1000000000 ){
+					console.log("Files");
+					console.log(files);
+					console.log(filesize);
+					checkSize(files.length, humanFileSize(filesize), "1Gb");
+					return;
+				}
+				var download_type = "multiple";
+				if (filecount == 1){
+					download_type = "single";	
+				}
+				var flag = download_file(files.pop(),download_type);
+				wait(2000);
+				if (flag && flag == "popup_blocked"){
+				}else{
+					localStorage.setItem("download_list",JSON.stringify(files));
+					window.location.reload();
+				}
+			}else{
+				console.log("Going back...");
+				window.location.replace(Cookies.get("login_redirect"));
+			}
 		}
 	});
 </script>
@@ -57,7 +61,7 @@
                         <div class="modal-dialog" style="max-width: 620px">
                             <div class="modal-content" style="width: 620px">
                                 <div class="modal-header justify-content-center">
-                                    <div class="modal-profile">
+                                    <div id="icon_type" class="modal-profile">
                                         <i class="nc-icon nc-bell-55"></i>
                                     </div>
                                 </div>

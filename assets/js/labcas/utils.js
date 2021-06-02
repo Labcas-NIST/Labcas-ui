@@ -15,6 +15,10 @@ $().ready(function() {
         	$(this).prev(".btn").find(".fa").removeClass("fa-minus").addClass("fa-plus");
         });
 
+
+	query_labcas_api(localStorage.getItem('environment')+"/data-access-api/collections/select?q=*&facet=true&facet.limit=-1&wt=json&rows=0",get_labcas_collection_stats);
+	query_labcas_api(localStorage.getItem('environment')+"/data-access-api/datasets/select?q=*&facet=true&facet.limit=-1&wt=json&rows=0",get_labcas_dataset_stats);
+	query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=*&facet=true&facet.limit=-1&wt=json&rows=0",get_labcas_file_stats);
 	//Always do this, init functions
 	
 	//initiate clinical-ui-link
@@ -485,6 +489,53 @@ function checkWindow(win){
 	return "worked";
 }
 
+function usage_agreement(){
+	var agree_form = "<div class='col-md-12'  style='text-align:center'><h2>Data Download Terms</h2><div>";
+	agree_form += "<div class='col-md-12' style='text-align:left'><p>For investigators wishing to download files from Labcas, please fill out the form below, and will contact you by email and accept the data sharing/contribution agreement.  If a contributor is interested in contributing data, please send an email to <a href='mailto:Heather.Kincaid@jpl.nasa.gov'>Heather.Kincaid@jpl.nasa.gov</a> and we will provide ingest mechanisms. Questions can be sent to the same address.</p></div>";
+
+	agree_form += `<div class='col-md-12' style="text-align:left"><form id="registerFormValidation" action="" method="" novalidate="novalidate">
+                                <div class="header">Register Form</div>
+                                <div class="content">
+
+                                    <div class="form-group">
+                                        <label class="control-label">Email Address <star>*</star></label>
+                                        <input class="form-control" name="email" type="text" required="true" email="true" autocomplete="off" aria-required="true">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="control-label">Institution <star>*</star></label>
+                                        <input class="form-control" name="institution" id="institution" type="text" required="true" aria-required="true">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="control-label">Your role <star>*</star></label>
+                                        <input class="form-control" name="role" id="role" type="text" required="true" aria-required="true">
+                                    </div>
+
+                                </div>
+
+                                <div class="footer">
+                                    <div class="form-group pull-left">
+                                        <label class="checkbox">
+											<input id="checkbox41" type="checkbox">
+											<label for="checkbox41">
+												I agree with above terms of data sharing agreement.*
+											</label>
+                                        </label>
+                                    <br><div class="category"><star>*</star> Required fields</div>
+                                    </div>
+                                    <button type="submit" class="btn btn-info btn-fill pull-right">Submit</button>
+
+                                    <div class="clearfix"></div>
+                                </div>
+                            </form></div>`;
+
+	$('#alertHTML').html(agree_form);
+	$('#icon_type').html("<i class='nc-icon nc-cloud-download-93'></i>");
+	$('#errorModal').modal({backdrop: 'static', keyboard: false});
+	$('#errorModal').modal('show');
+}
+
 function checkSize(filecount, filesize, threshold){
 	$('#sizeHTML').html("There are <B><font color='red'>"+filecount+"</font></B> files with total size of <B><font color='red'>"+filesize+"</font></B>. This is more than the <B><font color='red'>"+threshold+"</font></B> recommended download size from a web browser. If you'd like to proceed, the browser will initiate a series of downloads, please keep your browser and internet connection open for the duration of the download. Alternatively, you may download the below script that can be run through your command prompt/terminal instead with minimal interferance.");
 	$('#sizeModal').modal({backdrop: 'static', keyboard: false});
@@ -645,6 +696,18 @@ function set_search_filters(params){
 	}else{
 		window.location.replace("/labcas-ui/s/index.html?search=*");
 	}
+}
+
+function get_labcas_collection_stats(data){
+	$("#collection_total_count").html(data.response.numFound);
+}
+
+function get_labcas_dataset_stats(data){
+	$("#dataset_total_count").html(data.response.numFound);
+}
+
+function get_labcas_file_stats(data){
+	$("#file_total_count").html(data.response.numFound);
 }
 
 function get_search_filters(){
@@ -937,7 +1000,7 @@ function showHistImage(hist_image){
 
 function orchistrate_find(query_folder, query_file, version, show_flag, fileid){
     var image_dsa_path = [];
-    var root_collection = "6034987d5f92b701da7ea93e";
+    var root_collection = localStorage.getItem("dsa_root_collection");
     var labcas_data_map = JSON.parse(localStorage.getItem("labcas_data")).collection_path_maps;
 
     //Specifically for qptiff files
