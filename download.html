@@ -25,20 +25,22 @@
 	$().ready(function() {
 		var files = JSON.parse(localStorage.getItem("download_list"));
 		var filesize = parseInt(localStorage.getItem("download_size"));
-		var filecount = files.length;
+		var filecount = Object.keys(files).length;
 		if (files && filecount > 0){
 			if ( filesize > 1000000000 ){
 				console.log("Files");
 				console.log(files);
 				console.log(filesize);
-				checkSize(files.length, humanFileSize(filesize), "1Gb");
+				checkSize(Object.keys(files).length, humanFileSize(filesize), "1Gb");
 				return;
 			}
 			var download_type = "multiple";
 			if (filecount == 1){
 				download_type = "single";	
 			}
-			var flag = download_file(files.pop(),download_type);
+			var first_file = Object.keys(files)[0];
+			var flag = download_file(first_file,download_type);
+			delete files[first_file];
 			wait(2000);
 			if (flag && flag == "popup_blocked"){
 			}else{

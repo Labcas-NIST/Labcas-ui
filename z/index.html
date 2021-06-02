@@ -17,6 +17,8 @@
             <div id="nav_template"></div>
             <!-- End Navbar -->
             <div class="content">
+                <br>
+                <br>
                 <div class="container-fluid">
                     <div class="row">
                     	<div class="col-md-12">
@@ -102,6 +104,7 @@
         $( "#nav_template" ).load("/labcas-ui/templates.html?2 #nav_template", function() {
             $( "#username_placeholder_second" ).html(Cookies.get('user'));
             if (Cookies.get('user') == "Sign in"){$( "#username_placeholder_third" ).html(Cookies.get('user'));}
+            set_cart_status();
         });
 
 	$( "#footer_template" ).load("/labcas-ui/templates.html #footer_template_"+localStorage.getItem("environment_name"));
@@ -132,9 +135,12 @@
 		$('#breadcrumb').html(breadcrumb);
 
         var get_var = get_url_vars();
-	Cookies.set("login_redirect", "/labcas-ui/z/index.html?fileid="+get_var["fileid"])
-	console.log("ROCK");
+        if (get_var["fileid"]){
+	      Cookies.set("login_redirect", "/labcas-ui/z/index.html?fileid="+get_var["fileid"])
+        }
         showHistImage(get_var["fileid"]);
+
+
 
 	window.onbeforeunload = function (event) {
 	    if (typeof event == 'undefined') {
