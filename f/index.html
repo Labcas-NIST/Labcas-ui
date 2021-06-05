@@ -146,7 +146,7 @@
 
         $( "#head_template" ).load("/labcas-ui/templates.html #head_template");
         $( "#nav_template" ).load("/labcas-ui/templates.html?2 #nav_template", function() {
-            $( "#username_placeholder_second" ).html(Cookies.get('user'));
+            $( "#username_placeholder_second" ).text(Cookies.get('user'));
             if (Cookies.get('user') == "Sign in"){$( "#username_placeholder_third" ).html(Cookies.get('user'));}
         });
 

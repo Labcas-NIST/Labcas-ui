@@ -194,8 +194,8 @@
 
        $( "#head_template" ).load("/labcas-ui/templates.html #head_template");
         $( "#nav_template" ).load("/labcas-ui/templates.html?2 #nav_template", function() {
-            $( "#username_placeholder_second" ).html(Cookies.get('user'));
-            if (Cookies.get('user') == "Sign in"){$( "#username_placeholder_third" ).html(Cookies.get('user'));}
+            $( "#username_placeholder_second" ).text(Cookies.get('user'));
+            if (Cookies.get('user') == "Sign in"){$( "#username_placeholder_third" ).text(Cookies.get('user'));}
         });
         $( "#favorite_stat_template" ).load("/labcas-ui/templates.html #favorite_stat_template");
         $( "#file_stat_template" ).load("/labcas-ui/templates.html #file_stat_template");
@@ -210,7 +210,7 @@
 
         Cookies.set("login_redirect", "/labcas-ui/c/index.html?collection_id="+get_var["collection_id"]);
         setup_labcas_data("collectiondatasets",'id:"'+get_var["collection_id"]+'"', 'CollectionId:"'+get_var["collection_id"]+'"');
-        $("#breadcrumb_collection").html(get_var["collection_id"].replace(/_/g," "));
+        $("#breadcrumb_collection").text(get_var["collection_id"].replace(/_/g," "));
 	setTimeout(function(){
                 init_file_checkboxes('none');
               },1000);

@@ -175,8 +175,8 @@
 
 	$( "#head_template" ).load("/labcas-ui/templates.html #head_template");
         $( "#nav_template" ).load("/labcas-ui/templates.html?2 #nav_template", function() {
-            $( "#username_placeholder_second" ).html(Cookies.get('user'));
-            if (Cookies.get('user') == "Sign in"){$( "#username_placeholder_third" ).html(Cookies.get('user'));}
+            $( "#username_placeholder_second" ).text(Cookies.get('user'));
+            if (Cookies.get('user') == "Sign in"){$( "#username_placeholder_third" ).text(Cookies.get('user'));}
         });
         $( "#favorite_stat_template" ).load("/labcas-ui/templates.html #favorite_stat_template");
         $( "#file_stat_template" ).load("/labcas-ui/templates.html #file_stat_template");
@@ -219,15 +219,15 @@
 
     $("#check_all").change(function() {
         if(this.checked) {
-            $('#dicom_sel').html("View All Images");
-            $('#download_sel').html("Download All");
+            $('#dicom_sel').text("View All Images");
+            $('#download_sel').text("Download All");
             $('#download_sel').attr("onclick", "download_dataset('"+dataset_id+"')");
             $('#dicom_sel').attr("onclick","submitImage('files-table','"+dataset_id+"')");
 
         }else{
-            $('#dicom_sel').html("View Selected Image(s)");
+            $('#dicom_sel').text("View Selected Image(s)");
             $('#dicom_sel').attr("onclick","submitImage('files-table')");
-            $('#download_sel').html("Download Selected");
+            $('#download_sel').text("Download Selected");
             $('#download_sel').attr("onclick", "download_files('files-table')");
             localStorage.setItem('dicoms',JSON.stringify([]));
             localStorage.setItem('download_list',JSON.stringify({}));
