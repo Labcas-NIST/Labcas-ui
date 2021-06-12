@@ -101,10 +101,10 @@
 <!-- Light Dashboard DEMO methods, don't include it in your project! -->
 <script src="/labcas-ui/assets/js/demo.js"></script>
 <script src="/labcas-ui/assets/js/plugins/js.cookie.js"></script>
-<script src="/labcas-ui/assets/js/labcas/authentication.js?104"></script>
+<script src="/labcas-ui/assets/js/labcas/authentication.js?version=2.3.1"></script>
 <script src="/labcas-ui/assets/js/labcas/labcas-sidebar.js"></script>
-<script src="/labcas-ui/assets/js/labcas/utils.js?105"></script>
-<script src="/labcas-ui/assets/js/labcas/search.js?102"></script>
+<script src="/labcas-ui/assets/js/labcas/utils.js?version=2.3.1"></script>
+<script src="/labcas-ui/assets/js/labcas/search.js?version=2.3.1"></script>
 <script src="/labcas-ui/assets/js/intro.js?101"></script>
 <script type="text/javascript">
     
@@ -124,13 +124,13 @@
 	initCookies();
 	//Lead header scripts
     	
-	$( "#head_template" ).load("/labcas-ui/templates.html?11 #head_template");
-	$( "#nav_template" ).load("/labcas-ui/templates.html?11 #nav_template", function() {
+	$( "#head_template" ).load("/labcas-ui/templates.html?version=2.3.1 #head_template");
+	$( "#nav_template" ).load("/labcas-ui/templates.html?version=2.3.1 #nav_template", function() {
             $( "#username_placeholder_second" ).html(Cookies.get('user'));
             if (Cookies.get('user') == "Sign in"){$( "#username_placeholder_third" ).html(Cookies.get('user'));}
 	});
 	$( "#footer_template" ).load("/labcas-ui/templates.html #footer_template_"+localStorage.getItem("environment_name"));
-        $( "#sidebar_placeholder" ).load("/labcas-ui/sidebar_"+localStorage.getItem("environment_name")+".html?9" );
+        $( "#sidebar_placeholder" ).load("/labcas-ui/sidebar_"+localStorage.getItem("environment_name")+".html?version=2.3.1" );
 
     	setup_labcas_data("collections","*:*");
         window.operateEvents = {

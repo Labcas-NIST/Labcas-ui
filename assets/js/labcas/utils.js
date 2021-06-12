@@ -951,17 +951,23 @@ function submitImageData(formname, dicom){
 		});
             }
 	}else{
+        console.log("HEREHERE2");
         $('#' + formname + ' input[type="checkbox"]').each(function() {
+            console.log("HH2");
             if ($(this).is(":checked") && accepted_image_check($(this).val())) {
+                console.log("HH2");
                 if ($(this).val().endsWith(".dcm") || $(this).val().endsWith(".dicom")){
+                    console.log("HH");
                      image_type = "dicoms";
-                     dicoms_list.push(localStorage.getItem('environment')+"/data-access-api/download?id="+$(dicom).val());
+                     dicoms_list.push(localStorage.getItem('environment')+"/data-access-api/download?id="+$(this).val());
                 }else{
-		     image_list.push(localStorage.getItem('environment')+"/data-access-api/download?id="+$(this).val());
-		     histomics_list.push([$(this).data("loc"),$(this).data("name"),$(this).data("version"), $(this).val()]);
-		}
+                     image_list.push(localStorage.getItem('environment')+"/data-access-api/download?id="+$(this).val());
+                     histomics_list.push([$(this).data("loc"),$(this).data("name"),$(this).data("version"), $(this).val()]);
+                }
             }
         });
+        console.log(dicoms_list);
+        console.log(histomics_list);
 	}
     }
     
@@ -977,10 +983,18 @@ function submitImageData(formname, dicom){
 	    Cookies.set("login_redirect", "/labcas-ui/s/index.html?search="+get_var["search"].replace("&","%26"))
     }
     console.log(image_type);
-    if (formname == "cart_dicom"){
-        window.location.replace("/labcas-ui/i/index.html");
+    if (formname.startsWith("cart_")){
+        if (formname == "cart_dicom"){
+            window.location.replace("/labcas-ui/i/index.html");
+        }else{
+            window.location.replace("/labcas-ui/z/index.html");
+        }
     }else{
-        window.location.replace("/labcas-ui/z/index.html");
+       if (image_type == "dicoms"){
+           window.location.replace("/labcas-ui/i/index.html");
+       }else{
+          window.location.replace("/labcas-ui/z/index.html");
+       }
     }
 }
 
@@ -1023,9 +1037,7 @@ function showHistImage(hist_image){
     });*/
 
     if (hist_image && hist_image != ""){
-	console.log("HEREHERE");
-	console.log(hist_image);
-	setup_labcas_file_data("fileimage",'id:"'+encodeURI(hist_image).replace("&","%26")+'"', 'id:'+hist_image+'*'); 
+        setup_labcas_file_data("fileimage",'id:"'+encodeURI(hist_image).replace("&","%26")+'"', 'id:'+hist_image+'*'); 
     }else{
        images = JSON.parse(localStorage.getItem('image'));
        images_data = JSON.parse(localStorage.getItem('image_data'));

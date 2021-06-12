@@ -92,26 +92,25 @@
 <link href="/labcas-ui/assets/css/labcas/custom.css" rel="stylesheet" />
 <script src="/labcas-ui/assets/js/plugins/js.cookie.js"></script>
 <script src="/labcas-ui/assets/js/labcas/labcas-sidebar.js"></script>
-<script src="/labcas-ui/assets/js/labcas/authentication.js?101"></script>
-<script src="/labcas-ui/assets/js/labcas/utils.js?104"></script>
-<script src="/labcas-ui/assets/js/labcas/search.js?100"></script>
+<script src="/labcas-ui/assets/js/labcas/authentication.js?version=2.3.1"></script>
+<script src="/labcas-ui/assets/js/labcas/utils.js?version=2.3.1"></script>
+<script src="/labcas-ui/assets/js/labcas/search.js?version=2.3.1"></script>
 <script type="text/javascript">
     $('#viewer_content').hide(1);
 	initCookies();
     $(document).ready(function() {
 
         $( "#head_template" ).load("/labcas-ui/templates.html #head_template");
-        $( "#nav_template" ).load("/labcas-ui/templates.html?2 #nav_template", function() {
+        $( "#nav_template" ).load("/labcas-ui/templates.html?version=2.3.1 #nav_template", function() {
             $( "#username_placeholder_second" ).html(Cookies.get('user'));
             if (Cookies.get('user') == "Sign in"){$( "#username_placeholder_third" ).html(Cookies.get('user'));}
             set_cart_status();
         });
 
 	$( "#footer_template" ).load("/labcas-ui/templates.html #footer_template_"+localStorage.getItem("environment_name"));
-        $( "#sidebar_placeholder" ).load("/labcas-ui/sidebar_"+localStorage.getItem("environment_name")+".html?9" );
+        $( "#sidebar_placeholder" ).load("/labcas-ui/sidebar_"+localStorage.getItem("environment_name")+".html?version=2.3.1" );
 
         
-    });
 		var breadcrumb = '<li class="breadcrumb-item"><a href="/labcas-ui/m/index.html">Home</a></li>';
         if (Cookies.get("login_redirect") && Cookies.get("login_redirect").includes("dataset_id=")){
             var dataset_id = Cookies.get("login_redirect").split("dataset_id=")[1];
@@ -132,13 +131,51 @@
             breadcrumb += '<li class="breadcrumb-item active" aria-current="page"><a href="'+Cookies.get("login_redirect")+'">Search</a></li>';
             breadcrumb += '<li class="breadcrumb-item active" aria-current="page">Image Viewer</li>';
         }
+        var get_var = get_url_vars();
+        var images = [];
+        if (localStorage.getItem('image_data') && localStorage.getItem('image_data')!= ""){
+            images = JSON.parse(localStorage.getItem('image_data'));
+        }
+
+        if (!(Cookies.get("login_redirect") && Cookies.get("login_redirect").includes("dataset_id=")) && !(Cookies.get("login_redirect") && Cookies.get("login_redirect").includes("search=")) && (images && images.length > 0 && images[0].length == 4)){
+            var data_split = images[0][3].split("/");
+
+            var url_prefix = "";
+            for (i = 0; i < data_split.length-1; i++) {
+                if(i == 0){
+                    breadcrumb += '<li class="breadcrumb-item active" aria-current="page"><a href="/labcas-ui/c/index.html?collection_id='+data_split[i]+'">'+data_split[i].replace(/_/g," ")+'</a></li>';
+                }else if (i == data_split.length -1){
+                    breadcrumb += '<li class="breadcrumb-item active" aria-current="page"><a href="'+Cookies.get("login_redirect")+'">'+data_split[i].replace(/_/g," ")+'</a></li>';
+                }else{
+                    breadcrumb += '<li class="breadcrumb-item active" aria-current="page"><a href="/labcas-ui/d/index.html?dataset_id='+data_split.slice(0,i+1).join("/")+'">'+data_split[i].replace(/_/g," ")+'</a></li>';
+                }
+            }
+            breadcrumb += '<li class="breadcrumb-item active" aria-current="page">Image Viewer</li>';
+        }
+        if (!(Cookies.get("login_redirect") && Cookies.get("login_redirect").includes("dataset_id=")) && !(Cookies.get("login_redirect") && Cookies.get("login_redirect").includes("search=")) && get_var["fileid"]){
+            var data_split = get_var["fileid"].split("/");
+
+            var url_prefix = "";
+            for (i = 0; i < data_split.length-1; i++) {
+                if(i == 0){
+                    breadcrumb += '<li class="breadcrumb-item active" aria-current="page"><a href="/labcas-ui/c/index.html?collection_id='+data_split[i]+'">'+data_split[i].replace(/_/g," ")+'</a></li>';
+                }else if (i == data_split.length -1){
+                    breadcrumb += '<li class="breadcrumb-item active" aria-current="page"><a href="'+Cookies.get("login_redirect")+'">'+data_split[i].replace(/_/g," ")+'</a></li>';
+                }else{
+                    breadcrumb += '<li class="breadcrumb-item active" aria-current="page"><a href="/labcas-ui/d/index.html?dataset_id='+data_split.slice(0,i+1).join("/")+'">'+data_split[i].replace(/_/g," ")+'</a></li>';
+                }
+            }
+            breadcrumb += '<li class="breadcrumb-item active" aria-current="page">Image Viewer</li>';
+        }
 		$('#breadcrumb').html(breadcrumb);
 
-        var get_var = get_url_vars();
         if (get_var["fileid"]){
 	      Cookies.set("login_redirect", "/labcas-ui/z/index.html?fileid="+get_var["fileid"])
         }
+        console.log("HEREHERE3");
+        console.log(get_var["fileid"]);
         showHistImage(get_var["fileid"]);
+    });
 
 
 
