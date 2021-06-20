@@ -25,7 +25,7 @@ $().ready(function() {
 });
 function redirect_to_login(){
 	console.log("Attempting to redirect to login...");
-	//window.location.replace("/labcas-ui/index.html");
+	window.location.replace("/labcas-ui/index.html");
 }
 function initCookies(){
 	if(!Cookies.get("token") || Cookies.get("token") == "None"){
