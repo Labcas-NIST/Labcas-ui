@@ -246,7 +246,7 @@ function fill_collections_analytics(data){
 	});
 	
 	
-	init_labcas_data_distribution("organ_distribution", "organ_filters", second_graph_organ, "Organ");
+	//init_labcas_data_distribution("organ_distribution", "organ_filters", second_graph_organ, "Organ");
 	//init_labcas_data_distribution("datacategory_filters", second_graph_collabgroup, "DataCategory");
 	/*init_labcas_data_boxplot("labcas_boxplot_distribution",second_graph_leadpi);*/
 	//init_labcas_data_distribution("disc_filters", second_graph_discipline, "Discipline");
@@ -434,7 +434,7 @@ function fill_files_analytics(data){
           count += 1;
 
         }
-        init_labcas_sunburst_distribution("labcas_filetype_distribution", "filetype_filters", filetypes, filetypecounts, filetypes, 'File Type', "File Count", "FileType");
+        //init_labcas_sunburst_distribution("labcas_filetype_distribution", "filetype_filters", filetypes, filetypecounts, filetypes, 'File Type', "File Count", "FileType");
 
 	var second_graph_leadpi = [[],[]];
 	$.each(data.facet_counts.facet_fields["LeadPI"], function(key, val) { 
@@ -445,7 +445,7 @@ function fill_files_analytics(data){
             }
 	});
 
-	init_labcas_data_boxplot("labcas_boxplot_distribution","pi_filters", second_graph_leadpi, "Lead PI", "File Count", "LeadPI");
+	//init_labcas_data_boxplot("labcas_boxplot_distribution","pi_filters", second_graph_leadpi, "Lead PI", "File Count", "LeadPI");
 	
 	$("#files_len").html(size);
 }

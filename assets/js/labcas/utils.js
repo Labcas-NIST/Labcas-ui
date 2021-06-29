@@ -15,10 +15,11 @@ $().ready(function() {
         	$(this).prev(".btn").find(".fa").removeClass("fa-minus").addClass("fa-plus");
         });
 
-
-	query_labcas_api(localStorage.getItem('environment')+"/data-access-api/collections/select?q=*&facet=true&facet.limit=-1&wt=json&rows=0",get_labcas_collection_stats);
-	query_labcas_api(localStorage.getItem('environment')+"/data-access-api/datasets/select?q=*&facet=true&facet.limit=-1&wt=json&rows=0",get_labcas_dataset_stats);
-	query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=*&facet=true&facet.limit=-1&wt=json&rows=0",get_labcas_file_stats);
+	if (!(location.href.includes("/labcas-ui/index.html") || location.href.endsWith("/labcas-ui/") || location.href.endsWith("/labcas-ui"))){
+		query_labcas_api(localStorage.getItem('environment')+"/data-access-api/collections/select?q=*&facet=true&facet.limit=-1&wt=json&rows=0",get_labcas_collection_stats);
+		query_labcas_api(localStorage.getItem('environment')+"/data-access-api/datasets/select?q=*&facet=true&facet.limit=-1&wt=json&rows=0",get_labcas_dataset_stats);
+		query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=*&facet=true&facet.limit=-1&wt=json&rows=0",get_labcas_file_stats);
+	}
 	//Always do this, init functions
 	
 	//initiate clinical-ui-link
@@ -29,7 +30,7 @@ $().ready(function() {
 });
 function redirect_to_login(){
 	console.log("Attempting to redirect to login...");
-	//window.location.replace("/labcas-ui/index.html");
+	window.location.replace("/labcas-ui/index.html");
 }
 function initCookies(){
 	if(!Cookies.get("token") || Cookies.get("token") == "None"){
@@ -494,7 +495,7 @@ function checkWindow(win){
 }
 
 function usage_agreement(){
-	var agree_form = "<div class='col-md-12'  style='text-align:center'><h2>Data Download Terms</h2><div>";
+	/*var agree_form = "<div class='col-md-12'  style='text-align:center'><h2>Data Download Terms</h2><div>";
 	agree_form += "<div class='col-md-12' style='text-align:left'><p>For investigators wishing to download files from Labcas, please fill out the form below, and will contact you by email and accept the data sharing/contribution agreement.  If a contributor is interested in contributing data, please send an email to <a href='mailto:Heather.Kincaid@jpl.nasa.gov'>Heather.Kincaid@jpl.nasa.gov</a> and we will provide ingest mechanisms. Questions can be sent to the same address.</p></div>";
 
 	agree_form += `<div class='col-md-12' style="text-align:left"><form id="registerFormValidation" action="" method="" novalidate="novalidate">
@@ -537,7 +538,9 @@ function usage_agreement(){
 	$('#alertHTML').html(agree_form);
 	$('#icon_type').html("<i class='nc-icon nc-cloud-download-93'></i>");
 	$('#errorModal').modal({backdrop: 'static', keyboard: false});
-	$('#errorModal').modal('show');
+	$('#errorModal').modal('show');*/
+	$('#acceptHTML').html(localStorage.getItem("accept_msg"));
+	$('#acceptModal').modal('show');
 }
 
 function checkSize(filecount, filesize, threshold){

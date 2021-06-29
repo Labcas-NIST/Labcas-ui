@@ -376,7 +376,7 @@ function fill_collections_analytics(data){
 	});
 	
 	init_labcas_data_distribution_search("organ_distribution", "organ_filters", second_graph_organ, "Organ");
-	init_labcas_data_distribution("organ_filters", second_graph_organ, "Organ");
+	//init_labcas_data_distribution("organ_filters", second_graph_organ, "Organ");
 	init_labcas_data_distribution("datacategory_filters", second_graph_collabgroup, "DataCategory");
 	init_labcas_data_distribution("disc_filters", second_graph_discipline, "Discipline");
 	

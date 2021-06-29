@@ -23,63 +23,57 @@
 <script>
 	
 	$().ready(function() {
-<<<<<<< HEAD
-		if (Cookies.get('user') == "Sign in"){
+		if (Cookies.get('user') == "Sign in" && !Cookies.get('dua_accepted')){
 			usage_agreement();
 		}else{
 			var files = JSON.parse(localStorage.getItem("download_list"));
 			var filesize = parseInt(localStorage.getItem("download_size"));
-			var filecount = files.length;
+			var filecount = Object.keys(files).length;
 			if (files && filecount > 0){
 				if ( filesize > 1000000000 ){
 					console.log("Files");
 					console.log(files);
 					console.log(filesize);
-					checkSize(files.length, humanFileSize(filesize), "1Gb");
+					checkSize(Object.keys(files).length, humanFileSize(filesize), "1Gb");
 					return;
 				}
 				var download_type = "multiple";
 				if (filecount == 1){
 					download_type = "single";	
 				}
-				var flag = download_file(files.pop(),download_type);
+				var first_file = Object.keys(files)[0];
+				var flag = download_file(first_file,download_type);
+				delete files[first_file];
 				wait(2000);
 				if (flag && flag == "popup_blocked"){
 				}else{
-					localStorage.setItem("download_list",JSON.stringify(files));
-					window.location.reload();
+					console.log("Going back...");
+					window.location.replace(Cookies.get("login_redirect"));
 				}
-=======
-		var files = JSON.parse(localStorage.getItem("download_list"));
-		var filesize = parseInt(localStorage.getItem("download_size"));
-		var filecount = Object.keys(files).length;
-		if (files && filecount > 0){
-			if ( filesize > 1000000000 ){
-				console.log("Files");
-				console.log(files);
-				console.log(filesize);
-				checkSize(Object.keys(files).length, humanFileSize(filesize), "1Gb");
-				return;
-			}
-			var download_type = "multiple";
-			if (filecount == 1){
-				download_type = "single";	
-			}
-			var first_file = Object.keys(files)[0];
-			var flag = download_file(first_file,download_type);
-			delete files[first_file];
-			wait(2000);
-			if (flag && flag == "popup_blocked"){
->>>>>>> 4cb2dd81901a0eb96c8dae53dad0aa11f33a9429
-			}else{
-				console.log("Going back...");
-				window.location.replace(Cookies.get("login_redirect"));
 			}
 		}
 	});
 </script>
 </header>
 <body>
+	 <div class="modal fade modal-mini modal-primary" id="acceptModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" style="max-width: 1000px">
+                            <div class="modal-content" style="width: 1000px">
+                                <div class="modal-header justify-content-center">
+                                    <div class="modal-profile">
+                                        <i class="nc-icon nc-bell-55"></i>
+                                    </div>
+                                </div>
+                                <div class="modal-body">
+                                    <p><div id="acceptHTML"></div></p>
+                                </div>
+                                <div class="modal-footer">
+                                    <!--<center><button type="button" onclick="login_redirect();" class="btn btn-success btn-simple btn-link" data-dismiss="modal"><B>Accept</B></button></center>-->
+                                        <button type="submit" onclick="Cookies.set('dua_accepted',true); window.location.reload();" class="btn btn-info btn-fill pull-right" data-dismiss="modal">Accept</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 	<div class="modal fade modal-mini modal-primary" id="errorModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
                         <div class="modal-dialog" style="max-width: 620px">
                             <div class="modal-content" style="width: 620px">
