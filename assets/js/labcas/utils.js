@@ -25,7 +25,11 @@ $().ready(function() {
 });
 function redirect_to_login(){
 	console.log("Attempting to redirect to login...");
-	window.location.replace("/labcas-ui/index.html");
+    if (localStorage.getItem("allow_redirect") == "true"){
+        window.location.replace("/labcas-ui/index.html");
+    }else{
+
+    }
 }
 function initCookies(){
 	if(!Cookies.get("token") || Cookies.get("token") == "None"){
@@ -999,43 +1003,49 @@ function submitImageData(formname, dicom){
 }
 
 function changeFrameSrc(frame, src, fileid){
+            console.log("OMERO2");
+            console.log(fileid);
     $('#'+frame).attr('src', src);
     $('#img_frame').contents().find('#h-navbar-brand').html('Image Viewer');
     window.history.replaceState(null, null, "?fileid="+fileid);
 }
 
-
-function showHistImage(hist_image){
-    /*images = JSON.parse(localStorage.getItem('image'));
-    console.log(JSON.stringify({'token':Cookies.get('token'), 'image':images}));
-    $.ajax({
-        url: "http://david-server.local/cgi-bin/labcas_dsa_api.py",
-        type: 'POST',
-        data: JSON.stringify({'token':Cookies.get('token'), 'image':images}),
-        dataType: "json",
-        success: function (data) {
-            $.each(data['image_id_list'], function( key, val ) {
-                $("#image_list_table tbody").append("<tr><td><a href='#' onclick=\"changeFrameSrc('img_frame','http://localhost:8009/histomics#?image="+val['id']+"')\">"+val['name']+"</a></td></tr>");
-            });
-            // Updates needed to ensure css displays correctly within iframe
-            document.getElementById('img_frame').onload = function() {
-                console.log("Iframe loaded");
-            };
-            changeFrameSrc("img_frame", "http://localhost:8009/histomics#?image="+data['image_id_list'][0]['id']);
+function showOmeroImage(hist_image){
+    /*if (hist_image && hist_image != ""){
+        setup_labcas_file_data("fileimage",'id:"'+encodeURI(hist_image).replace("&","%26")+'"', 'id:'+hist_image+'*');
+    }else{*/
+       //images = JSON.parse(localStorage.getItem('image'));
+       images_data = JSON.parse(localStorage.getItem('image_data'));
+       show_flag = true;
+       $.each(images_data, function( key, val ) {
+          console.log("new");
+          console.log(val);
+          var fileid = val[3];
+          var query_file = val[1];
+          var query_folder = val[0];
+          var omero_id = val[4];
+          var version = val[2];
+          if (show_flag){
+            console.log("OMERO");
+            console.log(omero_id);
+            orchistrate_omero_find(query_folder, query_file, version, show_flag, fileid, omero_id);
+          }
+          show_flag = false;
+            var download_cmd = "download_file('"+fileid+"','single');";
+            var details_cmd = "window.open(\"/labcas-ui/f/index.html?file_id="+fileid+"\");";
+            $("#image_list_table tbody").append("<tr ><td  style='padding-left: 5px; word-wrap: break-word;'><a style='word-wrap: break-word;' href='#' onclick=\"changeFrameSrc('img_frame','"+localStorage.getItem("omero_image_viewer")+omero_id+"', '"+omero_id+"')\">"+decodeURIComponent(query_file)+"</a></td><td class='td-actions text-right'><button type='button' rel='detailbutton' title='Details' style='padding:0px' class='btn btn-info btn-simple btn-link' onclick='"+details_cmd+"'><i class='fa fa-info-circle'></i></button>"+'<button type="button" rel="downloadbutton" title="Download" class="btn btn-success btn-simple btn-link" onclick="'+download_cmd+'"><i class="fa fa-download"></i></button></td></tr>');
+            /*if (show_flag){
                 $('#loading_viewer').hide();
                 $('#viewer_content').show();
-                wait(1000);
-                $('#img_frame').contents().find('#h-navbar-brand').html('Image Viewer');
-        },
-        error: function(e){
-            console.log("Image view failed");
-            if (!(localStorage.getItem("logout_alert") && localStorage.getItem("logout_alert") == "On")){
-                   localStorage.setItem("logout_alert","On");
-                 alert("You are currently logged out. Redirecting you to log in.");
-            }
-        }
-    });*/
+                changeFrameSrc("img_frame", localStorage.getItem("dsa_image_viewer")+"?image="+filedata[0]._id, fileid);
+            }*/
+       });
+       localStorage.setItem("image_data","");
+    localStorage.setItem("image","");
+    //}
+}
 
+function showHistImage(hist_image){
     if (hist_image && hist_image != ""){
         setup_labcas_file_data("fileimage",'id:"'+encodeURI(hist_image).replace("&","%26")+'"', 'id:'+hist_image+'*'); 
     }else{
@@ -1079,12 +1089,21 @@ function set_cart_status (){
         });
 
         $('#image_size').html(imagesize);
+        $('#omero_size').html(imagesize);
         $('#dicom_size').html(dicomsize);
+}
+
+function orchistrate_omero_find(query_folder, query_file, version, show_flag, fileid, omero_id){
+    console.log("iframe");
+    console.log(localStorage.getItem("omero_image_viewer")+query_file);
+    changeFrameSrc("img_frame", localStorage.getItem("omero_image_viewer")+omero_id, omero_id);
+    $('#loading_viewer').hide();
+    $('#viewer_content').show();
 }
 
 function orchistrate_find(query_folder, query_file, version, show_flag, fileid){
     var image_dsa_path = [];
-    var root_collection = "6034987d5f92b701da7ea93e";
+    var root_collection = localStorage.getItem("root_dsa_collection");
     var labcas_data_map = JSON.parse(localStorage.getItem("labcas_data")).collection_path_maps;
 
     //Specifically for qptiff files
