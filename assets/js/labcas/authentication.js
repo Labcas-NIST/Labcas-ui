@@ -500,8 +500,8 @@ function fill_file_image_viewer_data(data){
 	console.log("GOTHERE");
 	if (accepted_image_check(data.response.docs[0].FileName)){
 		var filename = data.response.docs[0].FileName ? data.response.docs[0].FileName : "";
-                var version = data.response.docs[0].DatasetVersion ? data.response.docs[0].DatasetVersion : "";
-                var fileloc = data.response.docs[0].FileLocation ? data.response.docs[0].FileLocation : "";
+        var version = data.response.docs[0].DatasetVersion ? data.response.docs[0].DatasetVersion : "";
+        var fileloc = data.response.docs[0].FileLocation ? data.response.docs[0].FileLocation : "";
 		var image_list = [];
 
 		var histomics_list = [];
@@ -525,10 +525,12 @@ function fill_file_image_viewer_data(data){
 			  show_flag = false;
 			  orchistrate_find(val[0], val[1], val[2], show_flag, val[3]);
 		  }
-	       });
+       });
 	}
-
 }
+
+
+
 function fill_datasets_children(data){
 	data.response.docs.sort(dataset_compare_sort);
         var dataset_html = "";

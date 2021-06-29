@@ -238,11 +238,11 @@
 <script src="/labcas-ui/assets/js/demo.js"></script>
 <script src="/labcas-ui/assets/js/plugins/js.cookie.js"></script>
 <script src="/labcas-ui/assets/js/labcas/labcas-sidebar.js"></script>
-<script src="/labcas-ui/assets/js/labcas/authentication.js?111"></script>
-<script src="/labcas-ui/assets/js/labcas/utils.js?105"></script>
-<script src="/labcas-ui/assets/js/labcas/search.js?102"></script>
+<script src="/labcas-ui/assets/js/labcas/authentication.js?version=2.3.1"></script>
+<script src="/labcas-ui/assets/js/labcas/utils.js?version=2.3.1"></script>
+<script src="/labcas-ui/assets/js/labcas/search.js?version=2.3.1"></script>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-<script src="/labcas-ui/assets/js/labcas/dashboard_search.js?2"></script>
+<script src="/labcas-ui/assets/js/labcas/dashboard_search.js?version=2.3.1"></script>
 <script type="text/javascript">
 	document.onreadystatechange = function () {
 	  var state = document.readyState
@@ -255,18 +255,18 @@
 	      },1000);
 	  }
 	}
-	$( "#head_template" ).load("/labcas-ui/templates.html #head_template");
-        $( "#favorite_stat_template" ).load("/labcas-ui/templates.html #favorite_stat_template");
-        $( "#file_stat_template" ).load("/labcas-ui/templates.html #file_stat_template");
-        $( "#dataset_stat_template" ).load("/labcas-ui/templates.html #dataset_stat_template");
-        $( "#collection_stat_template" ).load("/labcas-ui/templates.html #collection_stat_template");
+	$( "#head_template" ).load("/labcas-ui/templates.html?version=2.3.1 #head_template");
+        $( "#favorite_stat_template" ).load("/labcas-ui/templates.html?version=2.3.1 #favorite_stat_template");
+        $( "#file_stat_template" ).load("/labcas-ui/templates.html?version=2.3.1 #file_stat_template");
+        $( "#dataset_stat_template" ).load("/labcas-ui/templates.html?version=2.3.1 #dataset_stat_template");
+        $( "#collection_stat_template" ).load("/labcas-ui/templates.html?version=2.3.1 #collection_stat_template");
 
-        $( "#footer_template" ).load("/labcas-ui/templates.html #footer_template_"+localStorage.getItem("environment_name"));
-        $( "#sidebar_placeholder" ).load("/labcas-ui/sidebar_"+localStorage.getItem("environment_name")+".html?9" );
+        $( "#footer_template" ).load("/labcas-ui/templates.html?version=2.3.1 #footer_template_"+localStorage.getItem("environment_name"));
+        $( "#sidebar_placeholder" ).load("/labcas-ui/sidebar_"+localStorage.getItem("environment_name")+".html?version=2.3.1" );
 
     $(document).ready(function() {
 	initCookies();
-        $( "#nav_template" ).load("/labcas-ui/templates.html?2 #nav_template", function() {
+        $( "#nav_template" ).load("/labcas-ui/templates.html?version=2.3.1 #nav_template", function() {
             $( "#username_placeholder_second" ).html(Cookies.get('user'));
             if (Cookies.get('user') == "Sign in"){$( "#username_placeholder_third" ).html(Cookies.get('user'));}
 	    if (Cookies.get('user') == "Sign in"){$( "#username_placeholder_third" ).html(Cookies.get('user')); 

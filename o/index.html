@@ -39,7 +39,7 @@
                                 </table>
                             </div>
                             <div class="col-md-9" style="overflow: hidden; padding-left: 0px">
-                                        <iframe id="img_frame" style="position: relative;top: -50px; border-top:1px;" frameBorder="0" height="900px" width="100%" onload="testtest();"></iframe>
+                                        <iframe id="img_frame" style="position: relative;top: -40px; border-top:1px;" frameBorder="0" height="900px" width="100%" onload="testtest();"></iframe>
                             </div>
                         </div>
                     </div>
@@ -99,17 +99,14 @@
     $('#viewer_content').hide(1);
 	initCookies();
     $(document).ready(function() {
-
+        var temp_image_data = "{\"BBD_Pathology_Slide_Images/Source_BBD_Pathology_Slide_Images/1.33118484.1.svs\":[\"/usr/local/labcas/backend/archive/BBD_Pathology_Slide_Images/Source_BBD_Pathology_Slide_Images\",\"186647.svs\",\"1\",\"BBD_Pathology_Slide_Images/Source_BBD_Pathology_Slide_Images/1.33118484.1.svs\",\"159\"],\"BBD_Pathology_Slide_Images/Source_BBD_Pathology_Slide_Images/1.33119893.1.svs\":[\"/usr/local/labcas/backend/archive/BBD_Pathology_Slide_Images/Source_BBD_Pathology_Slide_Images\",\"EX13-0870-1-HE-EH.svs\",\"1\",\"BBD_Pathology_Slide_Images/Source_BBD_Pathology_Slide_Images/1.33119893.1.svs\",\"152\"],\"BBD_Pathology_Slide_Images/Source_BBD_Pathology_Slide_Images/1.33120006.1.svs\":[\"/usr/local/labcas/backend/archive/BBD_Pathology_Slide_Images/Source_BBD_Pathology_Slide_Images\",\"scan-resolution1.ome.tif\",\"1\",\"BBD_Pathology_Slide_Images/Source_BBD_Pathology_Slide_Images/1.33120006.1.svs\",\"155\"],\"Combined_Imaging_and_Blood_Biomarkers_for_Breast_Cancer_Diagnosis/AB0262/Primary/Truth/2D/FFDM/RAW/AB0262_TRU_4B_1_PRO_LCC.png\":[\"/usr/local/labcas/backend/archive/Combined_Imaging_and_Blood_Biomarkers_for_Breast_Cancer_Diagnosis/AB0262/Primary/Truth/2D/FFDM/RAW\",\"testRGB.ome.tif\",\"1\",\"Combined_Imaging_and_Blood_Biomarkers_for_Breast_Cancer_Diagnosis/AB0262/Primary/Truth/2D/FFDM/RAW/AB0262_TRU_4B_1_PRO_LCC.png\",\"158\"],\"Combined_Imaging_and_Blood_Biomarkers_for_Breast_Cancer_Diagnosis/AB0459/Primary/Truth/2D/FFDM/RAW/scan.qptiff\":[\"/usr/local/labcas/backend/archive/Combined_Imaging_and_Blood_Biomarkers_for_Breast_Cancer_Diagnosis/AB0459/Primary/Truth/2D/FFDM/RAW\",\"scan.qptiff\",\"1\",\"Combined_Imaging_and_Blood_Biomarkers_for_Breast_Cancer_Diagnosis/AB0459/Primary/Truth/2D/FFDM/RAW/scan.qptiff\",\"53\"]}";
+        localStorage.setItem("images",temp_image_data);
+        localStorage.setItem("image_data",temp_image_data);
         $( "#head_template" ).load("/labcas-ui/templates.html #head_template");
         $( "#nav_template" ).load("/labcas-ui/templates.html?version=2.3.1 #nav_template", function() {
             $( "#username_placeholder_second" ).html(Cookies.get('user'));
             if (Cookies.get('user') == "Sign in"){$( "#username_placeholder_third" ).html(Cookies.get('user'));}
             set_cart_status();
-	    if (Cookies.get('user') == "Sign in"){$( "#username_placeholder_third" ).html(Cookies.get('user')); 
-                $("#loggedout_msg").show();
-            }else{
-                $("#loggedout_msg").hide();
-            }
         });
 
 	$( "#footer_template" ).load("/labcas-ui/templates.html #footer_template_"+localStorage.getItem("environment_name"));
@@ -179,7 +176,7 @@
         }
         console.log("HEREHERE3");
         console.log(get_var["fileid"]);
-        showHistImage(get_var["fileid"]);
+        showOmeroImage(get_var["fileid"]);
     });
 
 
@@ -189,8 +186,8 @@
 		event = window.event;
 	    }
 	    if (event) {
-		localStorage.setItem("image_data","");
-		localStorage.setItem("image","");
+		//localStorage.setItem("image_data","");
+		//localStorage.setItem("image","");
 	    }
 	};
 
