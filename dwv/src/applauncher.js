@@ -233,12 +233,19 @@ function startApp() {
   //console.log(get_var["dicoms"].split(";"));
   //myapp.loadURLs(["http://localhost:8000/labcas-data/dicom/IM-0003-0132.dcm","http://localhost:8000/labcas-data/dicom/IM-0003-0133.dcm"]);
 
-  if (get_var["window"] && get_var["window"] == "1"){
-    myapp.loadURLs(JSON.parse(localStorage.getItem('dicoms1')), [{name:"Authorization", value:"Bearer "+Cookies.get('token')},{name:"contentType", value:"image/jpeg"}]);
-  }else if (get_var["window"] && get_var["window"] == "2"){
-    myapp.loadURLs(JSON.parse(localStorage.getItem('dicoms2')), [{name:"Authorization", value:"Bearer "+Cookies.get('token')},{name:"contentType", value:"image/jpeg"}]);
-  }else if (get_var["window"] && get_var["window"] == "3"){
-    myapp.loadURLs(JSON.parse(localStorage.getItem('dicoms3')), [{name:"Authorization", value:"Bearer "+Cookies.get('token')},{name:"contentType", value:"image/jpeg"}]);
+  if (localStorage.getItem('multi_dicom') != "true"){
+	myapp.loadURLs(JSON.parse(localStorage.getItem('dicoms')), [{name:"Authorization", value:"Bearer "+Cookies.get('token')},{name:"contentType", value:"image/jpeg"}]);
+  }else{
+	  var axial_list = JSON.parse(localStorage.getItem('dicoms1'));
+	  var coronal_list = JSON.parse(localStorage.getItem('dicoms2'));
+	  var sagittal_list = JSON.parse(localStorage.getItem('dicoms3'));
+	  if (get_var["window"] && get_var["window"] == "Axial" && axial_list.length > 0){
+	    myapp.loadURLs(axial_list, [{name:"Authorization", value:"Bearer "+Cookies.get('token')},{name:"contentType", value:"image/jpeg"}]);
+	  }else if (get_var["window"] && get_var["window"] == "Coronal" && coronal_list.length > 0){
+	    myapp.loadURLs(coronal_list, [{name:"Authorization", value:"Bearer "+Cookies.get('token')},{name:"contentType", value:"image/jpeg"}]);
+	  }else if (get_var["window"] && get_var["window"] == "Sagittal" && sagittal_list.length > 0){
+	    myapp.loadURLs(sagittal_list, [{name:"Authorization", value:"Bearer "+Cookies.get('token')},{name:"contentType", value:"image/jpeg"}]);
+	  }
   }
   $('#window_span').html(get_var["window"]);
 
