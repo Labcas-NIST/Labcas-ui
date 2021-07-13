@@ -938,7 +938,7 @@ function generate_image_file_list(data){
         Cookies.set("login_redirect", "/labcas-ui/s/index.html?search="+get_var["search"].replace("&","%26"))
     }
     if (image_type == "dicoms"){
-       window.location.replace("/labcas-ui/i/index.html");
+       window.location.replace("/labcas-ui/i/mindex.html");
     }else{
        window.location.replace("/labcas-ui/z/index.html");
     }
@@ -985,7 +985,7 @@ function submitSingleImageData(image, loc, name, version){
             }
             console.log(image_type);
             if (image_type == "dicoms"){
-                window.location.replace("/labcas-ui/i/index.html");
+                window.location.replace("/labcas-ui/i/mindex.html");
             }else{
                 window.location.replace("/labcas-ui/z/index.html");
             }
@@ -1055,13 +1055,13 @@ function submitImageData(formname, dicom){
     console.log(image_type);
     if (formname.startsWith("cart_")){
         if (formname == "cart_dicom"){
-            window.location.replace("/labcas-ui/i/index.html");
+            window.location.replace("/labcas-ui/i/mindex.html");
         }else{
             window.location.replace("/labcas-ui/z/index.html");
         }
     }else{
        if (image_type == "dicoms"){
-           window.location.replace("/labcas-ui/i/index.html");
+           window.location.replace("/labcas-ui/i/mindex.html");
        }else{
           window.location.replace("/labcas-ui/z/index.html");
        }
