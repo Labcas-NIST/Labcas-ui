@@ -224,9 +224,7 @@ dwvjq.gui.WindowLevel = function (app) {
       app.setWindowLevelPreset(event.currentTarget.value);
     };
     wlSelector.title = 'Select w/l preset.';
-    console.log("PRESETTTT");
     app.setWindowLevelPreset("lung");
-    console.log("PRESETTTT");
     // copy html list
     var wlLi = app.getElement('wlLi');
     // clear node

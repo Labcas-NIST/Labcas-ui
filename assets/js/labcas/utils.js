@@ -153,7 +153,7 @@ function query_labcas_api(url, customfunction){
                                    localStorage.setItem("logout_alert","On");
                                  alert(formatTimeOfDay($.now()) + ": Login expired, please login...");
                         }
-                        window.location.replace("/labcas-ui/index.html");
+			redirect_to_login();
                  }
         });
 
@@ -903,6 +903,12 @@ function accepted_image_check(f){
     return pass_flag;
 }
 
+function generate_accepted_image_solr_filters(){
+	var img_ext = [".svs",".jpg",".gif",".jpeg",".dcm",".dicom",".png",".tif",".tiff",".scm",".scn",".qptiff"];
+	var fq = "(id:*"+img_ext.join("%20AND%20id:*")+")";
+	return fq;
+}
+
 function check_dicom_multi(){
 	var flag = false;
 	var dicom_list_axial = [];
@@ -979,10 +985,22 @@ function generate_image_file_list(data){
     }
 }
 
-
+function checkDatasetContainsDicom(dataset_id, safe_dataset_id, data){
+	/*console.log("Checking dataset...");	
+	console.log(dataset_id);
+	console.log("safe");
+	console.log(safe_dataset_id);
+	console.log("data");
+	console.log(data);*/
+	if (!(data.response.numFound > 0)){
+		$('#view_'+safe_dataset_id).show();
+	}
+}
 
 function submitImage(formname, dataset){
-    if ( $('#check_all:checked').length ){
+    if ( $('#check_all:checked').length || dataset){
+	console.log("GOT HERE");
+	console.log(dataset);
         var get_var = get_url_vars();
         if (dataset){
             dataset = dataset.replace("%5C%20","%20").replace("%20","%5C%20").replace(" ","%5C%20");
