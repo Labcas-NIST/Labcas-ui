@@ -30,6 +30,7 @@
                     	</div>
                     </div>
                     <div class="wrapper" style="background:white">
+					<a href="#" onclick="loginOmero()">BIGtest</a>
                         <div class="col-md-12"><center><img id="loading_viewer" class="collapse show" height="200px" width="200px" src="/labcas-ui/assets/img/loading.gif"></center></div>
                         <div class="row" id="viewer_content">
                             <div class="col-md-3" style="padding-left: 30px; padding-top: 20px; padding-right: 0px;">
@@ -39,10 +40,13 @@
                                 </table>
                             </div>
                             <div class="col-md-9" style="overflow: hidden; padding-left: 0px">
-                                        <iframe id="img_frame" style="position: relative;top: -40px; border-top:1px;" frameBorder="0" height="900px" width="100%" onload="testtest();"></iframe>
+                                        <!--<iframe id="img_frame" style="position: relative;top: -40px; border-top:1px;" frameBorder="0" height="900px" width="100%" onload="testtest();"></iframe>-->
                             </div>
                         </div>
                     </div>
+                            <!--<div class="col-md-12" style="overflow: hidden; padding-left: 0px">
+                                        <iframe id="test"  frameBorder="0" height="900px" width="100%" src="https://omero-test.jpl.nasa.gov/webclient/img_detail/1341/?dataset=115"</iframe>
+                            </div>-->
 		</div>
 	    </div>
 	</div>
@@ -93,7 +97,7 @@
 <script src="/labcas-ui/assets/js/plugins/js.cookie.js"></script>
 <script src="/labcas-ui/assets/js/labcas/labcas-sidebar.js"></script>
 <script src="/labcas-ui/assets/js/labcas/authentication.js?version=2.3.1"></script>
-<script src="/labcas-ui/assets/js/labcas/utils.js?version=2.3.1"></script>
+<script src="/labcas-ui/assets/js/labcas/utils.js?version=2.4.0"></script>
 <script src="/labcas-ui/assets/js/labcas/search.js?version=2.3.1"></script>
 <script type="text/javascript">
     $('#viewer_content').hide(1);
@@ -136,7 +140,7 @@
         }
         var get_var = get_url_vars();
         var images = [];
-        if (localStorage.getItem('image_data') && localStorage.getItem('image_data')!= ""){
+        if (localStorage.getItem('omeros') && localStorage.getItem('omeros')!= ""){
             images = JSON.parse(localStorage.getItem('image_data'));
         }
 
@@ -173,9 +177,8 @@
 		$('#breadcrumb').html(breadcrumb);
 
         if (get_var["fileid"]){
-	      Cookies.set("login_redirect", "/labcas-ui/z/index.html?fileid="+get_var["fileid"])
+	      Cookies.set("login_redirect", "/labcas-ui/o/index.html?fileid="+get_var["fileid"])
         }
-        console.log("HEREHERE3");
         console.log(get_var["fileid"]);
         showOmeroImage(get_var["fileid"]);
     });

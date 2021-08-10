@@ -19,7 +19,7 @@ Array.prototype.unique = function() {
 function initiate_search(){
       var get_var = get_url_vars();
 	console.log(localStorage.getItem("search"));
-	if(localStorage.getItem("search")){
+	if(localStorage.getItem("search")  && get_var["search"]){
         	localStorage.setItem("search", get_var["search"].replace("&","%26"));
 		console.log("Search not clearned");
 	}else{

@@ -21,6 +21,7 @@
 
 <div id="nav_template">
 	<nav class="navbar navbar-expand-lg navbar-fixed">
+		<img src="/labcas-ui/assets/img/jpl_logo.png" width=300 heigth=100>
                 <div class="container-fluid">
 		    <div class="collapse navbar-collapse justify-content-start">
 			    <span id="loggedout_msg"><font color=green>Public data only - Please <a href="/labcas-ui/index.html">login</a> to see additional data.</font></span>
@@ -52,7 +53,7 @@
 					<a href="#" onclick="download_files('cart')"><li class="dropdown-item text-info" >Download File(s) <span id="cart_size"></span></li></a>
                     <a href="#" onclick="submitImageData('cart_image');"><li class="dropdown-item text-success" >View Images (<span id="image_size">0</span>)</li></a>
                     <a href="#" onclick="submitImageData('cart_dicom');"><li class="dropdown-item text-success" >View Dicoms (<span id="dicom_size">0</span>)</li></a>
-                    <a href="/labcas-ui/o/index.html"><li class="dropdown-item text-success" >View Omero (<span id="omero_size">0</span>)</li></a>
+                    <a href="#" onclick="submitImageData('cart_omero');"><li class="dropdown-item text-success" >View Omero (<span id="omero_size">0</span>)</li></a>
 					<a href="#" onclick="clear_cart('search-file-table'); clear_cart('files-table');"><li class="dropdown-item text-warning" >Clear Cart</li></a>
                                 </ul>
                         </li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -215,7 +216,124 @@
 </div>
 
 <div id="footer_template_mcl">
+	<br>
+	<div class="row">
+          <div class="col-12 col-md-2">
+	  </div>
+          <div style="padding-left:40px" class="col-12 col-md-3">
+		<h5>Get the Newsletter</h5>
+                <form action='/signup/index.php' class='submit_newsletter' method="post">
+                  <input class='email_field' name='email_field' onblur="this.placeholder = 'enter email address'" onfocus="this.placeholder = ''" placeholder='enter email address' type='text' value=''>
+                  <input class='email_submit' type='submit' value='Submit'>
+                </form>
+		<br>
+            <h5>Follow JPL</h5>
+            <ul class="list-unstyled text-small">
+			<li>
+                        <a href="/signup/">Newsletter</a>
+                      </li>
+                      <li>
+                        <a href="http://www.facebook.com/NASAJPL">Facebook</a>
+                      </li>
+                      <li>
+                        <a href="http://twitter.com/NASAJPL">Twitter</a>
+                      </li>
+                      <li>
+                        <a href="http://www.youtube.com/user/JPLnews">YouTube</a>
+                      </li>
+                      <li>
+                        <a href="http://www.flickr.com/photos/nasa-jpl">Flickr</a>
+                      </li>
+                      <li>
+                        <a href="http://instagram.com/nasajpl">Instagram</a>
+                      </li>
+                      <li>
+                        <a href="http://www.ustream.tv/nasajpl">UStream</a>
+                      </li>
+                      <li>
+                        <a href="http://blogs.jpl.nasa.gov">Blog</a>
+                      </li>
+            </ul>
+          </div>
+          <div class="col-6 col-md">
+            <h5>About</h5>
+            <ul class="list-unstyled text-small">
+                      <li>
+                        <a href="/about/">Director's Message</a>
+                      </li>
+                      <li>
+                        <a href="/about/exec.php">Executive Council</a>
+                      </li>
+                      <li>
+                        <a href="/about/history.php">History</a>
+                      </li>
+                      <li>
+                        <a href="/about/reports.php">Annual Reports</a>
+                      </li>
+                      <li>
+                        <a href="/contact_JPL.php">Contact Us</a>
+                      </li>
+                      <li>
+                        <a href="/opportunities/">Opportunities</a>
+                      </li>
+            </ul>
+		<h5>News</h5>
+	<ul class="list-unstyled text-small">
+		<li>
+                        <a href="/news">Latest News</a>
+                      </li>
+                      <li>
+                        <a href="/news/presskits.php">Press Kits</a>
+                      </li>
+                      <li>
+                        <a href="/news/factsheets.php">Fact Sheets</a>
+                      </li>
+                      <li>
+                        <a href="/news/mediaroom.php">Media Room</a>
+                      </li>
+	</ul>
+          </div>
+          <div class="col-6 col-md">
+            <h5>Missions</h5>
+            <ul class="list-unstyled text-small">
+		<li>
+                        <a href="/missions/?type=current">Current</a>
+                      </li>
+                      <li>
+                        <a href="/missions/?type=past">Past</a>
+                      </li>
+                      <li>
+                        <a href="/missions/?type=future">Future</a>
+                      </li>
+                      <li>
+                        <a href="/missions/?type=proposed">Proposed</a>
+                      </li>
+                      <li>
+                        <a href="/missions">All</a>
+                      </li>
+    </ul>
+            <h5>Galleries</h5>
+            <ul class="list-unstyled text-small">
+		<li>
+                        <a href="/spaceimages/">JPL Space Images</a>
+                      </li>
+                      <li>
+                        <a href="/infographics/">Infographics</a>
+                      </li>
+                      <li>
+                        <a href="http://photojournal.jpl.nasa.gov/">Photojournal</a>
+                      </li>
+                      <li>
+                        <a href="http://www.nasaimages.org/">NASA Images</a>
+                      </li>
+                      <li>
+                        <a href="/apps/">Mobile Apps</a>
+                      </li>
+            </ul>
+          </div>
+        </div>
 	<div class='container'>
+		<hr style="border-color:white">
 		<div class="row">
 		<div class="col-md-10">
                 <ul class='labcas-footer-links'>
@@ -233,6 +351,9 @@
                     </li>
                     <li>
                         <a style="color: lightblue" href='mailto:ic-portal@jpl.nasa.gov'>Contact Us: ic-portal@jpl.nasa.gov</a>
+                    </li>
+                    <li>
+                        <font style="color: white">URS300757</font>
                     </li>
                 </ul>
                 <p>
