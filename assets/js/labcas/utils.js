@@ -1,4 +1,5 @@
 var user_data = {};
+var omero_datasets = "";
 $().ready(function() {
 	if(localStorage.getItem("userdata") && localStorage.getItem("userdata") != "None"){
 		user_data = JSON.parse(localStorage.getItem("userdata"));
@@ -15,7 +16,7 @@ $().ready(function() {
         	$(this).prev(".btn").find(".fa").removeClass("fa-minus").addClass("fa-plus");
         });
 
-	if (!(location.href.includes("/labcas-ui/index.html") || location.href.endsWith("/labcas-ui/") || location.href.endsWith("/labcas-ui"))){
+	if (!(location.href.includes("/labcas-ui/index.html") || location.href.endsWith("/labcas-ui/") || location.href.endsWith("/labcas-ui") || location.href.endsWith("/labcas-ui/o/index.html") || location.href.endsWith("/labcas-ui/o/index.html#"))){
 		query_labcas_api(localStorage.getItem('environment')+"/data-access-api/collections/select?q=*&facet=true&facet.limit=-1&wt=json&rows=0",get_labcas_collection_stats);
 		query_labcas_api(localStorage.getItem('environment')+"/data-access-api/datasets/select?q=*&facet=true&facet.limit=-1&wt=json&rows=0",get_labcas_dataset_stats);
 		query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=*&facet=true&facet.limit=-1&wt=json&rows=0",get_labcas_file_stats);
@@ -35,6 +36,13 @@ function redirect_to_login(){
     }else{
 
     }
+}
+function baseName(str)
+{
+   var base = new String(str).substring(str.lastIndexOf('/') + 1); 
+    if(base.lastIndexOf(".") != -1)       
+        base = base.substring(0, base.lastIndexOf("."));
+   return base;
 }
 function initCookies(){
 	if(!Cookies.get("token") || Cookies.get("token") == "None"){
@@ -902,6 +910,17 @@ function accepted_image_check(f){
     });
     return pass_flag;
 }
+function acepted_omero_check(f){
+    var img_ext = ["ome.tif","ome.tiff",".qptiff"];
+    var pass_flag = false;
+    $.each(img_ext, function(key,value){
+       if (f.toLowerCase().endsWith(value)){
+           pass_flag = true;
+           return;
+       }
+    });
+    return pass_flag;
+}
 
 function generate_accepted_image_solr_filters(){
 	var img_ext = [".svs",".jpg",".gif",".jpeg",".dcm",".dicom",".png",".tif",".tiff",".scm",".scn",".qptiff"];
@@ -952,7 +971,9 @@ function generate_image_file_list(data){
             var html_safe_id = encodeURI(escapeRegExp(value.id));
             if (value.id.toLowerCase().endsWith(".dcm") || value.id.toLowerCase().endsWith(".dicom")){
                 image_type = "dicoms";
-            }
+            }else if(acepted_omero_check(value.id)){
+		image_type = "omeros";
+	    }
             console.log(html_safe_id);
             image_list.push(localStorage.getItem('environment')+"/data-access-api/download?id="+html_safe_id);
 
@@ -976,10 +997,12 @@ function generate_image_file_list(data){
     }
     if (image_type == "dicoms"){
 	if (check_dicom_multi()){
-	       window.location.replace("/labcas-ui/i/mindex.html?version=2.3.2");
+       window.location.replace("/labcas-ui/i/mindex.html?version=2.3.2");
 	}else{
-	       window.location.replace("/labcas-ui/i/index.html?version=2.3.2");
+       window.location.replace("/labcas-ui/i/index.html?version=2.3.2");
 	}
+    }else if(image_type = "omeros"){
+        window.location.replace("/labcas-ui/o/index.html");
     }else{
        window.location.replace("/labcas-ui/z/index.html?version=2.3.2");
     }
@@ -1025,8 +1048,13 @@ function submitSingleImageData(image, loc, name, version){
         if (image.endsWith(".dcm") || image.endsWith(".dicom")){
             image_type = "dicoms";
         }
+        else if (acepted_omero_check(image)){
+            image_type = "omeros";
+        }else{
+		localStorage.setItem("image_data",JSON.stringify(histomics_list));
+	}
         localStorage.setItem(image_type,JSON.stringify(image_list));
-        localStorage.setItem("image_data",JSON.stringify(histomics_list));
+        localStorage.setItem("omeros",JSON.stringify(histomics_list));
         var get_var = get_url_vars();
 
             if (get_var["dataset_id"] && get_var["dataset_id"] != "undefined"){
@@ -1043,10 +1071,11 @@ function submitSingleImageData(image, loc, name, version){
 		}else{
 		       window.location.replace("/labcas-ui/i/index.html?version=2.3.2");
 		}
+            }else if(image_type == "omeros"){
+		window.location.replace("/labcas-ui/o/index.html");
             }else{
                 window.location.replace("/labcas-ui/z/index.html?version=2.3.2");
             }
-
 }
 
 
@@ -1054,6 +1083,7 @@ function submitImageData(formname, dicom){
     var image_list = [];
     var histomics_list = [];
     var dicoms_list = [];
+    var omero_list = [];
     var image_type = "image";
     console.log(dicom);
    
@@ -1071,6 +1101,8 @@ function submitImageData(formname, dicom){
 		$.each(download_list, function( key, val ) {
 		    if (accepted_image_check(key) && (key.endsWith(".dcm") || key.endsWith(".dicom"))){
 			dicoms_list.push(localStorage.getItem('environment')+"/data-access-api/download?id="+key);
+		    }else if(acepted_omero_check(key)){
+			omero_list.push([val[0],val[1],val[2], key]);
 		    }else if(accepted_image_check(key)){
 			image_list.push(localStorage.getItem('environment')+"/data-access-api/download?id="+key);
                         histomics_list.push([val[0],val[1],val[2], key]);
@@ -1078,16 +1110,17 @@ function submitImageData(formname, dicom){
 		});
             }
 	}else{
-        console.log("HEREHERE2");
         $('#' + formname + ' input[type="checkbox"]').each(function() {
             console.log("HH2");
             if ($(this).is(":checked") && accepted_image_check($(this).val())) {
                 console.log("HH2");
                 if ($(this).val().endsWith(".dcm") || $(this).val().endsWith(".dicom")){
-                    console.log("HH");
                      image_type = "dicoms";
                      dicoms_list.push(localStorage.getItem('environment')+"/data-access-api/download?id="+$(this).val());
-                }else{
+                }else if(acepted_omero_check($(this).val())){
+                     image_type = "omeros";
+                     omero_list.push([$(this).data("loc"),$(this).data("name"),$(this).data("version"), $(this).val()]);
+                }else if(accepted_image_check($(this).val())){
                      image_list.push(localStorage.getItem('environment')+"/data-access-api/download?id="+$(this).val());
                      histomics_list.push([$(this).data("loc"),$(this).data("name"),$(this).data("version"), $(this).val()]);
                 }
@@ -1101,6 +1134,7 @@ function submitImageData(formname, dicom){
     localStorage.setItem("image",JSON.stringify(image_list));
     localStorage.setItem("dicoms",JSON.stringify(dicoms_list));
     localStorage.setItem("image_data",JSON.stringify(histomics_list));
+    localStorage.setItem("omeros",JSON.stringify(omero_list));
 
     var get_var = get_url_vars();
     
@@ -1112,21 +1146,25 @@ function submitImageData(formname, dicom){
     console.log(image_type);
     if (formname.startsWith("cart_")){
         if (formname == "cart_dicom"){
-		if (check_dicom_multi()){
-		       window.location.replace("/labcas-ui/i/mindex.html?version=2.3.2");
-		}else{
-		       window.location.replace("/labcas-ui/i/index.html?version=2.3.2");
-		}
+            if (check_dicom_multi()){
+                   window.location.replace("/labcas-ui/i/mindex.html?version=2.3.2");
+            }else{
+                   window.location.replace("/labcas-ui/i/index.html?version=2.3.2");
+            }
+        }else if(formname == "cart_omero"){
+            window.location.replace("/labcas-ui/o/index.html?version=2.3.2");
         }else{
             window.location.replace("/labcas-ui/z/index.html?version=2.3.2");
         }
     }else{
-       if (image_type == "dicoms"){
-		if (check_dicom_multi()){
-		       window.location.replace("/labcas-ui/i/mindex.html?version=2.3.2");
-		}else{
-		       window.location.replace("/labcas-ui/i/index.html?version=2.3.2");
-		}
+      if (image_type == "dicoms"){
+            if (check_dicom_multi()){
+                   window.location.replace("/labcas-ui/i/mindex.html?version=2.3.2");
+            }else{
+                   window.location.replace("/labcas-ui/i/index.html?version=2.3.2");
+            }
+      }else if(image_type == "omeros"){
+          window.location.replace("/labcas-ui/o/index.html");
        }else{
           window.location.replace("/labcas-ui/z/index.html?version=2.3.2");
        }
@@ -1141,12 +1179,238 @@ function changeFrameSrc(frame, src, fileid){
     window.history.replaceState(null, null, "?fileid="+fileid);
 }
 
+function check_omero_image(image_dataset, image_name, version, show_flag, fileid, show_flag){
+	console.log("omero_datasets");
+	console.log(omero_datasets);
+	dataset = baseName(image_dataset);
+	datasetid = -1;
+	$.each(omero_datasets.data, function(key, val){
+		console.log("COMPDATASET");
+		console.log(dataset);
+		console.log(val.Name);
+		if (val.Name == dataset){
+			datasetid = val["@id"];
+			return false;
+		}
+	});
+
+	$.ajax({
+		url: localStorage.getItem("omero_api")+"/datasets/"+datasetid+"/images",
+		type: 'GET',
+		success: function (data) {
+			var imageid = -1;
+			$.each(data.data, function(key, val){
+				console.log("Comp");
+				console.log(image_name);
+				console.log(val.Name);
+				if (val.Name == image_name || val.Name == image_name+" [resolution #1]"){
+					console.log("OKOK");
+					imageid = val["@id"];
+					return false;
+				}
+			});
+			console.log("image_id");
+			console.log(imageid);
+			if (show_flag){
+				orchistrate_omero_find(image_dataset, image_name, version, show_flag, fileid, imageid);
+			}
+			var download_cmd = "download_file('"+fileid+"','single');";
+                        var details_cmd = "window.open(\"/labcas-ui/f/index.html?file_id="+fileid+"\");";
+                        $("#image_list_table tbody").append("<tr ><td  style='padding-left: 5px; word-wrap: break-word;'><a style='word-wrap: break-word;' href='#' onclick=\"changeFrameSrc('img_frame','"+localStorage.getItem("omero_image_viewer")+imageid+"', '"+imageid+"')\">"+decodeURIComponent(image_name)+"</a></td><td class='td-actions text-right'><button type='button' rel='detailbutton' title='Details' style='padding:0px' class='btn btn-info btn-simple btn-link' onclick='"+details_cmd+"'><i class='fa fa-info-circle'></i></button>"+'<button type="button" rel="downloadbutton" title="Download" class="btn btn-success btn-simple btn-link" onclick="'+download_cmd+'"><i class="fa fa-download"></i></button></td></tr>');
+		}
+	});
+	
+	return datasetid;
+}
+
+var latest_base_url = "https://omero-test.jpl.nasa.gov/api/v0/";
+var omeroweb_url;
+var base_urls;
+var csrf_token;
+
+
+function createCORSRequest(method, url) {
+  console.log("XHR");
+  var xhr = new XMLHttpRequest();
+  if ("withCredentials" in xhr) {
+    console.log("HERE223");
+    xhr.withCredentials = true;
+    xhr.open(method, url, true);
+  } else if (typeof XDomainRequest != "undefined") {
+    xhr = new XDomainRequest();
+    xhr.open(method, url);
+  } else {
+	// CORS is not supported by the browser.
+	xhr = null;
+  }
+
+  xhr.onerror = function() {
+    console.log('There was an error!');
+  };
+  return xhr;
+}
+
+function makeJSONRequest(method, url, callback, data) {
+  var xhr = createCORSRequest(method, url);
+  xhr.onload = function() {
+    console.log("Onload XHR2");
+    console.log(xhr);
+	console.log(xhr.status);
+	// handle the response (assumes we're getting JSON data)
+	var responseText = xhr.responseText;
+    var jsonResponse = responseText;
+    // If not logged-in, show login form
+    if (xhr.status === 403) {
+     console.log("LOG IN");
+      prepareLogin();
+    }
+    // status OK - call the callback()
+    else if (xhr.status === 200) {
+      if (callback) {
+        jsonResponse = JSON.parse(responseText);
+        callback(jsonResponse);
+      }
+    } else {
+      console.log("Error:", xhr)
+    }
+  };
+
+  if (method !== 'GET') {
+    xhr.setRequestHeader('x-csrftoken', csrf_token);
+  }
+  console.log("XHRRR");
+  console.log(csrf_token);
+  console.log(xhr);
+  if (data) {
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.send(data);
+  } else {
+    xhr.send();
+  }
+}
+
+function loadProjects() {
+  var projects_url = base_urls['url:datasets'].replace("http:","https:");
+  console.log("Projects");
+  console.log(projects_url);
+  makeJSONRequest('GET', projects_url, function(rsp) {
+    // hide login form
+    console.log("load projects done");
+  });
+}
+
+function loadBaseUrls(callback) {
+  console.log("FIRST");
+  makeJSONRequest('GET', latest_base_url, function(rsp) {
+	    base_urls = rsp;
+	    console.log("RESPONSE");
+	    console.log(rsp);
+	    callback();
+  });
+}
+loadBaseUrls(loadProjects);
+function prepareLogin() {
+  // show login form
+  var servers_url = base_urls['url:servers'];
+
+  // Also get CSRF token needed for login and other POST requests
+  var token_url = base_urls['url:token'].replace("http:","https:");
+  makeJSONRequest('GET', token_url, function(rsp) {
+    csrf_token = rsp.data;
+  });
+}
+
+function loginOmero(){
+
+  var login_url = base_urls['url:login'];
+
+  var fields = ['username', 'password', 'server'];
+  var configs = {'username':'mcl_user','password':'0mer0','server':'1'}
+  var data = fields.map(function(f){
+    return f + '=' + configs[f];
+  });
+  data = data.join('&');
+  console.log(data);
+  login_url = login_url.replace("http:","https:");
+  console.log(login_url);
+  makeJSONRequest('POST', login_url, function(rsp) {
+    // Will get eventContext if login OK
+    console.log(rsp);
+
+    // Show username in top header
+    var ctx = rsp['eventContext'];
+    console.log(ctx['userName']);
+
+  }, data);
+
+  return false;
+
+}
+
+
+function getOmeroDataset(image_dataset, image_name, version, show_flag, fileid, show_flag){
+	console.log("image_dataset");
+	console.log(image_dataset);
+	console.log("image_name");
+	console.log(image_name);
+	//Login not working
+	/*$.ajax({
+		url: "https://omero-test.jpl.nasa.gov/api/v0/token/",
+		type: 'GET',
+		success: function (data) {
+			console.log("token");
+			console.log(data);
+			console.log("login params3");
+			console.log({"csrfmiddlewaretoken":data.data, "username": "mcl_user", "password":"0mer0", "server":"2e953dc4-aaec-41fd-83f1-61c48459c592"});
+			console.log(localStorage.getItem("omero_login"));
+			Cookies.set("X-CSRFToken",data.data);
+			Cookies.set("csrfmiddlewaretoken",data.data);
+			$.post(localStorage.getItem("omero_login"), {"csrfmiddlewaretoken":data.data, "username": "mcl_user", "password":"0mer0", "server":"2e953dc4-aaec-41fd-83f1-61c48459c592"},function(returnedData){
+				  console.log( "loginpre" );
+				 console.log(returnedData);
+			});
+			$.ajax({
+				type:"POST",
+				url: localStorage.getItem("omero_login"),
+				beforeSend: function(xhr) {
+					xhr.setRequestHeader("csrfmiddlewaretoken", Cookies.get("X-CSRFToken"));
+				},
+
+				data:{"csrfmiddlewaretoken":data.data, "username": "mcl_user", "password":"0mer0"},
+				success: function (data ) {
+				  console.log( "login" );
+				  console.log( data );
+				},
+				error: function(XMLHttpRequest, textStatus, errorThrown) { 
+					alert("Status: " + textStatus); alert("Error: " + errorThrown); 
+				    }       
+			});
+	}});*/
+
+	if (omero_datasets.length == 0){
+		console.log("API Getting");
+		/*$.ajax({
+			url: localStorage.getItem("omero_api")+"/datasets/",
+			type: 'GET',
+			success: function (data) {
+			    omero_datasets = data;*/
+			    check_omero_image(image_dataset, image_name, version, show_flag, fileid, show_flag);
+			/*}
+		});*/
+	}else{
+	    check_omero_image(image_dataset, image_name, version, show_flag, fileid, show_flag);
+				console.log("datasetid");
+				console.log(datasetid);
+	}
+}
+
 function showOmeroImage(hist_image){
     /*if (hist_image && hist_image != ""){
         setup_labcas_file_data("fileimage",'id:"'+encodeURI(hist_image).replace("&","%26")+'"', 'id:'+hist_image+'*');
     }else{*/
        //images = JSON.parse(localStorage.getItem('image'));
-       images_data = JSON.parse(localStorage.getItem('image_data'));
+
+       images_data = JSON.parse(localStorage.getItem('omeros'));
        show_flag = true;
        $.each(images_data, function( key, val ) {
           console.log("new");
@@ -1154,17 +1418,9 @@ function showOmeroImage(hist_image){
           var fileid = val[3];
           var query_file = val[1];
           var query_folder = val[0];
-          var omero_id = val[4];
           var version = val[2];
-          if (show_flag){
-            console.log("OMERO");
-            console.log(omero_id);
-            orchistrate_omero_find(query_folder, query_file, version, show_flag, fileid, omero_id);
-          }
+	  getOmeroDataset(query_folder, query_file, version, show_flag, fileid, show_flag);
           show_flag = false;
-            var download_cmd = "download_file('"+fileid+"','single');";
-            var details_cmd = "window.open(\"/labcas-ui/f/index.html?file_id="+fileid+"\");";
-            $("#image_list_table tbody").append("<tr ><td  style='padding-left: 5px; word-wrap: break-word;'><a style='word-wrap: break-word;' href='#' onclick=\"changeFrameSrc('img_frame','"+localStorage.getItem("omero_image_viewer")+omero_id+"', '"+omero_id+"')\">"+decodeURIComponent(query_file)+"</a></td><td class='td-actions text-right'><button type='button' rel='detailbutton' title='Details' style='padding:0px' class='btn btn-info btn-simple btn-link' onclick='"+details_cmd+"'><i class='fa fa-info-circle'></i></button>"+'<button type="button" rel="downloadbutton" title="Download" class="btn btn-success btn-simple btn-link" onclick="'+download_cmd+'"><i class="fa fa-download"></i></button></td></tr>');
             /*if (show_flag){
                 $('#loading_viewer').hide();
                 $('#viewer_content').show();
@@ -1172,7 +1428,7 @@ function showOmeroImage(hist_image){
             }*/
        });
        localStorage.setItem("image_data","");
-    localStorage.setItem("image","");
+       localStorage.setItem("image","");
     //}
 }
 
@@ -1196,7 +1452,6 @@ function set_cart_status (){
     // set cart info
         var download_list = {};
         var download_size = 0;
-           console.log("HERE");
         if (localStorage.getItem('cart_list')){
                 download_list = JSON.parse(localStorage.getItem('cart_list'));
         }
@@ -1208,19 +1463,22 @@ function set_cart_status (){
         $('#cart_size').html(filesize);
 
         imagesize = 0;
+        omerosize = 0;
         dicomsize = 0;
 
         $.each(download_list, function( key, val ){
             console.log(val[1]);
             if (val[1] && accepted_image_check(val[1]) && (val[1].endsWith(".dicom") || val[1].endsWith(".dcm"))){
                 dicomsize += 1;
+            }else if(val[1] && acepted_omero_check(val[1])){
+                omerosize += 1;
             }else if(val[1] && accepted_image_check(val[1])){
                 imagesize += 1;
             }
         });
 
         $('#image_size').html(imagesize);
-        $('#omero_size').html(imagesize);
+        $('#omero_size').html(omerosize);
         $('#dicom_size').html(dicomsize);
 }
 
