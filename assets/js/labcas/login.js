@@ -1,6 +1,6 @@
 Cookies.set("token", "None");
 $(document).ready(function(){
-$.getJSON( '/labcas-ui/assets/conf/environment.cfg?2', function(json) {
+$.getJSON( '/labcas-ui/assets/conf/environment.cfg?version=2.3.2', function(json) {
 	$.each( json, function( key, val ) {
         if (typeof val == "string"){
             localStorage.setItem(key, val);
@@ -21,6 +21,13 @@ $.getJSON( '/labcas-ui/assets/conf/environment.cfg?2', function(json) {
             });
 	$('#loginerror').html(localStorage.getItem("login_msg"));
 });
+function login_redirect(){
+	if (Cookies.get("login_redirect")){
+		window.location.replace(Cookies.get("login_redirect"));
+	}else{
+		window.location.replace("/labcas-ui/s/index.html?search=*");
+	}
+}
 $('#loginform').submit(function (e) {
 	e.preventDefault();
 	Cookies.set("user", $('#username').val());
@@ -67,10 +74,12 @@ $('#loginform').submit(function (e) {
 
 					writeUserData(JSON.stringify(user_data))
 					localStorage.setItem("first_time_user",  first_time_user);
+					//$('#acceptHTML').html(localStorage.getItem("accept_msg"));
+					//$('#acceptModal').modal('show');
 					if (Cookies.get("login_redirect")){
 						window.location.replace(Cookies.get("login_redirect"));
 					}else{
-						window.location.replace("/labcas-ui/m/index.html");
+						window.location.replace("/labcas-ui/s/index.html");
 					}
 				},
 				error: function(){

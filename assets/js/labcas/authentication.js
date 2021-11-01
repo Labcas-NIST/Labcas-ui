@@ -19,7 +19,7 @@ Array.prototype.unique = function() {
 function initiate_search(){
       var get_var = get_url_vars();
 	console.log(localStorage.getItem("search"));
-	if(localStorage.getItem("search")){
+	if(localStorage.getItem("search") && get_var["search"]){
         	localStorage.setItem("search", get_var["search"].replace("&","%26"));
 		console.log("Search not clearned");
 	}else{
@@ -500,8 +500,8 @@ function fill_file_image_viewer_data(data){
 	console.log("GOTHERE");
 	if (accepted_image_check(data.response.docs[0].FileName)){
 		var filename = data.response.docs[0].FileName ? data.response.docs[0].FileName : "";
-                var version = data.response.docs[0].DatasetVersion ? data.response.docs[0].DatasetVersion : "";
-                var fileloc = data.response.docs[0].FileLocation ? data.response.docs[0].FileLocation : "";
+        var version = data.response.docs[0].DatasetVersion ? data.response.docs[0].DatasetVersion : "";
+        var fileloc = data.response.docs[0].FileLocation ? data.response.docs[0].FileLocation : "";
 		var image_list = [];
 
 		var histomics_list = [];
@@ -525,10 +525,12 @@ function fill_file_image_viewer_data(data){
 			  show_flag = false;
 			  orchistrate_find(val[0], val[1], val[2], show_flag, val[3]);
 		  }
-	       });
+       });
 	}
-
 }
+
+
+
 function fill_datasets_children(data){
 	data.response.docs.sort(dataset_compare_sort);
         var dataset_html = "";
@@ -543,6 +545,16 @@ function fill_datasets_children(data){
                                 color = "#87CB16 !important";
                         }       
 			value.DatasetName = "&nbsp;&nbsp;&nbsp;&nbsp;".repeat(value.id.split("/").length - 2)+"<span>&#8226;</span>"+value.DatasetName;
+
+			var html_safe_id = encodeURI(escapeRegExp(value.id));
+			var id_safe_id = html_safe_id.replace(/\//g,"-labsep-");
+			var image_div = "";
+			if (value.contains_image){
+				image_div = "<button id='view_"+id_safe_id+"' type=\"button\" rel=\"tooltip\" title=\"View\" onclick=\"Cookies.set('login_redirect', '/labcas-ui/d/index.html?dataset_id="+html_safe_id+"'); submitImage('files-table','"+html_safe_id+"')\" class=\"btn btn-simple btn-link\" style='position: absolute;left: -50px; top: 50%; transform: translateY(-50%); color: red'>"+
+					"<i class=\"fa fa-image\"></i>"+
+				"</button>";
+			}
+
 			dataset_html += "<div class='row' style='border-bottom:1px solid #ccc; margin-left: 0px; margin-right: 0px;'>"+
                                         "<div class='col-md-1'><!--<div class=\"form-check\">"+
                                                 "<label class=\"form-check-label\">"+
@@ -557,6 +569,7 @@ function fill_datasets_children(data){
                         "</a>"+
                                         "</div>"+
                                         "<div class=\"td-actions col-md-1 text-right\" valign='middle' style='padding: 0px 8px; vertical-align: middle; height: 25px'>"+
+						image_div+
                                                 "<button type=\"button\" rel=\"tooltip\" title=\"Favorite\" onclick=\"save_favorite('"+value.id+"', 'FavoriteDatasets', this)\" class=\"btn btn-simple btn-link\" style='position: absolute;left: 5px; top: 50%; transform: translateY(-50%); color: "+color+"'>"+
                                                         "<i class=\"fa fa-star\"></i>"+
                                                 "</button>"+
@@ -666,6 +679,7 @@ function fill_datasets_data(data){
 	
 	data.response.docs.sort(dataset_compare_sort);
 	var collapse_dict = {};
+	var image_check_datasets = {};
 	var prev_dataset_id = "";
 	var dataset_html = "";
 	var dataset_attr ="";
@@ -674,6 +688,8 @@ function fill_datasets_data(data){
         var get_var = get_url_vars();
         var metadata_exists = false;
         var collection_file_exists = false;
+
+
 	$.each(data.response.docs, function(key, value) {
 		if (value.id.split(/\//)[1] == get_var["collection_id"]){
 			query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=DatasetId:"+value.id+"&wt=json&sort=FileName%20asc&indent=true", fill_collection_level_files);
@@ -686,7 +702,17 @@ function fill_datasets_data(data){
 			return;
 		}
 		var html_safe_id = encodeURI(escapeRegExp(value.id));
+		var id_safe_id = html_safe_id.replace(/\//g,"-labsep-");
+
 		var color = "#0000FF";
+
+		var image_div = "";
+		if (value.contains_image){
+			image_div = "<button id='view_"+id_safe_id+"' type=\"button\" rel=\"tooltip\" title=\"View\" onclick=\"Cookies.set('login_redirect', '/labcas-ui/d/index.html?dataset_id="+html_safe_id+"'); submitImage('files-table','"+html_safe_id+"')\" class=\"btn btn-simple btn-link\" style='position: absolute;left: -50px; top: 50%; transform: translateY(-50%); color: red'>"+
+				"<i class=\"fa fa-image\"></i>"+
+			"</button>";
+		}
+
 		if(user_data["FavoriteDatasets"].includes(value.id)){
 			color = "#87CB16 !important";
 		}
@@ -722,6 +748,7 @@ function fill_datasets_data(data){
 					"<button type=\"button\" rel=\"tooltip\" title=\"Favorite\" onclick=\"save_favorite('"+value.id+"', 'FavoriteDatasets', this)\" class=\"btn btn-simple btn-link\" style='position: absolute;left: -100px; top: 50%; transform: translateY(-50%); color: "+color+"'>"+
 						"<i class=\"fa fa-star\"></i>"+
 					"</button>"+
+					image_div +
 					"<button type=\"button\" rel=\"downloadbutton\" title=\"Download\" class=\"btn btn-danger btn-simple btn-link\" onclick=\"download_dataset('"+html_safe_id+"')\" style='position: absolute;left: 0px; top: 50%; transform: translateY(-50%); color: green;'>"+
                                         "<i class=\"fa fa-download\"></i>"+
 					"</button>"+
@@ -747,6 +774,10 @@ function fill_datasets_data(data){
 			$('#'+key+'_button').hide();
 		}
 	});
+	/*$.each(image_check_datasets, function(key, value) {
+		//console.log(localStorage.getItem('environment')+"/data-access-api/files/select?q=DatasetId:"+key+"AND"+generate_accepted_image_solr_filters()+"&wt=json&sort=FileName%20asc&indent=true");
+		query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=DatasetId:"+key+"AND"+generate_accepted_image_solr_filters()+"&wt=json&sort=FileName%20asc&indent=true", checkDatasetContainsDicom.bind(null, key, value));
+	});*/
 	    $("#collection_datasets_len").html(data.response.numFound); 
 	    $("#collection_favorites_len").html(user_data['FavoriteFiles'].length+user_data['FavoriteDatasets'].length+user_data['FavoriteCollections'].length);
 	$('#loading_dataset').hide(500);
@@ -1071,7 +1102,15 @@ function fill_datasets_search(data){
 	  if(user_data["FavoriteDatasets"].includes(obj.id)){
 			color = "btn-success";
 	  }
-	
+	var html_safe_id = encodeURI(escapeRegExp(obj.id));
+	var id_safe_id = html_safe_id.replace(/\//g,"-labsep-");
+	var image_div = "";
+	if (obj.contains_image){
+		image_div = "<button id='view_"+id_safe_id+"' type=\"button\" rel=\"tooltip\" title=\"View\" onclick=\"Cookies.set('login_redirect', '/labcas-ui/d/index.html?dataset_id="+html_safe_id+"'); submitImage('files-table','"+html_safe_id+"')\" class=\"btn btn-simple btn-link\" style='color: red'>"+
+			"<i class=\"fa fa-image\"></i>"+
+		"</button>";
+	}
+
 
 	  $("#search-dataset-table tbody").append(
 		"<tr>"+
@@ -1084,6 +1123,7 @@ function fill_datasets_search(data){
                     	obj.CollectionName+"</a></td>"+
                 "<!--<td>"+obj.DatasetVersion+"</td>-->"+
 			"<td class=\"td-actions\">"+
+				image_div+
 				"<button type=\"button\" rel=\"tooltip\" title=\"Favorite\" onclick=\"save_favorite('"+obj.id+"', 'FavoriteDatasets', this)\" class=\"btn "+color+" btn-simple btn-link\">"+
 					"<i class=\"fa fa-star\"></i>"+
 				"</button>"+

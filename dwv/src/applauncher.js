@@ -232,8 +232,24 @@ function startApp() {
   var get_var = get_url_vars()
   //console.log(get_var["dicoms"].split(";"));
   //myapp.loadURLs(["http://localhost:8000/labcas-data/dicom/IM-0003-0132.dcm","http://localhost:8000/labcas-data/dicom/IM-0003-0133.dcm"]);
-  myapp.loadURLs(JSON.parse(localStorage.getItem('dicoms')), [{name:"Authorization", value:"Bearer "+Cookies.get('token')},{name:"contentType", value:"image/jpeg"}]);
-  //myapp.loadURLs(["https://edrn-labcas.jpl.nasa.gov/data-access-api/download?id=Automated_System_For_Breast_Cancer_Biomarker_Analysis/C0001/RAW/C0001_MG_DAT_LCC%5C.dcm"],[{name:"Authorization", value:"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJMYWJDQVMiLCJzdWIiOiJ1aWQ9ZGxpdSxkYz1lZHJuLGRjPWpwbCxkYz1uYXNhLGRjPWdvdiIsIm5iZiI6MTYwNjIwMjk5OSwiaXNzIjoiTGFiQ0FTIiwiZXhwIjoxNjA2MjA2NTk5LCJpYXQiOjE2MDYyMDI5OTl9.SU8EyCZ1CU7OHyce9raKDmcsB-fdJiPWQBl-SGcDCWg"}]);
+
+  if (localStorage.getItem('multi_dicom') != "true"){
+	myapp.loadURLs(JSON.parse(localStorage.getItem('dicoms')), [{name:"Authorization", value:"Bearer "+Cookies.get('token')},{name:"contentType", value:"image/jpeg"}]);
+  }else{
+	  var axial_list = JSON.parse(localStorage.getItem('dicoms1'));
+	  var coronal_list = JSON.parse(localStorage.getItem('dicoms2'));
+	  var sagittal_list = JSON.parse(localStorage.getItem('dicoms3'));
+	  if (get_var["window"] && get_var["window"] == "Axial" && axial_list.length > 0){
+	    myapp.loadURLs(axial_list, [{name:"Authorization", value:"Bearer "+Cookies.get('token')},{name:"contentType", value:"image/jpeg"}]);
+	  }else if (get_var["window"] && get_var["window"] == "Coronal" && coronal_list.length > 0){
+	    myapp.loadURLs(coronal_list, [{name:"Authorization", value:"Bearer "+Cookies.get('token')},{name:"contentType", value:"image/jpeg"}]);
+	  }else if (get_var["window"] && get_var["window"] == "Sagittal" && sagittal_list.length > 0){
+	    myapp.loadURLs(sagittal_list, [{name:"Authorization", value:"Bearer "+Cookies.get('token')},{name:"contentType", value:"image/jpeg"}]);
+	  }
+  }
+  $('#window_span').html(get_var["window"]);
+
+  
 }
 
 // Image decoders (for web workers)

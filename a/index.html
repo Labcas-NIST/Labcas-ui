@@ -187,7 +187,46 @@
                         </div>
                     </div>
 		   <div class="row">
-		       <div class="col-md-4">
+                        <div class="col-md-4">
+                            <div class="card ">
+                                <div class="card-header" style="padding:0; padding-left: 5px">
+                                    <h4 class="card-title"><div id="datasettitle"></div></h4>
+                                     <p class="card-category">Collections by Organ</p>
+                                </div>
+                                <div class="card-body" style="padding:0; padding-left: 5px">
+                                            <div id="organ_distribution"/>
+
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card ">
+                                <div class="card-header" style="padding:0; padding-left: 5px">
+                                    <h4 class="card-title"><div id="datasettitle"></div></h4>
+                                     <p class="card-category"># Files by Lead PI</p>
+                                </div>
+                                <div class="card-body" style="padding:0; padding-left: 5px">
+                                            <div id="labcas_boxplot_distribution"/>
+                                </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card ">
+                                <div class="card-header" style="padding:0; padding-left: 5px">
+                                    <h4 class="card-title"><div id="datasettitle"></div></h4>
+                                     <p class="card-category"># Files per File Type</p>
+                                </div>
+                                <div class="card-body" style="padding:0; padding-left: 5px">
+                                           <div id="labcas_filetype_distribution"/>
+                                 </div>
+                            </div>
+                          </div>
+                      </div>
+                    </div>
+		   <div class="row">
+		       <div class="col-md-6">
                             <div class="card ">
                                 <div class="card-header">
                                     <h4 class="card-title"><div id="datasettitle"></div></h4>
@@ -199,7 +238,7 @@
                             </div>
                           </div>
 					  </div>
-                        <div class="col-md-4">
+                        <!--<div class="col-md-4">
                             <div class="card ">
                                 <div class="card-header">
                                     <h4 class="card-title"><div id="datasettitle"></div></h4>
@@ -211,8 +250,8 @@
                                 </div>
                             </div>
                           </div>
-			</div>
-                        <div class="col-md-4">
+			</div>-->
+                        <div class="col-md-6">
                             <div class="card ">
                                 <div class="card-header">
                                     <h4 class="card-title"><div id="datasettitle"></div></h4>
@@ -345,11 +384,11 @@
 <!-- Light Dashboard DEMO methods, don't include it in your project! -->
 <!--<script src="/labcas-ui/assets/js/demo.js"></script>-->
 <script src="/labcas-ui/assets/js/plugins/js.cookie.js"></script>
-<script src="/labcas-ui/assets/js/labcas/utils.js?version=2.3.1"></script>
-<script src="/labcas-ui/assets/js/labcas/search.js?version=2.3.1"></script>
+<script src="/labcas-ui/assets/js/labcas/utils.js?version=2.3.2"></script>
+<script src="/labcas-ui/assets/js/labcas/search.js?version=2.3.2"></script>
 <script src="/labcas-ui/assets/js/labcas/labcas-sidebar.js"></script>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-<script src="/labcas-ui/assets/js/labcas/dashboard.js?version=2.3.1"></script>
+<script src="/labcas-ui/assets/js/labcas/dashboard.js?version=2.3.2"></script>
 
 
 <script type="text/javascript">
@@ -359,7 +398,7 @@
         var get_var = get_url_vars();
         //console.log(get_var["dataset_id"]);
         setup_labcas_analytics();
-        $.get( "/labcas-ui/sidebar_"+localStorage.getItem("environment_name")+".html?version=2.3.1", function( data ) {
+        $.get( "/labcas-ui/sidebar_"+localStorage.getItem("environment_name")+".html?version=2.3.2", function( data ) {
             $( "#sidebar_placeholder" ).append(data);
             $( "#username_placeholder" ).html(Cookies.get('user'));
             $( "#username_placeholder_second" ).html(Cookies.get('user'));

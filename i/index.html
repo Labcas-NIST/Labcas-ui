@@ -87,9 +87,9 @@
 <link href="/labcas-ui/assets/css/labcas/custom.css" rel="stylesheet" />
 <script src="/labcas-ui/assets/js/plugins/js.cookie.js"></script>
 <script src="/labcas-ui/assets/js/labcas/labcas-sidebar.js"></script>
-<script src="/labcas-ui/assets/js/labcas/authentication.js?101"></script>
-<script src="/labcas-ui/assets/js/labcas/utils.js?100"></script>
-<script src="/labcas-ui/assets/js/labcas/search.js?100"></script>
+<script src="/labcas-ui/assets/js/labcas/authentication.js?version=2.3.2"></script>
+<script src="/labcas-ui/assets/js/labcas/utils.js?version=2.3.2"></script>
+<script src="/labcas-ui/assets/js/labcas/search.js?version=2.3.2"></script>
 <script type="text/javascript">
     $(document).ready(function() {
 	initCookies();
@@ -99,6 +99,7 @@
             $( "#username_placeholder_second" ).html(Cookies.get('user'));
             if (Cookies.get('user') == "Sign in"){$( "#username_placeholder_third" ).html(Cookies.get('user'));}
             set_cart_status();
+	    $("#loggedout_msg").hide();
         });
 
 	$( "#footer_template" ).load("/labcas-ui/templates.html #footer_template_"+localStorage.getItem("environment_name"));

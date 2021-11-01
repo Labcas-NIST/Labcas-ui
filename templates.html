@@ -22,6 +22,9 @@
 <div id="nav_template">
 	<nav class="navbar navbar-expand-lg navbar-fixed">
                 <div class="container-fluid">
+		    <div class="collapse navbar-collapse justify-content-start">
+			    <span id="loggedout_msg"><font color=green>Public data only - Please <a href="/labcas-ui/index.html">login</a> to see additional data.</font></span>
+		    </div>
                     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-bar burger-lines"></span>
                         <span class="navbar-toggler-bar burger-lines"></span>
@@ -49,6 +52,7 @@
 					<a href="#" onclick="download_files('cart')"><li class="dropdown-item text-info" >Download File(s) <span id="cart_size"></span></li></a>
                     <a href="#" onclick="submitImageData('cart_image');"><li class="dropdown-item text-success" >View Images (<span id="image_size">0</span>)</li></a>
                     <a href="#" onclick="submitImageData('cart_dicom');"><li class="dropdown-item text-success" >View Dicoms (<span id="dicom_size">0</span>)</li></a>
+                    <!--<a href="/labcas-ui/o/index.html"><li class="dropdown-item text-success" >View Omero (<span id="omero_size">0</span>)</li></a>-->
 					<a href="#" onclick="clear_cart('search-file-table'); clear_cart('files-table');"><li class="dropdown-item text-warning" >Clear Cart</li></a>
                                 </ul>
                         </li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -94,15 +98,21 @@
     <div class="card card-stats" style="margin-bottom: 0px; height:60px">
     <div class="card-body " style="padding:0; padding-right: 10px">
         <div class="row">
-        <div class="col-5">
+        <div class="col-3">
             <div class="icon-big text-center icon-warning">
             <i class="nc-icon nc-app text-warning"></i>
             </div>
         </div>
-        <div class="col-7">
+        <div class="col-5">
             <div class="numbers">
             <p class="card-category"># Collections</p>
             <h4 class="card-title" id='collection_name'></h4>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="numbers">
+            <p class="card-category">Total</p>
+            <h4 class="card-title" id='collection_total_count'></h4>
             </div>
         </div>
         </div>
@@ -134,15 +144,21 @@
     <div class="card card-stats" style="margin-bottom: 0px; height:60px">
 	<div class="card-body " style="padding:0; padding-right: 10px">
 	    <div class="row">
-		<div class="col-5">
+		<div class="col-3">
 		    <div class="icon-big text-center icon-warning">
 			<i class="nc-icon nc-layers-3 text-warning"></i>
 		    </div>
 		</div>  
-		<div class="col-7">
+		<div class="col-5">
 		    <div class="numbers">
 			<p class="card-category"># Datasets</p>
 			<h4 class="card-title" id='collection_datasets_len'></h4>
+		    </div>
+		</div>
+		<div class="col-4">
+		    <div class="numbers">
+			<p class="card-category">Total</p>
+			<h4 class="card-title" id='dataset_total_count'></h4>
 		    </div>
 		</div>
 	    </div>
@@ -155,15 +171,21 @@
     <div class="card card-stats" style="margin-bottom: 0px; height:60px"> 
 	<div class="card-body " style="padding:0; padding-right: 10px">        
 	    <div class="row">
-		<div class="col-5">     
+		<div class="col-3">     
 		    <div class="icon-big text-center icon-warning">
 			<i class="nc-icon nc-single-copy-04 text-success"></i>
 		    </div>      
 		</div>
-		<div class="col-7">
+		<div class="col-5">
 		    <div class="numbers">
 			<p class="card-category"># Files</p>
 			<h4 class="card-title" id='collection_files_len'></h4>
+		    </div>
+		</div>
+		<div class="col-4">
+		    <div class="numbers">
+			<p class="card-category">Total</p>
+			<h4 class="card-title" id='file_total_count'></h4>
 		    </div>
 		</div>
 	    </div>
@@ -176,12 +198,12 @@
     <div class="card card-stats" style="margin-bottom: 0px; height:60px">
 	<div class="card-body " style="padding:0; padding-right: 10px">
 	    <div class="row">
-		<div class="col-5">
+		<div class="col-2">
 		    <div class="icon-big text-center icon-warning">
 			<i class="fa fa-star text-success"></i>
 		    </div>
 		</div>
-		<div class="col-7">
+		<div class="col-10">
 		    <div class="numbers">
 			<p class="card-category"># Favorited</p>
 			<h4 class="card-title" id='collection_favorites_len'>0</h4>

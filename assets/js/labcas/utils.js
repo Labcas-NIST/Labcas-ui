@@ -15,6 +15,11 @@ $().ready(function() {
         	$(this).prev(".btn").find(".fa").removeClass("fa-minus").addClass("fa-plus");
         });
 
+	if (!(location.href.includes("/labcas-ui/index.html") || location.href.endsWith("/labcas-ui/") || location.href.endsWith("/labcas-ui"))){
+		query_labcas_api(localStorage.getItem('environment')+"/data-access-api/collections/select?q=*&facet=true&facet.limit=-1&wt=json&rows=0",get_labcas_collection_stats);
+		query_labcas_api(localStorage.getItem('environment')+"/data-access-api/datasets/select?q=*&facet=true&facet.limit=-1&wt=json&rows=0",get_labcas_dataset_stats);
+		query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=*&facet=true&facet.limit=-1&wt=json&rows=0",get_labcas_file_stats);
+	}
 	//Always do this, init functions
 	
 	//initiate clinical-ui-link
@@ -24,13 +29,17 @@ $().ready(function() {
 
 });
 function redirect_to_login(){
-	console.log("Attempting to redirect to login...");
-	window.location.replace("/labcas-ui/index.html");
+    console.log("Attempting to redirect to login...");
+    if (localStorage.getItem("allow_redirect") == "true"){
+        window.location.replace("/labcas-ui/index.html");
+    }else{
+
+    }
 }
 function initCookies(){
 	if(!Cookies.get("token") || Cookies.get("token") == "None"){
 		$.ajax({
-			  url: '/labcas-ui/assets/conf/environment.cfg?26',
+			  url: '/labcas-ui/assets/conf/environment.cfg?version=2.3.2',
 			  dataType: 'json',
 			  async: false,
 			  success: function(json) {
@@ -144,7 +153,7 @@ function query_labcas_api(url, customfunction){
                                    localStorage.setItem("logout_alert","On");
                                  alert(formatTimeOfDay($.now()) + ": Login expired, please login...");
                         }
-                        window.location.replace("/labcas-ui/index.html");
+			redirect_to_login();
                  }
         });
 
@@ -489,6 +498,55 @@ function checkWindow(win){
 	return "worked";
 }
 
+function usage_agreement(){
+	/*var agree_form = "<div class='col-md-12'  style='text-align:center'><h2>Data Download Terms</h2><div>";
+	agree_form += "<div class='col-md-12' style='text-align:left'><p>For investigators wishing to download files from Labcas, please fill out the form below, and will contact you by email and accept the data sharing/contribution agreement.  If a contributor is interested in contributing data, please send an email to <a href='mailto:Heather.Kincaid@jpl.nasa.gov'>Heather.Kincaid@jpl.nasa.gov</a> and we will provide ingest mechanisms. Questions can be sent to the same address.</p></div>";
+
+	agree_form += `<div class='col-md-12' style="text-align:left"><form id="registerFormValidation" action="" method="" novalidate="novalidate">
+                                <div class="header">Register Form</div>
+                                <div class="content">
+
+                                    <div class="form-group">
+                                        <label class="control-label">Email Address <star>*</star></label>
+                                        <input class="form-control" name="email" type="text" required="true" email="true" autocomplete="off" aria-required="true">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="control-label">Institution <star>*</star></label>
+                                        <input class="form-control" name="institution" id="institution" type="text" required="true" aria-required="true">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="control-label">Your role <star>*</star></label>
+                                        <input class="form-control" name="role" id="role" type="text" required="true" aria-required="true">
+                                    </div>
+
+                                </div>
+
+                                <div class="footer">
+                                    <div class="form-group pull-left">
+                                        <label class="checkbox">
+											<input id="checkbox41" type="checkbox">
+											<label for="checkbox41">
+												I agree with above terms of data sharing agreement.*
+											</label>
+                                        </label>
+                                    <br><div class="category"><star>*</star> Required fields</div>
+                                    </div>
+                                    <button type="submit" class="btn btn-info btn-fill pull-right">Submit</button>
+
+                                    <div class="clearfix"></div>
+                                </div>
+                            </form></div>`;
+
+	$('#alertHTML').html(agree_form);
+	$('#icon_type').html("<i class='nc-icon nc-cloud-download-93'></i>");
+	$('#errorModal').modal({backdrop: 'static', keyboard: false});
+	$('#errorModal').modal('show');*/
+	$('#acceptHTML').html(localStorage.getItem("accept_msg"));
+	$('#acceptModal').modal('show');
+}
+
 function checkSize(filecount, filesize, threshold){
 	$('#sizeHTML').html("There are <B><font color='red'>"+filecount+"</font></B> files with total size of <B><font color='red'>"+filesize+"</font></B>. This is more than the <B><font color='red'>"+threshold+"</font></B> recommended download size from a web browser. If you'd like to proceed, the browser will initiate a series of downloads, please keep your browser and internet connection open for the duration of the download. Alternatively, you may download the below script that can be run through your command prompt/terminal instead with minimal interferance.");
 	$('#sizeModal').modal({backdrop: 'static', keyboard: false});
@@ -664,7 +722,7 @@ function download_script(filename) {
 }
 function download_script_files() {
   var element = document.createElement('a');
-  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.parse(localStorage.getItem("download_list")).join("\n"+localStorage.getItem('environment')+"/data-access-api/download?id=")));
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(localStorage.getItem('environment')+"/data-access-api/download?id="+Object.keys(JSON.parse(localStorage.getItem("download_list"))).join("\n"+localStorage.getItem('environment')+"/data-access-api/download?id=")));
   element.setAttribute('download', "files.csv");
 
   element.style.display = 'none';
@@ -732,6 +790,18 @@ function set_search_filters(params){
 	}else{
 		window.location.replace("/labcas-ui/s/index.html?search=*");
 	}
+}
+
+function get_labcas_collection_stats(data){
+	$("#collection_total_count").html(data.response.numFound);
+}
+
+function get_labcas_dataset_stats(data){
+	$("#dataset_total_count").html(data.response.numFound);
+}
+
+function get_labcas_file_stats(data){
+	$("#file_total_count").html(data.response.numFound);
 }
 
 function get_search_filters(){
@@ -832,6 +902,43 @@ function accepted_image_check(f){
     });
     return pass_flag;
 }
+
+function generate_accepted_image_solr_filters(){
+	var img_ext = [".svs",".jpg",".gif",".jpeg",".dcm",".dicom",".png",".tif",".tiff",".scm",".scn",".qptiff"];
+	var fq = "(id:*"+img_ext.join("%20AND%20id:*")+")";
+	return fq;
+}
+
+function check_dicom_multi(){
+	var flag = false;
+	var dicom_list_axial = [];
+	var dicom_list_coronal = [];
+	var dicom_list_sagittal = [];
+	if ( localStorage.getItem('dicoms') ){
+		var dicom_list = JSON.parse(localStorage.getItem('dicoms'));
+		if (dicom_list.length > 0){
+			$.each(dicom_list, function(key, value) {
+				var fname = value.substring(value.lastIndexOf('/')+1);
+				if (fname.startsWith("1mm_") || fname.startsWith("axial_")){
+					dicom_list_axial.push(value);
+					flag = true;
+				}else if(fname.startsWith("coronal_")){
+					dicom_list_coronal.push(value);
+					flag = true;
+				}else if(fname.startsWith("sagittal_")){
+					dicom_list_sagittal.push(value);
+					flag = true;
+                                }
+			});
+		}
+	}
+	localStorage.setItem("dicoms1",JSON.stringify(dicom_list_axial));
+	localStorage.setItem("dicoms2",JSON.stringify(dicom_list_coronal));
+	localStorage.setItem("dicoms3",JSON.stringify(dicom_list_sagittal));
+	localStorage.setItem("multi_dicom",flag);
+	return flag;
+}
+
 function generate_image_file_list(data){
     var image_list = [];
     var histomics_list = [];
@@ -868,16 +975,32 @@ function generate_image_file_list(data){
         Cookies.set("login_redirect", "/labcas-ui/s/index.html?search="+get_var["search"].replace("&","%26"))
     }
     if (image_type == "dicoms"){
-       window.location.replace("/labcas-ui/i/index.html");
+	if (check_dicom_multi()){
+	       window.location.replace("/labcas-ui/i/mindex.html?version=2.3.2");
+	}else{
+	       window.location.replace("/labcas-ui/i/index.html?version=2.3.2");
+	}
     }else{
-       window.location.replace("/labcas-ui/z/index.html");
+       window.location.replace("/labcas-ui/z/index.html?version=2.3.2");
     }
 }
 
-
+function checkDatasetContainsDicom(dataset_id, safe_dataset_id, data){
+	/*console.log("Checking dataset...");	
+	console.log(dataset_id);
+	console.log("safe");
+	console.log(safe_dataset_id);
+	console.log("data");
+	console.log(data);*/
+	if (!(data.response.numFound > 0)){
+		$('#view_'+safe_dataset_id).show();
+	}
+}
 
 function submitImage(formname, dataset){
-    if ( $('#check_all:checked').length ){
+    if ( $('#check_all:checked').length || dataset){
+	console.log("GOT HERE");
+	console.log(dataset);
         var get_var = get_url_vars();
         if (dataset){
             dataset = dataset.replace("%5C%20","%20").replace("%20","%5C%20").replace(" ","%5C%20");
@@ -915,9 +1038,13 @@ function submitSingleImageData(image, loc, name, version){
             }
             console.log(image_type);
             if (image_type == "dicoms"){
-                window.location.replace("/labcas-ui/i/index.html");
+		if (check_dicom_multi()){
+		       window.location.replace("/labcas-ui/i/mindex.html?version=2.3.2");
+		}else{
+		       window.location.replace("/labcas-ui/i/index.html?version=2.3.2");
+		}
             }else{
-                window.location.replace("/labcas-ui/z/index.html");
+                window.location.replace("/labcas-ui/z/index.html?version=2.3.2");
             }
 
 }
@@ -985,57 +1112,71 @@ function submitImageData(formname, dicom){
     console.log(image_type);
     if (formname.startsWith("cart_")){
         if (formname == "cart_dicom"){
-            window.location.replace("/labcas-ui/i/index.html");
+		if (check_dicom_multi()){
+		       window.location.replace("/labcas-ui/i/mindex.html?version=2.3.2");
+		}else{
+		       window.location.replace("/labcas-ui/i/index.html?version=2.3.2");
+		}
         }else{
-            window.location.replace("/labcas-ui/z/index.html");
+            window.location.replace("/labcas-ui/z/index.html?version=2.3.2");
         }
     }else{
        if (image_type == "dicoms"){
-           window.location.replace("/labcas-ui/i/index.html");
+		if (check_dicom_multi()){
+		       window.location.replace("/labcas-ui/i/mindex.html?version=2.3.2");
+		}else{
+		       window.location.replace("/labcas-ui/i/index.html?version=2.3.2");
+		}
        }else{
-          window.location.replace("/labcas-ui/z/index.html");
+          window.location.replace("/labcas-ui/z/index.html?version=2.3.2");
        }
     }
 }
 
 function changeFrameSrc(frame, src, fileid){
+            console.log("OMERO2");
+            console.log(fileid);
     $('#'+frame).attr('src', src);
     $('#img_frame').contents().find('#h-navbar-brand').html('Image Viewer');
     window.history.replaceState(null, null, "?fileid="+fileid);
 }
 
-
-function showHistImage(hist_image){
-    /*images = JSON.parse(localStorage.getItem('image'));
-    console.log(JSON.stringify({'token':Cookies.get('token'), 'image':images}));
-    $.ajax({
-        url: "http://david-server.local/cgi-bin/labcas_dsa_api.py",
-        type: 'POST',
-        data: JSON.stringify({'token':Cookies.get('token'), 'image':images}),
-        dataType: "json",
-        success: function (data) {
-            $.each(data['image_id_list'], function( key, val ) {
-                $("#image_list_table tbody").append("<tr><td><a href='#' onclick=\"changeFrameSrc('img_frame','http://localhost:8009/histomics#?image="+val['id']+"')\">"+val['name']+"</a></td></tr>");
-            });
-            // Updates needed to ensure css displays correctly within iframe
-            document.getElementById('img_frame').onload = function() {
-                console.log("Iframe loaded");
-            };
-            changeFrameSrc("img_frame", "http://localhost:8009/histomics#?image="+data['image_id_list'][0]['id']);
+function showOmeroImage(hist_image){
+    /*if (hist_image && hist_image != ""){
+        setup_labcas_file_data("fileimage",'id:"'+encodeURI(hist_image).replace("&","%26")+'"', 'id:'+hist_image+'*');
+    }else{*/
+       //images = JSON.parse(localStorage.getItem('image'));
+       images_data = JSON.parse(localStorage.getItem('image_data'));
+       show_flag = true;
+       $.each(images_data, function( key, val ) {
+          console.log("new");
+          console.log(val);
+          var fileid = val[3];
+          var query_file = val[1];
+          var query_folder = val[0];
+          var omero_id = val[4];
+          var version = val[2];
+          if (show_flag){
+            console.log("OMERO");
+            console.log(omero_id);
+            orchistrate_omero_find(query_folder, query_file, version, show_flag, fileid, omero_id);
+          }
+          show_flag = false;
+            var download_cmd = "download_file('"+fileid+"','single');";
+            var details_cmd = "window.open(\"/labcas-ui/f/index.html?file_id="+fileid+"\");";
+            $("#image_list_table tbody").append("<tr ><td  style='padding-left: 5px; word-wrap: break-word;'><a style='word-wrap: break-word;' href='#' onclick=\"changeFrameSrc('img_frame','"+localStorage.getItem("omero_image_viewer")+omero_id+"', '"+omero_id+"')\">"+decodeURIComponent(query_file)+"</a></td><td class='td-actions text-right'><button type='button' rel='detailbutton' title='Details' style='padding:0px' class='btn btn-info btn-simple btn-link' onclick='"+details_cmd+"'><i class='fa fa-info-circle'></i></button>"+'<button type="button" rel="downloadbutton" title="Download" class="btn btn-success btn-simple btn-link" onclick="'+download_cmd+'"><i class="fa fa-download"></i></button></td></tr>');
+            /*if (show_flag){
                 $('#loading_viewer').hide();
                 $('#viewer_content').show();
-                wait(1000);
-                $('#img_frame').contents().find('#h-navbar-brand').html('Image Viewer');
-        },
-        error: function(e){
-            console.log("Image view failed");
-            if (!(localStorage.getItem("logout_alert") && localStorage.getItem("logout_alert") == "On")){
-                   localStorage.setItem("logout_alert","On");
-                 alert("You are currently logged out. Redirecting you to log in.");
-            }
-        }
-    });*/
+                changeFrameSrc("img_frame", localStorage.getItem("dsa_image_viewer")+"?image="+filedata[0]._id, fileid);
+            }*/
+       });
+       localStorage.setItem("image_data","");
+    localStorage.setItem("image","");
+    //}
+}
 
+function showHistImage(hist_image){
     if (hist_image && hist_image != ""){
         setup_labcas_file_data("fileimage",'id:"'+encodeURI(hist_image).replace("&","%26")+'"', 'id:'+hist_image+'*'); 
     }else{
@@ -1079,12 +1220,21 @@ function set_cart_status (){
         });
 
         $('#image_size').html(imagesize);
+        $('#omero_size').html(imagesize);
         $('#dicom_size').html(dicomsize);
+}
+
+function orchistrate_omero_find(query_folder, query_file, version, show_flag, fileid, omero_id){
+    console.log("iframe");
+    console.log(localStorage.getItem("omero_image_viewer")+query_file);
+    changeFrameSrc("img_frame", localStorage.getItem("omero_image_viewer")+omero_id, omero_id);
+    $('#loading_viewer').hide();
+    $('#viewer_content').show();
 }
 
 function orchistrate_find(query_folder, query_file, version, show_flag, fileid){
     var image_dsa_path = [];
-    var root_collection = "6034987d5f92b701da7ea93e";
+    var root_collection = localStorage.getItem("dsa_root_collection");
     var labcas_data_map = JSON.parse(localStorage.getItem("labcas_data")).collection_path_maps;
 
     //Specifically for qptiff files

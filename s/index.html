@@ -38,7 +38,7 @@
                         <div class="col-lg-3 col-sm-6" id="favorite_stat_template">
                         </div>
                     </div>
-		    <div class="row">
+		    <!--<div class="row">
                         <div class="col-md-4">
                             <div class="card ">
                                 <div class="card-header" style="padding:0; padding-left: 5px">
@@ -76,7 +76,7 @@
                             </div>
                           </div>
                       </div>
-		    </div>
+		    </div>-->
                     <div class="row">
                         <div class="col-md-3">
 
@@ -94,7 +94,7 @@
 
                             <div class="card " style="margin-bottom: 0px">
                                 <div class="card-header">
-                                    <h4 class="card-title"><select id="faceted_categories"  class="form-control" data-style="btn-default btn-outline" data-menu-style="dropdown-blue"></select>
+                                    <h4 class="card-title">Faceted Filters<!--<select id="faceted_categories"  class="form-control" data-style="btn-default btn-outline" data-menu-style="dropdown-blue"></select>-->
 <a href="#" id="filter_reset" onclick="localStorage.setItem('active_custom_search_profile',''); reset_search_filters(); setup_labcas_search('*', 'all', 0); document.getElementById('saved_profiles').value='custom'; $('#save_profile_name').show(); $('#save_profile').show(); $('#delete_profile').hide();">*&nbsp;&nbsp;&nbsp;<i class="nc-icon nc-refresh-02" title="Reset Filters"></i></a></h4>
                                     <hr style="margin-top: .5em; margin-bottom: 0; height: 1px; color:#333;background-color:#333;">
                                 </div>
@@ -138,7 +138,7 @@
 					<div id="icon-account">
 						<ul class="pagination pagination-no-border" id='datasets_search_pagination_top' style="float: right;"></ul>
 						<div class="table-full-width">
-							<table class="table" id="search-dataset-table" style="table-layout: fixed;">
+							<table class="table" id="search-dataset-table" style="table-layout: fixed; width: 100%">
 								 <thead>
 								    <th data-field="dataset" data-sortable="true">Dataset</th>
 								    <th data-field="collection" data-sortable="true">Collection</th>
@@ -238,11 +238,11 @@
 <script src="/labcas-ui/assets/js/demo.js"></script>
 <script src="/labcas-ui/assets/js/plugins/js.cookie.js"></script>
 <script src="/labcas-ui/assets/js/labcas/labcas-sidebar.js"></script>
-<script src="/labcas-ui/assets/js/labcas/authentication.js?version=2.3.1"></script>
-<script src="/labcas-ui/assets/js/labcas/utils.js?version=2.3.1"></script>
-<script src="/labcas-ui/assets/js/labcas/search.js?version=2.3.1"></script>
+<script src="/labcas-ui/assets/js/labcas/authentication.js?version=2.3.2"></script>
+<script src="/labcas-ui/assets/js/labcas/utils.js?version=2.3.3"></script>
+<script src="/labcas-ui/assets/js/labcas/search.js?version=2.3.2"></script>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-<script src="/labcas-ui/assets/js/labcas/dashboard_search.js?version=2.3.1"></script>
+<script src="/labcas-ui/assets/js/labcas/dashboard_search.js?version=2.3.2"></script>
 <script type="text/javascript">
 	document.onreadystatechange = function () {
 	  var state = document.readyState
@@ -255,20 +255,25 @@
 	      },1000);
 	  }
 	}
-	$( "#head_template" ).load("/labcas-ui/templates.html?version=2.3.1 #head_template");
-        $( "#favorite_stat_template" ).load("/labcas-ui/templates.html?version=2.3.1 #favorite_stat_template");
-        $( "#file_stat_template" ).load("/labcas-ui/templates.html?version=2.3.1 #file_stat_template");
-        $( "#dataset_stat_template" ).load("/labcas-ui/templates.html?version=2.3.1 #dataset_stat_template");
-        $( "#collection_stat_template" ).load("/labcas-ui/templates.html?version=2.3.1 #collection_stat_template");
+	$( "#head_template" ).load("/labcas-ui/templates.html?version=2.3.2 #head_template");
+        $( "#favorite_stat_template" ).load("/labcas-ui/templates.html?version=2.3.2 #favorite_stat_template");
+        $( "#file_stat_template" ).load("/labcas-ui/templates.html?version=2.3.2 #file_stat_template");
+        $( "#dataset_stat_template" ).load("/labcas-ui/templates.html?version=2.3.2 #dataset_stat_template");
+        $( "#collection_stat_template" ).load("/labcas-ui/templates.html?version=2.3.2 #collection_stat_template");
 
-        $( "#footer_template" ).load("/labcas-ui/templates.html?version=2.3.1 #footer_template_"+localStorage.getItem("environment_name"));
-        $( "#sidebar_placeholder" ).load("/labcas-ui/sidebar_"+localStorage.getItem("environment_name")+".html?version=2.3.1" );
+        $( "#footer_template" ).load("/labcas-ui/templates.html?version=2.3.2 #footer_template_"+localStorage.getItem("environment_name"));
+        $( "#sidebar_placeholder" ).load("/labcas-ui/sidebar_"+localStorage.getItem("environment_name")+".html?version=2.3.2" );
 
     $(document).ready(function() {
 	initCookies();
-        $( "#nav_template" ).load("/labcas-ui/templates.html?version=2.3.1 #nav_template", function() {
+        $( "#nav_template" ).load("/labcas-ui/templates.html?version=2.3.2 #nav_template", function() {
             $( "#username_placeholder_second" ).html(Cookies.get('user'));
             if (Cookies.get('user') == "Sign in"){$( "#username_placeholder_third" ).html(Cookies.get('user'));}
+	    if (Cookies.get('user') == "Sign in"){$( "#username_placeholder_third" ).html(Cookies.get('user')); 
+                $("#loggedout_msg").show();
+            }else{
+                $("#loggedout_msg").hide();
+            }
         });
 
 	initiate_search();
