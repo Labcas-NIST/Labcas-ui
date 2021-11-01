@@ -279,6 +279,11 @@ dwvjq.gui.Draw = function (app) {
    * Setup the tool HTML.
    */
   this.setup = function (shapeList) {
+    console.log("Shapes2");
+    console.log(shapeList);
+    var index = shapeList.indexOf("Ruler");
+    shapeList.splice(index, 1);
+    shapeList.unshift("Ruler");
     // shape select
     var shapeSelector = dwvjq.html.createHtmlSelect(
       'shapeSelect',

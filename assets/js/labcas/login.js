@@ -74,8 +74,9 @@ $('#loginform').submit(function (e) {
 
 					writeUserData(JSON.stringify(user_data))
 					localStorage.setItem("first_time_user",  first_time_user);
-					$('#acceptHTML').html(localStorage.getItem("accept_msg"));
-					$('#acceptModal').modal('show');
+                    check_labcas_acceptance("login");
+					/*$('#acceptHTML').html(localStorage.getItem("accept_msg"));
+					$('#acceptModal').modal('show');*/
 					/*if (Cookies.get("login_redirect")){
 						window.location.replace(Cookies.get("login_redirect"));
 					}else{

@@ -53,7 +53,7 @@
 					<a href="#" onclick="download_files('cart')"><li class="dropdown-item text-info" >Download File(s) <span id="cart_size"></span></li></a>
                     <a href="#" onclick="submitImageData('cart_image');"><li class="dropdown-item text-success" >View Images (<span id="image_size">0</span>)</li></a>
                     <a href="#" onclick="submitImageData('cart_dicom');"><li class="dropdown-item text-success" >View Dicoms (<span id="dicom_size">0</span>)</li></a>
-                    <a href="#" onclick="submitImageData('cart_omero');"><li class="dropdown-item text-success" >View Omero (<span id="omero_size">0</span>)</li></a>
+                    <!--<a href="#" onclick="submitImageData('cart_omero');"><li class="dropdown-item text-success" >View Omero (<span id="omero_size">0</span>)</li></a>-->
 					<a href="#" onclick="clear_cart('search-file-table'); clear_cart('files-table');"><li class="dropdown-item text-warning" >Clear Cart</li></a>
                                 </ul>
                         </li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -222,7 +222,7 @@
 	  </div>
           <div style="padding-left:40px" class="col-12 col-md-3">
 		<h5>Get the Newsletter</h5>
-                <form action='/signup/index.php' class='submit_newsletter' method="post">
+                <form action='https://www.jpl.nasa.gov/signup/index.php' class='submit_newsletter' method="post">
                   <input class='email_field' name='email_field' onblur="this.placeholder = 'enter email address'" onfocus="this.placeholder = ''" placeholder='enter email address' type='text' value=''>
                   <input class='email_submit' type='submit' value='Submit'>
                 </form>
@@ -230,7 +230,7 @@
             <h5>Follow JPL</h5>
             <ul class="list-unstyled text-small">
 			<li>
-                        <a href="/signup/">Newsletter</a>
+                        <a href="https://www.jpl.nasa.gov/signup/">Newsletter</a>
                       </li>
                       <li>
                         <a href="http://www.facebook.com/NASAJPL">Facebook</a>
@@ -259,37 +259,37 @@
             <h5>About</h5>
             <ul class="list-unstyled text-small">
                       <li>
-                        <a href="/about/">Director's Message</a>
+                        <a href="https://www.jpl.nasa.gov/about/">Director's Message</a>
                       </li>
                       <li>
-                        <a href="/about/exec.php">Executive Council</a>
+                        <a href="https://www.jpl.nasa.gov/about/exec.php">Executive Council</a>
                       </li>
                       <li>
-                        <a href="/about/history.php">History</a>
+                        <a href="https://www.jpl.nasa.gov/about/history.php">History</a>
                       </li>
                       <li>
-                        <a href="/about/reports.php">Annual Reports</a>
+                        <a href="https://www.jpl.nasa.gov/about/reports.php">Annual Reports</a>
                       </li>
                       <li>
-                        <a href="/contact_JPL.php">Contact Us</a>
+                        <a href="https://www.jpl.nasa.gov/contact_JPL.php">Contact Us</a>
                       </li>
                       <li>
-                        <a href="/opportunities/">Opportunities</a>
+                        <a href="https://www.jpl.nasa.gov/opportunities/">Opportunities</a>
                       </li>
             </ul>
 		<h5>News</h5>
 	<ul class="list-unstyled text-small">
 		<li>
-                        <a href="/news">Latest News</a>
+                        <a href="https://www.jpl.nasa.gov/news">Latest News</a>
                       </li>
                       <li>
-                        <a href="/news/presskits.php">Press Kits</a>
+                        <a href="https://www.jpl.nasa.gov/news/presskits.php">Press Kits</a>
                       </li>
                       <li>
-                        <a href="/news/factsheets.php">Fact Sheets</a>
+                        <a href="https://www.jpl.nasa.gov/news/factsheets.php">Fact Sheets</a>
                       </li>
                       <li>
-                        <a href="/news/mediaroom.php">Media Room</a>
+                        <a href="https://www.jpl.nasa.gov/news/mediaroom.php">Media Room</a>
                       </li>
 	</ul>
           </div>
@@ -297,28 +297,28 @@
             <h5>Missions</h5>
             <ul class="list-unstyled text-small">
 		<li>
-                        <a href="/missions/?type=current">Current</a>
+                        <a href="https://www.jpl.nasa.gov/missions/?type=current">Current</a>
                       </li>
                       <li>
-                        <a href="/missions/?type=past">Past</a>
+                        <a href="https://www.jpl.nasa.gov/missions/?type=past">Past</a>
                       </li>
                       <li>
-                        <a href="/missions/?type=future">Future</a>
+                        <a href="https://www.jpl.nasa.gov/missions/?type=future">Future</a>
                       </li>
                       <li>
-                        <a href="/missions/?type=proposed">Proposed</a>
+                        <a href="https://www.jpl.nasa.gov/missions/?type=proposed">Proposed</a>
                       </li>
                       <li>
-                        <a href="/missions">All</a>
+                        <a href="https://www.jpl.nasa.gov/missions">All</a>
                       </li>
     </ul>
             <h5>Galleries</h5>
             <ul class="list-unstyled text-small">
 		<li>
-                        <a href="/spaceimages/">JPL Space Images</a>
+                        <a href="https://www.jpl.nasa.gov/spaceimages/">JPL Space Images</a>
                       </li>
                       <li>
-                        <a href="/infographics/">Infographics</a>
+                        <a href="https://www.jpl.nasa.gov/infographics/">Infographics</a>
                       </li>
                       <li>
                         <a href="http://photojournal.jpl.nasa.gov/">Photojournal</a>
@@ -327,7 +327,7 @@
                         <a href="http://www.nasaimages.org/">NASA Images</a>
                       </li>
                       <li>
-                        <a href="/apps/">Mobile Apps</a>
+                        <a href="https://www.jpl.nasa.gov/apps/">Mobile Apps</a>
                       </li>
             </ul>
           </div>
@@ -355,9 +355,15 @@
                     <li>
                         <font style="color: white">URS300757</font>
                     </li>
+                    <li>
+                        <font style="color: white">Site Manager: Dan Crichton</font>
+                    </li>
+                    <li>
+                        <font style="color: white">Webmaster: David Liu</font>
+                    </li>
                 </ul>
                 <p>
-                    Copyright © 2020
+                    Copyright © 2021
                     California Institute of Technology. <small>ALL RIGHTS RESERVED.</small>
                     U.S. Government Sponsorship Acknowledged.
                 </p>
