@@ -1,0 +1,269 @@
+<!-- 
+=========================================================
+Light Bootstrap Dashboard PRO - v2.0.1
+=========================================================
+
+Product Page: https://www.creative-tim.com/product/light-bootstrap-dashboard-pro
+Copyright 2019 Creative Tim (https://www.creative-tim.com)
+
+Coded by Creative Tim
+
+=========================================================
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <base href="/labcas-ui/assets/" target="_blank">
+    <link rel="apple-touch-icon" sizes="76x76" href="img/apple-icon.png">
+    <link rel="icon" type="image/png" href="img/favicon.png">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>Labcas 3.0</title>
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
+    <!--     Fonts and icons     -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
+    <!-- CSS Files -->
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/light-bootstrap-dashboard.css?v=2.0.1" rel="stylesheet" />
+    <link href="css/demo.css" rel="stylesheet" />
+  </head>
+  <body class="sidebar-mini">
+    <div class="modal fade modal-mini modal-primary" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog" style="max-width: 620px">
+        <div class="modal-content" style="width: 620px">
+          <div class="modal-header justify-content-center">
+            <div class="modal-profile">
+              <i class="nc-icon nc-bell-55"></i>
+            </div>
+          </div>
+          <div class="modal-body">
+            <p>
+            <div id="alertHTML"></div>
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-link btn-simple" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade modal-mini modal-primary" id="acceptModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog" style="max-width: 1000px">
+        <div class="modal-content" style="width: 1000px">
+          <div class="modal-header justify-content-center">
+            <div class="modal-profile">
+              <i class="nc-icon nc-bell-55"></i>
+            </div>
+          </div>
+          <div class="modal-body">
+            <p>
+            <div id="acceptHTML"></div>
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" onclick="save_labcas_acceptance('login')" class="btn btn-info btn-fill pull-right" data-dismiss="modal">Accept</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="wrapper wrapper-full-page">
+      <!-- Navbar -->
+      <div id='sidebar_placeholder'></div>
+      <div class="main-panel">
+        <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute">
+          <div class="container">
+            <div class="navbar-wrapper">
+              <a class="navbar-brand" href="/nist">Labcas 3.0</a>
+              <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-bar burger-lines"></span>
+                <span class="navbar-toggler-bar burger-lines"></span>
+                <span class="navbar-toggler-bar burger-lines"></span>
+              </button>
+            </div>
+            <div class="collapse navbar-collapse justify-content-end" id="navbar">
+              <font color=white>Best Viewed with Chrome</font>
+            </div>
+          </div>
+        </nav>
+        <!-- End Navbar -->
+        <div class="full-page  section-image" data-color="black" data-image="img/full-screen-image-2.jpg" ;>
+          <div class="content" style="padding-top:50px">
+            <div class="container">
+              <div class="row">
+                <div class="col-md-12 col-sm-8 mr-auto ">
+                  <div class="row">
+                    <div class="col-lg-4 col-sm-6" style="padding:5px">
+                      <div class="card card-stats" style="margin: 5px">
+                        <div class="card-body ">
+                          <div class="row">
+                            <div class="col-5">
+                              <div class="icon-big text-center icon-warning">
+                                <i class="nc-icon nc-app text-warning"></i>
+                              </div>
+                            </div>
+                            <div class="col-7">
+                              <div class="numbers">
+                                <p class="card-category"># Collections</p>
+                                <h4 class="card-title" id='collections_len'>20</h4>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-6" style="padding:5px">
+                      <div class="card card-stats" style="margin: 5px">
+                        <div class="card-body ">
+                          <div class="row">
+                            <div class="col-5">
+                              <div class="icon-big text-center icon-warning">
+                                <i class="nc-icon nc-layers-3 text-warning"></i>
+                              </div>
+                            </div>
+                            <div class="col-7">
+                              <div class="numbers">
+                                <p class="card-category"># Datasets</p>
+                                <h4 class="card-title" id='datasets_len'>100</h4>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-6" style="padding:5px">
+                      <div class="card card-stats" style="margin: 5px">
+                        <div class="card-body ">
+                          <div class="row">
+                            <div class="col-5">
+                              <div class="icon-big text-center icon-warning">
+                                <i class="nc-icon nc-single-copy-04 text-success"></i>
+                              </div>
+                            </div>
+                            <div class="col-7">
+                              <div class="numbers">
+                                <p class="card-category"># Files</p>
+                                <h4 class="card-title" id='files_len'>200000</h4>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-12 col-sm-6 ml-auto " style="padding:0px">
+                    <form class="form" id="loginform" method="" action="/labcas-ui/m/index.html">
+                      <div class="card card-login card-show" style="margin: 0px; height: 547px">
+                        <div class="card-header ">
+                          <h3 class="header text-center">Login</h3>
+                        </div>
+                        <div class="card-body ">
+                          <center>
+                            <font color="grey">to see additional data...</font>
+                          </center>
+                          <hr>
+                          <div class="card-body">
+                            <div class="form-group">
+                              <label>Username</label>
+                              <input id='username' class="form-control">
+                            </div>
+                            <div class="form-group">
+                              <label>Password</label>
+                              <input id='password' type="password" class="form-control">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="card-footer ml-auto mr-auto">
+                          <button type="submit" class="btn btn-warning btn-wd">Login</button>
+                        </div>
+                        <div id="loginerror" class="card-footer ml-auto mr-auto"></div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <footer class="footer">
+            <div class="container">
+              <nav>
+                <ul class="footer-menu">
+                  <li>
+                    <a href="#"> JPL </a>
+                  </li>
+                  <li>
+                    <a href="#"> NCBI </a>
+                  </li>
+                  <li>
+                    <a href="#"> EDRN </a>
+                  </li>
+                </ul>
+                <p class="copyright text-center"> © <script>
+                    document.write(new Date().getFullYear())
+                  </script>
+                </p>
+              </nav>
+            </div>
+          </footer>
+        </div>
+        <div>
+  </body>
+  <!--   Core JS Files   -->
+  <script src="js/core/jquery-3.5.1.min.js" type="text/javascript"></script>
+  <script src="js/core/popper.min.js" type="text/javascript"></script>
+  <script src="js/core/bootstrap.min.js" type="text/javascript"></script>
+  <!--  Plugin for Switches, full documentation here: http://www.jque.re/plugins/version3/bootstrap.switch/ -->
+  <script src="js/plugins/bootstrap-switch.js"></script>
+  <!--  Chartist Plugin  -->
+  <script src="js/plugins/chartist.min.js"></script>
+  <!--  Notifications Plugin    -->
+  <script src="js/plugins/bootstrap-notify.js"></script>
+  <!--  jVector Map  -->
+  <script src="js/plugins/jquery-jvectormap.js" type="text/javascript"></script>
+  <!--  Plugin for Date Time Picker and Full Calendar Plugin-->
+  <script src="js/plugins/moment.min.js"></script>
+  <!--  DatetimePicker   -->
+  <script src="js/plugins/bootstrap-datetimepicker.js"></script>
+  <!--  Sweet Alert  -->
+  <script src="js/plugins/sweetalert2.min.js" type="text/javascript"></script>
+  <!--  Tags Input  -->
+  <script src="js/plugins/bootstrap-tagsinput.js" type="text/javascript"></script>
+  <!--  Sliders  -->
+  <script src="js/plugins/nouislider.js" type="text/javascript"></script>
+  <!--  Bootstrap Select  -->
+  <script src="js/plugins/bootstrap-selectpicker.js" type="text/javascript"></script>
+  <!--  jQueryValidate  -->
+  <script src="js/plugins/jquery.validate.min.js" type="text/javascript"></script>
+  <script src="js/plugins/jquery.bootstrap-wizard.js"></script>
+  <!--  Bootstrap Table Plugin -->
+  <script src="js/plugins/bootstrap-table.js"></script>
+  <!--  DataTable Plugin -->
+  <script src="js/plugins/jquery.dataTables.min.js"></script>
+  <!--  Full Calendar   -->
+  <script src="js/plugins/fullcalendar.min.js"></script>
+  <!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
+  <script src="js/light-bootstrap-dashboard.js?v=2.0.1" type="text/javascript"></script>
+  <script src="js/demo.js"></script>
+  <script src="js/plugins/js.cookie.js"></script>
+  <script src="js/labcas/utils.js?version=3.0.0"></script>
+  <script src="js/labcas/login.js?version=3.0.0"></script>
+  <script src="/labcas-ui/assets/js/labcas/dashboard.js?version=3.0.0"></script>
+  <script>
+    $(document).ready(function() {
+      demo.checkFullPageBackgroundImage();
+      $.getJSON('/labcas-ui/a/labcas_summary.json', function(data) {
+        $('#collections_len').html(data.collection_size);
+        $('#datasets_len').html(data.dataset_size);
+        $('#files_len').html(data.file_size);
+      });
+      setTimeout(function() {
+        // after 1000 ms we add the class animated to the login/register card
+        $('.card').removeClass('card-hidden');
+        $("#sidebar_placeholder").load("/labcas-ui/sidebar_" + localStorage.getItem("environment_name") + ".html?version=3.0.0");
+      }, 700)
+    });
+  </script>
+</html>

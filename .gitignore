@@ -1,0 +1,7 @@
+*~
+*.swp
+*.swo
+*.cfg
+^.*
+assets/conf/
+assets/tmp/

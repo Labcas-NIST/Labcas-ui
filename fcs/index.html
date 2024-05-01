@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+	<title>LabCAS</title>
+        <div id="head_template"></div>
+<script src="/labcas-ui/assets/js/core/jquery-3.5.1.min.js" type="text/javascript"></script>
+<script src="/labcas-ui/assets/js/pdfjs/lib/webviewer.min.js" type="text/javascript"></script>
+</head>
+
+<body class="sidebar-mini">
+	<div class="wrapper">
+		<div id='sidebar_placeholder'></div>
+		<div class="main-panel">
+			<div id="nav_template"></div> <!-- Navbar -->
+			<div class="content">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-md-12">
+							<nav aria-label="breadcrumb">
+								<ol id="breadcrumb" class="breadcrumb"></ol>
+							</nav>
+						</div>
+					</div>
+					<div id='fqc-div' style="width:100%; height:900px; margin:0 auto;">
+						<iframe id='shiny_frame' frameBorder="0" height="100%" width="100%" src="https://ddsa-labcas-rshiny.jpl.nasa.gov/content/5e1e1dd4-3e68-4e95-ab92-f76db38efb9a/"></iframe>
+					</div>
+				</div>
+			</div>
+		</div>
+		<footer role='contentinfo' class='labcas-footer' id="footer_template"></footer>
+	</div>                
+</body>
+<script>
+
+</script>
+<!--   Core JS Files   -->
+<script src="/labcas-ui/assets/js/core/popper.min.js" type="text/javascript"></script>
+<script src="/labcas-ui/assets/js/core/bootstrap.min.js" type="text/javascript"></script>
+<!--  Plugin for Switches, full documentation here: http://www.jque.re/plugins/version3/bootstrap.switch/ -->
+<script src="/labcas-ui/assets/js/plugins/bootstrap-switch.js"></script>
+<!--  Chartist Plugin  -->
+<script src="/labcas-ui/assets/js/plugins/chartist.min.js"></script>
+<!--  Notifications Plugin    -->
+<script src="/labcas-ui/assets/js/plugins/bootstrap-notify.js"></script>
+<!--  jVector Map  -->
+<script src="/labcas-ui/assets/js/plugins/jquery-jvectormap.js" type="text/javascript"></script>
+<!--  Plugin for Date Time Picker and Full Calendar Plugin-->
+<script src="/labcas-ui/assets/js/plugins/moment.min.js"></script>
+<!--  DatetimePicker   -->
+<script src="/labcas-ui/assets/js/plugins/bootstrap-datetimepicker.js"></script>
+<!--  Sweet Alert  -->
+<script src="/labcas-ui/assets/js/plugins/sweetalert2.min.js" type="text/javascript"></script>
+<!--  Tags Input  -->
+<script src="/labcas-ui/assets/js/plugins/bootstrap-tagsinput.js" type="text/javascript"></script>
+<!--  Sliders  -->
+<script src="/labcas-ui/assets/js/plugins/nouislider.js" type="text/javascript"></script>
+<!--  Bootstrap Select  -->
+<script src="/labcas-ui/assets/js/plugins/bootstrap-selectpicker.js" type="text/javascript"></script>
+<!--  jQueryValidate  -->
+<script src="/labcas-ui/assets/js/plugins/jquery.validate.min.js" type="text/javascript"></script>
+<!--  Plugin for the Wizard, full documentation here: https://github.com/VinceG/twitter-bootstrap-wizard -->
+<script src="/labcas-ui/assets/js/plugins/jquery.bootstrap-wizard.js"></script>
+<!--  Bootstrap Table Plugin -->
+<script src="/labcas-ui/assets/js/plugins/bootstrap-table.js"></script>
+<!--  DataTable Plugin -->
+<script src="/labcas-ui/assets/js/plugins/jquery.dataTables.min.js"></script>
+<!--  Full Calendar   -->
+<script src="/labcas-ui/assets/js/plugins/fullcalendar.min.js"></script>
+<!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
+<script src="/labcas-ui/assets/js/light-bootstrap-dashboard.js?v=2.0.1" type="text/javascript"></script>
+<!-- Light Dashboard DEMO methods, don't include it in your project! -->
+<link href="/labcas-ui/assets/css/labcas/custom.css" rel="stylesheet" />
+<script src="/labcas-ui/assets/js/plugins/js.cookie.js"></script>
+<script src="/labcas-ui/assets/js/labcas/labcas-sidebar.js"></script>
+<script src="/labcas-ui/assets/js/labcas/authentication.js?version=3.0.0"></script>
+<script src="/labcas-ui/assets/js/labcas/utils.js?version=3.0.0"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-X0YH110WES"></script> <script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-X0YH110WES'); </script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		initPageComponents();
+		initUserSession();
+		initNavigation();
+		setupBreadcrumbs();
+		loadExternalResources();
+	});
+	
+	function initPageComponents() {
+		$('#viewer_content').hide();
+		initCookies();
+		$("#loggedout_msg").hide();
+	}
+	
+	function initUserSession() {
+		var user = Cookies.get('user');
+		if (user === "Sign in") {
+			$("#username_placeholder_third").text(user);
+			$("#loggedout_msg").show();
+		}
+	}
+	
+	function initNavigation() {
+		$("#head_template").load("/labcas-ui/templates.html #head_template");
+		$("#nav_template").load("/labcas-ui/templates.html?version=3.0.0 #nav_template");
+		$("#footer_template").load("/labcas-ui/templates.html?version=3.0.1 #footer_template_" + localStorage.getItem("environment_name"));
+		$("#sidebar_placeholder").load("/labcas-ui/sidebar_" + localStorage.getItem("environment_name") + ".html?version=3.0.0");
+	}
+	
+	function setupBreadcrumbs() {
+		var hierarchy = JSON.parse(localStorage.getItem("hierarchy_dict_current"));
+		var breadcrumb = '<li class="breadcrumb-item"><a href="/labcas-ui/m/index.html">Home</a></li>';
+	
+		hierarchy[0].forEach(function(item, index) {
+			var breadcrumbPart = constructBreadcrumbPart(item, hierarchy[1][index], index);
+			breadcrumb += breadcrumbPart;
+		});
+	
+		$('#breadcrumb').html(breadcrumb);
+	}
+	
+	function constructBreadcrumbPart(item, value, index) {
+		var encodedItem = encodeURIComponent(item);
+		var encodedValue = encodeURIComponent(value);
+		var isActive = index === 0 ? "active" : "";
+		var url = index === 0 ? `/labcas-ui/c/index.html?collection_id=${encodedItem}` : `/labcas-ui/cd/index.html?backtrack_ind=${index}`;
+		return `<li class="breadcrumb-item ${isActive}" aria-current="page"><a href="${url}">${value.replace(/_/g, " ")}</a></li>`;
+	}
+	
+	function loadExternalResources() {
+		var get_var = get_url_vars();
+		if (get_var["fileid"]) {
+			Cookies.set("login_redirect", "/labcas-ui/z/index.html?fileid=" + get_var["fileid"]);
+		}
+	
+		var data = localStorage.getItem('shinyfilePaths');
+		if (data) {
+			$('#shiny_frame').attr('src', 'https://ddsa-labcas-rshiny.jpl.nasa.gov/content/5e1e1dd4-3e68-4e95-ab92-f76db38efb9a/?data=' + encodeURIComponent(data));
+		}
+	}
+	
+	window.onbeforeunload = function(event) {
+		// Handle the unload event
+	};
+</script>
+
+</html>

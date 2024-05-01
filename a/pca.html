@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PCoA Plot Example</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+
+<div id="pcoaPlot" style="width:100%;height:440px;"></div>
+
+<script>
+    // JavaScript code for generating the plot will go here
+    // Dummy PCoA data - replace with your actual data
+
+    // Enhanced dummy data for a 3D PCoA plot
+var pcoaData3D = {
+    x: [0.1, -0.2, 0.4, -0.5, 0.3, 0.2, -0.3, 0.1, -0.4, 0.5, 0.6, -0.6, 0.7, -0.7, 0.8], // PCoA Axis 1
+    y: [0.3, -0.4, 0.5, -0.1, 0.2, 0.4, -0.5, 0.3, -0.2, 0.1, -0.6, 0.6, -0.7, 0.7, -0.8], // PCoA Axis 2
+    z: [0.2, 0.1, -0.1, 0.5, -0.3, -0.4, 0.4, -0.2, 0.3, -0.5, 0.6, -0.6, 0.7, -0.7, 0.8], // PCoA Axis 3
+    mode: 'markers+text',
+    marker: {
+        size: 8,
+        color: [// Colors to differentiate sources or conditions
+            'red', 'red', 'red', 'green', 'green', 'green', 'blue', 'blue', 'blue', 'purple',
+            'orange', 'orange', 'yellow', 'yellow', 'pink'
+        ],
+        opacity: 0.5
+    },
+    text: [// Labels for each point
+        'Soil Sample 1', 'Soil Sample 2', 'Soil Sample 3',
+        'Water Sample 1', 'Water Sample 2', 'Water Sample 3',
+        'Human Sample 1', 'Human Sample 2', 'Human Sample 3',
+        'Control',
+        'Treated Soil 1', 'Treated Soil 2', 'Treated Water 1', 'Treated Water 2',
+        'Synthetic Community'
+    ],
+    textposition: 'top center',
+    type: 'scatter3d',
+    name: 'Microbial Communities'
+};
+
+// Configuration for the 3D PCoA Plot
+var layout3D = {
+    title: '3D PCoA of Microbial Communities from Flow Cytometry',
+    scene: {
+        xaxis: {title: 'PCoA Axis 1'},
+        yaxis: {title: 'PCoA Axis 2'},
+        zaxis: {title: 'PCoA Axis 3'},
+    },
+    margin: {
+        l: 0,
+        r: 0,
+        b: 0,
+        t: 0
+    }
+};
+
+Plotly.newPlot('pcoaPlot', [pcoaData3D], layout3D);
+
+
+</script>
+
+</body>
+</html>
+
