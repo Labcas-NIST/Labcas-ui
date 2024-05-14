@@ -4,7 +4,7 @@
 	    <link rel="apple-touch-icon" sizes="76x76" href="/labcas-ui/assets/img/apple-icon.png">
 	    <link rel="icon" type="image/png" href="/labcas-ui/assets/img/favicon.png">
 	    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-	    <title>Labcas 2.2</title>
+	    <title>Labcas 3.0</title>
 	    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
 	    <!--     Fonts and icons     -->
 	    <link href="/labcas-ui/assets/css/introjs.css?7" rel="stylesheet" />
@@ -14,6 +14,7 @@
 	    <link href="/labcas-ui/assets/css/bootstrap.min.css" rel="stylesheet" />
 	    <link href="/labcas-ui/assets/css/light-bootstrap-dashboard.css?v=2.0.1" rel="stylesheet" />
 	    <link href="/labcas-ui/assets/css/labcas/custom.css?2" rel="stylesheet" />
+        <script async type="text/javascript" id="_fed_an_ua_tag" src="https://dap.digitalgov.gov/Universal-Federated-Analytics-Min.js?agency=NASA&subagency=JPL-mcl-labcas"></script>
 	</head>
 </div>
 
@@ -24,6 +25,7 @@
 		<img src="/labcas-ui/assets/img/jpl_logo.png" width=300 heigth=100>
                 <div class="container-fluid">
 		    <div class="collapse navbar-collapse justify-content-start">
+			    <H3 style="font-family:Caslon"><B>MCL &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</B></H3>
 			    <span id="loggedout_msg"><font color=green>Public data only - Please <a href="/labcas-ui/index.html">login</a> to see additional data.</font></span>
 		    </div>
                     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,7 +55,7 @@
 					<a href="#" onclick="download_files('cart')"><li class="dropdown-item text-info" >Download File(s) <span id="cart_size"></span></li></a>
                     <a href="#" onclick="submitImageData('cart_image');"><li class="dropdown-item text-success" >View Images (<span id="image_size">0</span>)</li></a>
                     <a href="#" onclick="submitImageData('cart_dicom');"><li class="dropdown-item text-success" >View Dicoms (<span id="dicom_size">0</span>)</li></a>
-                    <!--<a href="#" onclick="submitImageData('cart_omero');"><li class="dropdown-item text-success" >View Omero (<span id="omero_size">0</span>)</li></a>-->
+                    <a href="#" onclick="submitImageData('cart_omero');"><li class="dropdown-item text-success" >View Omero (<span id="omero_size">0</span>)</li></a>
 					<a href="#" onclick="clear_cart('search-file-table'); clear_cart('files-table');"><li class="dropdown-item text-warning" >Clear Cart</li></a>
                                 </ul>
                         </li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -217,43 +219,54 @@
 
 <div id="footer_template_mcl">
 	<br>
+    <div class="row">
+          <div class="col-md-3"></div><div class="col-md-3">
+
+                <h3 style="color: white">Get the Newsletter</h3>
+                <form action='https://www.jpl.nasa.gov/signup/index.php' class='submit_newsletter' method="post">
+                    <div class="row">
+                    <div class="col-md-6" style="padding-left:0px; padding-right: 1px"><input class='email_field form-control' name='email_field' onblur="this.placeholder = 'enter email address'" onfocus="this.placeholder = ''" placeholder='enter email address' type='text' value=''></div>
+                    <div class="col-md-3" style="padding-left:0px"><input class='email_submit form-control' type='submit' value='Submit'></div>
+                    </div>
+                </form>
+
+        </div>
+        <div style="" class="col-md-3">
+        
+            <center><h3 style="color: white">Follow JPL</h3></center>
+            <center><div class="social_icons">
+                  <!-- AddThis Button BEGIN -->
+                  <div class="addthis_toolbox addthis_default_style addthis_32x32_style">
+                    <a addthis:userid="NASAJPL" class="addthis_button_facebook_follow icon" href="http://www.facebook.com/NASAJPL" target="_blank" title="Follow on Facebook">
+                      <img style="width:40px;height:40px" alt="facebook icon" src="/labcas-ui/assets/img/facebook.png?2">
+                    <span class="addthis_follow_label"></span></a>&nbsp;
+                    <a addthis:userid="NASAJPL" class="addthis_button_twitter_follow icon" href="//twitter.com/NASAJPL" target="_blank" title="Follow on Twitter">
+                      <img style="width:40px;height:40px"alt="twitter icon" src="/labcas-ui/assets/img/twitter.png">
+                    <span class="addthis_follow_label"></span></a>&nbsp;
+                    <a addthis:userid="JPLnews" class="addthis_button_youtube_follow icon" href="http://www.youtube.com/user/JPLnews?sub_confirmation=1" target="_blank" title="Follow on YouTube">
+                      <img style="width:40px;height:40px" alt="youtube icon" src="/labcas-ui/assets/img/youtube.png">
+                    <span class="addthis_follow_label"></span></a>&nbsp;
+                    <a addthis:userid="nasajpl" class="addthis_button_instagram_follow icon" href="http://instagram.com/nasajpl" target="_blank" title="Follow on Instagram">
+                      <img style="width:40px;height:40px" alt="instagram icon" src="/labcas-ui/assets/img/instagram.png">
+                    <span class="addthis_follow_label"></span></a>&nbsp;
+                    <a class="icon all_icon" href="/social/">
+                      <span><font size=5>All</font></span>
+                    </a>
+                    <script>
+                      var addthis_config = {"data_track_addressbar":false};
+                    </script>
+                    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5429eeee4e460927" type="text/javascript"></script>
+                  <div class="atclear"></div></div>
+                  <!-- AddThis Button END -->
+                </div></center>
+        </div>
+    
+    </div>
+            <br>
+            <div class="gradient_line"></div>
+            <br>
 	<div class="row">
           <div class="col-12 col-md-2">
-	  </div>
-          <div style="padding-left:40px" class="col-12 col-md-3">
-		<h5>Get the Newsletter</h5>
-                <form action='https://www.jpl.nasa.gov/signup/index.php' class='submit_newsletter' method="post">
-                  <input class='email_field' name='email_field' onblur="this.placeholder = 'enter email address'" onfocus="this.placeholder = ''" placeholder='enter email address' type='text' value=''>
-                  <input class='email_submit' type='submit' value='Submit'>
-                </form>
-		<br>
-            <h5>Follow JPL</h5>
-            <ul class="list-unstyled text-small">
-			<li>
-                        <a href="https://www.jpl.nasa.gov/signup/">Newsletter</a>
-                      </li>
-                      <li>
-                        <a href="http://www.facebook.com/NASAJPL">Facebook</a>
-                      </li>
-                      <li>
-                        <a href="http://twitter.com/NASAJPL">Twitter</a>
-                      </li>
-                      <li>
-                        <a href="http://www.youtube.com/user/JPLnews">YouTube</a>
-                      </li>
-                      <li>
-                        <a href="http://www.flickr.com/photos/nasa-jpl">Flickr</a>
-                      </li>
-                      <li>
-                        <a href="http://instagram.com/nasajpl">Instagram</a>
-                      </li>
-                      <li>
-                        <a href="http://www.ustream.tv/nasajpl">UStream</a>
-                      </li>
-                      <li>
-                        <a href="http://blogs.jpl.nasa.gov">Blog</a>
-                      </li>
-            </ul>
           </div>
           <div class="col-6 col-md">
             <h5>About</h5>
@@ -277,23 +290,6 @@
                         <a href="https://www.jpl.nasa.gov/opportunities/">Opportunities</a>
                       </li>
             </ul>
-		<h5>News</h5>
-	<ul class="list-unstyled text-small">
-		<li>
-                        <a href="https://www.jpl.nasa.gov/news">Latest News</a>
-                      </li>
-                      <li>
-                        <a href="https://www.jpl.nasa.gov/news/presskits.php">Press Kits</a>
-                      </li>
-                      <li>
-                        <a href="https://www.jpl.nasa.gov/news/factsheets.php">Fact Sheets</a>
-                      </li>
-                      <li>
-                        <a href="https://www.jpl.nasa.gov/news/mediaroom.php">Media Room</a>
-                      </li>
-	</ul>
-          </div>
-          <div class="col-6 col-md">
             <h5>Missions</h5>
             <ul class="list-unstyled text-small">
 		<li>
@@ -331,6 +327,107 @@
                       </li>
             </ul>
           </div>
+          <div class="col-6 col-md">
+            
+                    <h5>News</h5>
+                     <ul class="list-unstyled text-small">
+                      <li>
+                        <a href="https://www.jpl.nasa.gov/news">Latest News</a>
+                      </li>
+                      <li>
+                        <a href="https://www.jpl.nasa.gov/news/presskits.php">Press Kits</a>
+                      </li>
+                      <li>
+                        <a href="https://www.jpl.nasa.gov/news/factsheets.php">Fact Sheets</a>
+                      </li>
+                      <li>
+                        <a href="https://www.jpl.nasa.gov/news/mediaroom.php">Media Room</a>
+                      </li>
+                    </ul>
+                    <h5>Our Sites</h5>
+                     <ul class="list-unstyled text-small">
+                        <li>
+                        <a href="/asteroidwatch/">Asteroid Watch</a>
+                      </li>
+                      <li>
+                        <a href="http://saturn.jpl.nasa.gov/index.cfm">Cassini - Mission to Saturn</a>
+                      </li>
+                      <li>
+                        <a href="http://www.climate.nasa.gov">Earth / Global Climate Change</a>
+                      </li>
+                      <li>
+                        <a href="http://planetquest.jpl.nasa.gov">Planetquest / Exoplanets</a>
+                      </li>
+                      <li>
+                        <a href="/missions/juno/">Juno - Mission to Jupiter</a>
+                      </li>
+                      <li>
+                        <a href="http://marsprogram.jpl.nasa.gov/">Mars Exploration</a>
+                      </li>
+                      <li>
+                        <a href="http://marsprogram.jpl.nasa.gov/msl/">Mars Science Laboratory / Curiosity</a>
+                      </li>
+                      <li>
+                        <a href="http://rosetta.jpl.nasa.gov/">Rosetta - Understanding Comets</a>
+                      </li>
+                      <li>
+                        <a href="http://scienceandtechnology.jpl.nasa.gov/">Science and Technology</a>
+                      </li>
+                      <li>
+                        <a href="http://solarsystem.nasa.gov/">Solar System Exploration</a>
+                      </li>
+                      <li>
+                        <a href="http://eyes.nasa.gov/">Eyes on the Solar System</a>
+                      </li>
+                      <li>
+                        <a href="http://eyes.nasa.gov/earth/">Eyes on the Earth</a>
+                      </li>
+                      <li>
+                        <a href="http://eyes.nasa.gov/exoplanets/">Eyes on Exoplanets</a>
+                      </li>
+                      <li>
+                        <a href="http://www.spitzer.caltech.edu/">Spitzer Space Telescope</a>
+                      </li>
+                    </ul>
+          </div>
+          <div style="padding-left:40px" class="col-12 col-md">
+            <h5>Follow JPL</h5>
+            <ul class="list-unstyled text-small">
+			<li>
+                        <a href="https://www.jpl.nasa.gov/signup/">Newsletter</a>
+                      </li>
+                      <li>
+                        <a href="http://www.facebook.com/NASAJPL">Facebook</a>
+                      </li>
+                      <li>
+                        <a href="http://twitter.com/NASAJPL">Twitter</a>
+                      </li>
+                      <li>
+                        <a href="http://www.youtube.com/user/JPLnews">YouTube</a>
+                      </li>
+                      <li>
+                        <a href="http://www.flickr.com/photos/nasa-jpl">Flickr</a>
+                      </li>
+                      <li>
+                        <a href="http://instagram.com/nasajpl">Instagram</a>
+                      </li>
+                      <li>
+                        <a href="http://www.ustream.tv/nasajpl">UStream</a>
+                      </li>
+                      <li>
+                        <a href="http://blogs.jpl.nasa.gov">Blog</a>
+                      </li>
+            </ul>
+                    <h5>NASA</h5>
+                     <ul class="list-unstyled text-small">
+                      <li>
+                        <a href="http://jplwater.nasa.gov">NASA Water Cleanup</a>
+                      </li>
+                      <li>
+                        <a href="http://www.hq.nasa.gov/office/pao/FOIA/agency/">FOIA</a>
+                      </li>
+                    </ul>
+          </div>
         </div>
 	<div class='container'>
 		<hr style="border-color:white">
@@ -353,7 +450,7 @@
                         <a style="color: lightblue" href='mailto:ic-portal@jpl.nasa.gov'>Contact Us: ic-portal@jpl.nasa.gov</a>
                     </li>
                     <li>
-                        <font style="color: white">URS300757</font>
+                        <font style="color: white">CL#22-3375</font>
                     </li>
                     <li>
                         <font style="color: white">Site Manager: Dan Crichton</font>
@@ -378,7 +475,7 @@
 		</div>
 		</div>
                 <p>
-                    Labcas version 2.2
+                    Labcas version 3.0
 		<!--Licensed under <a href='https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html'>GPLv2</a>.
                     <a href='https://mcl-labcas.jpl.nasa.gov/ui/static/plupload-2.1.9.zip'>Get Plupload</a>.-->
                 </p>
@@ -422,10 +519,11 @@
                 </div>
                 </div>
                 <p>
-                    Labcas version 2.2
+                    Labcas version 3.0
 			<!--Licensed under <a href='https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html'>GPLv2</a>.
                     <a href='https://mcl-labcas.jpl.nasa.gov/ui/static/plupload-2.1.9.zip'>Get Plupload</a>.-->
                 </p>
 
 	</div>
 </div>
+

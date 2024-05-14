@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <link rel="apple-touch-icon" sizes="76x76" href="/labcas-ui/assets/img/apple-icon.png">
+    <link rel="icon" type="image/png" href="/labcas-ui/assets/img/favicon.png">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>Labcas 3.0</title>
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
+    <!--     Fonts and icons     -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
+    <link rel="stylesheet" href="/labcas-ui/assets/css/font-awesome.min.css" />
+    <!-- CSS Files -->
+    <link href="/labcas-ui/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/labcas-ui/assets/css/light-bootstrap-dashboard.css?v=2.0.1" rel="stylesheet" />
+    <!-- CSS Just for demo purpose, don't include it in your project -->
+    <link href="/labcas-ui/assets/css/labcas/custom.css" rel="stylesheet" />
+</head>
+
+<body class="sidebar-mini">
+    <div class="wrapper">
+        <div id='sidebar_placeholder'></div>
+        <div class="main-panel">
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand-lg ">
+                <div class="container-fluid">
+                    <div class="navbar-wrapper">
+                        <div class="navbar-minimize">
+                            <button id="minimizeSidebar" class="btn btn-warning btn-fill btn-round btn-icon d-none d-lg-block">
+                                <i class="fa fa-ellipsis-v visible-on-sidebar-regular"></i>
+                                <i class="fa fa-navicon visible-on-sidebar-mini"></i>
+                            </button>
+                        </div>
+                        <a class="navbar-brand" href="#pablo"></a>
+                    </div>
+                    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-bar burger-lines"></span>
+                        <span class="navbar-toggler-bar burger-lines"></span>
+                        <span class="navbar-toggler-bar burger-lines"></span>
+                    </button>
+                    <div class="collapse navbar-collapse justify-content-end">
+                        <div style="margin-right: 0px">
+                        <ul class="nav navbar-nav mr-auto">
+                            <form class="navbar-form navbar-left navbar-search-form" role="search" action="javascript:search();">
+                                <div class="input-group">
+                                    <i class="nc-icon nc-zoom-split"></i>
+                                    <input id="search_text" type="text" value="" class="form-control" placeholder="Labcas Full Search...">
+                                </div>
+                            </form>
+                        </ul>
+			</div>
+                        <ul class="navbar-nav">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <B><span id="username_placeholder_second"></span></B>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                                    <a href="/labcas-ui/index.html" class="dropdown-item text-danger" id="login_logout">
+                                        <i class="nc-icon nc-button-power"></i> <span id="username_placeholder_third">Log out</span>
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            <!-- End Navbar -->
+            <div class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-4 col-sm-6">
+                            <div class="card card-stats">
+                                <div class="card-body ">
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <a href="#upload"><div class="icon-big text-center icon-warning">
+                                                <i class="nc-icon nc-single-copy-04  text-success"></i>
+                                            </div></a>
+                                        </div>
+                                        <div class="col-7">
+                                            <div class="numbers">
+                                                <a href="#upload"><h4 style="color:darkgreen" class="card-title" >How to Upload</h4></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-sm-6">
+                            <div class="card card-stats">
+                                <div class="card-body ">
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <a href="#download"><div class="icon-big text-center icon-warning">
+                                                <i class="nc-icon nc-single-copy-04 text-success"></i>
+                                            </div></a>
+                                        </div>
+                                        <div class="col-7">
+                                            <div class="numbers">
+                                                <a href="#download"><h4 style="color:darkgreen" class="card-title">How to Download</h4></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-sm-6">
+                            <div class="card card-stats">
+                                <div class="card-body ">
+                                    <div class="row">
+                                        <div class="col-5">
+                                             <a href="#metadata"><div class="icon-big text-center icon-warning">
+                                                <i class="nc-icon nc-single-copy-04 text-success"></i>
+                                            </div></a>
+                                        </div>
+                                        <div class="col-7">
+                                            <div class="numbers">
+                                                <a href="#metadata"><h4 style="color:darkgreen" class="card-title" >Metadata & Extensions</h4></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+						
+		   <div class="row" id="upload">
+		       <div class="col-md-12">
+                    <div class="card ">
+                        <div class="card-body">
+                             <div class="card-body">
+                            <h3 class="card-title"></h3>
+                            <hr>
+<p><a href="/labcas-ui/a/mcl_files/pca_mcl_supplement_project_narrative_final.pdf" data-linktype="upload" data-val="679cbd54570c4d839fff1ee32000a6d2">MCL PCA Supplemental Project Narrative</a></p>
+<ul>
+<li>Pathology Specimen Protocols
+<ul>
+<li><a href="/labcas-ui/a/mcl_files/sop-for-pathology-specimens-for-pca.pdf" data-linktype="internal" data-val="257473941d9749fdbb74804a3382872e">SOP for FFPE Pathology Specimens</a></li>
+<li><a href="/labcas-ui/a/mcl_files/slide-list_061318-final.pdf" data-linktype="upload" data-val="57899ee033ef48f8b4a9bd905b46a8dd">Slide Sectioning Details</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>PCA CDEs
+<ul>
+<li><a href="/labcas-ui/a/mcl_files/pca_cdesforreview_coregenomicsbiospecimenbreastlungprostatepancreas_27sept2018.xlsx" data-linktype="upload" data-val="f61c080a1bd24395a6c16c485e571e4d">Core, Genomics and Biospecimen PCA CDEs</a> - Draft</li>
+<li><a href="/labcas-ui/a/mcl_files/pca_cdes_2018-11-02_summary.xlsx" data-linktype="upload" data-val="d45a6ec8b4794a47be88e1a3c13a100b">Pathology (Breast, Lung, Prostate and Pancreas) PCA CDEs</a> - Draft</li>
+</ul>
+</li>
+</ul>
+<p> </p>
+                            </div>
+                          </div>
+					  </div>
+		   </div>
+
+						
+					</div>
+				</div>
+			</div>
+			<footer role='contentinfo' class='labcas-footer'>
+            <div class='container'>
+                <ul class='labcas-footer-links'>
+                    
+                    <li>
+                        <a href='https://mcl.nci.nih.gov/'>
+                            Consortium for Molecular and Cellular Characterization of Screen-Detected Lesions
+                        </a>
+                    </li>
+                    <li>
+                        <a href='https://mcl-labcas.jpl.nasa.gov/ui/help'>Help</a>
+                    </li>
+                    <li>
+                        <a href='https://mcl-labcas.jpl.nasa.gov/ui/about'>About</a>
+                    </li>
+                    <li>
+                        <a style="color: lightblue" href='mailto:ic-portal@jpl.nasa.gov'>Contact Us: ic-portal@jpl.nasa.gov</a>
+                    </li>
+                </ul>
+                <p>
+                    Copyright © 2020
+                    California Institute of Technology. <small>ALL RIGHTS RESERVED.</small>
+                    U.S. Government Sponsorship Acknowledged.
+                </p>
+                <p>
+                    Labcas version 3.0, Licensed under <a href='https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html'>GPLv2</a>.
+                    <a href='https://mcl-labcas.jpl.nasa.gov/ui/static/plupload-2.1.9.zip'>Get Plupload</a>.
+                </p>
+        
+                </div>
+            </footer>
+                                </div>
+                            </div>
+                          
+</body>
+<!--   Core JS Files   -->
+<script src="/labcas-ui/assets/js/core/jquery-3.5.1.min.js" type="text/javascript"></script>
+<script src="/labcas-ui/assets/js/core/popper.min.js" type="text/javascript"></script>
+<script src="/labcas-ui/assets/js/core/bootstrap.min.js" type="text/javascript"></script>
+<!--  Plugin for Switches, full documentation here: http://www.jque.re/plugins/version3/bootstrap.switch/ -->
+<script src="/labcas-ui/assets/js/plugins/bootstrap-switch.js"></script>
+<!--  Google Maps Plugin    -->
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?YOUR_KEY_HERE"></script>
+<!--  Chartist Plugin  -->
+<script src="/labcas-ui/assets/js/plugins/chartist.min.js"></script>
+<!--  Notifications Plugin    -->
+<script src="/labcas-ui/assets/js/plugins/bootstrap-notify.js"></script>
+<!--  jVector Map  -->
+<script src="/labcas-ui/assets/js/plugins/jquery-jvectormap.js" type="text/javascript"></script>
+<!--  Plugin for Date Time Picker and Full Calendar Plugin-->
+<script src="/labcas-ui/assets/js/plugins/moment.min.js"></script>
+<!--  DatetimePicker   -->
+<script src="/labcas-ui/assets/js/plugins/bootstrap-datetimepicker.js"></script>
+<!--  Sweet Alert  -->
+<script src="/labcas-ui/assets/js/plugins/sweetalert2.min.js" type="text/javascript"></script>
+<!--  Tags Input  -->
+<script src="/labcas-ui/assets/js/plugins/bootstrap-tagsinput.js" type="text/javascript"></script>
+<!--  Sliders  -->
+<script src="/labcas-ui/assets/js/plugins/nouislider.js" type="text/javascript"></script>
+<!--  Bootstrap Select  -->
+<script src="/labcas-ui/assets/js/plugins/bootstrap-selectpicker.js" type="text/javascript"></script>
+<!--  jQueryValidate  -->
+<script src="/labcas-ui/assets/js/plugins/jquery.validate.min.js" type="text/javascript"></script>
+<!--  Plugin for the Wizard, full documentation here: https://github.com/VinceG/twitter-bootstrap-wizard -->
+<script src="/labcas-ui/assets/js/plugins/jquery.bootstrap-wizard.js"></script>
+<!--  Bootstrap Table Plugin -->
+<script src="/labcas-ui/assets/js/plugins/bootstrap-table.js"></script>
+<!--  DataTable Plugin -->
+<script src="/labcas-ui/assets/js/plugins/jquery.dataTables.min.js"></script>
+<!--  Full Calendar   -->
+<script src="/labcas-ui/assets/js/plugins/fullcalendar.min.js"></script>
+<!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
+<script src="/labcas-ui/assets/js/light-bootstrap-dashboard.js?v=2.0.1" type="text/javascript"></script>
+<!-- Light Dashboard DEMO methods, don't include it in your project! -->
+<!--<script src="/labcas-ui/assets/js/demo.js"></script>-->
+<script src="/labcas-ui/assets/js/plugins/js.cookie.js"></script>
+<script src="/labcas-ui/assets/js/labcas/utils.js?version=3.0.0"></script>
+<script src="/labcas-ui/assets/js/labcas/search.js?version=3.0.0"></script>
+<script src="/labcas-ui/assets/js/labcas/labcas-sidebar.js"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="/labcas-ui/assets/js/labcas/dashboard.js?version=3.0.0"></script>
+
+
+<script type="text/javascript">
+    $(document).ready(function() {
+    	initCookies();
+        //setup_labcas_data("collectiondatasets",'id:"1.0_Athena-IHC4_with_Swedish_Breast_Cancer_Study"', 'id:1.0_Athena-IHC4_with_Swedish_Breast_Cancer_Study.*');
+        var get_var = get_url_vars();
+        //console.log(get_var["dataset_id"]);
+        setup_labcas_analytics();
+        $.get( "/labcas-ui/sidebar_"+localStorage.getItem("environment_name")+".html?version=3.0.0", function( data ) {
+            $( "#sidebar_placeholder" ).append(data);
+            $( "#username_placeholder" ).html(Cookies.get('user'));
+            $( "#username_placeholder_second" ).html(Cookies.get('user'));
+            if (Cookies.get('user') == "Sign in"){$( "#username_placeholder_third" ).html(Cookies.get('user'));}
+	    $(".sidebar .nav div").html("<br>");
+        });
+    });
+</script>
+
+</html>

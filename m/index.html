@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 	<div id="head_template"></div>
+    <script async type="text/javascript" id="_fed_an_ua_tag" src="https://dap.digitalgov.gov/Universal-Federated-Analytics-Min.js?agency=NASA&subagency=JPL-mcl-labcas"></script>
 </head>
 
 <body class="sidebar-mini">
@@ -100,10 +101,11 @@
 <!-- Light Dashboard DEMO methods, don't include it in your project! -->
 <script src="/labcas-ui/assets/js/demo.js"></script>
 <script src="/labcas-ui/assets/js/plugins/js.cookie.js"></script>
-<script src="/labcas-ui/assets/js/labcas/authentication.js?version=2.3.2"></script>
+<script src="/labcas-ui/assets/js/labcas/authentication.js?version=3.0.0"></script>
 <script src="/labcas-ui/assets/js/labcas/labcas-sidebar.js"></script>
-<script src="/labcas-ui/assets/js/labcas/utils.js?version=2.3.2"></script>
-<script src="/labcas-ui/assets/js/labcas/search.js?version=2.3.2"></script>
+<script src="/labcas-ui/assets/js/labcas/utils.js?version=3.0.0"></script>
+<script src="/labcas-ui/assets/js/labcas/search.js?version=3.0.0"></script>
+<script src="/labcas-ui/assets/js/labcas/collections.js?version=3.0.0"></script>
 <script src="/labcas-ui/assets/js/intro.js?101"></script>
 <script type="text/javascript">
     
@@ -123,8 +125,8 @@
 	initCookies();
 	//Lead header scripts
     	
-	$( "#head_template" ).load("/labcas-ui/templates.html?version=2.3.2 #head_template");
-	$( "#nav_template" ).load("/labcas-ui/templates.html?version=2.3.2 #nav_template", function() {
+	$( "#head_template" ).load("/labcas-ui/templates.html?version=3.0.0 #head_template");
+	$( "#nav_template" ).load("/labcas-ui/templates.html?version=3.0.0 #nav_template", function() {
             $( "#username_placeholder_second" ).html(Cookies.get('user'));
             if (Cookies.get('user') == "Sign in"){$( "#username_placeholder_third" ).html(Cookies.get('user')); 
 		$("#loggedout_msg").show();
@@ -133,7 +135,7 @@
 		}
 	});
 	$( "#footer_template" ).load("/labcas-ui/templates.html #footer_template_"+localStorage.getItem("environment_name"));
-        $( "#sidebar_placeholder" ).load("/labcas-ui/sidebar_"+localStorage.getItem("environment_name")+".html?version=2.3.2" );
+        $( "#sidebar_placeholder" ).load("/labcas-ui/sidebar_"+localStorage.getItem("environment_name")+".html?version=3.0.0" );
 
     	setup_labcas_data("collections","*:*");
         window.operateEvents = {

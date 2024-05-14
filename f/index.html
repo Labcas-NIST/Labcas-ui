@@ -3,6 +3,7 @@
 
 <head>
         <div id="head_template"></div>
+    <script async type="text/javascript" id="_fed_an_ua_tag" src="https://dap.digitalgov.gov/Universal-Federated-Analytics-Min.js?agency=NASA&subagency=JPL-mcl-labcas"></script>
 </head>
 
 <body class="sidebar-mini">
@@ -84,6 +85,7 @@
                             </div>
                         </div>
 		    </div>
+		<div id="general_template"></div>
 		</div>
     <footer role='contentinfo' class='labcas-footer'  id="footer_template">
     </footer>
@@ -136,16 +138,16 @@
 <link href="/labcas-ui/assets/css/labcas/custom.css" rel="stylesheet" />
 <script src="/labcas-ui/assets/js/plugins/js.cookie.js"></script>
 <script src="/labcas-ui/assets/js/labcas/labcas-sidebar.js"></script>
-<script src="/labcas-ui/assets/js/labcas/authentication.js?version=2.3.2"></script>
-<script src="/labcas-ui/assets/js/labcas/utils.js?version=2.3.3"></script>
-<script src="/labcas-ui/assets/js/labcas/search.js?version=2.3.2"></script>
+<script src="/labcas-ui/assets/js/labcas/authentication.js?version=3.0.0"></script>
+<script src="/labcas-ui/assets/js/labcas/utils.js?version=3.0.0"></script>
+<script src="/labcas-ui/assets/js/labcas/search.js?version=3.0.0"></script>
 <script type="text/javascript">
 	$('#image_viewer_link').hide();
     $(document).ready(function() {
 	initCookies();
 
-        $( "#head_template" ).load("/labcas-ui/templates.html?version=2.3.2 #head_template");
-        $( "#nav_template" ).load("/labcas-ui/templates.html?version=2.3.2 #nav_template", function() {
+        $( "#head_template" ).load("/labcas-ui/templates.html?version=3.0.0 #head_template");
+        $( "#nav_template" ).load("/labcas-ui/templates.html?version=3.0.0 #nav_template", function() {
             $( "#username_placeholder_second" ).text(Cookies.get('user'));
             if (Cookies.get('user') == "Sign in"){$( "#username_placeholder_third" ).html(Cookies.get('user'));}
 	    if (Cookies.get('user') == "Sign in"){$( "#username_placeholder_third" ).html(Cookies.get('user')); 
@@ -156,7 +158,7 @@
         });
 
 	$( "#footer_template" ).load("/labcas-ui/templates.html #footer_template_"+localStorage.getItem("environment_name"));
-        $( "#sidebar_placeholder" ).load("/labcas-ui/sidebar_"+localStorage.getItem("environment_name")+".html?version=2.3.2" );
+        $( "#sidebar_placeholder" ).load("/labcas-ui/sidebar_"+localStorage.getItem("environment_name")+".html?version=3.0.0" );
 
 
         var get_var = get_url_vars();
@@ -167,7 +169,7 @@
 		Cookies.set("user",get_var["user"]);
 		Cookies.set("userpass",get_var["session"]);
 	}
-        setup_labcas_file_data("file",'id:"'+encodeURI(get_var["file_id"]).replace("&","%26")+'"', 'id:'+get_var["file_id"]+'*'); 
+        setup_labcas_file_data("file",'id:"'+encodeURI(get_var["file_id"]).replace("&","%26").replace("+","%2B")+'"', 'id:'+get_var["file_id"]+'*'); 
         
         var breadcrumb = '<li class="breadcrumb-item"><a href="/labcas-ui/m/index.html">Home</a></li>';
 		var data_split = get_var["file_id"].split("/");
