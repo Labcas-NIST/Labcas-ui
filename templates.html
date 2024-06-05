@@ -1,0 +1,549 @@
+<div id="head_template">
+	<head>
+	    <meta charset="utf-8" />
+	    <link rel="apple-touch-icon" sizes="76x76" href="/labcas-ui/assets/img/apple-icon.png">
+	    <link rel="icon" type="image/png" href="/labcas-ui/assets/img/favicon.png">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	    <title>Labcas 3.0</title>
+	    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
+	    <!--     Fonts and icons     -->
+	    <link href="/labcas-ui/assets/css/introjs.css?7" rel="stylesheet" />
+	    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
+	    <link rel="stylesheet" href="/labcas-ui/assets/css/font-awesome.min.css" />
+	    <!-- CSS Files -->
+	    <link href="/labcas-ui/assets/css/bootstrap.min.css" rel="stylesheet" />
+	    <link href="/labcas-ui/assets/css/light-bootstrap-dashboard.css?v=2.0.1" rel="stylesheet" />
+	    <link href="/labcas-ui/assets/css/labcas/custom.css?version=3.0.2" rel="stylesheet" />
+	    <script async type="text/javascript" id="_fed_an_ua_tag" src="https://dap.digitalgov.gov/Universal-Federated-Analytics-Min.js?agency=NASA&subagency=JPL-edrn-labcas"></script>
+	</head>
+</div>
+
+
+
+<div id="nav_template">
+	<nav class="navbar navbar-expand-lg navbar-fixed">
+		<img alt='Please wait while this is loading' src="/labcas-ui/assets/img/jpl_logo.png" width=300 heigth=100>
+                <div class="container-fluid">
+		    <div class="collapse navbar-collapse justify-content-start">
+			    <span id="loggedout_msg"><font color=green>Public data only - Please <a href="/labcas-ui/index.html">login</a> to see additional data.</font></span>
+		    </div>
+                    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-bar burger-lines"></span>
+                        <span class="navbar-toggler-bar burger-lines"></span>
+                        <span class="navbar-toggler-bar burger-lines"></span>
+                    </button>
+                    <div class="collapse navbar-collapse justify-content-end">
+                        <div style="margin-right: 0px" data-step=1 data-intro='Free text search for Labcas collections, datasets, and files'>
+                        <ul class="nav navbar-nav mr-auto">
+                            <form class="navbar-form navbar-left navbar-search-form" role="search" action="javascript:search();">
+                                <div class="input-group" style="margin-left: auto; margin-right: auto; border-style: solid; border-width: .5px; border-color: silver; border-radius: 5px; height:36px">
+                                    <i class="nc-icon nc-zoom-split w3-xxxlarge" style="margin-left: 10px; margin-top: 10px"></i>
+                                    <input id="search_text" type="text" value="" class="form-control" placeholder="Labcas Full Search..." style="height: 36px">
+                                </div>
+                            </form>
+                        </ul>
+                        </div>
+		   <ul class="nav navbar-nav">
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<li class="dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="cartMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<span style="color: Dodgerblue;"><i class="fa fa-shopping-cart fa-3x"></i></span>
+					<span class="notification" id="cart-count">0</span>
+				</a>
+                                <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="cartMenuLink">
+					<a href="#" onclick="download_files('cart')"><li class="dropdown-item text-info" >Download File(s) <span id="cart_size"></span></li></a>
+                    <a href="#" onclick="submitImageData('cart_image');"><li class="dropdown-item text-success" >View Images (<span id="image_size">0</span>)</li></a>
+                    <a href="#" onclick="submitImageData('cart_dicom');"><li class="dropdown-item text-success" >View Dicoms (<span id="dicom_size">0</span>)</li></a>
+                    <a href="#" onclick="submitImageData('cart_omero');"><li class="dropdown-item text-success" >View Omero (<span id="omero_size">0</span>)</li></a>
+					<a href="#" onclick="clear_cart('search-file-table'); clear_cart('files-table');"><li class="dropdown-item text-warning" >Clear Cart</li></a>
+                                </ul>
+                        </li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			</ul>
+                        <ul class="navbar-nav" >
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <B><span data-step=2 data-intro='Click to open Login/Logout menu item' id="username_placeholder_second"></span></B>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                                    <a href="/labcas-ui/index.html" class="dropdown-item text-danger" id="login_logout">
+                                        <i class="nc-icon nc-button-power"></i> <span id="username_placeholder_third">Log out</span>
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+</div>
+
+<div id="collection_name_template">
+    <div class="card card-stats" style="margin-bottom: 0px; height:60px">
+	<div class="card-body " style="padding:0; padding-right: 10px">
+	    <div class="row">
+		<div class="col-5">
+		    <div class="icon-big text-center icon-warning">
+			<i class="nc-icon nc-app text-warning"></i>
+		    </div>
+		</div>
+		<div class="col-7">
+		    <div class="numbers">
+			<p class="card-category">Collection Name</p>
+			<h6 class="card-title" id='collection_name'></h6>
+		    </div>
+		</div>
+	    </div>
+	</div>
+    </div>
+</div>
+
+<div id="collection_stat_template">
+    <div class="card card-stats" style="margin-bottom: 0px; height:60px">
+    <div class="card-body " style="padding:0; padding-right: 10px">
+        <div class="row">
+        <div class="col-3">
+            <div class="icon-big text-center icon-warning">
+            <i class="nc-icon nc-app text-warning"></i>
+            </div>
+        </div>
+        <div class="col-5">
+            <div class="numbers">
+            <p class="card-category"># Collections</p>
+            <h4 class="card-title" id='collection_name'></h4>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="numbers">
+            <p class="card-category">Total</p>
+            <h4 class="card-title" id='collection_total_count'></h4>
+            </div>
+        </div>
+        </div>
+    </div>
+    </div>
+</div>
+
+<div id="dataset_name_template">
+    <div class="card card-stats" style="margin-bottom: 0px; height:60px">
+	<div class="card-body " style="padding:0; padding-right: 10px">
+	    <div class="row">
+		<div class="col-5">
+		    <div class="icon-big text-center icon-warning">
+			<i class="nc-icon nc-layers-3 text-warning"></i>
+		    </div>
+		</div>  
+		<div class="col-7">
+		    <div class="numbers">
+			<p class="card-category">Dataset Name</p>
+			<h6 class="card-title" id='collection_datasets_len'></h6>
+		    </div>
+		</div>
+	    </div>
+	</div>
+    </div>
+</div>
+
+<div id="dataset_stat_template">
+    <div class="card card-stats" style="margin-bottom: 0px; height:60px">
+	<div class="card-body " style="padding:0; padding-right: 10px">
+	    <div class="row">
+		<div class="col-3">
+		    <div class="icon-big text-center icon-warning">
+			<i class="nc-icon nc-layers-3 text-warning"></i>
+		    </div>
+		</div>  
+		<div class="col-5">
+		    <div class="numbers">
+			<p class="card-category"># Datasets</p>
+			<h4 class="card-title" id='collection_datasets_len'></h4>
+		    </div>
+		</div>
+		<div class="col-4">
+		    <div class="numbers">
+			<p class="card-category">Total</p>
+			<h4 class="card-title" id='dataset_total_count'></h4>
+		    </div>
+		</div>
+	    </div>
+	</div>
+    </div>
+</div>
+
+
+<div id="file_stat_template">
+    <div class="card card-stats" style="margin-bottom: 0px; height:60px"> 
+	<div class="card-body " style="padding:0; padding-right: 10px">        
+	    <div class="row">
+		<div class="col-3">     
+		    <div class="icon-big text-center icon-warning">
+			<i class="nc-icon nc-single-copy-04 text-success"></i>
+		    </div>      
+		</div>
+		<div class="col-5">
+		    <div class="numbers">
+			<p class="card-category"># Files</p>
+			<h4 class="card-title" id='collection_files_len'></h4>
+		    </div>
+		</div>
+		<div class="col-4">
+		    <div class="numbers">
+			<p class="card-category">Total</p>
+			<h4 class="card-title" id='file_total_count'></h4>
+		    </div>
+		</div>
+	    </div>
+	</div>
+    </div>
+</div>
+
+
+<div id="favorite_stat_template">
+    <div class="card card-stats" style="margin-bottom: 0px; height:60px">
+	<div class="card-body " style="padding:0; padding-right: 10px">
+	    <div class="row">
+		<div class="col-2">
+		    <div class="icon-big text-center icon-warning">
+			<i class="fa fa-star text-success"></i>
+		    </div>
+		</div>
+		<div class="col-10">
+		    <div class="numbers">
+			<p class="card-category"># Favorited</p>
+			<h4 class="card-title" id='collection_favorites_len'>0</h4>
+		    </div>
+		</div>
+	    </div>
+	</div>
+    </div>
+</div>
+
+<div id="footer_template_edrn">
+	<br>
+    <div class="row">
+          <div class="col-md-3"></div><div class="col-md-3">
+
+                <h3 style="color: white">Get the Newsletter</h3>
+                <form action='https://www.jpl.nasa.gov/signup/index.php' class='submit_newsletter' method="post">
+                    <div class="row">
+                    <div class="col-md-6" style="padding-left:0px; padding-right: 1px"><input class='email_field form-control' name='email_field' onblur="this.placeholder = 'enter email address'" onfocus="this.placeholder = ''" placeholder='enter email address' type='text' value=''></div>
+                    <div class="col-md-3" style="padding-left:0px"><input class='email_submit form-control' type='submit' value='Submit'></div>
+                    </div>
+                </form>
+
+        </div>
+        <div style="" class="col-md-3">
+        
+            <center><h3 style="color: white">Follow JPL</h3></center>
+            <center><div class="social_icons">
+                  <!-- AddThis Button BEGIN -->
+                  <div class="addthis_toolbox addthis_default_style addthis_32x32_style">
+                    <a addthis:userid="NASAJPL" class="addthis_button_facebook_follow icon" href="http://www.facebook.com/NASAJPL" target="_blank" title="Follow on Facebook">
+                      <img alt='Please wait while this is loading' style="width:40px;height:40px" alt="facebook icon" src="/labcas-ui/assets/img/facebook.png?2">
+                    <span class="addthis_follow_label"></span></a>&nbsp;
+                    <a addthis:userid="NASAJPL" class="addthis_button_twitter_follow icon" href="//twitter.com/NASAJPL" target="_blank" title="Follow on Twitter">
+                      <img alt='Please wait while this is loading' style="width:40px;height:40px"alt="twitter icon" src="/labcas-ui/assets/img/twitter.png">
+                    <span class="addthis_follow_label"></span></a>&nbsp;
+                    <a addthis:userid="JPLnews" class="addthis_button_youtube_follow icon" href="http://www.youtube.com/user/JPLnews?sub_confirmation=1" target="_blank" title="Follow on YouTube">
+                      <img alt='Please wait while this is loading' style="width:40px;height:40px" alt="youtube icon" src="/labcas-ui/assets/img/youtube.png">
+                    <span class="addthis_follow_label"></span></a>&nbsp;
+                    <a addthis:userid="nasajpl" class="addthis_button_instagram_follow icon" href="http://instagram.com/nasajpl" target="_blank" title="Follow on Instagram">
+                      <img alt='Please wait while this is loading' style="width:40px;height:40px" alt="instagram icon" src="/labcas-ui/assets/img/instagram.png">
+                    <span class="addthis_follow_label"></span></a>&nbsp;
+                    <a class="icon all_icon" href="/social/">
+                      <span><font size=5>All</font></span>
+                    </a>
+                    <script>
+                      var addthis_config = {"data_track_addressbar":false};
+                    </script>
+                    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5429eeee4e460927" type="text/javascript"></script>
+                  <div class="atclear"></div></div>
+                  <!-- AddThis Button END -->
+                </div></center>
+        </div>
+    
+    </div>
+            <br>
+            <div class="gradient_line"></div>
+            <br>
+	<div class="row">
+          <div class="col-12 col-md-2">
+          </div>
+          <div class="col-6 col-md">
+            <h5>About</h5>
+            <ul class="list-unstyled text-small">
+                      <li>
+                        <a href="https://www.jpl.nasa.gov/about/">Director's Message</a>
+                      </li>
+                      <li>
+                        <a href="https://www.jpl.nasa.gov/about/exec.php">Executive Council</a>
+                      </li>
+                      <li>
+                        <a href="https://www.jpl.nasa.gov/about/history.php">History</a>
+                      </li>
+                      <li>
+                        <a href="https://www.jpl.nasa.gov/about/reports.php">Annual Reports</a>
+                      </li>
+                      <li>
+                        <a href="https://www.jpl.nasa.gov/contact_JPL.php">Contact Us</a>
+                      </li>
+                      <li>
+                        <a href="https://www.jpl.nasa.gov/opportunities/">Opportunities</a>
+                      </li>
+            </ul>
+            <h5>Missions</h5>
+            <ul class="list-unstyled text-small">
+		<li>
+                        <a href="https://www.jpl.nasa.gov/missions/?type=current">Current</a>
+                      </li>
+                      <li>
+                        <a href="https://www.jpl.nasa.gov/missions/?type=past">Past</a>
+                      </li>
+                      <li>
+                        <a href="https://www.jpl.nasa.gov/missions/?type=future">Future</a>
+                      </li>
+                      <li>
+                        <a href="https://www.jpl.nasa.gov/missions/?type=proposed">Proposed</a>
+                      </li>
+                      <li>
+                        <a href="https://www.jpl.nasa.gov/missions">All</a>
+                      </li>
+    </ul>
+            <h5>Galleries</h5>
+            <ul class="list-unstyled text-small">
+		<li>
+                        <a href="https://www.jpl.nasa.gov/spaceimages/">JPL Space Images</a>
+                      </li>
+                      <li>
+                        <a href="https://www.jpl.nasa.gov/infographics/">Infographics</a>
+                      </li>
+                      <li>
+                        <a href="http://photojournal.jpl.nasa.gov/">Photojournal</a>
+                      </li>
+                      <li>
+                        <a href="http://www.nasaimages.org/">NASA Images</a>
+                      </li>
+                      <li>
+                        <a href="https://www.jpl.nasa.gov/apps/">Mobile Apps</a>
+                      </li>
+            </ul>
+          </div>
+          <div class="col-6 col-md">
+            
+                    <h5>News</h5>
+                     <ul class="list-unstyled text-small">
+                      <li>
+                        <a href="https://www.jpl.nasa.gov/news">Latest News</a>
+                      </li>
+                      <li>
+                        <a href="https://www.jpl.nasa.gov/news/presskits.php">Press Kits</a>
+                      </li>
+                      <li>
+                        <a href="https://www.jpl.nasa.gov/news/factsheets.php">Fact Sheets</a>
+                      </li>
+                      <li>
+                        <a href="https://www.jpl.nasa.gov/news/mediaroom.php">Media Room</a>
+                      </li>
+                    </ul>
+                    <h5>Our Sites</h5>
+                     <ul class="list-unstyled text-small">
+                        <li>
+                        <a href="/asteroidwatch/">Asteroid Watch</a>
+                      </li>
+                      <li>
+                        <a href="http://saturn.jpl.nasa.gov/index.cfm">Cassini - Mission to Saturn</a>
+                      </li>
+                      <li>
+                        <a href="http://www.climate.nasa.gov">Earth / Global Climate Change</a>
+                      </li>
+                      <li>
+                        <a href="http://planetquest.jpl.nasa.gov">Planetquest / Exoplanets</a>
+                      </li>
+                      <li>
+                        <a href="/missions/juno/">Juno - Mission to Jupiter</a>
+                      </li>
+                      <li>
+                        <a href="http://marsprogram.jpl.nasa.gov/">Mars Exploration</a>
+                      </li>
+                      <li>
+                        <a href="http://marsprogram.jpl.nasa.gov/msl/">Mars Science Laboratory / Curiosity</a>
+                      </li>
+                      <li>
+                        <a href="http://rosetta.jpl.nasa.gov/">Rosetta - Understanding Comets</a>
+                      </li>
+                      <li>
+                        <a href="http://scienceandtechnology.jpl.nasa.gov/">Science and Technology</a>
+                      </li>
+                      <li>
+                        <a href="http://solarsystem.nasa.gov/">Solar System Exploration</a>
+                      </li>
+                      <li>
+                        <a href="http://eyes.nasa.gov/">Eyes on the Solar System</a>
+                      </li>
+                      <li>
+                        <a href="http://eyes.nasa.gov/earth/">Eyes on the Earth</a>
+                      </li>
+                      <li>
+                        <a href="http://eyes.nasa.gov/exoplanets/">Eyes on Exoplanets</a>
+                      </li>
+                      <li>
+                        <a href="http://www.spitzer.caltech.edu/">Spitzer Space Telescope</a>
+                      </li>
+                    </ul>
+          </div>
+          <div style="padding-left:40px" class="col-12 col-md">
+            <h5>Follow JPL</h5>
+            <ul class="list-unstyled text-small">
+			<li>
+                        <a href="https://www.jpl.nasa.gov/signup/">Newsletter</a>
+                      </li>
+                      <li>
+                        <a href="http://www.facebook.com/NASAJPL">Facebook</a>
+                      </li>
+                      <li>
+                        <a href="http://twitter.com/NASAJPL">Twitter</a>
+                      </li>
+                      <li>
+                        <a href="http://www.youtube.com/user/JPLnews">YouTube</a>
+                      </li>
+                      <li>
+                        <a href="http://www.flickr.com/photos/nasa-jpl">Flickr</a>
+                      </li>
+                      <li>
+                        <a href="http://instagram.com/nasajpl">Instagram</a>
+                      </li>
+                      <li>
+                        <a href="http://www.ustream.tv/nasajpl">UStream</a>
+                      </li>
+                      <li>
+                        <a href="http://blogs.jpl.nasa.gov">Blog</a>
+                      </li>
+            </ul>
+                    <h5>NASA</h5>
+                     <ul class="list-unstyled text-small">
+                      <li>
+                        <a href="http://jplwater.nasa.gov">NASA Water Cleanup</a>
+                      </li>
+                      <li>
+                        <a href="http://www.hq.nasa.gov/office/pao/FOIA/agency/">FOIA</a>
+                      </li>
+                    </ul>
+          </div>
+        </div>
+	<div class='container'>
+		<hr style="border-color:white">
+		<div class="row">
+		<div class="col-md-10">
+                <ul class='labcas-footer-links'>
+
+                   <li>
+                        <a href='https://edrn.nci.nih.gov/'>
+                            Early Detection Research Network
+                        </a>
+                    </li>
+                    <li>
+                        <a href='https://mcl-labcas.jpl.nasa.gov/ui/help'>Help</a>
+                    </li>
+                    <li>
+                        <a href='https://mcl-labcas.jpl.nasa.gov/ui/about'>About</a>
+                    </li>
+                    <li>
+                        <a style="color: lightblue" href='mailto:ic-portal@jpl.nasa.gov'>Contact Us: ic-portal@jpl.nasa.gov</a>
+                    </li>
+                    <li>
+                        <font style="color: white">CL#22-6220</font>
+                    </li>
+                    <li>
+                        <font style="color: white">Site Manager: Dan Crichton</font>
+                    </li>
+                    <li>
+                        <font style="color: white">Webmaster: David Liu</font>
+                    </li>
+                </ul>
+                <p>
+                    Copyright © 2021
+                    California Institute of Technology. <small>ALL RIGHTS RESERVED.</small>
+                    U.S. Government Sponsorship Acknowledged.
+                </p>
+		</div>
+		<div class="col-md-2">
+		    <button onclick="introJs().start();" type="button" class="btn btn-wd btn-info btn-outline" style="top: 50%; transform: translateY(50%);">
+			    <font size=4>Tutorial?</font>
+			    <span class="btn-label">
+				<i class="nc-icon nc-button-play icon-bold"></i>
+			    </span>
+			</button>
+		</div>
+		</div>
+                <p>
+                    Labcas version 3.0
+		<!--Licensed under <a href='https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html'>GPLv2</a>.
+                    <a href='https://mcl-labcas.jpl.nasa.gov/ui/static/plupload-2.1.9.zip'>Get Plupload</a>.-->
+                </p>
+
+	</div>
+</div>
+<div id="footer_template_edrn_old">
+	<div class='container'>
+		<div class="row">
+		<div class="col-md-10">
+                <ul class='labcas-footer-links'>
+
+		    <li>
+                        <a href='https://edrn.nci.nih.gov/'>
+				Early Detection Research Network
+                        </a>
+                    </li>
+                    <li>
+                        <a href='https://edrn.jpl.nasa.gov/resources'>Resources</a>
+                    </li>
+                    <li>
+                        <a href='https://edrn.jpl.nasa.gov/about-edrn'>About</a>
+                    </li>
+                    <li>
+                        <a style="color: lightblue" href='mailto:ic-portal@jpl.nasa.gov'>Contact Us: ic-portal@jpl.nasa.gov</a>
+                    </li>
+                </ul>
+                <p>
+                    Copyright © 2020
+                    California Institute of Technology. <small>ALL RIGHTS RESERVED.</small>
+                    U.S. Government Sponsorship Acknowledged.
+                </p>
+                </div>
+                <div class="col-md-2">
+                    <button onclick="introJs().start();" type="button" class="btn btn-wd btn-info btn-outline" style="top: 50%; transform: translateY(50%);">
+                            <font size=4>Tutorial?</font>
+                            <span class="btn-label">
+                                <i class="nc-icon nc-button-play icon-bold"></i>
+                            </span>
+                        </button>
+                </div>
+                </div>
+                <p>
+                    Labcas version 3.0
+			<!--Licensed under <a href='https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html'>GPLv2</a>.
+                    <a href='https://mcl-labcas.jpl.nasa.gov/ui/static/plupload-2.1.9.zip'>Get Plupload</a>.-->
+                </p>
+
+	</div>
+</div>
+
+<div id="ml_wizard_template">
+    <div class="modal fade modal-mini modal-primary" id="mlWizardModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="max-width: 620px">
+            <div class="modal-content" style="width: 620px">
+                <div class="modal-header justify-content-center">
+                    <div class="modal-profile" style="text-align: left;">
+                        <i class="fa fa-gears" style="padding-left: 24px; text-align: left;"></i>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <p><div id="ml_wizard_HTML"></div></p>
+                </div>
+                <div class="modal-footer">
+                    <div class="col-md-6" style="padding-left:0px"><button type='button' id="ml_submit" class="btn btn-success btn-simple" data-dismiss="modal"  value='Submit'>Submit</button></div>
+                    <div class="col-md-6" style="padding-right:0px text-align: right"><button type="button" class="btn btn-danger btn-simple " style="float: right" data-dismiss="modal">Cancel</button></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

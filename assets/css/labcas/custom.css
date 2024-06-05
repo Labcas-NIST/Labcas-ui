@@ -1,0 +1,53 @@
+.labcas-footer {
+    color: #89979c;
+    text-align: center;
+    background-color: black;
+}
+
+.labcas-footer a {
+    color: #fff;
+}
+
+.labcas-footer-links {
+    padding-left: 0;
+    margin-bottom: 20px;
+}
+
+.labcas-footer-links li {
+    display: inline-block;
+}
+
+.labcas-footer-links li + li {
+    margin-left: 15px;
+}
+@media (min-width: 768px) {
+    .labcas-footer {
+        text-align: left;
+    }
+    .labcas-footer p {
+        margin-bottom: 0;
+    }
+}
+
+input::-webkit-input-placeholder {
+color: gray !important;
+}
+ 
+input:-moz-placeholder { /* Firefox 18- */
+color: gray !important;  
+}
+ 
+input::-moz-placeholder {  /* Firefox 19+ */
+color: gray !important;  
+}
+ 
+input:-ms-input-placeholder {  
+color: gray !important;  
+}
+.bs-example{
+margin: 20px;
+}
+.accordion .fa{
+margin-right: 0.5rem;
+}
+
