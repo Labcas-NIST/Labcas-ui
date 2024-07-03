@@ -111,7 +111,7 @@ function writeUserData(udata, noreload){
         beforeSend: function(xhr) { 
             xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
         },
-        type: 'POST',
+        type: 'GET',
         data: udata,
         contentType:"application/json",
         dataType: 'json',
@@ -864,8 +864,6 @@ function generate_dataset_file_list(data){
 	localStorage.setItem('download_list',LZString.compress(JSON.stringify(download_list)));
 	localStorage.setItem('download_size',download_size);
 	localStorage.setItem('download_count',download_count);
-
-
 	window.location.replace("/labcas-ui/download.html?version=3.0.0");
 }
 function download_script(filename, ostype) {

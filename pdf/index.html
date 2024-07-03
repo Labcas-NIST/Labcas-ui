@@ -47,8 +47,7 @@
   WebViewer({
     path: '/labcas-ui/assets/js/WebViewer/lib', // path to the PDF.js Express'lib' folder on your server
     licenseKey: 'Insert commercial license key here after purchase',
-    initialDoc: '/labcas-ui/assets/tmp/'+localStorage.getItem("pdfviewer_item"),
-    //initialDoc: 'https://edrn-labcas.jpl.nasa.gov/data-access-api/download?id=Multiplex_IF_Staining_Pancreatic_Cancer/UNMCPC.PANC107RF4306/UNMCPC.PANC107RF4306.1.CD103.png',
+    initialDoc: 'https://edrn-labcas.jpl.nasa.gov/data-access-api/download?id='+localStorage.getItem("pdfviewer_item")
   }, document.getElementById('viewer'))
   .then(instance => {
     const docViewer = instance.docViewer;

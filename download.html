@@ -36,10 +36,11 @@
 <script>
 	
 	$().ready(function() {
-		if (Cookies.get('user') == "Sign in" && !Cookies.get('accepted')){
+		//if (Cookies.get('user') == "Sign in" && !Cookies.get('accepted')){
+		if (Cookies.get('user') == "Sign in"){
 			//alert("In order to download, please login or create an account in order to accept DATA USE AGREEMENT.");
-            //$('#redirectModal').modal('show');
-            check_labcas_acceptance("anonymous");
+            $('#deniedModal').modal('show');
+            //check_labcas_acceptance("anonymous");
             //window.location.replace("/");
 		}else{
 			var files = JSON.parse(LZString.decompress(localStorage.getItem("download_list")));
@@ -96,6 +97,24 @@
                                 <div class="modal-footer">
                                     <!--<center><button type="button" onclick="login_redirect();" class="btn btn-success btn-simple btn-link" data-dismiss="modal"><B>Accept</B></button></center>-->
                                         <button type="submit" onclick="window.location.replace('/');" class="btn btn-info btn-fill pull-right" data-dismiss="modal">Login/Register</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+<div class="modal fade modal-mini modal-primary" id="deniedModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" style="max-width: 1000px">
+                            <div class="modal-content" style="width: 1000px">
+                                <div class="modal-header justify-content-center">
+                                    <div class="modal-profile">
+                                        <i class="nc-icon nc-bell-55"></i>
+                                    </div>
+                                </div>
+                                <div class="modal-body">
+                                    <p><center>Access Denied: You do not have permission to download data. Please apply for an account to get access and see additional data.</center></p>
+                                </div>
+                                <div class="modal-footer">
+                                    <!--<center><button type="button" onclick="login_redirect();" class="btn btn-success btn-simple btn-link" data-dismiss="modal"><B>Accept</B></button></center>-->
+                                        <button type="submit" onclick="window.location.replace(Cookies.get('login_redirect'));" class="btn btn-info btn-fill pull-right" data-dismiss="modal">Okay</button>
                                 </div>
                             </div>
                         </div>

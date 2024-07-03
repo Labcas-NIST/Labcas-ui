@@ -1,10 +1,10 @@
-Cookies.set("token", "None");
+//Cookies.set("token", "None");
 $(document).ready(function(){
     if (!Cookies.get('user')){
         Cookies.set('user', "Sign in");
     }
     clear_cart('files-table');
-$.getJSON( '/labcas-ui/assets/conf/environment.cfg?version=3.0.3', function(json) {
+$.getJSON( '/labcas-ui/assets/conf/environment.cfg?version=3.0.5', function(json) {
 	$.each( json, function( key, val ) {
         if (typeof val == "string"){
             localStorage.setItem(key, val);
@@ -16,6 +16,7 @@ $.getJSON( '/labcas-ui/assets/conf/environment.cfg?version=3.0.3', function(json
             console.log(val);
         }
 	});
+	$('#loginerror').html(localStorage.getItem("login_msg"));
 }, 'text').done(function(d) {
                 console.log("Config done");
             }).fail(function(d, textStatus, error) {
@@ -23,18 +24,23 @@ $.getJSON( '/labcas-ui/assets/conf/environment.cfg?version=3.0.3', function(json
             }).always(function(d) {
                 console.log("Config complete");
             });
-	$('#loginerror').html(localStorage.getItem("login_msg"));
 });
 $('#loginform').submit(function (e) {
 	e.preventDefault();
 	Cookies.set("user", $('#username').val());
 	Cookies.set("userletters", $('#username').val().substr(0, 2).toUpperCase());
+
+    Cookies.remove('token');
+    Cookies.remove('JasonWebToken');
+
         $.ajax({
             url: localStorage.getItem('environment')+"/data-access-api/auth",
-                beforeSend: function(xhr) {
-                    xhr.setRequestHeader("Authorization", "Basic " + btoa($('#username').val() + ":" + $('#password').val()));
+                type: 'POST',
+                contentType: 'application/x-www-form-urlencoded',
+                data: {
+                    username: $('#username').val(),
+                    password: $('#password').val()
                 },
-                type: 'GET',
                 success: function (data) {
 			Cookies.set("logout_alert","Off");
 			Cookies.set("token", data);
