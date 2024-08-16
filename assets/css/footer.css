@@ -1,0 +1,22 @@
+.TheFooter {
+  @apply bg-dark-blue text-white relative z-20;
+
+  .auto-col-2 {
+    @screen sm {
+      column-count: 2;
+    }
+  }
+
+  .auto-col-4 {
+    @screen sm {
+      column-count: 2;
+    }
+    @screen lg {
+      column-count: 3;
+    }
+    @screen 2xl {
+      column-count: 4;
+    }
+  }
+}
+

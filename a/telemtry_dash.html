@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telemetry Dashboard</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: auto auto auto;
+            gap: 10px;  /* Adjust as needed for spacing between plots */
+        }
+
+        .timeseries {
+            grid-column: 1 / 4;  /* Spans all 3 columns */
+            grid-row: 1;
+        }
+
+        .histogram.temperature {
+            grid-column: 1;
+            grid-row: 2;
+        }
+
+        .histogram.co2 {
+            grid-column: 2;
+            grid-row: 2;
+        }
+
+        .histogram.humidity {
+            grid-column: 3;
+            grid-row: 2;
+        }
+
+        .box {
+            grid-column: 1;
+            grid-row: 3;
+        }
+
+        .heatmap {
+            grid-column: 2;
+            grid-row: 3;
+        }
+
+        .pairplots {
+            grid-column: 3;
+            grid-row: 3;
+        }
+    </style>
+
+</head>
+<body>
+    <!--<center><H3>A220 - incub. 1 - all data [en] (3 Locations)-2023-06-10 00-00-03 file analysis</H3></center>-->
+    <div class="dashboard">
+        <div class="timeseries">
+           <select id="filenameDropdown">
+               <option value="Choose telemetry file...">Choose telemetry file...</option>
+            <!-- Options will be populated here dynamically -->
+        </select>
+            <div id="timeseriesPlot"></div>
+        </div>
+        <div class="histogram temperature">
+            <div id="temperatureHistogram"></div>
+        </div>
+        <div class="histogram co2">
+            <div id="co2PercentageHistogram"></div>
+        </div>
+        <div class="histogram humidity">
+            <div id="relativeHumidityHistogram"></div>
+        </div>
+        <div class="box">
+            <div id="boxplot"></div>
+        </div>
+        <div class="heatmap">
+            <div id="heatmap"></div>
+        </div>
+        <div class="pairplots">
+            <div id="pairPlots"></div>
+        </div>
+    </div>
+
+        <!-- JavaScript code will go here -->
+
+</body>
+    <script>
+        // Load the JSON data from a local file
+        fetch('/labcas-ui/assets/tmp/telemetry_data.json')
+            .then(response => response.json())
+            .then(data => {
+                // Process the data
+                populateDropdown(data);
+                //processJSONData(data);
+            })
+            .catch(error => console.error('Error loading the JSON data:', error));
+
+        function populateDropdown(data) {
+            const dropdown = document.getElementById('filenameDropdown');
+            
+            // Iterate over the telemetry formats and filenames
+            for (let format in data) {
+                for (let filename in data[format]) {
+                    const option = document.createElement('option');
+                    option.textContent = filename;
+                    option.value = filename;
+                    option.dataset.telemetryFormat = format; // Store the telemetry format in a data- attribute
+                    dropdown.appendChild(option);
+                }
+            }
+
+            // Add an event listener to the dropdown
+            dropdown.addEventListener('change', function() {
+                const selectedFilename = this.value;
+                const selectedFormat = this.options[this.selectedIndex].dataset.telemetryFormat;
+                const selectedData = data[selectedFormat][selectedFilename];
+                
+                // Call the processJSONData function with the selected data and format
+                processJSONData(selectedData, selectedFormat);
+            });
+        }
+
+                
+        let timestamps = {};
+        let temperatures = {}
+        let co2_percentages = {};
+        let relativeHumidities = {};
+
+
+        function processJSONData(data, selectedFormat) {
+            // Extract values from the JSON data
+            let validData;
+            switch (selectedFormat) {
+                case "telemetry format 1":
+                case "telemetry format 2":
+                    validData = data.filter(entry => isValidDate(entry["Timestamp (America/New_York)"]));
+                    timestamps = validData.map(entry => convertToSimpleTimestamp(entry["Timestamp (America/New_York)"]));
+                    temperatures = validData.map(entry => parseFloat(entry["Ext Sensor 1 - Temperature (°C)"]));
+                    co2_percentages = validData.map(entry => parseFloat(entry["Ext Sensor 1 - Dew Point (°C)"]));
+                    relativeHumidities = validData.map(entry => parseFloat(entry["Ext Sensor 1 - Humidity (%RH)"]));
+                    // Change CO2 label to Dew Point
+                    //document.querySelector("[name='CO2 (%)']").textContent = "Dew Point (°C)";
+                    break;
+                
+                case "telemetry format 3":
+                    validData = data.filter(entry => isValidDate(entry["Reading Records From:"]));
+                    timestamps = validData.map(entry => convertToSimpleTimestamp(entry["Reading Records From:"]));
+                    temperatures = validData.map(entry => parseFloat(entry["NIST"]));
+                    // Don't display humidity and co2 plots
+                    co2_percentages = [];
+                    relativeHumidities = [];
+                    break;
+
+                case "telemetry format 4":
+                    validData = data.filter(entry => isValidDate(entry["Unnamed: 0"]));
+                    timestamps = validData.map(entry => convertToSimpleTimestamp(entry["Unnamed: 0"]));
+                    temperatures = validData.map(entry => parseFloat(entry["3 (°C)"]));
+                    co2_percentages = validData.map(entry => parseFloat(entry["1 (%CO2)"]));
+                    relativeHumidities = validData.map(entry => parseFloat(entry["2 (%RH)"]));
+                    break;
+
+                case "telemetry format 5":
+                    validData = data.filter(entry => isValidDate(entry["Date/Time"]));
+                    timestamps = validData.map(entry => convertToSimpleTimestamp(entry["Date/Time"]));
+                    temperatures = validData.map(entry => parseFloat(entry["No.1"]));
+                    relativeHumidities = validData.map(entry => parseFloat(entry["No.2"]));
+                    // Don't display co2 plots
+                    co2_percentages = [];
+                    break;
+
+                default:
+                    console.error('Unknown telemetry format:', format);
+                    return;
+            }
+
+            //timestamps = data.map(entry => entry.date);
+            //temperatures = data.map(entry => parseFloat(entry["3_Cdeg"]));
+            //co2_percentages = data.map(entry => parseFloat(entry["1_percCO2"]));
+            //relativeHumidities = data.map(entry => parseFloat(entry["2_percRH"]));
+
+            // Plotly configuration for the time series plot
+            const timeSeriesData = [
+                {
+                x: timestamps,
+                y: temperatures,
+                type: 'scatter',
+                mode: 'lines',
+                name: 'Temperature (°C)',
+                line: { color: 'blue' },
+                yaxis: 'y1'
+                },
+                {
+                    x: timestamps,
+                    y: co2_percentages,
+                    type: 'scatter',
+                    mode: 'lines',
+                    name: 'CO2 (%)',
+                    line: { color: 'green' },
+                    yaxis: 'y2'
+                },
+                {
+                    x: timestamps,
+                    y: relativeHumidities,
+                    type: 'scatter',
+                    mode: 'lines',
+                    name: 'Relative Humidity (%)',
+                    line: { color: 'red' },
+                    yaxis: 'y3'
+                }
+            
+            ];
+
+            const timeSeriesLayout = {
+                title: 'Temperature, CO2, Humidity Time Series Plot',
+                xaxis: { title: 'Time' },
+                yaxis: {
+                    title: 'Temperature (°C)',
+                    linecolor: 'blue',
+                    titlefont: { color: 'blue' },
+                    tickfont: { color: 'blue' }
+                },
+                yaxis2: {
+                    title: 'CO2 (%)',
+                    linecolor: 'green',
+                    titlefont: { color: 'green' },
+                    tickfont: { color: 'green' },
+                    overlaying: 'y',
+                    side: 'right',
+                    position: 0
+                },
+                yaxis3: {
+                    title: 'Relative Humidity (%)',
+                    linecolor: 'red',
+                    titlefont: { color: 'red' },
+                    tickfont: { color: 'red' },
+                    overlaying: 'y',
+                    side: 'right'
+                },
+                height: "400"
+            };
+
+            // Render the time series plot
+            Plotly.newPlot('timeseriesPlot', timeSeriesData, timeSeriesLayout, {
+      displayModeBar: false
+    });
+
+            // Event handler for the time series plot
+            document.getElementById('timeseriesPlot').on('plotly_relayout', function(data){
+                if (data["xaxis.range[0]"] && data["xaxis.range[1]"]) {
+                    const startDatetime = convertToSimpleTimestamp(data["xaxis.range[0]"]);
+                    const endDatetime = convertToSimpleTimestamp(data["xaxis.range[1]"]);
+
+                    const closestStartTimestamp = findClosestTimestamp(startDatetime, timestamps);
+                    const closestEndTimestamp = findClosestTimestamp(endDatetime, timestamps);
+
+                    // Save the selected range to localStorage
+                    //localStorage.setItem('selectedRange', JSON.stringify([data["xaxis.range[0]"], data["xaxis.range[1]"]]));
+                    localStorage.setItem('selectedRange', JSON.stringify([closestStartTimestamp, closestEndTimestamp]));
+                    // Update other plots
+                    updateOtherPlots();
+                }
+            });
+
+        }
+        function isValidDate(dateString) {
+            const timestamp = Date.parse(dateString);
+            return !isNaN(timestamp);
+        }
+        function findClosestTimestamp(target, timestamps) {
+            // Sort timestamps based on their proximity to the target timestamp
+            const sortedTimestamps = timestamps.slice().sort((a, b) => Math.abs(new Date(target) - new Date(a)) - Math.abs(new Date(target) - new Date(b)));
+
+            // Return the closest timestamp
+            return sortedTimestamps[0];
+        }
+        function convertToSimpleTimestamp(timestamp) {
+            // Parse the timestamp and convert it to a Date object
+            const date = new Date(timestamp);
+
+            // Format the Date object to the desired format
+            const formattedDate = date.toISOString().slice(0,19).replace('T', ' ');
+
+            return formattedDate;
+        }
+        function updateOtherPlots() {
+            // Read the selected range from localStorage
+            const selectedRange = JSON.parse(localStorage.getItem('selectedRange'));
+
+            // Convert the range indices to their corresponding datetime strings
+
+            // Extract the subset of data based on the selected range
+            const startIndex = timestamps.indexOf(convertToSimpleTimestamp(selectedRange[0]));
+            const endIndex = timestamps.indexOf(convertToSimpleTimestamp(selectedRange[1]));
+
+            const subsetTimestamps = timestamps.slice(startIndex, endIndex + 1);
+            const subsetTemperatures = temperatures.slice(startIndex, endIndex + 1);
+            const subsetCO2 = co2_percentages.slice(startIndex, endIndex + 1);
+            const subsetHumidity = relativeHumidities.slice(startIndex, endIndex + 1);
+
+            // ... Create and render the other plots here using the subset data ...
+            console.log(startIndex);
+            console.log(endIndex);
+            console.log("subsetTemperatures");
+            console.log(subsetTemperatures);
+            // Histogram for Temperature Distribution
+            const temperatureHistogramData = [{
+                x: subsetTemperatures,
+                type: 'histogram',
+                opacity: 0.7,
+                name: 'Temperature (°C)',
+                marker: { color: 'blue' }
+            }];
+
+            const temperatureHistogramLayout = {
+                title: 'Distribution of Temperature',
+                xaxis: { title: 'Temperature (°C)' },
+                yaxis: { title: 'Frequency' }
+            };
+
+            Plotly.newPlot('temperatureHistogram', temperatureHistogramData, temperatureHistogramLayout, {
+      displayModeBar: false
+    });
+
+            // Histogram for CO2 Percentage Distribution
+            const co2HistogramData = [{
+                x: subsetCO2,
+                type: 'histogram',
+                opacity: 0.7,
+                name: 'CO2 (%)',
+                marker: { color: 'green' }
+            }];
+
+            const co2HistogramLayout = {
+                title: 'Distribution of CO2 Percentage',
+                xaxis: { title: 'CO2 (%)' },
+                yaxis: { title: 'Frequency' }
+            };
+
+            Plotly.newPlot('co2PercentageHistogram', co2HistogramData, co2HistogramLayout, {
+      displayModeBar: false
+    });
+
+            // Histogram for Relative Humidity Distribution
+            const humidityHistogramData = [{
+                x: subsetHumidity,
+                type: 'histogram',
+                opacity: 0.7,
+                name: 'Relative Humidity (%)',
+                marker: { color: 'red' }
+            }];
+
+            const humidityHistogramLayout = {
+                title: 'Distribution of Relative Humidity',
+                xaxis: { title: 'Relative Humidity (%)' },
+                yaxis: { title: 'Frequency' }
+            };
+
+            Plotly.newPlot('relativeHumidityHistogram', humidityHistogramData, humidityHistogramLayout, {
+      displayModeBar: false
+    });
+
+            // Boxplots
+            const boxPlotData = [
+                {
+                    y: subsetTemperatures,
+                    type: 'box',
+                    name: 'Temperature (°C)',
+                    marker: { color: 'blue' }
+                },
+                {
+                    y: subsetCO2,
+                    type: 'box',
+                    name: 'CO2 (%)',
+                    marker: { color: 'green' }
+                },
+                {
+                    y: subsetHumidity,
+                    type: 'box',
+                    name: 'Relative Humidity (%)',
+                    marker: { color: 'red' }
+                }
+            ];
+
+            const boxPlotLayout = {
+                title: 'Boxplots'
+            };
+
+            Plotly.newPlot('boxplot', boxPlotData, boxPlotLayout, {
+      displayModeBar: false
+    });
+
+            // Pseudo-code: Calculate correlations between metrics
+            const correlations = calculateCorrelations(subsetTemperatures, subsetCO2, subsetHumidity);
+
+            const heatmapData = [{
+                z: correlations,  // 2D array with correlation values
+                x: ['Temperature', 'CO2', 'Humidity'],
+                y: ['Temperature', 'CO2', 'Humidity'],
+                type: 'heatmap'
+            }];
+
+            const heatmapLayout = {
+                title: 'Correlation Matrix Heatmap'
+            };
+
+            Plotly.newPlot('heatmap', heatmapData, heatmapLayout, {
+      displayModeBar: false
+    }).then(function() {
+                document.getElementById('heatmap').on('plotly_click', function(data){
+                    // Determine which cell was clicked
+                    const x = data.points[0].x;
+                    const y = data.points[0].y;
+
+                    generatePairPlot(x, y, subsetTemperatures, subsetCO2, subsetHumidity);
+                });
+                
+            });
+
+            // Pair plots: scatter plots between each pair of metrics
+
+            // Temperature vs CO2
+            const tempVsCo2Data = [{
+                x: subsetTemperatures,
+                y: subsetCO2,
+                mode: 'markers',
+                type: 'scatter',
+                name: 'Temp vs CO2'
+            }];
+
+            Plotly.newPlot('pairPlots', tempVsCo2Data, { title: 'Temperature vs CO2 Percentage' }, {
+      displayModeBar: false
+    });
+
+        }
+
+
+        function generatePairPlot(x, y, subsetTemperatures, subsetCO2, subsetHumidity) {
+            let xData, yData, xLabel, yLabel;
+
+            // Map the heatmap axes labels to the data arrays
+            const dataMap = {
+                'Temperature': subsetTemperatures,
+                'CO2': subsetCO2,
+                'Humidity': subsetHumidity
+            };
+
+            xData = dataMap[x];
+            yData = dataMap[y];
+            xLabel = x;
+            yLabel = y;
+
+            const pairPlotData = [{
+                x: xData,
+                y: yData,
+                mode: 'markers',
+                type: 'scatter',
+                name: `${xLabel} vs ${yLabel}`
+            }];
+
+            const pairPlotLayout = {
+                title: `${xLabel} vs ${yLabel}`,
+                xaxis: { title: xLabel },
+                yaxis: { title: yLabel }
+            };
+
+            Plotly.newPlot('pairPlots', pairPlotData, pairPlotLayout, {
+      displayModeBar: false
+    });
+        }
+
+
+        function calculateCorrelations(subsetTemperatures, subsetCO2, subsetHumidity){
+            const temperatureCO2Correlation = pearsonCorrelation(subsetTemperatures, subsetCO2);
+            const temperatureHumidityCorrelation = pearsonCorrelation(subsetTemperatures, subsetHumidity);
+            const co2HumidityCorrelation = pearsonCorrelation(subsetCO2, subsetHumidity);
+
+            const correlations = [
+                [1, temperatureCO2Correlation, temperatureHumidityCorrelation], 
+                [temperatureCO2Correlation, 1, co2HumidityCorrelation],
+                [temperatureHumidityCorrelation, co2HumidityCorrelation, 1]
+            ];
+            return correlations;
+        }
+
+        function pearsonCorrelation(array1, array2) {
+            let n = array1.length;
+            
+            if (n === 0) return 0;
+            if (n !== array2.length) throw new Error('Arrays must have the same length');
+
+            let sum1 = 0;
+            let sum2 = 0;
+            let sum1Sq = 0;
+            let sum2Sq = 0;
+            let pSum = 0;
+
+            for (let i = 0; i < n; i++) {
+                sum1 += array1[i];
+                sum2 += array2[i];
+                sum1Sq += Math.pow(array1[i], 2);
+                sum2Sq += Math.pow(array2[i], 2);
+                pSum += array1[i] * array2[i];
+            }
+
+            const num = pSum - (sum1 * sum2 / n);
+            const den = Math.sqrt((sum1Sq - Math.pow(sum1, 2) / n) * (sum2Sq - Math.pow(sum2, 2) / n));
+
+            if (den === 0) return 0;
+
+            return num / den;
+        }
+
+    </script>
+</html>
