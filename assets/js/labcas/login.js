@@ -4,7 +4,7 @@ $(document).ready(function(){
         Cookies.set('user', "Sign in");
     }
     clear_cart('files-table');
-$.getJSON( '/labcas-ui/assets/conf/environment.cfg?version=3.0.5', function(json) {
+$.getJSON( '/labcas-ui/assets/conf/environment.cfg?version=5.5.2', function(json) {
 	$.each( json, function( key, val ) {
         if (typeof val == "string"){
             localStorage.setItem(key, val);
@@ -77,13 +77,6 @@ $('#loginform').submit(function (e) {
 					writeUserData(JSON.stringify(user_data))
 					localStorage.setItem("first_time_user",  first_time_user);
                     			check_labcas_acceptance("login");
-					/*$('#acceptHTML').html(localStorage.getItem("accept_msg"));
-					$('#acceptModal').modal('show');*/
-					/*if (Cookies.get("login_redirect")){
-						window.location.replace(Cookies.get("login_redirect"));
-					}else{
-						window.location.replace("/labcas-ui/s/index.html");
-					}*/
 				},
 				error: function(){
 					 //alert("Login expired, please login...");

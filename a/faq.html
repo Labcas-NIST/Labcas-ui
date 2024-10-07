@@ -404,11 +404,11 @@ Are you sure you want to continue connecting (yes/no)? </code></pre>
 <!-- Light Dashboard DEMO methods, don't include it in your project! -->
 <!--<script src="/labcas-ui/assets/js/demo.js"></script>-->
 <script src="/labcas-ui/assets/js/plugins/js.cookie.js"></script>
-<script src="/labcas-ui/assets/js/labcas/utils.js?version=3.0.0"></script>
-<script src="/labcas-ui/assets/js/labcas/search.js?version=3.0.0"></script>
+<script src="/labcas-ui/assets/js/labcas/utils.js?version=5.5.2"></script>
+<script src="/labcas-ui/assets/js/labcas/search.js?version=5.5.2"></script>
 <script src="/labcas-ui/assets/js/labcas/labcas-sidebar.js"></script>
 <script src="/labcas-ui/assets/js/plotly-latest.min.js"></script>
-<script src="/labcas-ui/assets/js/labcas/dashboard.js?version=3.0.0"></script>
+<script src="/labcas-ui/assets/js/labcas/dashboard.js?version=5.5.2"></script>
 
 
 <script type="text/javascript">
@@ -418,7 +418,7 @@ Are you sure you want to continue connecting (yes/no)? </code></pre>
         var get_var = get_url_vars();
         //console.log(get_var["dataset_id"]);
         setup_labcas_analytics();
-        $.get( "/labcas-ui/sidebar_"+localStorage.getItem("environment_name")+".html?version=3.0.0", function( data ) {
+        $.get( "/labcas-ui/sidebar_"+localStorage.getItem("environment_name")+".html?version=5.5.2", function( data ) {
             $( "#sidebar_placeholder" ).append(data);
             $( "#username_placeholder" ).text(Cookies.get('user'));
             $( "#username_placeholder_second" ).text(Cookies.get('user'));

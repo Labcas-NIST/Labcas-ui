@@ -448,7 +448,7 @@ function setup_labcas_search(query, divid, cpage){
     if (divid == "collections_search" || divid == "all"){
         console.log(localStorage.getItem('environment')+"/data-access-api/collections/select?q="+query+""+collection_filters+"&wt=json&indent=true&start="+cpage*10);
         $.ajax({
-            url: localStorage.getItem('environment')+"/data-access-api/collections/select?q="+query+""+collection_filters+"&wt=json&indent=true&sort=id%20asc&start="+cpage*10,
+            url: localStorage.getItem('environment')+"/data-access-api/collections/select?q="+query+""+collection_filters+"&wt=json&indent=true&sort=CollectionName%20asc&start="+cpage*10,
             beforeSend: function(xhr) {
                 if(Cookies.get('token') && Cookies.get('token') != "None"){
                     xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token'));

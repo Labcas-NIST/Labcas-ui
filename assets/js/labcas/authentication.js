@@ -53,6 +53,22 @@ function fill_file_details_data(data){
 		if (key == "_version_"){
 			return;
 		}
+        if (key == "PubMedID" && $.isArray(value)){
+                var new_value = [];
+                $.each(value, function(ix, pub) {
+                        console.log("test");
+                        if (pub.includes("http")){
+                                pub = "<a target='_blank' href='"+pub+"'>"+pub+"</a>";
+                        }else if (pub && /^[0-9]+$/.test(pub)){
+                                pub = "<a target='_blank' href='http://www.ncbi.nlm.nih.gov/pubmed/"+pub+"'>"+pub+"</a>";
+
+                        }
+                        new_value.push(pub);
+                });
+                value = new_value;
+        }
+
+
 		if ($.isArray(value)){
 			value = value.join(",");
 		}

@@ -1,6 +1,7 @@
 var collection_facets = {};
 var collection_facets_alias = {};
 var obj_type = "collection";
+var parentLock = false;
 function collection_hierarchy_fill(data){
     var hierarchy = $('#view_tag_select')
     var hierarchy_list = {};
@@ -28,8 +29,6 @@ function collection_hierarchy_fill(data){
         }));
 
     });
-    //console.log(hierarchy_list);
-    //console.log("Done");
 
     //Make sure hierarchy default is populated #-tagged #defaulthierarchy
     if (localStorage.getItem("hierarchy_tags_"+localStorage.getItem("current_"+obj_type+"_id")) != "" && localStorage.getItem("hierarchy_tags_"+localStorage.getItem("current_"+obj_type+"_id"))){
@@ -48,11 +47,10 @@ function collection_hierarchy_fill(data){
             $('#hierarchy_').show();
         }
     }
-
 }
 
 function collection_hierarchy_get(collection_id){
-    var facets = "&facet.field=participantID&facet.field=SubmittingInvestigatorID&facet.field=contains_image&facet.field=dicom_StudyInstanceUID&facet.field=dicom_AccessionNumber&facet.field=dicom_PatientID&facet.field=dicom_StudyDate&facet.field=n&facet.field=dicom_Modality&facet.field=dicom_SeriesDescription&facet.field=dicom_StudyDescription&facet.field=dicom_SeriesInstanceUID&facet.field=DatasetName&facet.field=AssayType&facet.field=ContentType&facet.field=library_strategy&facet.field=Gender&facet.field=Race&facet.field=Ever_Diagnosed_With_Cancer&facet.field=Imaging_Form_Status&facet.field=Cohort&facet.field=eventID&facet.field=FileType&facet.field=BlindedSiteID";
+    var facets = "&facet.field=participantID&facet.field=SubmittingInvestigatorID&facet.field=contains_image&facet.field=dicom_StudyInstanceUID&facet.field=dicom_AccessionNumber&facet.field=dicom_PatientID&facet.field=dicom_StudyDate&facet.field=n&facet.field=dicom_Modality&facet.field=dicom_SeriesDescription&facet.field=dicom_StudyDescription&facet.field=dicom_SeriesInstanceUID&facet.field=DatasetName&facet.field=AssayType&facet.field=ContentType&facet.field=library_strategy&facet.field=Gender&facet.field=Race&facet.field=Ever_Diagnosed_With_Cancer&facet.field=Imaging_Form_Status&facet.field=Cohort&facet.field=eventID&facet.field=FileType&facet.field=BlindedSiteID&facet.field=labcas.dicom:ViewPosition&facet.field=labcas.dicom:SeriesDescription&facet.field=labcas.dicom:ProtocolName&facet.field=labcas.radiology:processing_level&facet.field=labcas.radiology:image_orientation&facet.field=labcas.radiology:image_type&facet.field=labcas.radiology:image_modality";
     if (collection_id.includes("^")){
 	collection_id = collection_id.replace("^","%5C%5E");
     }
@@ -133,7 +131,7 @@ function fill_hierarchy_data(data, collection_id, path, pathval, idx){
                     //Start next child discovery
                     filters = [];
                     for (var i = 0; i < path_child.length; i++) {
-                        filters.push("fq=("+path_child[i]+":"+escapeRegExp(pathval_child[i]).replace(/\\&/g,"%5C%26").replace(/\\/g,"%5C")+")");
+                        filters.push("fq=("+path_child[i].replace(/:/g, '%5C%3A')+":"+escapeRegExp(pathval_child[i]).replace(/\\&/g,"%5C%26").replace(/\\/g,"%5C").replace(/ /g,"%5C%20")+")");
                     }
                     facets = "&facet.field="+collection_file_f_child;
                     
@@ -145,8 +143,6 @@ function fill_hierarchy_data(data, collection_id, path, pathval, idx){
                     if (obj_type == "dataset"){
                         url = localStorage.getItem('environment')+"/data-access-api/files/select?q=DatasetId:"+collection_id+"*"+filter_field+"&facet=true&facet.limit=-1&facet.mincount=1"+facets+"&wt=json&rows=0";
                     }
-                    console.log("url2");
-                    console.log(url);
                     $.ajax({
                         url: url,
                         beforeSend: function(xhr) {
@@ -158,8 +154,6 @@ function fill_hierarchy_data(data, collection_id, path, pathval, idx){
                         dataType: 'json',
                         processData: false,
                         success: function (filedata) {
-                            console.log("filedata");
-                            console.log(filedata);
                             fill_hierarchy_data(filedata, collection_id, path_child, pathval_child, idx);
                         },error: function(e){
                             if (!(localStorage.getItem("logout_alert") && localStorage.getItem("logout_alert") == "On")){
@@ -181,9 +175,11 @@ function generate_hierarchy_query(key){
 
     var hierarchy = link_path;
     var file_query = "";
+    console.log("file_query_check");
     for (var i = 0; i < hierarchy[0].length; i++) {
-        file_query += "&fq=(" + encodeURI(escapeRegExp(hierarchy[0][i])).replace(/:/g, '%3A').replace(/%5C&/g, '%5C%26') + ":" + encodeURI(escapeRegExp(String(hierarchy[1][i]))).replace(/%5C&/g, '%5C%26').replace(/%5C%20/g,"%20").replace(/%20/g,"%5C%20").replace(/ /g,"%5C%20") + ")";
+        file_query += "&fq=(" + encodeURI(escapeRegExp(hierarchy[0][i])).replace(/:/g, '%3A').replace(/%5C&/g, '%5C%26') + ":" + encodeURI(escapeRegExp(String(hierarchy[1][i]))).replace(/%5C&/g, '%5C%26').replace(/%20/g,"%5C%20").replace(/ /g,"%5C%20") + ")";
     }
+    console.log(file_query);
     localStorage.setItem("hierarchy_file_query", file_query);
     localStorage.setItem("hierarchy_file_query_collection", localStorage.getItem("last_collection_id"));
 }
@@ -327,3 +323,34 @@ function setup_labcas_hierarchy_data(file_query, cpage){
          }
     });
 }
+
+function generate_hierarchy_based_on_tags(){
+
+    return new Promise((resolve, reject) => {
+    if (parentLock) {
+      reject('Parent function execution in progress');
+    } else {
+        parentLock = true;
+            $('#view_tag_select').attr("disabled", true);
+            var collection_id = get_var["collection_id"] ? get_var["collection_id"] : localStorage.getItem('last_collection_id');
+            $('#hierarchy_').empty();
+
+	    //query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=CollectionId:"+collection_id+"%20AND%20-FolderType:%5B*%20TO%20*%5D"+filters+"&wt=json&indent=true&rows=10000&fl="+hierarchy_tags.join(","), fill_hierarchy_data_fast, false).then(() => {
+                // After executing the code, unlock and resolve the promise
+	    fill_hierarchy_data(collection_facets, collection_id, [], [], 0);
+        parentLock = false;
+            $('#view_tag_select').attr("disabled", false);
+        resolve();
+      /*}).catch((error) => {
+        console.log(error);
+        parentLock = false;
+        reject('Child function execution was not successful');
+      });*/
+    }
+    }).catch((error) => {
+        console.log(error);
+        parentLock = false;
+        reject('Child function execution was not successful');
+      });
+}
+

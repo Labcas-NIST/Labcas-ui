@@ -82,6 +82,36 @@ The above copyright notice and this permission notice shall be included in all c
                             </div>
                         </div>
                     </div>
+		    <div class="modal fade modal-mini modal-primary" id="announceModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" style="max-width: 1000px">
+                            <div class="modal-content" style="width: 1000px">
+                                <div class="modal-header justify-content-center">
+                                    <div class="modal-profile">
+                                        <i class="nc-icon nc-notification-70"></i>
+                                    </div>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Then the entire announcement can be under the click more:<br>
+We are implementing an important update regarding access to EDRN data holdings. Users can still browse and explore EDRN data holdings that are publicly available without LabCAS credentials.<br><br>
+To enhance security and manage data access more effectively, user registration is required to view or download publicly available file metadata and data.<br><br>
+<U>How to Access:</U><br><br>
+<B>Non-EDRN Members/Research Community:</B><br>
+    <ul><li>
+    <a href="https://edrn-labcas.jpl.nasa.gov/biokey/edrn/sign-up/">Apply</a> for an account
+    </li></ul>
+<B>EDRN Members:</B><br>
+    <ul><li>
+    <a href="https://www.compass.fhcrc.org/edrns/pub/user/application.aspx?t=app&sub=form1&w=1&p=3">Apply for an account</a></li><li>
+    <a href="https://www.compass.fhcrc.org/edrns/pub/user/resetPwd.aspx?t=pwd&sub=form&w=1&p=3">Reset or change</a> your password</li></ul>
+We appreciate your understanding and cooperation with this new requirement. If you have any questions or need assistance, please contact the <a href="mailto:edrn-ic@jpl.nasa.gov">Informatics Center<a/>.</p>
+                                </div>
+                                <div class="modal-footer">
+                    <button type="submit" class="btn btn-info btn-fill pull-right" data-dismiss="modal">Got it</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
     <div class="wrapper wrapper-full-page">
         <!-- Navbar -->
 	<div id='sidebar_placeholder'></div>
@@ -175,6 +205,15 @@ The above copyright notice and this permission notice shall be included in all c
                             </div>
                         </div>
                         </div>
+			<div class="row">
+                            <div class="col-md-12"  style="padding:5px">
+                            <div class="card " style="margin: 5px; padding:10px">
+                            <center><U><H4 style="margin: 5px">Announcement: Update to EDRN Data Access</H4></U></center>
+                            <center>Public EDRN data holdings can still be browsed without LabCAS credentials. To view or download file metadata and data, user registration is now required for enhanced security. <a href="#" id="modalShow">Click to learn more</a>.</center>
+                        </div>
+                        </div>
+                        </div>
+
                         <div class="row">
                            <div class="col-md-4"  style="padding:5px">
                            <div class="col-md-12"  style="padding:0px">
@@ -307,10 +346,14 @@ The above copyright notice and this permission notice shall be included in all c
 <!-- Light Dashboard DEMO methods, don't include it in your project! -->
 <script src="js/demo.js"></script>
 <script src="js/plugins/js.cookie.js"></script>
-<script src="js/labcas/utils.js?version=3.0.4"></script>
-<script src="js/labcas/login.js?version=3.0.6"></script>
-<script src="/labcas-ui/assets/js/labcas/dashboard.js?version=3.0.0"></script> 
+<script src="js/labcas/utils.js?version=5.5.2"></script>
+<script src="js/labcas/login.js?version=5.5.2"></script>
+<script src="/labcas-ui/assets/js/labcas/dashboard.js?version=5.5.2"></script> 
 <script>
+    $('#modalShow').click(function(event) {
+        event.preventDefault();
+        $('#announceModal').modal('show');
+    });
     $(document).ready(function() {
     	
         
@@ -324,7 +367,7 @@ The above copyright notice and this permission notice shall be included in all c
         setTimeout(function() {
             // after 1000 ms we add the class animated to the login/register card
             $('.card').removeClass('card-hidden');
-	    $("#sidebar_placeholder").load("/labcas-ui/sidebar_" + localStorage.getItem("environment_name") + ".html?version=3.0.0");
+	    $("#sidebar_placeholder").load("/labcas-ui/sidebar_" + localStorage.getItem("environment_name") + ".html?version=5.5.2");
         }, 700)
     });
 </script>

@@ -40,7 +40,7 @@
                         </div>
                         <div class="col-lg-3 col-sm-6" id="file_stat_template">
                         </div>
-                        <div class="col-lg-3 col-sm-6" id="favorite_stat_template">
+                        <div class="col-lg-3 col-sm-6" id="download_collection_template">
                         </div>
                     </div>
                     <div class="row">
@@ -170,7 +170,7 @@
                       </div>
                     </div>
                 </div>
-        </div>
+	</div>
 
     <footer role='contentinfo' class='labcas-footer'  id="footer_template">
     </footer>
@@ -193,7 +193,7 @@
             </p>
           </div>
           <div class="modal-footer">
-              <!--<button type="submit" onclick="window.location.replace('/labcas-ui/download.html?version=3.0.0')" class="btn btn-info btn-fill pull-right" data-dismiss="modal">Continue</button>-->
+              <!--<button type="submit" onclick="window.location.replace('/labcas-ui/download.html?version=5.5.2')" class="btn btn-info btn-fill pull-right" data-dismiss="modal">Continue</button>-->
             <button type="submit" class="btn btn-warning btn-fill pull-right" data-dismiss="modal">Close</button>
           </div>
         </div>
@@ -242,17 +242,18 @@
 <script src="/labcas-ui/assets/js/plugins/typeahead.bundle.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js" integrity="sha512-qtX0GLM3qX8rxJN1gyDfcnMFFrKvixfoEOwbBib9VafR5vbChV5LeE5wSI/x+IlCkTY5ZFddFDCCfaVJJNnuKQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="/labcas-ui/assets/js/labcas/labcas-sidebar.js"></script>
-<script src="/labcas-ui/assets/js/labcas/authentication.js?version=3.0.0"></script>
-<script src="/labcas-ui/assets/js/labcas/utils.js?version=3.0.1"></script>
-<script src="/labcas-ui/assets/js/labcas/search.js?version=3.0.0"></script>
-<script src="/labcas-ui/assets/js/labcas/collections.js?version=3.0.4"></script>
-<script src="/labcas-ui/assets/js/labcas/hierarchy_filter_utils.js?version=3.0.1"></script>
+<script src="/labcas-ui/assets/js/labcas/authentication.js?version=5.5.2"></script>
+<script src="/labcas-ui/assets/js/labcas/utils.js?version=5.5.2"></script>
+<script src="/labcas-ui/assets/js/labcas/search.js?version=5.5.2"></script>
+<script src="/labcas-ui/assets/js/labcas/collections.js?version=5.5.2"></script>
+<script src="/labcas-ui/assets/js/labcas/hierarchy_filter_utils.js?version=5.5.2"></script>
 <script type="text/javascript">
     var get_var = get_url_vars();
     var collection_id = light_sanitize(get_var["collection_id"]);
     var dataset_id = collection_id+"/"+collection_id;
     $(document).ready(function() {
 	initCookies();
+	$("#collection_level_schema_div").hide();
 
        $( "#head_template" ).load("/labcas-ui/templates.html #head_template");
         $( "#nav_template" ).load("/labcas-ui/templates.html?2 #nav_template", function() {
@@ -263,19 +264,20 @@
                 $("#loggedout_msg").hide();
             }
         });
-        $( "#favorite_stat_template" ).load("/labcas-ui/templates.html #favorite_stat_template");
+        //$( "#favorite_stat_template" ).load("/labcas-ui/templates.html #favorite_stat_template");
+        $( "#download_collection_template" ).load("/labcas-ui/templates.html #download_collection_template");
         $( "#file_stat_template" ).load("/labcas-ui/templates.html #file_stat_template");
         $( "#dataset_stat_template" ).load("/labcas-ui/templates.html #dataset_stat_template");
         $( "#collection_name_template" ).load("/labcas-ui/templates.html #collection_name_template");
 
-        $( "#footer_template" ).load("/labcas-ui/templates.html?version=3.0.1 #footer_template_"+localStorage.getItem("environment_name"));
+        $( "#footer_template" ).load("/labcas-ui/templates.html?version=5.5.2 #footer_template_"+localStorage.getItem("environment_name"));
         $( "#sidebar_placeholder" ).load("/labcas-ui/sidebar_"+localStorage.getItem("environment_name")+".html?9" );
 
         Cookies.set("login_redirect", "/labcas-ui/c/index.html?collection_id="+collection_id);
         setup_labcas_data("collectiondatasets",'id:"'+collection_id+'"', 'CollectionId:"'+collection_id+'"');
         $("#breadcrumb_collection").text(collection_id.replace(/_/g," "));
 
-        $('#collection_level_schema_metadata_frame').attr('src', '/labcas-ui/a/metadata_tables.html?collection_id='+collection_id);
+        //$('#collection_level_schema_metadata_frame').attr('src', '/labcas-ui/a/metadata_tables.html?collection_id='+collection_id);
 
         //Setup view tags
         var tagValues = ["Cohort","Fixative","Study","Gender","Animal Type","Stain"];
@@ -299,42 +301,32 @@
                     $('#datasets-table').hide();
                     $('#hierarchy_').show();
                     elt.tagsinput('add', { "value": this.value});
+	            generate_hierarchy_based_on_tags().then(() => console.log('Parent function executed successfully'))
+  .catch((error) => console.log(error));
                 }else{
                     $('#hierarchy_').hide();
                     $('#datasets-table').show();
                 }
         });
         localStorage.setItem("current_collection_id",collection_id);
-        $('#view_tags').on('itemAdded itemRemoved', function() {
+        $('#view_tags').on('itemAdded itemRemoved', function(event) {
             $('#hierarchy_').html("");
-            fill_hierarchy_data(collection_facets, collection_id, [], [], 0);
+	    //fill_hierarchy_data(collection_facets, collection_id, [], [], 0);
+	    if (event.type == "itemRemoved"){
+		    generate_hierarchy_based_on_tags().then(() => console.log('Parent function executed successfully'))
+		  .catch((error) => console.log(error));
+  	    }
             localStorage.setItem("hierarchy_tags_"+collection_id, elt.val());
         });
         $('.twitter-typeahead').hide();
-        setTimeout(function(){
             localStorage.setItem("last_collection_id", collection_id);
             init_file_checkboxes('none');
             obj_type = "collection";
             collection_hierarchy_get(collection_id);
-
-            //initiate tags for previous hierarchy sessions
-            /*if (localStorage.getItem("hierarchy_tags") != ""){
-                var valid_tags_check = false;
-                var hierarchy_tags = localStorage.getItem("hierarchy_tags").split(",");
-                $.each(hierarchy_tags, function( key, val ) {
-                    if (val in collection_facets.facet_counts.facet_fields){
-                        elt.tagsinput('add', { "value": val});
-                        valid_tags_check = true;
-                    }
-                });
-                //if tag exist as a key in the files under this collection, show the hierarchy built by the hierarchy tag combination
-                if (valid_tags_check){
-                    $('#datasets-table').hide();
-                    $('#hierarchy_').show();
-                }
-            }*/
-            //the above function is now called in hierarchy*.js kicked off by the above function collection_hierarchy_get due to race conditions. Look for hashtag #defaulthierarchy in the js file.
-        },1000);
+	setTimeout(function() {
+		generate_hierarchy_based_on_tags().then(() => console.log('Parent function executed successfully'))
+.catch((error) => console.log(error));
+	}, 1000);
     });
 </script>
 

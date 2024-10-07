@@ -32,9 +32,15 @@ $().ready(function() {
             if(!localStorage.getItem('environment')){
                 localStorage.setItem("environment","https://"+location.hostname.split(/\//)[0]);
             }
+
+                var get_var = get_url_vars();
+                var dataset_id = light_sanitize(get_var["dataset_id"]);
+                var collection_id = light_sanitize(get_var["collection_id"]);
+
             query_labcas_api(localStorage.getItem('environment')+"/data-access-api/collections/select?q=*&facet=true&facet.limit=-1&wt=json&rows=0",get_labcas_collection_stats);
             query_labcas_api(localStorage.getItem('environment')+"/data-access-api/datasets/select?q=*&facet=true&facet.limit=-1&wt=json&rows=0",get_labcas_dataset_stats);
-            query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=*&facet=true&facet.limit=-1&wt=json&rows=0",get_labcas_file_stats);
+            //query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=*&facet=true&facet.limit=-1&wt=json&rows=0",get_labcas_file_stats);
+            query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=*&fq=(CollectionId:"+collection_id+")&wt=json&indent=true%20asc&rows=0&stats=true&stats.field=FileSize",get_labcas_file_stats);
         }
       },1000);
 
@@ -42,7 +48,7 @@ $().ready(function() {
 function redirect_to_login(){
     console.log("Attempting to redirect to login...");
     if (localStorage.getItem("allow_redirect") == "true"){
-        window.location.replace("/labcas-ui/index.html?version=3.0.0");
+        window.location.replace("/labcas-ui/index.html?version=5.5.2");
     }else{
 
     }
@@ -64,7 +70,7 @@ function baseName(str)
 function initCookies(){
 	if(!Cookies.get("token") || Cookies.get("token") == "None"){
 		$.ajax({
-			  url: '/labcas-ui/assets/conf/environment.cfg?version=3.0.1',
+			  url: '/labcas-ui/assets/conf/environment.cfg?version=5.5.2',
 			  dataType: 'json',
 			  async: false,
 			  success: function(json) {
@@ -111,7 +117,7 @@ function writeUserData(udata, noreload){
         beforeSend: function(xhr) { 
             xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
         },
-        type: 'GET',
+        type: 'POST',
         data: udata,
         contentType:"application/json",
         dataType: 'json',
@@ -316,12 +322,20 @@ function generate_edrn_links(obj){
 	var protocols = [];
 	var pis = [];
 	var orgs = [];
-	if (obj.Institution){
-		for (var i = 0; i < obj.Institution.length; i++) {
-			o = $.trim(obj.Institution[i]);
-			if (o != "" && obj.InstitutionId && obj.InstitutionId[i] && $.trim(obj.InstitutionId[i]) != ""){
+
+	var input_inst = obj.InstitutionId ? obj.InstitutionId : obj.InstitutionID;
+	var input_instn = obj.Institution ? obj.Institution : obj.InstitutionName;
+	var input_pi = obj.LeadPIId ? obj.LeadPIId : obj.LeadPIID;
+	var input_pin = obj.LeadPI ? obj.LeadPI : obj.LeadPIName;
+	var input_org = obj.OrganId ? obj.OrganId : obj.OrganID;
+	var input_orgn = obj.Organ ? obj.Organ : obj.OrganName;
+
+	if (input_instn){
+		for (var i = 0; i < input_instn.length; i++) {
+			o = $.trim(input_instn[i]);
+			if (o != "" && input_inst && input_inst[i] && $.trim(input_inst[i]) != ""){
 				inst_split = o.replace(".","").toLowerCase().split(" ");
-				inst_url = $.trim(obj.InstitutionId[i]);
+				inst_url = $.trim(input_inst[i]);
 				for (var c = 0; c < inst_split.length; c++) {
 					if (!inst_split[c]){
 						continue;
@@ -333,11 +347,11 @@ function generate_edrn_links(obj){
 					inst_url += "-"+$.trim(inst_split[c]);
 				}
 				
-				leadpi = $.trim(obj.LeadPI[i]).toLowerCase().split(" ");
-				if (obj.LeadPI[i] && obj.LeadPI[i].includes("+")){
-					leadpi = $.trim(obj.LeadPI[i]).toLowerCase().split("+");
+				leadpi = $.trim(input_pin[i]).toLowerCase().split(" ");
+				if (input_pin[i] && input_pin[i].includes("+")){
+					leadpi = $.trim(input_pin[i]).toLowerCase().split("+");
 				}
-				pis.push("<a href='"+localStorage.getItem('institution_url')+inst_url+"/"+leadpi[1]+"-"+leadpi[0]+"'>"+obj.LeadPI[i]+"</a>");
+				pis.push("<a href='"+localStorage.getItem('institution_url')+inst_url+"/"+leadpi[1]+"-"+leadpi[0]+"'>"+input_pin[i]+"</a>");
 				institutions.push("<a href='"+localStorage.getItem('institution_url')+inst_url+"'>"+o+"</a>");
 			
 			}
@@ -350,9 +364,9 @@ function generate_edrn_links(obj){
 		}
 	}
 	
-	if (obj.Organ){
-		for (var i = 0; i < obj.Organ.length; i++) {
-			o = $.trim(obj.Organ[i]);
+	if (input_orgn){
+		for (var i = 0; i < input_orgn.length; i++) {
+			o = $.trim(input_orgn[i]);
 			if (o != ""){
 				orgs.push("<a href='"+localStorage.getItem('organ_url')+o+"'>"+o+"</a>");
 			}
@@ -365,8 +379,7 @@ function light_sanitize(id){
     return String(id).replace(/&/g, '')
          .replace(/</g, '')
          .replace(/>/g, '')
-         .replace(/"/g, '')
-         .replace(/'/g, '');
+         .replace(/"/g, '');
 }
 
 function get_url_vars(){
@@ -568,14 +581,14 @@ function usage_agreement(){
 }
 
 function checkSize(filecount, filesize, size_threshold, count_threshold){
-	$('#sizeHTML').html("There are <B><font color='red'>"+filecount+"</font></B> files with total size of <B><font color='red'>"+filesize+"</font></B>. This is either more than the maximum <B><font color='red'>"+size_threshold+"</font></B> size threshold OR more than the maximum <B><font color='red'>"+count_threshold+"</font></B> file count recommended download size from a web browser. If you'd like to proceed, the browser will initiate a series of downloads, please keep your browser and internet connection open for the duration of the download. Alternatively, you may download the below script that can be run through your command prompt/terminal instead with minimal interferance.");
+	$('#sizeHTML').html("There are <B><font color='red'>"+filecount+"</font></B> files with total size of <B><font color='red'>"+filesize+"</font></B>. This is either more than the maximum <B><font color='red'>"+size_threshold+"</font></B> size threshold OR more than the maximum <B><font color='red'>"+count_threshold+"</font></B> file count recommended download size from a web browser. You may download the below script that can be run through your command prompt/terminal instead with minimal interferance.");
 	$('#sizeModal').modal({backdrop: 'static', keyboard: false});
 	$('#sizeModal').modal('show');
 }
 
 function resume_download(){
 	localStorage.setItem('download_size',0);
-	window.location.replace("/labcas-ui/download.html?version=3.0.0");
+	window.location.replace("/labcas-ui/download.html?version=5.5.2");
 }
 
 function download_file(val, type){
@@ -626,7 +639,7 @@ function download_file_wrapper(val, name, size){
     localStorage.setItem('download_size',download_size);
     localStorage.setItem('download_count',download_count);
 
-    window.location.replace("/labcas-ui/download.html?version=3.0.0");
+    window.location.replace("/labcas-ui/download.html?version=5.5.2");
 }
 
 function download_files(formname){
@@ -669,14 +682,15 @@ function download_files(formname){
     localStorage.setItem('download_size',download_size);
     localStorage.setItem('download_count',download_count);
 
-    window.location.replace("/labcas-ui/download.html?version=3.0.0");
+    window.location.replace("/labcas-ui/download.html?version=5.5.2");
 }
 function download_metadatas(formname){
 
     var queryParams = "";
     if (formname == "hierarchy_query" && localStorage.getItem("hierarchy_file_query")){
         var file_query = localStorage.getItem("hierarchy_file_query");
-        queryParams = `q=*${file_query}&wt=json&sort=FileName%20asc&rows=2147483647`;
+        var collection_id = localStorage.getItem("last_collection_id");
+        queryParams = `q=CollectionId:${collection_id}${file_query}&wt=json&sort=FileName%20asc&rows=2147483647`;
     }else{
         var download_list = {};
         var download_size = 0;
@@ -772,9 +786,26 @@ function export_metadata_as_csv(data) {
 }
 
 function download_dataset(dataset){
+    var url = "";
+    if (dataset == "hierarchy_query" && localStorage.getItem("hierarchy_file_query")){
+        var file_query = localStorage.getItem("hierarchy_file_query");
+        url = localStorage.getItem('environment')+"/data-access-api/files/select?q=CollectionId:"+localStorage.getItem("last_collection_id")+file_query+"&wt=json&rows=2147483647";
+    }else{
     dataset = dataset.replace("%5C%20","%20").replace("%20","%5C%20").replace(" ","%5C%20");
-	console.log(localStorage.getItem('environment')+"/data-access-api/files/select?q=(DatasetId:"+dataset+")%20OR%20(DatasetId:"+dataset+"/*)&wt=json&indent=true&rows=100000&fl=id,FileSize");
-	query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=(DatasetId:"+dataset+")%20OR%20(DatasetId:"+dataset+"/*)&wt=json&indent=true&rows=100000&fl=id,FileSize,FileName,eventID", generate_dataset_file_list);
+	    url = localStorage.getItem('environment')+"/data-access-api/files/select?q=(DatasetId:"+dataset+")%20OR%20(DatasetId:"+dataset+"/*)&wt=json&indent=true&rows=100000&fl=id,FileSize,FileName,eventID";
+    }
+    console.log(url);
+    query_labcas_api(url, generate_dataset_file_list);
+}
+
+function download_collection_wizard(){
+    var url = "";
+    var get_var = get_url_vars();
+    collection = get_var["collection_id"].replace("%5C%20","%20").replace("%20","%5C%20").replace(" ","%5C%20");
+    url = localStorage.getItem('environment')+"/data-access-api/files/select?q=CollectionId:"+collection+"&wt=json&rows=10000000";
+    console.log(url);
+    query_labcas_api(url, generate_dataset_file_list);
+
 }
 
 function extract_item_from_list(array, what){
@@ -864,23 +895,24 @@ function generate_dataset_file_list(data){
 	localStorage.setItem('download_list',LZString.compress(JSON.stringify(download_list)));
 	localStorage.setItem('download_size',download_size);
 	localStorage.setItem('download_count',download_count);
-	window.location.replace("/labcas-ui/download.html?version=3.0.0");
+
+
+	window.location.replace("/labcas-ui/download.html?version=5.5.2");
 }
 function download_script(filename, ostype) {
   var element = document.createElement('a');
   var download_script_user = $('#download_script_user').val();
   var download_script_pass = $('#download_script_pass').val();
 
-  var download_script_key = "Basic "+btoa(unescape(encodeURIComponent(download_script_user+':'+download_script_pass)));
-    //if (isMacintosh() || isLinux()){
+  var download_script_key = btoa(unescape(encodeURIComponent(download_script_user+':'+download_script_pass)));
   if (ostype == "linux" || ostype == "mac"){
-	  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(localStorage.getItem("download_script").replace('----labcaspass----',download_script_key)));
-	  element.setAttribute('download', "labcas_download.sh");
-  //}else if(isWindows()){
-  }else if(ostype == "windows"){
-	  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(localStorage.getItem("download_script_win").replace('----labcaspass----',download_script_key)));
-	  element.setAttribute('download', "labcas_download.ps1");
-  }
+          element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(localStorage.getItem("download_script").replace('-----labcasenv-----',localStorage.getItem('environment')).replace('-----labcasus-----',download_script_user).replace('-----labcaspw-----',download_script_pass)));
+          element.setAttribute('download', "labcas_download.sh");
+    }else if(ostype == "windows"){
+              element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(localStorage.getItem("download_script_win").replace('-----labcasenv-----',localStorage.getItem('environment')).replace('-----labcasus-----',download_script_user).replace('-----labcaspw-----',download_script_pass)));
+              element.setAttribute('download', "labcas_download.ps1");
+    }
+
 
   element.style.display = 'none';
   document.body.appendChild(element);
@@ -889,11 +921,11 @@ function download_script(filename, ostype) {
 
   document.body.removeChild(element);
   if (isMacintosh() || isLinux()){
-	  $('#fileHTML').html("Now that you've downloaded the download script, you will also need to click below to download the script file list. Make sure the downloaded file list is stored in the same folder as the earlier download script. <B><font color=red>Please also ensure no previous file named files.csv are in the same folder directory.</font></B> In order to run the download, open a terminal, navigate to the folder of your download script and files.csv, then type:<br>sh labcas_download.sh");
-  }else if(isWindows()){
-	  $('#fileHTML').html("Now that you've downloaded the download script, you will also need to click below to download the script file list. Make sure the downloaded file list is stored in the same folder as the earlier download script. <B><font color=red>Please also ensure no previous file named files.csv are in the same folder directory.</font></B> In order to run the download, right click on the data_download.ps1 file and select \"Run with PowerShell\".");
+              $('#fileHTML').html("<font color=blue>Step 3: Now that you've downloaded the download script, you will also need to <B>click below <font color=green>\"Download Script File List\"</font></B> to download the script file list.</font><font color=red><ul><li>Make sure the downloaded file list is stored in the same folder as the earlier download script.</li><li>Please also ensure no previous file named files.csv are in the same folder directory.</li></ul></font> <font color=blue>Step 4: In order to run the download, open a terminal, navigate to the folder of your download script and files.csv, then type:<br><B>sh labcas_download.sh</B></font>");
+    }else if(isWindows()){
+              $('#fileHTML').html("<font color=blue>Step 3: Now that you've downloaded the download script, you will also need to <B>click below <font color=green>\"Download Script File List\"</font></B> to download the script file list.</font><font color=red><ul><li>Make sure the downloaded file list is stored in the same folder as the earlier download script.</li><li>Please also ensure no previous file named files.csv are in the same folder directory.</li></ul></font> In order to run the download, <B>right click on the data_download.ps1 file and select \"Run with PowerShell\".</B>");
+    }
 
-  }
     $('#sizeModal').modal('hide');
 	$('#fileModal').modal({backdrop: 'static', keyboard: false});
     $('#fileModal').modal('show');
@@ -910,12 +942,11 @@ var download_list = JSON.parse(LZString.decompress(localStorage.getItem("downloa
 // Data
 Object.keys(download_list).forEach(function(key) {
   var value = download_list[key];
-  var row = environment + "/data-access-api/download?id=" + key + "," + value + "\n";
+  //var row = environment + "/data-access-api/download?id=" + key + "," + value + "\n";
+  var row = key + "\n";
   csvContent += row;
 });
 
-  //element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(localStorage.getItem('environment')+"/data-access-api/download?id="+Object.keys(JSON.parse(LZString.decompress(localStorage.getItem("download_list")))).join("\n"+localStorage.getItem('environment')+"/data-access-api/download?id=")));
-	//
   element.setAttribute('href', encodeURI(csvContent));
   element.setAttribute('download', "files.csv");
 
@@ -995,7 +1026,10 @@ function get_labcas_dataset_stats(data){
 }
 
 function get_labcas_file_stats(data){
-	$("#file_total_count").html(data.response.numFound);
+    if (data.stats.stats_fields.FileSize.sum > 3100000000){
+        $('#download_collection_template').hide();
+    }
+    $("#file_total_size").html(humanFileSize(data.stats.stats_fields.FileSize.sum,true));
 }
 function get_labcas_dataset_file_stats(data){
 	$("#collection_files_len").html(data.response.numFound);
@@ -1189,14 +1223,14 @@ function generate_image_file_list(data){
     }
     if (image_type == "dicoms"){
 	if (check_dicom_multi()){
-	       window.location.replace("/labcas-ui/i/mindex.html?version=3.0.0");
+	       window.location.replace("/labcas-ui/i/mindex.html?version=5.5.2");
 	}else{
-	       window.location.replace("/labcas-ui/i/index.html?version=3.0.0");
+	       window.location.replace("/labcas-ui/i/index.html?version=5.5.2");
 	}
     }else if(image_type = "omeros"){
-	window.location.replace("/labcas-ui/o/index.html?version=3.0.0");
+	window.location.replace("/labcas-ui/o/index.html?version=5.5.2");
     }else{
-       window.location.replace("/labcas-ui/z/index.html?version=3.0.0");
+       window.location.replace("/labcas-ui/z/index.html?version=5.5.2");
     }
 }
 
@@ -1269,14 +1303,14 @@ function submitSingleImageData(image, loc, name, version){
             console.log(image_type);
             if (image_type == "dicoms"){
 		if (check_dicom_multi()){
-		       window.location.replace("/labcas-ui/i/mindex.html?version=3.0.0");
+		       window.location.replace("/labcas-ui/i/mindex.html?version=5.5.2");
 		}else{
-		       window.location.replace("/labcas-ui/i/index.html?version=3.0.0");
+		       window.location.replace("/labcas-ui/i/index.html?version=5.5.2");
 		}
             }else if(image_type == "omeros"){
-		window.location.replace("/labcas-ui/o/index.html?version=3.0.0");
+		window.location.replace("/labcas-ui/o/index.html?version=5.5.2");
             }else{
-                window.location.replace("/labcas-ui/z/index.html?version=3.0.0");
+                window.location.replace("/labcas-ui/z/index.html?version=5.5.2");
             }
 
 }
@@ -1387,26 +1421,26 @@ function submitImageData(formname, dicom){
     if (formname.startsWith("cart_")){
         if (formname == "cart_dicom"){
 		if (check_dicom_multi()){
-		       window.location.replace("/labcas-ui/i/mindex.html?version=3.0.0");
+		       window.location.replace("/labcas-ui/i/mindex.html?version=5.5.2");
 		}else{
-		       window.location.replace("/labcas-ui/i/index.html?version=3.0.0");
+		       window.location.replace("/labcas-ui/i/index.html?version=5.5.2");
 		}
         }else if(formname == "cart_omero"){
-		window.location.replace("/labcas-ui/o/index.html?version=3.0.0");
+		window.location.replace("/labcas-ui/o/index.html?version=5.5.2");
 	}else{
-            window.location.replace("/labcas-ui/z/index.html?version=3.0.0");
+            window.location.replace("/labcas-ui/z/index.html?version=5.5.2");
         }
     }else{
        if (image_type == "dicoms"){
 		if (check_dicom_multi()){
-		       window.location.replace("/labcas-ui/i/mindex.html?version=3.0.0");
+		       window.location.replace("/labcas-ui/i/mindex.html?version=5.5.2");
 		}else{
-		       window.location.replace("/labcas-ui/i/index.html?version=3.0.0");
+		       window.location.replace("/labcas-ui/i/index.html?version=5.5.2");
 		}
        }else if(image_type == "omeros"){
-	  window.location.replace("/labcas-ui/o/index.html?version=3.0.0");
+	  window.location.replace("/labcas-ui/o/index.html?version=5.5.2");
        }else{
-          window.location.replace("/labcas-ui/z/index.html?version=3.0.0");
+          window.location.replace("/labcas-ui/z/index.html?version=5.5.2");
        }
     }
 }
@@ -1821,7 +1855,7 @@ function save_labcas_acceptance(type){
             Cookies.set('accepted', true);
             console.log("now2");
             console.log(Cookies.get('accepted'));
-            window.location.replace("/labcas-ui/download.html?version=3.0.0");
+            window.location.replace("/labcas-ui/download.html?version=5.5.2");
         },
         error: function(xhr, status, error) {
             console.log(xhr.responseText);

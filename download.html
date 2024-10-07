@@ -32,14 +32,14 @@
 <script src="/labcas-ui/assets/js/core/popper.min.js" type="text/javascript"></script>
 <script src="/labcas-ui/assets/js/core/bootstrap.min.js" type="text/javascript"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js" integrity="sha512-qtX0GLM3qX8rxJN1gyDfcnMFFrKvixfoEOwbBib9VafR5vbChV5LeE5wSI/x+IlCkTY5ZFddFDCCfaVJJNnuKQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="/labcas-ui/assets/js/labcas/utils.js?version=3.0.3"></script>
+<script src="/labcas-ui/assets/js/labcas/utils.js?version=5.5.2"></script>
 <script>
 	
 	$().ready(function() {
 		//if (Cookies.get('user') == "Sign in" && !Cookies.get('accepted')){
 		if (Cookies.get('user') == "Sign in"){
 			//alert("In order to download, please login or create an account in order to accept DATA USE AGREEMENT.");
-            $('#deniedModal').modal('show');
+		    $('#deniedModal').modal('show');
             //check_labcas_acceptance("anonymous");
             //window.location.replace("/");
 		}else{
@@ -73,7 +73,7 @@
             }else{
                 console.log("Going back...");
 		    if (Cookies.get("login_redirect")){
-			    window.location.replace(Cookies.get("login_redirect"));
+			window.location.replace(Cookies.get("login_redirect"));
 		    }else{
 			login_redirect();
 	            }
@@ -170,17 +170,21 @@
                                 </div>
                                 <div class="modal-body">
                                     <div id="sizeHTML"></div>
-                                    <br>
-                                    Enter your labcas username/password to generate a download script:
-                                    <br>
-                                    <div class="col-sm-2">Username:</div><div class="col-sm-6"><input type="text" id="download_script_user" class=".form-control"></input></div>
-                                    <div class="col-sm-2">Password:</div><div class="col-sm-6"><input type="password" id="download_script_pass" class=".form-control"></input></div>
-                                    <br>
-                                    <div class="col-sm-12"><font size=2>Download Script for your operating system:</font>
+                                    <br><font color="blue">Step 1. Enter your labcas username/password to generate a download script:</font><br>
+            <div class="col-sm-2">Username:</div>
+            <div class="col-sm-6">
+              <input type="text" id="download_script_user" class=".form-control"></input>
+            </div>
+            <div class="col-sm-2">Password:</div>
+            <div class="col-sm-6">
+              <input type="password" id="download_script_pass" class=".form-control"></input>
+            </div>
+            <br>
+              <font size=3 color="blue">Step 2: Download Script for your operating system:</font>
+
                                     <a href="#" onclick="download_script('data_download.ps1','windows');"><img alt='Please wait while this is loading' src="/labcas-ui/assets/img/microsoft.png?2" width=33 height=33/></a>
                                     <a href="#" onclick="download_script('data_download.ps1','mac');"><img alt='Please wait while this is loading' src="/labcas-ui/assets/img/apple.jpg" width=32 height=32/></a>
                                     <a href="#" onclick="download_script('data_download.ps1','linux');"><img alt='Please wait while this is loading' src="/labcas-ui/assets/img/linux.png?2" width=33 height=33/><a/>
-                                    </div>
                                 </div>
                                 <div class="modal-footer">
                                     <!--<button type="button" class="btn btn-link btn-simple" onclick="resume_download();" data-dismiss="modal">Continue</button>-->
@@ -201,7 +205,7 @@
                                     <div id="fileHTML"></div>
                                 </div>
                                 <div class="modal-footer">
-                                    <center><button type="button" id="download_list_link" class="btn btn-link btn-simple" onclick='download_script_files("data_download.ps1",);' >Download Script File List</button></center>
+                                   <center><button type="button" id="download_list_link" class="btn btn-link btn-simple" onclick='download_script_files("data_download.ps1",);' ><font color="green"><B>Download Script File List</B></font></button></center>
                                     <center><button type="button" class="btn btn-link btn-simple" onclick="window.location.replace(Cookies.get('login_redirect'));" data-dismiss="modal">Done</button></center>
                                 </div>
                             </div>

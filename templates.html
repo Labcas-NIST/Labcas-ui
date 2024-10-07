@@ -13,7 +13,7 @@
 	    <!-- CSS Files -->
 	    <link href="/labcas-ui/assets/css/bootstrap.min.css" rel="stylesheet" />
 	    <link href="/labcas-ui/assets/css/light-bootstrap-dashboard.css?v=2.0.1" rel="stylesheet" />
-	    <link href="/labcas-ui/assets/css/labcas/custom.css?version=3.0.2" rel="stylesheet" />
+	    <link href="/labcas-ui/assets/css/labcas/custom.css?version=5.5.2" rel="stylesheet" />
 	    <script async type="text/javascript" id="_fed_an_ua_tag" src="https://dap.digitalgov.gov/Universal-Federated-Analytics-Min.js?agency=NASA&subagency=JPL-edrn-labcas"></script>
 	</head>
 </div>
@@ -25,7 +25,7 @@
 		<img alt='Please wait while this is loading' src="/labcas-ui/assets/img/jpl_logo.png" width=300 heigth=100>
                 <div class="container-fluid">
 		    <div class="collapse navbar-collapse justify-content-start">
-			    <span id="loggedout_msg"><font color=green>Public data only - Please <a href="/labcas-ui/index.html">login</a> to see additional data.</font></span>
+			    <span id="loggedout_msg"><font color=green>Public data only - Please <a href="/labcas-ui/index.html">login</a> to view or download files.</font></span>
 		    </div>
                     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-bar burger-lines"></span>
@@ -54,7 +54,7 @@
 					<a href="#" onclick="download_files('cart')"><li class="dropdown-item text-info" >Download File(s) <span id="cart_size"></span></li></a>
                     <a href="#" onclick="submitImageData('cart_image');"><li class="dropdown-item text-success" >View Images (<span id="image_size">0</span>)</li></a>
                     <a href="#" onclick="submitImageData('cart_dicom');"><li class="dropdown-item text-success" >View Dicoms (<span id="dicom_size">0</span>)</li></a>
-                    <a href="#" onclick="submitImageData('cart_omero');"><li class="dropdown-item text-success" >View Omero (<span id="omero_size">0</span>)</li></a>
+		    <!--<a href="#" onclick="submitImageData('cart_omero');"><li class="dropdown-item text-success" >View Omero (<span id="omero_size">0</span>)</li></a>-->
 					<a href="#" onclick="clear_cart('search-file-table'); clear_cart('files-table');"><li class="dropdown-item text-warning" >Clear Cart</li></a>
                                 </ul>
                         </li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -65,7 +65,7 @@
                                         <B><span data-step=2 data-intro='Click to open Login/Logout menu item' id="username_placeholder_second"></span></B>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                                    <a href="/labcas-ui/index.html" class="dropdown-item text-danger" id="login_logout">
+                                    <a onclick="Cookies.set('user', 'Sign in'); Cookies.set('userletters', ''); Cookies.remove('token'); Cookies.remove('JasonWebToken'); Cookies.set('logout_alert','On');" href="/labcas-ui/index.html" class="dropdown-item text-danger" id="login_logout">
                                         <i class="nc-icon nc-button-power"></i> <span id="username_placeholder_third">Log out</span>
                                     </a>
                                 </div>
@@ -186,8 +186,8 @@
 		</div>
 		<div class="col-4">
 		    <div class="numbers">
-			<p class="card-category">Total</p>
-			<h4 class="card-title" id='file_total_count'></h4>
+			<p class="card-category">Size</p>
+			<h4 class="card-title" id='file_total_size'></h4>
 		    </div>
 		</div>
 	    </div>
@@ -195,6 +195,38 @@
     </div>
 </div>
 
+<div id="download_collection_template" style="margin-bottom: 0px; height:60px">
+    <div class="card card-stats">
+      <div class="card-body " style="padding:0; padding-right: 10px">
+        <div class="row">
+          <div class="col-3">
+            <div class="icon-big text-center icon-warning">
+              <a href="#" onclick="download_collection_wizard()">
+                <i id='download_icon' class="fa fa-download text-info"></i>
+              </a>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="numbers">
+              <p class="card-category">Collection Snapshot</p>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="icon-big text-center icon-warning">
+              <a href="#" onclick="generate_hierarchy_query(&quot;&quot;); download_metadatas(&quot;hierarchy_query&quot;);">
+                <i id='download_meta_icon' class="nc-icon nc-bullet-list-67 icon-bold"></i>
+              </a>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="numbers">
+              <p class="card-category">Metadata Snapshot</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
 
 <div id="favorite_stat_template">
     <div class="card card-stats" style="margin-bottom: 0px; height:60px">

@@ -97,7 +97,8 @@ function fill_collection_metadata(data){
     $('#metadata_div').html(dataset_metadata_html);
 }
 function fill_collection_details_data(data){
-    //console.log("Fill collection details2");
+    console.log("Fill collection details");
+    console.log(data);
         if(!data.response.docs[0]){
                 if(!Cookies.get("token") || Cookies.get("token") == "None"){
             localStorage.setItem("logout_alert","On");
@@ -107,29 +108,29 @@ function fill_collection_details_data(data){
         }
     var collectioname = data.response.docs[0].CollectionName;
     //console.log("WHAT5");
-    if (collectioname.length > 35){
-        collectioname = collectioname.slice(0,35);
+    if (collectioname.length > 100){
+        collectioname = collectioname.slice(0,65);
     }
     $("#collection_name").html(collectioname);
     var obj = data.response.docs[0];
-    var institutions = obj.Institution? obj.Institution.join(", ") : "";
-    var pis = obj.LeadPI? obj.LeadPI.join(", ") : "";
-    var orgs = obj.Organ? obj.Organ.join(", ") : "";
+    var institutions = obj.Institution? obj.Institution.join(", ") : obj.InstitutionName ? obj.InstitutionName : "";
+    var pis = obj.LeadPI? obj.LeadPI.join(", ") : obj.LeadPIName ? obj.LeadPIName.join(", ") : "";
+    var orgs = obj.Organ? obj.Organ.join(", ") : obj.OrganName ? obj.OrganName.join(", ") : "";
     var proids = [];
     if (localStorage.getItem('environment').includes("edrn-labcas")){
         var obj_arr = generate_edrn_links(obj);
+	console.log("OKOKOKOKOKOKOKOK");
+	console.log(obj_arr);
         protocols = obj_arr[3].join(",");
-        orgs = obj_arr[2].join(", ");
-                var proids = obj.ProtocolId? obj.ProtocolId : [];
-                $.each(proids, function(ind, pid) {
-                        get_protocol_info("2", pid, "shortname", populate_collection_details_protocol_shortname);
+	var proids = obj.ProtocolId? obj.ProtocolId : [];
+	$.each(proids, function(ind, pid) {
+		get_protocol_info("2", pid, "shortname", populate_collection_details_protocol_shortname);
         });
     }else if(localStorage.getItem('environment').includes("mcl-labcas") || localStorage.getItem('environment').includes("labcas-dev")){
         var obj_arr = generate_mcl_links(obj);
         protocols = obj_arr[3].join(",");
         institutions = obj_arr[0].join(", ");
         pis = obj_arr[1].join(", ");
-        orgs = obj_arr[2].join(", ");
     }
 
     obj.Institution = institutions;
@@ -137,6 +138,7 @@ function fill_collection_details_data(data){
     obj.Organ = orgs;
     obj.ProtocolName = protocols;
     obj.Consortium = obj.Consortium? "<a href='"+localStorage.getItem('environment_url')+"'>"+obj.Consortium+"</a>" : "";
+    obj.ReferenceURL = obj.ReferenceURL && obj.ReferenceURL != "" ? "<a href='"+obj.ReferenceURL+"'>"+obj.ReferenceURL+"</a>" : "";
 
     var extended_headers = [];
     if (localStorage.getItem('collection_header_extend_'+obj.id)){
@@ -159,25 +161,41 @@ function fill_collection_details_data(data){
         if (typeof  value === "undefined") {
             value = "";
         }
+        if (head == "PubMedID" && $.isArray(value)){
+                var new_value = [];
+                $.each(value, function(ix, pub) {
+                        console.log("test");
+                        if (pub.includes("http")){
+                                pub = "<a target='_blank' href='"+pub+"'>"+pub+"</a>";
+                        }else if (pub && /^[0-9]+$/.test(pub)){
+                                pub = "<a target='_blank' href='http://www.ncbi.nlm.nih.gov/pubmed/"+pub+"'>"+pub+"</a>";
+
+                        }
+                        new_value.push(pub);
+                });
+                value = new_value;
+        }
+
         if ($.isArray(value)){
             value = value.join(",");
         }
         if (typeof value == "string"){
             value = value.replace(/% /g,'_labcasPercent_');
-            value = decodeURIComponent(value);
+            value = safeDecodeURIComponent(value);
             value = value.replace(/\+/g,"&nbsp;").replace(/_labcasPercent_/g,'% ');
         }
         if (collection_id_append.includes(head)){
-            value += " ("+obj[head+"Id"]+")";
+	    var id_val = obj[head+"Id"] ? obj[head+"Id"] : obj[head+"ID"];
+            value += " ("+id_val+")";
         }else if (collapse_headers.includes(head)){
-            if (value && value.length > 20){
-                value = "<nobr>"+value.substring(0, 20) + "<a data-toggle='collapse' id='#"+head+"Less' href='#"+head+"Collapse' role='button' aria-expanded='false' onclick='document.getElementById(\"#"+head+"Less\").style.display = \"none\";'>... More</a></nobr><div class='collapse' id='"+head+"Collapse'>" + value.substring(20) + " <a data-toggle='collapse' href='#"+head+"Collapse' role='button' aria-expanded='false' onclick='document.getElementById(\"#"+head+"Less\").style.display = \"block\";'>Less</a></div>";
+            if (value && value.length > 60){
+                value = "<nobr>"+value.substring(0, 60) + "<a data-toggle='collapse' id='#"+head+"Less' href='#"+head+"Collapse' role='button' aria-expanded='false' onclick='document.getElementById(\"#"+head+"Less\").style.display = \"none\";'>... More</a></nobr><div class='collapse' id='"+head+"Collapse'>" + value.substring(60) + " <a data-toggle='collapse' href='#"+head+"Collapse' role='button' aria-expanded='false' onclick='document.getElementById(\"#"+head+"Less\").style.display = \"block\";'>Less</a></div>";
             }
         }
-	if (head == "PubMedID" && value.includes("http")){
-		value = "<a target='_blank' href='"+value+"'>"+value+"</a>";
+//	if (head == "PubMedID" && value.includes("http")){
+//		value = "<a target='_blank' href='"+value+"'>"+value+"</a>";
 		//console.log(value);
-	}
+//	}
         $("#collectiondetails-table tbody").append(
             "<tr>"+
                 "<td class='text-right' valign='top' style='padding: 2px 8px;' width='30%'>"+head.replace( /([a-z])([A-Z])/g, "$1 $2" )+":</td>"+
@@ -203,8 +221,8 @@ function fill_collection_details_data(data){
             value = value.replace(/\+/g,"&nbsp;").replace(/_labcasPercent_/g,'% ');
         }
         if (collapse_headers.includes(key)){
-            if (value.length > 20){
-                value = "<nobr>"+value.substring(0, 20) + "<a data-toggle='collapse' id='#"+key+"Less' href='#"+key+"Collapse' role='button' aria-expanded='false' onclick='document.getElementById(\"#"+key+"Less\").style.display = \"none\";'>... More</a></nobr><div class='collapse' id='"+key+"Collapse'>" + value.substring(20) + " <a data-toggle='collapse' href='#"+key+"Collapse' role='button' aria-expanded='false' onclick='document.getElementById(\"#"+key+"Less\").style.display = \"block\";'>Less</a></div>";
+            if (value.length > 60){
+                value = "<nobr>"+value.substring(0, 60) + "<a data-toggle='collapse' id='#"+key+"Less' href='#"+key+"Collapse' role='button' aria-expanded='false' onclick='document.getElementById(\"#"+key+"Less\").style.display = \"none\";'>... More</a></nobr><div class='collapse' id='"+key+"Collapse'>" + value.substring(60) + " <a data-toggle='collapse' href='#"+key+"Collapse' role='button' aria-expanded='false' onclick='document.getElementById(\"#"+key+"Less\").style.display = \"block\";'>Less</a></div>";
             }
         }
           $("#collectiondetails-table tbody").append(
@@ -232,18 +250,18 @@ function fill_collections_public_data(data){
             }
 
 
-            var institutions = obj.Institution? obj.Institution.join(",") : "";
-            var pis = obj.LeadPI? obj.LeadPI.join(",") : "";
-            var orgs = obj.Organ? obj.Organ.join(",") : "";
+            var institutions = obj.Institution? obj.Institution.join(",") : obj.InstitutionName ? obj.InstitutionName : "";
+            var pis = obj.LeadPI? obj.LeadPI.join(",") : obj.LeadPIName ? obj.LeadPIName.join(", ") : "";
+            var orgs = obj.ergan? obj.Organ.join(",") : obj.OrganName ? obj.OrganName.join(", ") : "";
 
             if (localStorage.getItem('environment').includes("edrn-labcas")){
                 var obj_arr = generate_edrn_links(obj);
                 protocols = obj_arr[3].join(",");
-                orgs = obj_arr[2].join(",");
+                //orgs = obj_arr[2].join(",");
             }else if(localStorage.getItem('environment').includes("mcl-labcas") || localStorage.getItem('environment').includes("labcas-dev")){
                 var obj_arr = generate_mcl_links(obj);
                 protocols = obj_arr[3].join(",");
-                orgs = obj_arr[2].join(",");
+                //orgs = obj_arr[2].join(",");
             }
               $("#collection-table tbody").append(
                 "<tr>"+
@@ -307,19 +325,19 @@ function fill_collections_data(data){
         }
 
 
-        var institutions = obj.Institution? obj.Institution.join(", ") : "";
-        var pis = obj.LeadPI? obj.LeadPI.join(", ") : "";
-        var orgs = obj.Organ? obj.Organ.join(", ") : "";
+        var institutions = obj.Institution? obj.Institution.join(", ") : obj.InstitutionName ? obj.InstitutionName : "";
+        var pis = obj.LeadPI? obj.LeadPI.join(", ") : obj.LeadPIName ? obj.LeadPIName.join(", ") : "";
+        var orgs = obj.Organ? obj.Organ.join(", ") : obj.OrganName ? obj.OrganName.join(", ") : "";
         var protocols = obj.ProtocolName? obj.ProtocolName.join(", ") : "";
 
         if (localStorage.getItem('environment').includes("edrn-labcas")){
             var obj_arr = generate_edrn_links(obj);
             protocols = obj_arr[3].join(", ");
-            orgs = obj_arr[2].join(", ");
+            //orgs = obj_arr[2].join(", ");
         }else if(localStorage.getItem('environment').includes("mcl-labcas") || localStorage.getItem('environment').includes("labcas-dev")){
             var obj_arr = generate_mcl_links(obj);
             protocols = obj_arr[3].join(", ");
-            orgs = obj_arr[2].join(", ");
+            //orgs = obj_arr[2].join(", ");
         }
         if (!protocols){
             protocols = "";
@@ -490,9 +508,9 @@ function fill_datasets_data(data){
 
 }
 function setup_labcas_data(datatype, query, dataset_query){
-    console.log(localStorage.getItem('environment')+"/data-access-api/collections/select?q="+query+"&wt=json&indent=true&rows=10000&sort=id%20asc");
+    console.log(localStorage.getItem('environment')+"/data-access-api/collections/select?q="+query+"&wt=json&indent=true&rows=10000&sort=CollectionName%20asc");
     $.ajax({
-        url: localStorage.getItem('environment')+"/data-access-api/collections/select?q="+query+"&wt=json&indent=true&rows=10000&sort=id%20asc",
+        url: localStorage.getItem('environment')+"/data-access-api/collections/select?q="+query+"&wt=json&indent=true&rows=10000&sort=CollectionName%20asc",
         beforeSend: function(xhr) {
             if(Cookies.get('token') && Cookies.get('token') != "None"){
                 xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token'));
@@ -542,8 +560,8 @@ function setup_labcas_data(datatype, query, dataset_query){
          }
     });
     if (datatype == "collectiondatasets"){
-	    console.log("datasets_url");
-    console.log(localStorage.getItem('environment')+"/data-access-api/datasets/select?q="+dataset_query+"&wt=json&indent=true&rows=20000");
+	console.log("datasets_url");
+	console.log(localStorage.getItem('environment')+"/data-access-api/datasets/select?q="+dataset_query+"&wt=json&indent=true&rows=20000");
         $.ajax({
         url: localStorage.getItem('environment')+"/data-access-api/datasets/select?q="+dataset_query+"&wt=json&indent=true&rows=20000",
         beforeSend: function(xhr) {
@@ -567,4 +585,18 @@ function setup_labcas_data(datatype, query, dataset_query){
     });
     }
 }
-
+function safeDecodeURIComponent(str) {
+  try {
+    return decodeURIComponent(str);
+  } catch (e) {
+    if (e instanceof URIError) {
+      // If URIError is caught, it may be due to malformed URI components.
+      // Attempt to clean the string or handle it according to your application's needs.
+      // console.error('Malformed URI component:', str);
+      // Optionally, return a safe fallback value
+      return str;
+    } else {
+      throw e; // Re-throw unexpected errors
+    }
+  }
+}
