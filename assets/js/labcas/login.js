@@ -46,17 +46,15 @@ function performLogin() {
     Cookies.set("userletters", username.substr(0, 2).toUpperCase());
     Cookies.set("userpass", btoa(username + ":" + password));
 
-        $.ajax({
+     $.ajax({
             url: localStorage.getItem('environment')+"labcas-backend-data-access-api/auth",
-                type: 'POST',
-                contentType: 'application/x-www-form-urlencoded',
-                data: {
-                    username: $('#username').val(),
-                    password: $('#password').val()
-                },
-                success: handleAuthenticationSuccess,
-		error: handleAuthenticationError
-        });
+            beforeSend: function(xhr) {
+               xhr.setRequestHeader("Authorization", "Basic " + btoa($('#username').val() + ":" + $('#password').val()));
+            },
+            type: 'GET',
+            success: handleAuthenticationSuccess,
+            error: handleAuthenticationError
+     });
 }
 
 function handleAuthenticationSuccess(data) {
