@@ -29,9 +29,9 @@ $().ready(function() {
             if(!localStorage.getItem('environment')){
                 localStorage.setItem("environment","https://"+location.hostname.split(/\//)[0]);
             }
-            query_labcas_api(localStorage.getItem('environment')+"/data-access-api/collections/select?q=*&facet=true&facet.limit=-1&wt=json&rows=0",get_labcas_collection_stats);
-            query_labcas_api(localStorage.getItem('environment')+"/data-access-api/datasets/select?q=*&facet=true&facet.limit=-1&wt=json&rows=0",get_labcas_dataset_stats);
-            query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=*&facet=true&facet.limit=-1&wt=json&rows=0",get_labcas_file_stats);
+            query_labcas_api(localStorage.getItem('environment')+"/labcas-backend-data-access-api/collections/select?q=*&facet=true&facet.limit=-1&wt=json&rows=0",get_labcas_collection_stats);
+            query_labcas_api(localStorage.getItem('environment')+"/labcas-backend-data-access-api/datasets/select?q=*&facet=true&facet.limit=-1&wt=json&rows=0",get_labcas_dataset_stats);
+            query_labcas_api(localStorage.getItem('environment')+"/labcas-backend-data-access-api/files/select?q=*&facet=true&facet.limit=-1&wt=json&rows=0",get_labcas_file_stats);
         }
       },1000);
 
@@ -102,7 +102,7 @@ function initCookies(){
 
 function writeUserData(udata, noreload){
 	$.ajax({
-        url: localStorage.getItem('environment')+"/data-access-api/userdata/create",
+        url: localStorage.getItem('environment')+"/labcas-backend-data-access-api/userdata/create",
         beforeSend: function(xhr) { 
             xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
         },
@@ -123,7 +123,7 @@ function writeUserData(udata, noreload){
 }
 function printUserData(){
     $.ajax({
-        url: localStorage.getItem('environment')+"/data-access-api/userdata/read?id="+Cookies.get('user'),
+        url: localStorage.getItem('environment')+"/labcas-backend-data-access-api/userdata/read?id="+Cookies.get('user'),
         beforeSend: function(xhr) {
             xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token'));
         },
@@ -136,7 +136,7 @@ function printUserData(){
     
 function getUserData(){
 	$.ajax({
-		url: localStorage.getItem('environment')+"/data-access-api/userdata/read?id="+Cookies.get('user'),
+		url: localStorage.getItem('environment')+"/labcas-backend-data-access-api/userdata/read?id="+Cookies.get('user'),
 		beforeSend: function(xhr) { 
 			xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
 		},
@@ -193,7 +193,7 @@ function query_labcas_api(url, customfunction, generalflag){
 function save_downloaded(labcas_id, labcas_type, ele){
     var user_id = Cookies.get('user');
     $.ajax({
-        url: localStorage.getItem('environment')+"/data-access-api/userdata/read?id="+user_id,
+        url: localStorage.getItem('environment')+"/labcas-backend-data-access-api/userdata/read?id="+user_id,
         beforeSend: function(xhr) {
             xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token'));
         },
@@ -253,7 +253,7 @@ function save_downloaded(labcas_id, labcas_type, ele){
 function save_favorite(labcas_id, labcas_type, ele){
 	var user_id = Cookies.get('user');
 	$.ajax({
-        url: localStorage.getItem('environment')+"/data-access-api/userdata/read?id="+user_id,
+        url: localStorage.getItem('environment')+"/labcas-backend-data-access-api/userdata/read?id="+user_id,
         beforeSend: function(xhr) { 
             xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token')); 
         },
@@ -385,7 +385,7 @@ function paginate(divid, cpage){
         console.log(cpage);
         setup_labcas_hierarchy_data(localStorage.getItem("hierarchy_file_query"), [], cpage-1)
 	}else if (divid == 'collectionfiles' ){
-        query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=DatasetId:"+get_var["collection_id"]+"/"+get_var["collection_id"]+"&wt=json&indent=true&start="+(cpage-1)*10, fill_collection_level_files);
+        query_labcas_api(localStorage.getItem('environment')+"/labcas-backend-data-access-api/files/select?q=DatasetId:"+get_var["collection_id"]+"/"+get_var["collection_id"]+"&wt=json&indent=true&start="+(cpage-1)*10, fill_collection_level_files);
     }
 }
 function escapeRegExp(string) {
@@ -490,7 +490,7 @@ function resume_download(){
 }
 
 function download_file(val, type){
-	var dataurl = localStorage.getItem('environment')+"/data-access-api/download?id="+val.replace("\\&","%5C%26").replace("+","%5C%2B");
+	var dataurl = localStorage.getItem('environment')+"/labcas-backend-data-access-api/download?id="+val.replace("\\&","%5C%26").replace("+","%5C%2B");
 	console.log(dataurl);
 	if (UrlExists(dataurl)){
 		if (type == "multiple"){
@@ -506,7 +506,7 @@ function download_file(val, type){
 	
 }
 function download_metadata_file(val, type){
-    var dataurl = localStorage.getItem('environment')+"/data-access-api/files/select?q=id:"+val.replace("\\&","%5C%26").replace("+","%5C%2B")+"&wt=json&sort=FileName%20asc&indent=true"
+    var dataurl = localStorage.getItem('environment')+"/labcas-backend-data-access-api/files/select?q=id:"+val.replace("\\&","%5C%26").replace("+","%5C%2B")+"&wt=json&sort=FileName%20asc&indent=true"
     console.log(dataurl);
     if (UrlExists(dataurl)){
         query_labcas_api(dataurl, export_metadata_as_csv);
@@ -630,7 +630,7 @@ function download_metadatas(formname){
         queryParams = `q=${encodeURIComponent(query)}&wt=json&sort=FileName%20asc`;
     }
     console.log("metadata url");
-    console.log(`https://labcas.jpl.nasa.gov/nist/data-access-api/files/select?${queryParams}`);
+    console.log(`https://labcas.jpl.nasa.gov/nist/labcas-backend-data-access-api/files/select?${queryParams}`);
 
     // Prepare headers for the Fetch API request
     const headers = new Headers();
@@ -639,7 +639,7 @@ function download_metadatas(formname){
       headers.append('Authorization', 'Bearer ' + Cookies.get('token'));
     }
 
-    fetch(`https://labcas.jpl.nasa.gov/nist/data-access-api/files/select?${queryParams}`, {
+    fetch(`https://labcas.jpl.nasa.gov/nist/labcas-backend-data-access-api/files/select?${queryParams}`, {
       method: 'GET',
       headers: headers,
     })
@@ -657,10 +657,10 @@ function download_dataset(dataset){
     var url = "";
     if (dataset == "hierarchy_query" && localStorage.getItem("hierarchy_file_query")){
         var file_query = localStorage.getItem("hierarchy_file_query");
-        url = localStorage.getItem('environment')+"/data-access-api/files/select?q=*"+file_query+"&wt=json&rows=2147483647";
+        url = localStorage.getItem('environment')+"/labcas-backend-data-access-api/files/select?q=*"+file_query+"&wt=json&rows=2147483647";
     }else{
         dataset = dataset.replace("%5C%20","%20").replace("%20","%5C%20").replace(" ","%5C%20");
-        url = localStorage.getItem('environment')+"/data-access-api/files/select?q=DatasetId:"+dataset+"&wt=json&rows=10000";
+        url = localStorage.getItem('environment')+"/labcas-backend-data-access-api/files/select?q=DatasetId:"+dataset+"&wt=json&rows=10000";
     }
     console.log(url);
     query_labcas_api(url, generate_dataset_file_list);
@@ -779,7 +779,7 @@ function download_script(filename, ostype) {
 }
 function download_script_files() {
 	var element = document.createElement('a');
-	element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(localStorage.getItem('environment')+"/data-access-api/download?id="+Object.keys(JSON.parse(localStorage.getItem("download_list"))).join("\n"+localStorage.getItem('environment')+"/data-access-api/download?id=")));
+	element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(localStorage.getItem('environment')+"/labcas-backend-data-access-api/download?id="+Object.keys(JSON.parse(localStorage.getItem("download_list"))).join("\n"+localStorage.getItem('environment')+"/labcas-backend-data-access-api/download?id=")));
 	element.setAttribute('download', "files.csv");
 
 	element.style.display = 'none';
@@ -1023,7 +1023,7 @@ function generate_image_file_list(data){
             }else if(acepted_omero_check(value.id)){
 		image_type = "omeros";
 	    }
-            image_list.push(localStorage.getItem('environment')+"/data-access-api/download?id="+html_safe_id);
+            image_list.push(localStorage.getItem('environment')+"/labcas-backend-data-access-api/download?id="+html_safe_id);
 
             //histomics
             var filename = value.FileName ? value.FileName : "";
@@ -1071,10 +1071,10 @@ function submitImage(formname, dataset){
             url = "";
             if (dataset == "hierarchy_query" && localStorage.getItem("hierarchy_file_query")){
                 var file_query = localStorage.getItem("hierarchy_file_query");
-                url = localStorage.getItem('environment')+"/data-access-api/files/select?q=*"+file_query+"&wt=json&indent=true&rows=2147483647";
+                url = localStorage.getItem('environment')+"/labcas-backend-data-access-api/files/select?q=*"+file_query+"&wt=json&indent=true&rows=2147483647";
             }else{
                 dataset = dataset.replace("%5C%20","%20").replace("%20","%5C%20").replace(" ","%5C%20");
-                url = localStorage.getItem('environment')+"/data-access-api/files/select?q=DatasetId:"+dataset+"&wt=json&indent=true&rows=10000";
+                url = localStorage.getItem('environment')+"/labcas-backend-data-access-api/files/select?q=DatasetId:"+dataset+"&wt=json&indent=true&rows=10000";
             }
             console.log(url);
             query_labcas_api(url, generate_image_file_list);
@@ -1091,7 +1091,7 @@ function submitSingleImageData(image, loc, name, version){
         var image_list = [];
         var histomics_list = [];
 	var image_type = "image";
-        image_list.push(localStorage.getItem('environment')+"/data-access-api/download?id="+image);
+        image_list.push(localStorage.getItem('environment')+"/labcas-backend-data-access-api/download?id="+image);
         histomics_list.push([loc,name,version, image]);
         if (name.endsWith(".dcm") || name.endsWith(".dicom") || name.endsWith(".DCM")){
             image_type = "dicoms";
@@ -1157,7 +1157,7 @@ function submitImageData(formname, dicom){
    
  
     if (dicom){
-        dicoms_list.push(localStorage.getItem('environment')+"/data-access-api/download?id="+$(dicom).val());
+        dicoms_list.push(localStorage.getItem('environment')+"/labcas-backend-data-access-api/download?id="+$(dicom).val());
         if ($(dicom).val().endsWith(".dcm") || $(dicom).val().endsWith(".dicom") || $(dicom).val().endsWith(".DCM")){
             image_type = "dicoms";
         }
@@ -1169,11 +1169,11 @@ function submitImageData(formname, dicom){
                 //check_image_filtered_dataset should be key, not val[1] since key is the full labcasId and contains dataset name within, while val[1] is just the filename itself.
                 if (check_image_filtered_dataset(key)){
                     if (accepted_image_check(val[1]) && (val[1].endsWith(".dcm") || val[1].endsWith(".dicom") || val[1].endsWith(".DCM"))){
-                        dicoms_list.push(localStorage.getItem('environment')+"/data-access-api/download?id="+key);
+                        dicoms_list.push(localStorage.getItem('environment')+"/labcas-backend-data-access-api/download?id="+key);
                     }else if(acepted_omero_check(key)){
                         omero_list.push([val[0],val[1],val[2], key]);
                     }else if(accepted_image_check(key)){
-                        image_list.push(localStorage.getItem('environment')+"/data-access-api/download?id="+key);
+                        image_list.push(localStorage.getItem('environment')+"/labcas-backend-data-access-api/download?id="+key);
                         histomics_list.push([val[0],val[1],val[2], key]);
                     }
                 }
@@ -1187,12 +1187,12 @@ function submitImageData(formname, dicom){
                     $(this).data("name").endsWith(".dcm") || $(this).data("name").endsWith(".dicom") || $(this).data("name").endsWith(".DCM") 
                     ){
                      image_type = "dicoms";
-                     dicoms_list.push(localStorage.getItem('environment')+"/data-access-api/download?id="+$(this).val());
+                     dicoms_list.push(localStorage.getItem('environment')+"/labcas-backend-data-access-api/download?id="+$(this).val());
                 }else if(acepted_omero_check($(this).val())){
                      image_type = "omeros";
                      omero_list.push([$(this).data("loc"),$(this).data("name"),$(this).data("version"), $(this).val()]);
                 }else if(accepted_image_check($(this).val())){
-                     image_list.push(localStorage.getItem('environment')+"/data-access-api/download?id="+$(this).val());
+                     image_list.push(localStorage.getItem('environment')+"/labcas-backend-data-access-api/download?id="+$(this).val());
                      histomics_list.push([$(this).data("loc"),$(this).data("name"),$(this).data("version"), $(this).val()]);
                 }
             }

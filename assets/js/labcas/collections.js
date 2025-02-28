@@ -475,9 +475,9 @@ function fill_datasets_data(data){
     $('#loading_metadata').hide(500);
 }
 function setup_labcas_data(datatype, query, dataset_query){
-    console.log(localStorage.getItem('environment')+"/data-access-api/collections/select?q="+query+"&wt=json&indent=true&rows=10000&sort=id%20asc");
+    console.log(localStorage.getItem('environment')+"/labcas-backend-data-access-api/collections/select?q="+query+"&wt=json&indent=true&rows=10000&sort=id%20asc");
     $.ajax({
-        url: localStorage.getItem('environment')+"/data-access-api/collections/select?q="+query+"&wt=json&indent=true&rows=10000&sort=id%20asc",
+        url: localStorage.getItem('environment')+"/labcas-backend-data-access-api/collections/select?q="+query+"&wt=json&indent=true&rows=10000&sort=id%20asc",
         beforeSend: function(xhr) {
             if(Cookies.get('token') && Cookies.get('token') != "None"){
                 xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token'));
@@ -497,7 +497,7 @@ function setup_labcas_data(datatype, query, dataset_query){
             }else if (datatype == "collectiondatasets"){
                 fill_collection_details_data(data);
                 $.ajax({
-                    url: localStorage.getItem('environment')+"/data-access-api/files/select?q="+dataset_query+"&wt=json&sort=FileName%20asc&indent=true",
+                    url: localStorage.getItem('environment')+"/labcas-backend-data-access-api/files/select?q="+dataset_query+"&wt=json&sort=FileName%20asc&indent=true",
                     beforeSend: function(xhr) {
                         if(Cookies.get('token') && Cookies.get('token') != "None"){
                             xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token'));
@@ -536,7 +536,7 @@ function setup_labcas_data(datatype, query, dataset_query){
      }
     });
     if (datatype == "collectiondatasets"){
-	var url = localStorage.getItem('environment')+"/data-access-api/datasets/select?q="+dataset_query+"&wt=json&indent=true&rows=20000";
+	var url = localStorage.getItem('environment')+"/labcas-backend-data-access-api/datasets/select?q="+dataset_query+"&wt=json&indent=true&rows=20000";
         console.log(url);
         $.ajax({
 	    url: url,
