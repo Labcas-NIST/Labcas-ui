@@ -26,7 +26,6 @@ document.getElementById('jsonFileInput').addEventListener('change', function(eve
         console.log(flattenedData);
         //check instrument type
         if (flattenedData.length > 0 && Object.keys(flattenedData[0]).includes("Instrument")){
-                console.log("HEREHERE");
             if (flattenedData[0]["Instrument"].includes("CytoFLEX")){
                 validateDataAgainstSchema(flattenedData, microbialFlourescenceFCValidationSchema, file.name);
             }else if(flattenedData[0]["Instrument"].includes("Manual")){

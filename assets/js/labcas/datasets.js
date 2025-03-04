@@ -47,6 +47,8 @@ function fill_files_data(data) {
 
         tableheaders.forEach(item => {
             const tableitem = value[item] || "";
+		console.log("tableitem");
+		console.log(item);
             tablevals += `<td class='text-left'>${tableitem}</td>`;
         });
         tablevals += `<td class='text-left'>${thumb}</td><td class='text-left'>${filesize}</td>`;
@@ -121,7 +123,7 @@ function fill_datasets_children(data) {
 
 function populate_dataset_children(query) {
     const formattedQuery = query.replace(/id:/, 'DatasetParentId') + "%5C%2A";
-    const apiUrl = `${localStorage.getItem('environment')}/data-access-api/datasets/select?q=${formattedQuery}&wt=json&indent=true&rows=20000&sort=id asc`;
+    const apiUrl = `${localStorage.getItem('environment')}/labcas-backend-data-access-api/datasets/select?q=${formattedQuery}&wt=json&indent=true&rows=20000&sort=id asc`;
 
     $.ajax({
         url: apiUrl,
@@ -207,7 +209,7 @@ function decodeValue(value) {
 
 function setup_labcas_dataset_data(datatype, query, file_query, cpage) {
     if (cpage === 0) {
-        const datasetUrl = `${localStorage.getItem('environment')}/data-access-api/datasets/select?q=${query}&wt=json&indent=true`;
+        const datasetUrl = `${localStorage.getItem('environment')}/labcas-backend-data-access-api/datasets/select?q=${query}&wt=json&indent=true`;
         $.ajax({
             url: datasetUrl,
             xhrFields: { withCredentials: true },
@@ -226,7 +228,7 @@ function setup_labcas_dataset_data(datatype, query, file_query, cpage) {
         });
     }
 
-    const filesUrl = `${localStorage.getItem('environment')}/data-access-api/files/select?q=${file_query}&wt=json&indent=true&sort=FileName asc&start=${cpage * 10}`;
+    const filesUrl = `${localStorage.getItem('environment')}/labcas-backend-data-access-api/files/select?q=${file_query}&wt=json&indent=true&sort=FileName asc&start=${cpage * 10}`;
     $.ajax({
         url: filesUrl,
         xhrFields: { withCredentials: true },

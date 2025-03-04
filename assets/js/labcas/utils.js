@@ -29,9 +29,9 @@ $().ready(function() {
             if(!localStorage.getItem('environment')){
                 localStorage.setItem("environment","https://"+location.hostname.split(/\//)[0]);
             }
-            query_labcas_api(localStorage.getItem('environment')+"/labcas-backend-data-access-api/collections/select?q=*&facet=true&facet.limit=-1&wt=json&rows=0",get_labcas_collection_stats);
-            query_labcas_api(localStorage.getItem('environment')+"/labcas-backend-data-access-api/datasets/select?q=*&facet=true&facet.limit=-1&wt=json&rows=0",get_labcas_dataset_stats);
-            query_labcas_api(localStorage.getItem('environment')+"/labcas-backend-data-access-api/files/select?q=*&facet=true&facet.limit=-1&wt=json&rows=0",get_labcas_file_stats);
+            query_labcas_api(localStorage.getItem('environment')+"labcas-backend-data-access-api/collections/select?q=*&facet=true&facet.limit=-1&wt=json&rows=0",get_labcas_collection_stats);
+            query_labcas_api(localStorage.getItem('environment')+"labcas-backend-data-access-api/datasets/select?q=*&facet=true&facet.limit=-1&wt=json&rows=0",get_labcas_dataset_stats);
+            query_labcas_api(localStorage.getItem('environment')+"labcas-backend-data-access-api/files/select?q=*&facet=true&facet.limit=-1&wt=json&rows=0",get_labcas_file_stats);
         }
       },1000);
 

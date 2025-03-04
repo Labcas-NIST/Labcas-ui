@@ -185,6 +185,7 @@
   <script src="/labcas-ui/assets/js/labcas/search.js?version=3.0.0"></script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-X0YH110WES"></script> <script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-X0YH110WES'); </script>
   <script type="text/javascript">
+    const file_id = localStorage.getItem("file_id") || get_url_vars()["file_id"];
     document.onreadystatechange = function() {
 		updatePageVisibility();
 	};
@@ -233,12 +234,11 @@
 	}
 	
 	function setLoginRedirection() {
-		const file_id = localStorage.getItem("file_id") || get_url_vars()["file_id"];
 		Cookies.set("login_redirect", `/labcas-ui/f/index.html?file_id=${file_id}`);
 	}
 	
 	function setUpFileData() {
-		const file_id = localStorage.getItem("file_id");
+		localStorage.setItem("file_id",file_id);
 		const encodedFileId = encodeURIComponent(file_id).replace(/&/g, "%26").replace(/\+/g, "%2B").replace(/#/g, "%23");
 		setup_labcas_file_data("file", `id:"${encodedFileId}"`, `id:${file_id}*`);
 		updateBreadcrumb(file_id);
@@ -250,7 +250,7 @@
 		let is_collection_file = false;
 	
 		data_split.forEach((part, index) => {
-			if (index === 0 || !is_collection_file) {
+			if (index === 0 ) {
 				const link = index === data_split.length - 1 ? `${part.replace(/_/g, " ")}` : `/labcas-ui/c/index.html?collection_id=${part}`;
 				breadcrumb += `<li class="breadcrumb-item active" aria-current="page"><a href="${link}">${part.replace(/_/g, " ")}</a></li>`;
 			}
@@ -263,7 +263,6 @@
 	}
 	
 	function configureLinksBasedOnFileType() {
-		const file_id = localStorage.getItem("file_id");
 		if (file_id.toLowerCase().endsWith(".pdf")) {
 			$("#pdf_viewer_link").show().attr("onclick", `pdf_viewer('${file_id}')`);
 		} else if ([".png", ".jpg", ".jpeg"].some(ext => file_id.toLowerCase().endsWith(ext))) {

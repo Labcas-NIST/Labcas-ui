@@ -6,13 +6,13 @@
   <body class="sidebar-mini">
     <div class="wrapper">
       <div id='sidebar_placeholder'></div>
-      <div id='load'>
+      <!--<div id='load'>
         <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
         <center>
           <img class="collapse show" height="200px" width="200px" src="/labcas-ui/assets/img/loading.gif?2">
         </center>
-      </div>
-      <div id="main-panel" class="main-panel" style="visibility:hidden">
+      </div>-->
+      <div id="main-panel" class="main-panel">
         <!-- Navbar -->
         <div id="nav_template"></div>
         <!-- End Navbar -->
@@ -123,8 +123,8 @@
                       <hr style="padding:0; padding-bottom:5px; margin: 0">
                       <input id="view_tags" type="text" value="" />
                       <div>
-                          <div class="row"><div class="col-md-8"><select id="view_tag_select" class="form-control input-sm" data-style="btn-default btn-outline" data-menu-style="dropdown-blue"><option>Default</option></select> </div> <div class="col-md-1"><input type="checkbox" id="virtual_expand_all" class="form-control" style="display: none; width:36px;height:36px"></div><div class="col-md-3" id="virtual_expand_all_label" style="line-height: 36px; display: none">Expand All?</div></div>
-                          <!--<div class="row"><div class="col-md-8"><select id="view_tag_select" class="form-control input-sm" data-style="btn-default btn-outline" data-menu-style="dropdown-blue"><option>Native Hierarchy</option><option>Default</option></select> </div> <div class="col-md-1"><input type="checkbox" id="virtual_expand_all" class="form-control" style="display: none; width:36px;height:36px"></div><div class="col-md-3" id="virtual_expand_all_label" style="line-height: 36px; display: none">Expand All?</div></div>-->
+			      <!--<div class="row"><div class="col-md-8"><select id="view_tag_select" class="form-control input-sm" data-style="btn-default btn-outline" data-menu-style="dropdown-blue"><option>Default</option></select> </div> <div class="col-md-1"><input type="checkbox" id="virtual_expand_all" class="form-control" style="display: none; width:36px;height:36px"></div><div class="col-md-3" id="virtual_expand_all_label" style="line-height: 36px; display: none">Expand All?</div></div>-->
+                          <div class="row"><div class="col-md-8"><select id="view_tag_select" class="form-control input-sm" data-style="btn-default btn-outline" data-menu-style="dropdown-blue"><option>Native Hierarchy</option><option>Default</option></select> </div> <div class="col-md-1"><input type="checkbox" id="virtual_expand_all" class="form-control" style="display: none; width:36px;height:36px"></div><div class="col-md-3" id="virtual_expand_all_label" style="line-height: 36px; display: none">Expand All?</div></div>
                         <div class="table-full-width">
                           <div id="hierarchy_">
                             <center>
@@ -222,6 +222,7 @@
 		initPage();
 		initializeTagSystem();
 		handleViewTagSelection();
+		$('#view_tag_select').trigger('change');
 		managePageUnloading();
 	});
 	
@@ -256,6 +257,8 @@
 	
 	function setInitialCollectionData() {
 		var collectionId = get_url_vars()["collection_id"];
+		localStorage.setItem("current_collection_id", get_url_vars()["collection_id"]);
+		setup_labcas_data("collectiondatasets",'id:"'+collectionId+'"', 'CollectionId:"'+collectionId+'"');
 		Cookies.set("login_redirect", `/labcas-ui/c/index.html?collection_id=${collectionId}`);
 		$("#breadcrumb_collection").text(collectionId.replace(/_/g, " "));
 	
@@ -295,7 +298,7 @@
 			stop: updateTagsOrder
 		}).disableSelection();
 	}
-	
+
 	function updateTagsOrder(event, ui) {
 		var elt = $('#view_tags');
 		elt.tagsinput('removeAll');
@@ -319,7 +322,6 @@
 					collection_hierarchy_default();
 				} else {
 					$('#view_tags').tagsinput('add', { value: selection });
-					console.log("add123");
 					generate_hierarchy_based_on_tags().catch(console.error);
 				}
 			} else {

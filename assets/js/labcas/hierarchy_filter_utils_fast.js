@@ -86,7 +86,7 @@ function collection_hierarchy_get(collection_id, obj_type) {
     const baseQuery = `CollectionId:${collection_id}`;
     const filters = localStorage.getItem("hierarchy_file_query_collection") === localStorage.getItem("last_collection_id") && !get_var["collection_id"] ? localStorage.getItem("hierarchy_file_query") : '';
 
-    const url = `${localStorage.getItem('environment')}/data-access-api/files/select?q=${baseQuery}${filters}&facet=true&facet.limit=-1&facet.mincount=1${facets}&wt=json&rows=0`;
+    const url = `${localStorage.getItem('environment')}/labcas-backend-data-access-api/files/select?q=${baseQuery}${filters}&facet=true&facet.limit=-1&facet.mincount=1${facets}&wt=json&rows=0`;
 
     console.log("Fetching data from:", url);
     $.ajax({
@@ -577,14 +577,14 @@ function fetchTotalRecordsAndSharedFields(file_query) {
         return '&stats.field=' + encodeURIComponent(field);
       }).join('');
 
-    var url1 = environment + '/data-access-api/files/select?q=*' + file_query + '&wt=json&indent=true&rows=0&stats=true' + statsFieldsParam;
+    var url1 = environment + '/labcas-backend-data-access-api/files/select?q=*' + file_query + '&wt=json&indent=true&rows=0&stats=true' + statsFieldsParam;
     
     function createSecondQueryUrl(totalRecords, sharedFields) {
       var facetFieldsParam = sharedFields.map(function(field) {
         return '&facet.field=' + encodeURIComponent(field);
       }).join('');
 
-      var url2 = environment + '/data-access-api/files/select?q=*' + file_query + '&wt=json&indent=true&rows=0&facet=true' + facetFieldsParam + '&facet.mincount=' + totalRecords + '&facet.limit=-1';
+      var url2 = environment + '/labcas-backend-data-access-api/files/select?q=*' + file_query + '&wt=json&indent=true&rows=0&facet=true' + facetFieldsParam + '&facet.mincount=' + totalRecords + '&facet.limit=-1';
       return url2;
     }
     console.log("url1");
@@ -701,7 +701,7 @@ function handleAjaxError(e) {
 function setup_labcas_hierarchy_data(file_query, extraFilters, cpage){
 
     var sortval = localStorage.getItem("virtual_dataset_file_sort") && localStorage.getItem("virtual_dataset_file_sort") != "" ? localStorage.getItem("virtual_dataset_file_sort") : "FileName";
-    var url = localStorage.getItem('environment')+'/data-access-api/files/select?q=*'+file_query+'&wt=json&indent=true&sort='+sortval+'%20asc&start='+cpage*10;
+    var url = localStorage.getItem('environment')+'/labcas-backend-data-access-api/files/select?q=*'+file_query+'&wt=json&indent=true&sort='+sortval+'%20asc&start='+cpage*10;
     if (extraFilters && extraFilters.length > 0) {
         var filterQueries = [];
 
@@ -753,24 +753,23 @@ function setup_labcas_hierarchy_data(file_query, extraFilters, cpage){
 }
 
 function generate_hierarchy_based_on_tags(){
-
+    var get_var = get_url_vars();
     return new Promise((resolve, reject) => {
     if (parentLock) {
       reject('Parent function execution in progress');
     } else {
         parentLock = true;
-            $('#view_tag_select').attr("disabled", true);
+            //$('#view_tag_select').attr("disabled", true);
             hierarchy_unique_check = {};
             var hierarchy_tags = get_hierarchy_selected_upto(1000);
 
-            console.log("itemadd3");
             var collection_id = get_var["collection_id"] ? get_var["collection_id"] : localStorage.getItem('last_collection_id');
             var filters = localStorage.getItem("hierarchy_file_query") && !get_var["collection_id"] && localStorage.getItem("hierarchy_file_query_collection") == localStorage.getItem("last_collection_id") ? localStorage.getItem("hierarchy_file_query") : "";
 
-            console.log(localStorage.getItem('environment')+"/data-access-api/files/select?q=CollectionId:"+collection_id+"%20AND%20-FolderType:%5B*%20TO%20*%5D"+filters+"&wt=json&indent=true&rows=10000&fl="+hierarchy_tags.join(","));
+            console.log(localStorage.getItem('environment')+"/labcas-backend-data-access-api/files/select?q=CollectionId:"+collection_id+"%20AND%20-FolderType:%5B*%20TO%20*%5D"+filters+"&wt=json&indent=true&rows=10000&fl="+hierarchy_tags.join(","));
             $('#hierarchy_').empty();
             
-            query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=CollectionId:"+collection_id+"%20AND%20-FolderType:%5B*%20TO%20*%5D"+filters+"&wt=json&indent=true&rows=10000&fl="+hierarchy_tags.join(","), fill_hierarchy_data_fast, false).then(() => {
+            query_labcas_api(localStorage.getItem('environment')+"/labcas-backend-data-access-api/files/select?q=CollectionId:"+collection_id+"%20AND%20-FolderType:%5B*%20TO%20*%5D"+filters+"&wt=json&indent=true&rows=10000&fl="+hierarchy_tags.join(","), fill_hierarchy_data_fast, false).then(() => {
                 // After executing the code, unlock and resolve the promise
         parentLock = false;
         resolve();

@@ -41,6 +41,7 @@ function fill_ksdb_info(type, id) {
 function fill_file_details_data(data) {
     var get_var = get_url_vars(); // Assuming get_url_vars() is defined elsewhere
     $.each(data.response.docs, function (k, obj) {
+	console.log(obj.id);
         if (obj.id !== localStorage.getItem("file_id")) {
             return;
         }
@@ -143,7 +144,7 @@ function fill_file_image_viewer_data(data){
 }
 
 function setup_labcas_file_data(datatype, query, file_query) {
-    const apiUrl = `${localStorage.getItem('environment')}/data-access-api/files/select?q=${encodeURIComponent(query)}&wt=json&sort=FileName asc&indent=true`;
+    const apiUrl = `${localStorage.getItem('environment')}/labcas-backend-data-access-api/files/select?q=${query}&wt=json&sort=FileName asc&indent=true`;
     console.log(apiUrl);
     $.ajax({
         url: apiUrl,
