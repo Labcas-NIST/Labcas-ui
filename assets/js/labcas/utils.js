@@ -1,4 +1,4 @@
-var user_data = {};
+var user_data = {"FavoriteCollections": [], "FavoriteDatasets": [], "FavoriteFiles": []};
 
 //Omero related global variables
 var omero_datasets = "";
