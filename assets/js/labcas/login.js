@@ -44,8 +44,8 @@ function performLogin() {
     if (isSsoEnabled) {
         // Instead of collecting username/password, we redirect
         // to our mock SSO login endpoint with a redirectTo param.
-        const ssoUrl = "http://localhost:3001/sso/saml/login";
-        const redirectTarget = "http://localhost/labcas-ui/m/index.html"; 
+        const ssoUrl = localStorage.getItem('sso_login_url');
+        const redirectTarget = localStorage.getItem('sso_redirect_url');
         window.location.replace(`${ssoUrl}?redirectTo=${redirectTarget}`);
 
     } else {
