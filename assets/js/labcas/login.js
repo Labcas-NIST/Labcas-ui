@@ -38,25 +38,37 @@ function setupLoginForm() {
 }
 
 function performLogin() {
-    const username = $('#username').val();
-    const password = $('#password').val();
-    const authHeader = "Basic " + btoa(username + ":" + password);
+    // Check the sso_enabled flag from localStorage
+    const isSsoEnabled = (localStorage.getItem('sso_enabled') === "true");
 
-    Cookies.set("user", username);
-    Cookies.set("userletters", username.substr(0, 2).toUpperCase());
-    Cookies.set("userpass", btoa(username + ":" + password));
+    if (isSsoEnabled) {
+        // Instead of collecting username/password, we redirect
+        // to our mock SSO login endpoint with a redirectTo param.
+        const ssoUrl = "http://localhost:3001/sso/saml/login";
+        const redirectTarget = "http://localhost/labcas-ui/m/index.html"; 
+        window.location.replace(`${ssoUrl}?redirectTo=${redirectTarget}`);
 
-    $.ajax({
-            url: localStorage.getItem('environment')+"labcas-backend-data-access-api/auth",
-                type: 'POST',
-                contentType: 'application/x-www-form-urlencoded',
-                data: {
-                    username: $('#username').val(),
-                    password: $('#password').val()
-                },
+    } else {
+        const username = $('#username').val();
+        const password = $('#password').val();
+
+        Cookies.set("user", username);
+        Cookies.set("userletters", username.substr(0, 2).toUpperCase());
+        Cookies.set("userpass", btoa(username + ":" + password));
+
+        // Original AJAX call to the labcas backend
+        $.ajax({
+            url: localStorage.getItem('environment') + "labcas-backend-data-access-api/auth",
+            type: 'POST',
+            contentType: 'application/x-www-form-urlencoded',
+            data: {
+                username: username,
+                password: password
+            },
             success: handleAuthenticationSuccess,
             error: handleAuthenticationError
-     });
+        });
+    }
 }
 
 function handleAuthenticationSuccess(data) {
