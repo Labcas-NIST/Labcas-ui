@@ -597,7 +597,7 @@ function download_metadatas(formname){
     var queryParams = "";
     if (formname == "hierarchy_query" && localStorage.getItem("hierarchy_file_query")){
         var file_query = localStorage.getItem("hierarchy_file_query");
-        queryParams = `q=*${file_query}&wt=json&sort=FileName%20asc&rows=2147483647`;
+        queryParams = `q=*${file_query}&wt=json&sort=FileName%20asc&rows=5000`;
     }else{
         var download_list = {};
         var download_size = 0;
@@ -657,10 +657,10 @@ function download_dataset(dataset){
     var url = "";
     if (dataset == "hierarchy_query" && localStorage.getItem("hierarchy_file_query")){
         var file_query = localStorage.getItem("hierarchy_file_query");
-        url = localStorage.getItem('environment')+"/labcas-backend-data-access-api/files/select?q=*"+file_query+"&wt=json&rows=2147483647";
+        url = localStorage.getItem('environment')+"/labcas-backend-data-access-api/files/select?q=*"+file_query+"&wt=json&rows=5000";
     }else{
         dataset = dataset.replace("%5C%20","%20").replace("%20","%5C%20").replace(" ","%5C%20");
-        url = localStorage.getItem('environment')+"/labcas-backend-data-access-api/files/select?q=DatasetId:"+dataset+"&wt=json&rows=10000";
+        url = localStorage.getItem('environment')+"/labcas-backend-data-access-api/files/select?q=DatasetId:"+dataset+"&wt=json&rows=5000";
     }
     console.log(url);
     query_labcas_api(url, generate_dataset_file_list);
@@ -1071,10 +1071,10 @@ function submitImage(formname, dataset){
             url = "";
             if (dataset == "hierarchy_query" && localStorage.getItem("hierarchy_file_query")){
                 var file_query = localStorage.getItem("hierarchy_file_query");
-                url = localStorage.getItem('environment')+"/labcas-backend-data-access-api/files/select?q=*"+file_query+"&wt=json&indent=true&rows=2147483647";
+                url = localStorage.getItem('environment')+"/labcas-backend-data-access-api/files/select?q=*"+file_query+"&wt=json&indent=true&rows=5000";
             }else{
                 dataset = dataset.replace("%5C%20","%20").replace("%20","%5C%20").replace(" ","%5C%20");
-                url = localStorage.getItem('environment')+"/labcas-backend-data-access-api/files/select?q=DatasetId:"+dataset+"&wt=json&indent=true&rows=10000";
+                url = localStorage.getItem('environment')+"/labcas-backend-data-access-api/files/select?q=DatasetId:"+dataset+"&wt=json&indent=true&rows=5000";
             }
             console.log(url);
             query_labcas_api(url, generate_image_file_list);

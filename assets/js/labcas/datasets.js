@@ -123,7 +123,7 @@ function fill_datasets_children(data) {
 
 function populate_dataset_children(query) {
     const formattedQuery = query.replace(/id:/, 'DatasetParentId') + "%5C%2A";
-    const apiUrl = `${localStorage.getItem('environment')}/labcas-backend-data-access-api/datasets/select?q=${formattedQuery}&wt=json&indent=true&rows=20000&sort=id asc`;
+    const apiUrl = `${localStorage.getItem('environment')}/labcas-backend-data-access-api/datasets/select?q=${formattedQuery}&wt=json&indent=true&rows=5000&sort=id asc`;
 
     $.ajax({
         url: apiUrl,
