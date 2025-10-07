@@ -1,4 +1,13 @@
 var user_data = {};
+
+//Omero related global variables
+var omero_datasets = "";
+var latest_base_url = "https://mcl-labcas.jpl.nasa.gov:8092/omero/api/v0/";
+var omeroweb_url;
+var base_urls;
+var omero_csrf_token;
+var login_flag = 0;
+
 $().ready(function() {
 	if(localStorage.getItem("userdata") && localStorage.getItem("userdata") != "None"){
 		user_data = JSON.parse(localStorage.getItem("userdata"));
@@ -14,17 +23,111 @@ $().ready(function() {
         }).on('hide.bs.collapse', function(){
         	$(this).prev(".btn").find(".fa").removeClass("fa-minus").addClass("fa-plus");
         });
+    console.log("1");
+	//Always do this, init functions
+	
+	//initiate clinical-ui-link
+	setTimeout(function(){
+        if (!(location.href.includes("/labcas-ui/index.html") || location.href.endsWith("/labcas-ui/") || location.href.endsWith("/labcas-ui") || location.href.includes("/labcas-ui/o/index.html"))){
+            if(!localStorage.getItem('environment')){
+                localStorage.setItem("environment","https://"+location.hostname.split(/\//)[0]);
+            }
+
+                var get_var = get_url_vars();
+                var dataset_id = light_sanitize(get_var["dataset_id"]);
+                var collection_id = light_sanitize(get_var["collection_id"]);
+
+            query_labcas_api(localStorage.getItem('environment')+"/data-access-api/collections/select?q=*&facet=true&facet.limit=-1&wt=json&rows=0",get_labcas_collection_stats);
+            query_labcas_api(localStorage.getItem('environment')+"/data-access-api/datasets/select?q=*&facet=true&facet.limit=-1&wt=json&rows=0",get_labcas_dataset_stats);
+            if (collection_id != 'undefined'){
+                query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=*&fq=(CollectionId:"+collection_id+")&wt=json&indent=true%20asc&rows=0&stats=true&stats.field=FileSize",get_labcas_file_stats);
+                console.log(localStorage.getItem('environment')+'/data-access-api/collections/select?q=CollectionId:"'+collection_id+'"&wt=json&indent=true&rows=0');
+                query_labcas_api(localStorage.getItem('environment')+'/data-access-api/collections/select?q=CollectionId:"'+collection_id+'"&wt=json&indent=true&rows=1',get_labcas_collection_info);
+            } else if (dataset_id != 'undefined'){
+                query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=*&fq=(DatasetId:"+dataset_id+" OR DatasetId:"+dataset_id+"\/*)&wt=json&indent=true%20asc&rows=0&stats=true&stats.field=FileSize",get_labcas_file_stats);
+                query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=*&fq=(DatasetId:"+dataset_id+" OR DatasetId:"+dataset_id+"\/*)&wt=json&indent=true%20asc&rows=0&stats=true&stats.field=FileSize",get_labcas_dataset_file_stats);
+                query_labcas_api(localStorage.getItem('environment')+'/data-access-api/datasets/select?q=DatasetId:"'+dataset_id+'"&wt=json&indent=true&rows=1',get_labcas_collection_info);
+            }else{
+                query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=*&wt=json&indent=true%20asc&rows=0&stats=true&stats.field=FileSize",get_labcas_file_stats);
+            }
+        }
+      },1000);
+
 });
+function redirect_to_login(){
+    console.log("Attempting to redirect to login...");
+    if (localStorage.getItem("allow_redirect") == "true"){
+        window.location.replace("/labcas-ui/index.html?version=7.0.0");
+    }else{
+
+    }
+}
+function login_redirect(){
+        //if (Cookies.get("login_redirect")){
+        //    window.location.replace(Cookies.get("login_redirect"));
+        //}else{
+            window.location.replace("/labcas-ui/s/index.html?search=*");
+        //}
+}
+function performLogout(){
+    var sessionID = Cookies.get('sessionID');
+    console.log("Logging out with session ID:", sessionID);
+
+    if (sessionID) {
+        // Call logout endpoint with session ID
+        $.ajax({
+            url: localStorage.getItem('environment') + "/data-access-api/logout?sessionID=" + sessionID,
+            type: 'POST',
+            success: function(data) {
+                console.log("Logout endpoint called successfully");
+            },
+            error: function(xhr, status, error) {
+                console.log("Logout endpoint error:", error);
+                // Continue with logout even if endpoint fails
+            },
+            complete: function() {
+                // Clean up cookies and redirect regardless of endpoint result
+                finishLogout();
+            }
+        });
+    } else {
+        console.log("No session ID found, proceeding with standard logout");
+        finishLogout();
+    }
+}
+function finishLogout() {
+    // Clear all authentication-related cookies
+    Cookies.set('user', 'Sign in');
+    Cookies.set('userletters', '');
+    Cookies.remove('token');
+    Cookies.remove('JasonWebToken');
+    Cookies.remove('sessionID'); // Clear the session ID
+    Cookies.set('logout_alert','On');
+
+    // Redirect to login page
+    window.location.href = "/labcas-ui/index.html";
+}
+function baseName(str)
+{
+   var base = new String(str).substring(str.lastIndexOf('/') + 1); 
+    if(base.lastIndexOf(".") != -1)       
+        base = base.substring(0, base.lastIndexOf("."));
+   return base;
+}
 function initCookies(){
 	if(!Cookies.get("token") || Cookies.get("token") == "None"){
 		$.ajax({
-			  url: '/labcas-ui/assets/conf/environment.cfg?26',
+			  url: '/labcas-ui/assets/conf/environment.cfg?version=7.0.0',
 			  dataType: 'json',
 			  async: false,
 			  success: function(json) {
 			Cookies.set("user", "Sign in");
 			$.each( json, function( key, val ) {
-				localStorage.setItem(key, val);
+				if (typeof val == "string"){
+				    localStorage.setItem(key, val);
+				}else if(typeof val == "object"){
+				    localStorage.setItem(key, JSON.stringify(val));
+				}
 			});
 	
 			user_data = {"FavoriteCollections":[],"FavoriteDatasets":[],"FavoriteFiles":[]};
@@ -55,7 +158,7 @@ function initCookies(){
 	}
 }
 
-function writeUserData(udata){
+function writeUserData(udata, noreload){
 	$.ajax({
         url: localStorage.getItem('environment')+"/data-access-api/userdata/create",
         beforeSend: function(xhr) { 
@@ -68,7 +171,9 @@ function writeUserData(udata){
         success: function (data) {
             //console.log(data);
             localStorage.setItem("userdata",  udata);
-            window.location.reload();
+	    if(!noreload){
+		    window.location.reload();
+	    }
         },
         error: function(){
              //alert("Login expired, please login...");
@@ -126,13 +231,13 @@ function query_labcas_api(url, customfunction){
                                    localStorage.setItem("logout_alert","On");
                                  alert(formatTimeOfDay($.now()) + ": Login expired, please login...");
                         }
-                        window.location.replace("/labcas-ui/index.html");
+			redirect_to_login();
                  }
         });
 
 
 }
-function save_favorite(labcas_id, labcas_type){
+function save_favorite(labcas_id, labcas_type, ele){
 	var user_id = Cookies.get('user');
 	$.ajax({
         url: localStorage.getItem('environment')+"/data-access-api/userdata/read?id="+user_id,
@@ -173,7 +278,19 @@ function save_favorite(labcas_id, labcas_type){
 			if (!user_data_tmp["FavoriteFiles"]){
 				user_data_tmp["FavoriteFiles"] = [];
 			}
-			writeUserData(JSON.stringify(user_data_tmp));
+			if ($(ele).hasClass("btn-info")){
+				$(ele).removeClass("btn-info");
+				$(ele).addClass("btn-success")
+			}else if($(ele).hasClass("btn-success")){
+                                $(ele).removeClass("btn-success")
+				$(ele).addClass("btn-info");
+			}else if($(ele).css("color") == "rgb(0, 0, 255)"){
+				$(ele).css("color","#87CB16");
+			}else if($(ele).css("color") == "rgb(135, 203, 22)"){
+				$(ele).css("color","#0000FF")
+
+			}
+			writeUserData(JSON.stringify(user_data_tmp), true);
 		},
         error: function(){
              //alert("Login expired, please login...");
@@ -200,14 +317,19 @@ function generate_mcl_links(obj){
 	var protocols = [];
 	var pis = [];
 	var orgs = [];
+	console.log("HERE");
+	console.log(obj);
 	if (obj.Institution){
 		for (var i = 0; i < obj.Institution.length; i++) {
 			o = $.trim(obj.Institution[i]);
 			if (o != ""){
-				inst_url = o.replace(/\./g,"").replace(/\(/g,"").replace(/\)/g,"").replace(/ - /g," ").toLowerCase().replace(/ /g,"-");
+				inst_url = o.replace(/,/g,"").replace(/\./g,"").replace(/\(/g,"").replace(/\)/g,"").replace(/ - /g," ").toLowerCase().replace(/ /g,"-");
 			}	
 			
 			leadpi = $.trim(obj.LeadPI[i]).toLowerCase().split(" ");
+			if (i > obj.LeadPI.length-1){
+				obj.LeadPI[i] = obj.LeadPI[i-1];
+			}
 			if (obj.LeadPI[i].includes("+")){
 				leadpi = $.trim(obj.LeadPI[i]).toLowerCase().split("+");
 			}
@@ -223,7 +345,8 @@ function generate_mcl_links(obj){
                                 inst_url = o.replace(/\./g,"-").replace(/\(/g,"-").replace(/\)/g,"-").replace(/ - /g,"-").replace(/:/g,"-").replace(/,/g,"-").replace(/\//g,"-").toLowerCase().replace(/ /g,"-");
      				while (inst_url.includes("--") || inst_url.startsWith("-") || inst_url.endsWith("-")){
 					inst_url = inst_url.replace(/--/g,"-");
-					inst_url = inst_url.trim("-");
+					inst_url = inst_url.replace(/^-/,'');
+					inst_url = inst_url.replace(/-$/,'');
 				}
                         }
                         protocols.push("<a href='"+localStorage.getItem('protocol_url')+inst_url+"'>"+o+"</a>");
@@ -246,12 +369,20 @@ function generate_edrn_links(obj){
 	var protocols = [];
 	var pis = [];
 	var orgs = [];
-	if (obj.Institution){
-		for (var i = 0; i < obj.Institution.length; i++) {
-			o = $.trim(obj.Institution[i]);
-			if (o != "" && obj.InstitutionId && obj.InstitutionId[i] && $.trim(obj.InstitutionId[i]) != ""){
+
+	var input_inst = obj.InstitutionId ? obj.InstitutionId : obj.InstitutionID;
+	var input_instn = obj.Institution ? obj.Institution : obj.InstitutionName;
+	var input_pi = obj.LeadPIId ? obj.LeadPIId : obj.LeadPIID;
+	var input_pin = obj.LeadPI ? obj.LeadPI : obj.LeadPIName;
+	var input_org = obj.OrganId ? obj.OrganId : obj.OrganID;
+	var input_orgn = obj.Organ ? obj.Organ : obj.OrganName;
+
+	if (input_instn){
+		for (var i = 0; i < input_instn.length; i++) {
+			o = $.trim(input_instn[i]);
+			if (o != "" && input_inst && input_inst[i] && $.trim(input_inst[i]) != ""){
 				inst_split = o.replace(".","").toLowerCase().split(" ");
-				inst_url = $.trim(obj.InstitutionId[i]);
+				inst_url = $.trim(input_inst[i]);
 				for (var c = 0; c < inst_split.length; c++) {
 					if (!inst_split[c]){
 						continue;
@@ -263,48 +394,26 @@ function generate_edrn_links(obj){
 					inst_url += "-"+$.trim(inst_split[c]);
 				}
 				
-				leadpi = $.trim(obj.LeadPI[i]).toLowerCase().split(" ");
-				if (obj.LeadPI[i] && obj.LeadPI[i].includes("+")){
-					leadpi = $.trim(obj.LeadPI[i]).toLowerCase().split("+");
+				leadpi = $.trim(input_pin[i]).toLowerCase().split(" ");
+				if (input_pin[i] && input_pin[i].includes("+")){
+					leadpi = $.trim(input_pin[i]).toLowerCase().split("+");
 				}
-				pis.push("<a href='"+localStorage.getItem('institution_url')+inst_url+"/"+leadpi[1]+"-"+leadpi[0]+"'>"+obj.LeadPI[i]+"</a>");
+				pis.push("<a href='"+localStorage.getItem('institution_url')+inst_url+"/"+leadpi[1]+"-"+leadpi[0]+"'>"+input_pin[i]+"</a>");
 				institutions.push("<a href='"+localStorage.getItem('institution_url')+inst_url+"'>"+o+"</a>");
 			
 			}
 		}
 	}
-	if (obj.ProtocolName){
+	if (obj.ProtocolName && $.trim(obj.ProtocolName) != "Unknown"){
+		console.log(obj.ProtocolName);
 		for (var i = 0; i < obj.ProtocolName.length; i++) {
-			o = $.trim(obj.ProtocolName[i]);
-			//console.log((inst_url.length+$.trim(inst_split[c]).length+1));
-			if (o != "" && o != "Unknown"){
-				inst_url_clean = o.replace(/\./g,"-").replace(/'/g,"-").replace(/&/,"-").replace(/;/,"-").replace(/#/,"-").replace(/\(/g,"-").replace(/\)/g,"-").replace(/ - /g,"-").replace(/:/g,"-").replace(/,/g,"-").replace(/\//g,"-").toLowerCase().replace(/ /g,"-");
-
-				inst_split = inst_url_clean.toLowerCase().split("-");
-
-				inst_url = $.trim(obj.ProtocolId[i]);
-				if (o == "No Associated Protocol"){
-					inst_url = o;
-					protocols.push(o);
-				}else{
-					for (var c = 0; c < inst_split.length; c++) {
-						if (!inst_split[c]){
-							continue;
-						}
-						if ((inst_url.length+$.trim(inst_split[c]).length+1) > 50){
-							break;
-						}
-						inst_url += "-"+$.trim(inst_split[c]);
-					}
-					protocols.push("<a href='"+localStorage.getItem('protocol_url')+inst_url+"'>"+o+"</a>");
-				}
-			}
+			protocols.push("<a href='"+localStorage.getItem('edrn_protocol_prefix')+obj.ProtocolId[i]+"'>"+obj.ProtocolName+"</a>");
 		}
 	}
 	
-	if (obj.Organ){
-		for (var i = 0; i < obj.Organ.length; i++) {
-			o = $.trim(obj.Organ[i]);
+	if (input_orgn){
+		for (var i = 0; i < input_orgn.length; i++) {
+			o = $.trim(input_orgn[i]);
 			if (o != ""){
 				orgs.push("<a href='"+localStorage.getItem('organ_url')+o+"'>"+o+"</a>");
 			}
@@ -313,11 +422,17 @@ function generate_edrn_links(obj){
 	return [institutions, pis, orgs, protocols];
 }
 
+function light_sanitize(id){
+    return String(id).replace(/&/g, '')
+         .replace(/</g, '')
+         .replace(/>/g, '')
+         .replace(/"/g, '');
+}
 
 function get_url_vars(){
     var $_GET = {};
-
-    document.location.search.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function () {
+    var url_vars = document.location.search.replace("\\&","%5C%26").replace("+","%5C%2B");
+    url_vars.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function () {
         function decode(s) {
             return decodeURIComponent(s.split("+").join(" "));
         }
@@ -327,6 +442,8 @@ function get_url_vars(){
 }
 
 function load_pagination(divid, size, cpage){
+    console.log("DIVID");
+    console.log(divid);
 	$('#'+divid+"_pagination_top").empty();
 	$('#'+divid+"_pagination_bottom").empty();
 	var lowerbound = 1;
@@ -363,14 +480,24 @@ function load_pagination(divid, size, cpage){
 
 function paginate(divid, cpage){
 	var get_var = get_url_vars();
+    var dataset_id = light_sanitize(get_var["dataset_id"]);
+    var collection_id = light_sanitize(get_var["collection_id"]);
 	if (divid == 'files'){
-		setup_labcas_dataset_data("datasetfiles",'id:"'+get_var["dataset_id"]+'"', 'DatasetId:"'+get_var["dataset_id"]+'"', cpage-1); 
+		setup_labcas_dataset_data("datasetfiles",'id:"'+dataset_id+'"', 'DatasetId:"'+dataset_id+'"', cpage-1); 
 	}else if (divid == 'collections_search' || divid == 'datasets_search' || divid == 'files_search'){
 		setup_labcas_search(get_var["search"], divid, cpage-1);
-	}
+	}else if (divid == 'hierarchy_files'){
+		setup_labcas_hierarchy_data(localStorage.getItem("hierarchy_file_query"), cpage-1)
+	}else if (divid == 'collectionfiles' ){
+                console.log("HERE");
+                query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=DatasetId:"+collection_id+"/"+collection_id+"&wt=json&indent=true&start="+(cpage-1)*10, fill_collection_level_files);
+        }
 }
 function escapeRegExp(string) {
-      return string.replace(/[\.\*\?\^\$\{\}\(\)\|\[\]\\~&!": ]/g, '\\$&'); // $& means the whole matched string
+      return string.replace(/[\*\?\^\$\{\}\(\)\|\[\]\\~&!":]/g, '\\$&'); // $& means the whole matched string
+}
+function replaceRegExp(string, replace) {
+      return string.replace(/[\*\?\^\$\{\}\(\)\|\[\]\\~&!;\.\/ ":]/g, replace); // $& means the whole matched string
 }
 
 function formatTimeOfDay(millisSinceEpoch) {
@@ -422,7 +549,7 @@ function checkWindow(win){
 
 		if( isChrome ){
 			if ( isMacintosh() ){
-				$('#alertHTML').html("Download blocked. To fix this for Chrome:<br>The path required is \"Chrome\" → Preferences → Privacy and security → <br>Site Settings → Content, Pop-ups and redirects → Allow, Add:<br>"+window.location.hostname);
+				$('#alertHTML').html("Download blocked. To fix this for Chrome:<br>The path required is \"Chrome\" → Settings → Privacy and security → <br>Site Settings → Content, Pop-ups and redirects → Allow, Add:<br>"+window.location.hostname);
 			}
 			if ( isWindows() ){
 				$('#alertHTML').html("Download blocked. To fix this for Chrome:<br>The path required is (⋮) → Settings → Privacy and security → <br>Site Settings → Content, Pop-ups and redirects → Allow, Add:<br>"+window.location.hostname);
@@ -451,19 +578,74 @@ function checkWindow(win){
 	return "worked";
 }
 
-function checkSize(filecount, filesize, threshold){
-	$('#sizeHTML').html("There are <B><font color='red'>"+filecount+"</font></B> files with total size of <B><font color='red'>"+filesize+"</font></B>. This is more than the <B><font color='red'>"+threshold+"</font></B> recommended download size from a web browser. If you'd like to proceed, the browser will initiate a series of downloads, please keep your browser and internet connection open for the duration of the download. Alternatively, you may download the below script that can be run through your command prompt/terminal instead with minimal interferance.");
+function usage_agreement(){
+	/*var agree_form = "<div class='col-md-12'  style='text-align:center'><h2>Data Download Terms</h2><div>";
+	agree_form += "<div class='col-md-12' style='text-align:left'><p>For investigators wishing to download files from Labcas, please fill out the form below, and will contact you by email and accept the data sharing/contribution agreement.  If a contributor is interested in contributing data, please send an email to <a href='mailto:Heather.Kincaid@jpl.nasa.gov'>Heather.Kincaid@jpl.nasa.gov</a> and we will provide ingest mechanisms. Questions can be sent to the same address.</p></div>";
+
+	agree_form += `<div class='col-md-12' style="text-align:left"><form id="registerFormValidation" action="" method="" novalidate="novalidate">
+                                <div class="header">Register Form</div>
+                                <div class="content">
+
+                                    <div class="form-group">
+                                        <label class="control-label">Email Address <star>*</star></label>
+                                        <input class="form-control" name="email" type="text" required="true" email="true" autocomplete="off" aria-required="true">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="control-label">Institution <star>*</star></label>
+                                        <input class="form-control" name="institution" id="institution" type="text" required="true" aria-required="true">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="control-label">Your role <star>*</star></label>
+                                        <input class="form-control" name="role" id="role" type="text" required="true" aria-required="true">
+                                    </div>
+
+                                </div>
+
+                                <div class="footer">
+                                    <div class="form-group pull-left">
+                                        <label class="checkbox">
+											<input id="checkbox41" type="checkbox">
+											<label for="checkbox41">
+												I agree with above terms of data sharing agreement.*
+											</label>
+                                        </label>
+                                    <br><div class="category"><star>*</star> Required fields</div>
+                                    </div>
+                                    <button type="submit" class="btn btn-info btn-fill pull-right">Submit</button>
+
+                                    <div class="clearfix"></div>
+                                </div>
+                            </form></div>`;
+
+	$('#alertHTML').html(agree_form);
+	$('#icon_type').html("<i class='nc-icon nc-cloud-download-93'></i>");
+	$('#errorModal').modal({backdrop: 'static', keyboard: false});
+	$('#errorModal').modal('show');*/
+	$('#acceptHTML').html(localStorage.getItem("accept_msg"));
+	$('#acceptModal').modal('show');
+}
+
+function checkSize(filecount, filesize, size_threshold, count_threshold){
+	$('#sizeHTML').html("There are <B><font color='red'>"+filecount+"</font></B> files with total size of <B><font color='red'>"+filesize+"</font></B>. This is either more than the maximum <B><font color='red'>"+size_threshold+"</font></B> size threshold OR more than the maximum <B><font color='red'>"+count_threshold+"</font></B> file count recommended download size from a web browser. You may download the below script that can be run through your command prompt/terminal instead with minimal interferance.");
 	$('#sizeModal').modal({backdrop: 'static', keyboard: false});
 	$('#sizeModal').modal('show');
 }
-
+/*
 function resume_download(){
-	localStorage.setItem('download_size',0);
-	window.location.replace("/labcas-ui/download.html");
+   var ds = parseInt(localStorage.getItem('download_size')) || 0;
+   var threshold = parseInt(localStorage.getItem("DOWNLOAD_THRESHOLD")) || 104857600;
+   if (ds > threshold) {
+       promptForEmail();
+       return;
+   } else {
+       window.location.replace("/labcas-ui/download.html?version=7.0.0");
+   }
 }
-
+*/
 function download_file(val, type){
-	var dataurl = localStorage.getItem('environment')+"/data-access-api/download?id="+val;
+	var dataurl = localStorage.getItem('environment')+"/data-access-api/download?id="+val.replace("\\&","%5C%26").replace("+","%5C%2B");
 	console.log(dataurl);
 	if (UrlExists(dataurl)){
 		if (type == "multiple"){
@@ -478,53 +660,372 @@ function download_file(val, type){
 	}
 	
 }
-function download_files(formname){
-    var download_list = [];
-    var download_size = 0;
-    $('#' + formname + ' input[type="checkbox"]').each(function() {
-        if ($(this).is(":checked")) {
-            download_list.push($(this).val());
-	    download_size += parseInt(this.getAttribute("data-valuesize"));
-        }
-    });
-    var get_var = get_url_vars();
-    if (get_var["dataset_id"] && get_var["dataset_id"] != "undefined"){
-	    Cookies.set("login_redirect", "/labcas-ui/d/index.html?dataset_id="+get_var["dataset_id"])
-    }else if (get_var["search"]){
-	    Cookies.set("login_redirect", "/labcas-ui/s/index.html?search="+get_var["search"])
+function download_metadata_file(val, type){
+    var dataurl = localStorage.getItem('environment')+"/data-access-api/files/select?q=id:"+val.replace("\\&","%5C%26").replace("+","%5C%2B")+"&wt=json&sort=FileName%20asc&indent=true"
+    console.log(dataurl);
+    if (UrlExists(dataurl)){
+        query_labcas_api(dataurl, export_metadata_as_csv);
+    }else{
+        alert("Error! The following file not available for download:\n"+decodeURI(val).replace(/\\/g,'')+'\n\nPlease reach out to ic-portal@jpl.nasa.gov.');
     }
-    localStorage.setItem('download_list',JSON.stringify(download_list));
+
+}
+
+function download_file_wrapper(val, name, size){
+	var download_list = {};
+	var dataurl = localStorage.getItem('environment')+"/data-access-api/download?id="+val.replace("\\&","%5C%26").replace("+","%5C%2B");
+	download_list[val.replace("&","%26").replace("+","%2B")] = [dataurl, name, 0, val];
+	download_size = parseInt(size);
+	download_count = 1;
+
+    var get_var = get_url_vars();
+    var dataset_id = light_sanitize(get_var["dataset_id"]);
+    var file_id = light_sanitize(get_var["file_id"]);
+    if (dataset_id && dataset_id != "undefined"){
+            Cookies.set("login_redirect", "/labcas-ui/d/index.html?dataset_id="+dataset_id)
+    }else if (file_id && file_id != "undefined"){
+            Cookies.set("login_redirect", "/labcas-ui/f/index.html?file_id="+file_id)
+    }else if (get_var["search"]){
+            Cookies.set("login_redirect", "/labcas-ui/s/index.html?search="+get_var["search"].replace("&","%26"))
+    }
+    localStorage.setItem('download_list',LZString.compress(JSON.stringify(download_list)));
     localStorage.setItem('download_size',download_size);
-    window.location.replace("/labcas-ui/download.html");
+    localStorage.setItem('download_count',download_count);
+
+    var threshold = parseInt(localStorage.getItem("DOWNLOAD_THRESHOLD")) || 104857600;
+    var upper_threshold = parseInt(localStorage.getItem("file_size_upper_limit")) || 104857600;
+    console.log("threshold");
+    console.log(threshold);
+    if (download_size > threshold && download_size < upper_threshold) {
+         promptForEmail();
+         return;
+   } else {
+         window.location.replace("/labcas-ui/download.html?version=7.0.0");
+   }
 }
+
+function download_files(formname){
+    var download_list = {};
+    var download_size = 0;
+    var download_count = 0;
+
+    if (formname == "cart"){
+        if ($('#cart_size').html() == '0 B'){
+            alert("No files available to download, please select from search or dataset pages");
+            return;
+        }
+	if (localStorage.getItem('cart_list')){
+	    download_list = JSON.parse(localStorage.getItem('cart_list'));
+	}
+        if (localStorage.getItem('cart_size')){
+            download_size = parseInt(localStorage.getItem('cart_size'));
+	}
+        if (localStorage.getItem('cart_count')){
+            download_count = parseInt(localStorage.getItem('cart_count'));
+	}
+    }else{
+	    $('#' + formname + ' input[type="checkbox"]').each(function() {
+		if ($(this).is(":checked")) {
+		    download_list[$(this).val().replace("&","%26").replace("+","%2B")] = [this.getAttribute("data-loc"), this.getAttribute("data-name"), this.getAttribute("data-version"), $(this).val()];
+		    download_size += parseInt(this.getAttribute("data-valuesize"));
+		    download_count += 1;
+		}
+	    });
+    }
+    var get_var = get_url_vars();
+    var dataset_id = light_sanitize(get_var["dataset_id"]);
+
+    if (dataset_id && dataset_id != "undefined"){
+	    Cookies.set("login_redirect", "/labcas-ui/d/index.html?dataset_id="+dataset_id)
+    }else if (get_var["search"]){
+	    Cookies.set("login_redirect", "/labcas-ui/s/index.html?search="+get_var["search"].replace("&","%26"))
+    }
+    localStorage.setItem('download_list',LZString.compress(JSON.stringify(download_list)));
+    localStorage.setItem('download_size',download_size);
+    localStorage.setItem('download_count',download_count);
+
+    // Threshold/email/redirect logic (reused from download_file_wrapper)
+    var threshold = parseInt(localStorage.getItem("DOWNLOAD_THRESHOLD")) || 104857600;
+    var upper_threshold = parseInt(localStorage.getItem("file_size_upper_limit")) || 104857600;
+    if (download_size > threshold && download_size < upper_threshold) {
+        promptForEmail();
+        return;
+    } else {
+        window.location.replace("/labcas-ui/download.html?version=7.0.0");
+    }
+}
+function download_metadatas(formname){
+
+    console.log("download_metadatas called with formname:", formname);
+    var queryParams = "";
+    if (formname == "hierarchy_query"){
+        var file_query = localStorage.getItem("hierarchy_file_query") || "";
+        var collection_id = localStorage.getItem("last_collection_id");
+        queryParams = `q=CollectionId:${collection_id}${file_query}&wt=json&sort=FileName%20asc&rows=50000`;
+    }else{
+        var download_list = {};
+        var download_size = 0;
+
+        if (formname == "cart"){
+            if ($('#cart_size').html() == '0 B'){
+                alert("No files available to download, please select from search or dataset pages");
+                return;
+            }
+            if (localStorage.getItem('cart_list')){
+                download_list = JSON.parse(localStorage.getItem('cart_list'));
+            }
+        }else{
+            $('#' + formname + ' input[type="checkbox"]').each(function() {
+            if ($(this).is(":checked")) {
+                download_list[$(this).val().replace("&","%26").replace("+","%2B")] = [this.getAttribute("data-loc"), this.getAttribute("data-name"), this.getAttribute("data-version"), $(this).val()];
+                download_size += parseInt(this.getAttribute("data-valuesize"));
+            }
+            });
+        }
+
+        const query = Object.keys(download_list)
+            .map(fileId => {
+                const updatedFileId = fileId.replace("\\&","%5C%26").replace("+","%5C%2B");
+                return `(id:"${updatedFileId}")`;
+              })
+              .join(' OR ');
+
+
+        queryParams = `q=${encodeURIComponent(query)}&wt=json&sort=FileName%20asc`;
+    }
+    console.log("metadata queryParams:", queryParams);
+    console.log("metadata url", localStorage.getItem('environment')+"/data-access-api/files/select?"+queryParams);
+
+    // Prepare headers for the Fetch API request
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/x-www-form-urlencoded');
+    if (Cookies.get('token') && Cookies.get('token') !== 'None') {
+      headers.append('Authorization', 'Bearer ' + Cookies.get('token'));
+    }
+
+    fetch(localStorage.getItem('environment')+"/data-access-api/files/select?"+queryParams, {
+      method: 'GET',
+      headers: headers,
+    })
+      .then(response => response.json())
+      .then(data => {
+        export_metadata_as_csv(data);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+}
+function export_metadata_as_csv(data) {
+  // Create a CSV string from the JSON data
+  console.log("export_metadata_as_csv received", data.response.docs.length, "records");
+  if (!data.response || !data.response.docs || data.response.docs.length === 0) {
+    console.warn("export_metadata_as_csv: no metadata returned");
+    return;
+  }
+  let csv = 'Key,Value\n';
+  /*$.each(data.response.docs, function(index, obj) {
+      $.each(obj, function(key, value) {
+        csv += key+','+JSON.stringify(value).replace('["','').replace('"]','')+'\n';
+      });
+  });*/
+  let metadata = data.response.docs;
+  const keys = Object.keys(metadata[0]);
+  //const csvData = metadata.map(row => keys.map(key => row[key]).join(',')).join('\n');
+  const csvData = metadata.map(row => keys.map(key => {
+  let value = row[key];
+      //console.log("value");
+      //console.log(value);
+      if (Array.isArray(value)) {
+        return value.map(item => String(item).replace(/,/g, ";")).join(';');
+      } else if (typeof value !== "string") {
+        return value;
+      }
+      return value.replace(/,/g, ";");
+}).join(',')).join('\n');
+
+  csv = `${keys.join(',')}\n${csvData}`;
+
+  // Create a Blob from the CSV string
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+
+  // Create a temporary anchor element for the download
+  const downloadLink = $('<a></a>');
+  const url = URL.createObjectURL(blob);
+  downloadLink.attr('href', url);
+  downloadLink.attr('download', 'metadata.csv');
+
+  // Append the anchor to the document, click it to trigger the download, and remove it
+  $('body').append(downloadLink);
+  downloadLink[0].click();
+  downloadLink.remove();
+  URL.revokeObjectURL(url);
+}
+
 function download_dataset(dataset){
-	console.log(localStorage.getItem('environment')+"/data-access-api/files/select?q=DatasetId:"+dataset+"&wt=json&indent=true&rows=10000");
-	query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=DatasetId:"+dataset+"&wt=json&indent=true&rows=10000", generate_dataset_file_list);
+    var url = "";
+    if (dataset == "hierarchy_query" && localStorage.getItem("hierarchy_file_query")){
+        var file_query = localStorage.getItem("hierarchy_file_query");
+        url = localStorage.getItem('environment')+"/data-access-api/files/select?q=CollectionId:"+localStorage.getItem("last_collection_id")+file_query+"&wt=json&rows=50000";
+    }else{
+    dataset = dataset.replace("%5C%20","%20").replace("%20","%5C%20").replace(" ","%5C%20");
+	    url = localStorage.getItem('environment')+"/data-access-api/files/select?q=(DatasetId:"+dataset+")%20OR%20(DatasetId:"+dataset+"/*)&wt=json&indent=true&rows=50000&fl=id,FileSize,FileName,eventID";
+    }
+    console.log(url);
+    query_labcas_api(url, generate_dataset_file_list);
 }
-function generate_dataset_file_list(data){
-	var download_list = [];
+
+function download_collection_wizard(){
+    var url = "";
+    var get_var = get_url_vars();
+    collection = get_var["collection_id"].replace("%5C%20","%20").replace("%20","%5C%20").replace(" ","%5C%20");
+    url = localStorage.getItem('environment')+"/data-access-api/files/select?q=CollectionId:"+collection+"&wt=json&rows=50000";
+    console.log(url);
+    query_labcas_api(url, generate_dataset_file_list);
+
+}
+
+function view_dataset_dicom_ohif(dataset){
+    // Show and reset the progress modal just like submitImageData
+    if ($('#ohif_progress_modal').length) {
+        $('#ohif_progress_bar').css('width','0%').text('0%');
+        $('#ohif_progress_modal').modal({backdrop:'static', keyboard:false});
+    }
+    var url = "";
+    dataset = dataset.replace("%5C%20","%20").replace("%20","%5C%20").replace(" ","%5C%20").replace("^","%5C%5E");
+    url = localStorage.getItem('environment')+"/data-access-api/files/select?q=(DatasetId:"+dataset+")%20OR%20(DatasetId:"+dataset+"/*)&wt=json&indent=true&rows=100000&fl=id";
+    console.log("view_dataset_dicom_ohif url", url);
+    query_labcas_api(url, function(data){
+        var ids = [];
+        if (data && data.response && data.response.docs){
+            ids = data.response.docs.map(function(doc){ return doc.id; });
+        }
+        if (ids.length === 0){
+            alert("No DICOM files found in dataset.");
+            if ($('#ohif_progress_modal').length) {
+                $('#ohif_progress_modal').modal('hide');
+            }
+            return;
+        }
+        // Optionally, update the progress bar as files are processed
+        parseDicomFiles(ids, function(done, total){
+            var percent = Math.round(done/total*100);
+            $('#ohif_progress_bar').css('width', percent + '%').text(percent + '%');
+        }).then(function(result){
+            generate_ohif_json(result);
+        }).catch(function(err){
+            console.error('Failed to parse DICOM files', err);
+            if ($('#ohif_progress_modal').length) {
+                $('#ohif_progress_modal').modal('hide');
+            }
+        });
+    });
+}
+
+function extract_item_from_list(array, what){
+    return array.filter(function(element){ 
+        return element !== what;
+    });
+}
+
+function clear_cart(formname){
+        var download_list = {};
+        var download_size = 0;
+        localStorage.setItem('cart_list',JSON.stringify(download_list));
+        localStorage.setItem('cart_size',download_size);
+        localStorage.setItem('cart_count',download_size);
+	$('#' + formname + ' input[type="checkbox"]').each(function() {
+        if ($(this).is(":checked")) {
+		$(this).prop("checked", false);
+	}});
+		$('#cart-count').html(Object.keys(download_list).length);
+        $('#cart-count2').html(Object.keys(download_list).length);
+	$('#cart_size').html("");
+}
+
+function init_file_checkboxes(formname){
+    $('#' + formname + ' input[type="checkbox"]').change(function() {
+	var download_list = {};
 	var download_size = 0;
+	if (localStorage.getItem('cart_list')){
+	    download_list = JSON.parse(localStorage.getItem('cart_list'));
+	}
+	if (localStorage.getItem('cart_size')){
+	    download_size = parseInt(localStorage.getItem('cart_size'));
+	}
+    	var cart_item = $(this).val().replace("&","%26");
+        if ($(this).is(":checked")) {
+            download_list[cart_item] = [this.getAttribute("data-loc"), this.getAttribute("data-name"), this.getAttribute("data-version"), $(this).val()];
+            download_size += parseInt(this.getAttribute("data-valuesize"));
+        }else{
+            if ( cart_item in download_list ){
+		//download_list.splice(cart_item,1);
+		//download_list = extract_item_from_list(download_list, cart_item);
+		console.log("Deleting");
+		console.log(cart_item);
+		console.log(download_list);
+		delete download_list[cart_item];
+		console.log(download_list[cart_item]);
+		console.log(download_list);
+		download_size -= parseInt(this.getAttribute("data-valuesize"));
+	    }
+	}
+        localStorage.setItem('cart_list',JSON.stringify(download_list));
+        localStorage.setItem('cart_size',download_size);
+	
+        set_cart_status();
+    });
+   
+   set_cart_status();
+}
+
+
+function generate_dataset_file_list(data){
+	var download_list = {};
+	var download_size = 0;
+	var download_count = data.response.numFound;
 	$.each(data.response.docs, function(key, value) {
-                console.log(key);
-                console.log(value.id);
-                var html_safe_id = encodeURI(escapeRegExp(value.id));
-                console.log(html_safe_id);
-		download_list.push(html_safe_id);
+		var html_safe_id = encodeURI(escapeRegExp(value.id)).replace("&","%26").replace("+","%2B");
+		//var fileloc = value.RealFileLocation ? value.RealFileLocation : (value.FileLocation ? value.FileLocation : "");
+		//var labcas_id = value.id;
+		var labcas_name = value.FileName;
+		var eventid = value.eventID;
+
+		//download_list[html_safe_id] = labcas_id+","+eventid;
+		download_list[html_safe_id] = labcas_name;
 		download_size += value.FileSize;
         });
-	localStorage.setItem('download_list',JSON.stringify(download_list));
+	localStorage.setItem('download_list',LZString.compress(JSON.stringify(download_list)));
 	localStorage.setItem('download_size',download_size);
-	window.location.replace("/labcas-ui/download.html");
+	localStorage.setItem('download_count',download_count);
+
+
+    var threshold = parseInt(localStorage.getItem("DOWNLOAD_THRESHOLD")) || 104857600;
+    var upper_threshold = parseInt(localStorage.getItem("file_size_upper_limit")) || 104857600;
+    console.log("threshold");
+    console.log(threshold);
+    if (download_size > threshold && download_size < upper_threshold) {
+        console.log("download");
+        setTimeout(promptForEmail, 0);
+        return;
+    } else {
+        console.log("redirect");
+        window.location.replace("/labcas-ui/download.html?version=7.0.0");
+    }
 }
-function download_script(filename) {
+function download_script(filename, ostype) {
   var element = document.createElement('a');
-  if (isMacintosh() || isLinux()){
-	  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(localStorage.getItem("download_script").replace('----labcaspass----',"Bearer " + Cookies.get('token'))));
-	  element.setAttribute('download', "labcas_download.sh");
-  }else if(isWindows()){
-	  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(localStorage.getItem("download_script_win").replace('----labcaspass----',"Bearer " + Cookies.get('token'))));
-	  element.setAttribute('download', "labcas_download.ps1");
-  }
+  var download_script_user = $('#download_script_user').val();
+  var download_script_pass = $('#download_script_pass').val();
+
+  var download_script_key = btoa(unescape(encodeURIComponent(download_script_user+':'+download_script_pass)));
+  if (ostype == "linux" || ostype == "mac"){
+          element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(localStorage.getItem("download_script").replace('-----labcasenv-----',localStorage.getItem('environment')).replace('-----labcasus-----',download_script_user).replace('-----labcaspw-----',download_script_pass)));
+          element.setAttribute('download', "labcas_download.sh");
+    }else if(ostype == "windows"){
+              element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(localStorage.getItem("download_script_win").replace('-----labcasenv-----',localStorage.getItem('environment')).replace('-----labcasus-----',download_script_user).replace('-----labcaspw-----',download_script_pass)));
+              element.setAttribute('download', "labcas_download.ps1");
+    }
+
 
   element.style.display = 'none';
   document.body.appendChild(element);
@@ -533,17 +1034,33 @@ function download_script(filename) {
 
   document.body.removeChild(element);
   if (isMacintosh() || isLinux()){
-	  $('#fileHTML').html("Now that you've downloaded the download script, you will also need to click below to download the script file list. Make sure the downloaded file list is stored in the same folder as the earlier download script. <B><font color=red>Please also ensure no previous file named files.csv are in the same folder directory.</font></B> In order to run the download, open a terminal, navigate to the folder of your download script and files.csv, then type:<br>sh labcas_download.sh");
-  }else if(isWindows()){
-	  $('#fileHTML').html("Now that you've downloaded the download script, you will also need to click below to download the script file list. Make sure the downloaded file list is stored in the same folder as the earlier download script. <B><font color=red>Please also ensure no previous file named files.csv are in the same folder directory.</font></B> In order to run the download, right click on the data_download.ps1 file and select \"Run with PowerShell\".");
+              $('#fileHTML').html("<font color=blue>Step 3: Now that you've downloaded the download script, you will also need to <B>click below <font color=green>\"Download Script File List\"</font></B> to download the script file list.</font><font color=red><ul><li>Make sure the downloaded file list is stored in the same folder as the earlier download script.</li><li>Please also ensure no previous file named files.csv are in the same folder directory.</li></ul></font> <font color=blue>Step 4: In order to run the download, open a terminal, navigate to the folder of your download script and files.csv, then type:<br><B>sh labcas_download.sh</B></font>");
+    }else if(isWindows()){
+              $('#fileHTML').html("<font color=blue>Step 3: Now that you've downloaded the download script, you will also need to <B>click below <font color=green>\"Download Script File List\"</font></B> to download the script file list.</font><font color=red><ul><li>Make sure the downloaded file list is stored in the same folder as the earlier download script.</li><li>Please also ensure no previous file named files.csv are in the same folder directory.</li></ul></font> In order to run the download, <B>right click on the data_download.ps1 file and select \"Run with PowerShell\".</B>");
+    }
 
-  }
+    $('#sizeModal').modal('hide');
 	$('#fileModal').modal({backdrop: 'static', keyboard: false});
-        $('#fileModal').modal('show');
+    $('#fileModal').modal('show');
 }
 function download_script_files() {
   var element = document.createElement('a');
-  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.parse(localStorage.getItem("download_list")).join("\n"+localStorage.getItem('environment')+"/data-access-api/download?id=")));
+  var csvContent = "data:text/csv;charset=utf-8,";
+  var environment = localStorage.getItem('environment');
+
+// Header
+csvContent += "";
+var download_list = JSON.parse(LZString.decompress(localStorage.getItem("download_list")));
+
+// Data
+Object.keys(download_list).forEach(function(key) {
+  var value = download_list[key];
+  //var row = environment + "/data-access-api/download?id=" + key + "," + value + "\n";
+  var row = key + "\n";
+  csvContent += row;
+});
+
+  element.setAttribute('href', encodeURI(csvContent));
   element.setAttribute('download', "files.csv");
 
   element.style.display = 'none';
@@ -553,7 +1070,7 @@ function download_script_files() {
 
   document.body.removeChild(element);
 
-  localStorage.setItem("download_list",JSON.stringify([]));
+  localStorage.setItem("download_list",LZString.compress(JSON.stringify([])));
   $('#download_list_link').hide();
    //window.location.reload();
 
@@ -561,9 +1078,8 @@ function download_script_files() {
 
 function reset_search_filters(){
       var get_var = get_url_vars();
-        localStorage.setItem("search", get_var["search"]);
+        localStorage.setItem("search", get_var["search"].replace("&","%26"));
         localStorage.setItem("search_filter", "off");
-
 
         $.each(localStorage.getItem("filters").split(","), function(ind, head) {
                 var divs = localStorage.getItem(head+"_filters_div").split(",");
@@ -581,6 +1097,79 @@ function reset_search_filters(){
         });
         localStorage.setItem("search", "*");
 	window.history.replaceState({}, document.title, "/" + "labcas-ui/s/index.html?search=*");
+}
+function set_search_filters(params){
+	reset_search_filters();
+	localStorage.setItem("search_filter", "on");
+	$.each(localStorage.getItem("filters").split(","), function(ind, head) {
+                var divs = localStorage.getItem(head+"_filters_div").split(",");
+                $.each(divs, function(i, divhead) {
+			if (params[$.trim(divhead)]){
+				localStorage.setItem($.trim(divhead), params[$.trim(divhead)]);
+			}
+                        if(divhead.includes("_num_")){
+				if (params[$.trim(divhead)+"_0"]){
+					localStorage.setItem($.trim(divhead)+"_0", params[$.trim(divhead)+"_0"]);
+					localStorage.setItem($.trim(divhead)+"_1",params[$.trim(divhead)+"_1"]);
+					localStorage.setItem($.trim(divhead)+"_max_0",params[$.trim(divhead)+"_max_0"]);
+					localStorage.setItem($.trim(divhead)+"_max_1",params[$.trim(divhead)+"_max_1"]);
+				}
+                        }else{
+				console.log(params[$.trim(divhead)+"_val"]);
+				if (params[$.trim(divhead)+"_val"]){
+					localStorage.setItem($.trim(divhead)+"_val", params[$.trim(divhead)+"_val"]);
+				}
+                        }
+                });
+        });
+	if (params["search"] && params["search"] != "*" && params["search"] != ""){
+        	localStorage.setItem("search", params["search"].replace("&","%26"));
+		window.location.replace("/labcas-ui/s/index.html?search="+params["search"].replace("&","%26"));
+	}else{
+		window.location.replace("/labcas-ui/s/index.html?search=*");
+	}
+}
+
+function get_labcas_collection_stats(data){
+    console.log(data);
+	$("#collection_total_count").html(data.response.numFound);
+}
+
+function get_labcas_collection_info(data){
+	$("#collection_name").html(data.response.docs[0].CollectionName);
+}
+function get_labcas_dataset_stats(data){
+	$("#dataset_total_count").html(data.response.numFound);
+}
+
+function get_labcas_file_stats(data){
+    if (data.stats.stats_fields.FileSize.sum > 3100000000){
+        $('#download_collection_template').hide();
+    }
+    $("#file_total_size").html(humanFileSize(data.stats.stats_fields.FileSize.sum,true));
+}
+function get_labcas_dataset_file_stats(data){
+	$("#collection_files_len").html(data.response.numFound);
+}
+
+function get_search_filters(){
+	var params = {"search":localStorage.getItem("search").replace("&","%26")}
+
+        $.each(localStorage.getItem("filters").split(","), function(ind, head) {
+                var divs = localStorage.getItem(head+"_filters_div").split(",");
+                $.each(divs, function(i, divhead) {
+                        params[$.trim(divhead)] = localStorage.getItem($.trim(divhead));
+                        if(divhead.includes("_num_")){
+                                params[$.trim(divhead)+"_0"] = localStorage.getItem($.trim(divhead)+"_0");
+                                params[$.trim(divhead)+"_1"] = localStorage.getItem($.trim(divhead)+"_1");
+                                params[$.trim(divhead)+"_max_0"] = localStorage.getItem($.trim(divhead)+"_max_0");
+                                params[$.trim(divhead)+"_max_1"] = localStorage.getItem($.trim(divhead)+"_max_1");
+                        }else{
+                                params[$.trim(divhead)+"_val"] = localStorage.getItem($.trim(divhead)+"_val");
+                        }
+                });
+        });
+	return params;
 }
 function isMacintosh() {
   return navigator.platform.indexOf('Mac') > -1
@@ -647,4 +1236,1514 @@ function introWizard(check_first_time){
 	}
 	localStorage.setItem("first_time_user","false");
 	introJs().start();
+}
+
+function accepted_image_check(f){
+    var img_ext = [".svs",".jpg",".gif",".jpeg",".dcm",".DCM",".dicom",".png",".tif",".tiff",".scm",".scn",".qptiff"];
+    var pass_flag = false;
+    $.each(img_ext, function(key,value){
+       if (f.toLowerCase().endsWith(value)){
+           pass_flag = true;
+           return;
+       }
+    });
+    return pass_flag;
+}
+function acepted_omero_check(f){
+    var img_ext = ["ome.tif","ome.tiff",".qptiff"];
+    var pass_flag = false;
+    $.each(img_ext, function(key,value){
+       if (f.toLowerCase().endsWith(value)){
+           pass_flag = true;
+           return;
+       }
+    });
+    return pass_flag;
+}
+
+function generate_accepted_image_solr_filters(){
+	var img_ext = [".svs",".jpg",".gif",".jpeg",".dcm",".DCM",".dicom",".png",".tif",".tiff",".scm",".scn",".qptiff"];
+	var fq = "(id:*"+img_ext.join("%20AND%20id:*")+")";
+	return fq;
+}
+
+function check_dicom_multi(){
+	var flag = false;
+	var dicom_list_axial = [];
+	var dicom_list_coronal = [];
+	var dicom_list_sagittal = [];
+	if ( localStorage.getItem('dicoms') ){
+		var dicom_list = JSON.parse(localStorage.getItem('dicoms'));
+		if (dicom_list.length > 0){
+			$.each(dicom_list, function(key, value) {
+				var fname = value.substring(value.lastIndexOf('/')+1);
+				if (fname.startsWith("1mm_") || fname.startsWith("axial_")){
+					dicom_list_axial.push(value);
+					flag = true;
+				}else if(fname.startsWith("coronal_")){
+					dicom_list_coronal.push(value);
+					flag = true;
+				}else if(fname.startsWith("sagittal_")){
+					dicom_list_sagittal.push(value);
+					flag = true;
+                                }
+			});
+		}
+	}
+	localStorage.setItem("dicoms1",JSON.stringify(dicom_list_axial));
+	localStorage.setItem("dicoms2",JSON.stringify(dicom_list_coronal));
+	localStorage.setItem("dicoms3",JSON.stringify(dicom_list_sagittal));
+	localStorage.setItem("multi_dicom",flag);
+	return flag;
+}
+
+function generate_image_file_list(data){
+    var image_list = [];
+    var histomics_list = [];
+    var image_size = 0;
+    var image_type = "image";
+    console.log(data);
+    $.each(data.response.docs, function(key, value) {
+        console.log("Here");
+        console.log(key);
+        console.log(value.id);
+        if ( accepted_image_check(value.id) || accepted_image_check(value.FileName)){
+            var html_safe_id = encodeURI(escapeRegExp(value.id));
+            if (value.id.toLowerCase().endsWith(".dcm") || value.id.toLowerCase().endsWith(".dicom") || value.id.toLowerCase().endsWith(".DCM")
+            || value.FileName.toLowerCase().endsWith(".dcm") || value.FileName.toLowerCase().endsWith(".dicom") || value.FileName.toLowerCase().endsWith(".DCM")
+            ){
+                image_type = "dicoms";
+            }else if(acepted_omero_check(value.id)){
+		image_type = "omeros";
+	    }
+            console.log(html_safe_id);
+            image_list.push(localStorage.getItem('environment')+"/data-access-api/download?id="+html_safe_id);
+
+            //histomics
+            var filename = value.FileName ? value.FileName : "";
+            var version = value.DatasetVersion ? value.DatasetVersion : "";
+            var loc = value.FileLocation ? value.FileLocation : "";
+
+            histomics_list.push([loc,filename,version, html_safe_id]);
+        }
+    });
+    
+    localStorage.setItem(image_type,JSON.stringify(image_list));
+    localStorage.setItem("image_data",JSON.stringify(histomics_list));
+    var get_var = get_url_vars();
+    var dataset_id = light_sanitize(get_var["dataset_id"]);
+
+    if (dataset_id && dataset_id != "undefined"){
+        Cookies.set("login_redirect", "/labcas-ui/d/index.html?dataset_id="+dataset_id)
+    }else if (get_var["search"]){
+        Cookies.set("login_redirect", "/labcas-ui/s/index.html?search="+get_var["search"].replace("&","%26"))
+    }
+    if (image_type == "dicoms"){
+	if (check_dicom_multi()){
+	       window.location.replace("/labcas-ui/i/mindex.html?version=7.0.0");
+	}else{
+	       window.location.replace("/labcas-ui/i/index.html?version=7.0.0");
+	}
+    }else if(image_type = "omeros"){
+	window.location.replace("/labcas-ui/o/index.html?version=7.0.0");
+    }else{
+       window.location.replace("/labcas-ui/z/index.html?version=7.0.0");
+    }
+}
+
+function checkDatasetContainsDicom(dataset_id, safe_dataset_id, data){
+	/*console.log("Checking dataset...");	
+	console.log(dataset_id);
+	console.log("safe");
+	console.log(safe_dataset_id);
+	console.log("data");
+	console.log(data);*/
+	if (!(data.response.numFound > 0)){
+		$('#view_'+safe_dataset_id).show();
+	}
+}
+
+function submitImage(formname, dataset){
+    if ( $('#check_all:checked').length || dataset){
+        console.log("GOT HERE");
+        console.log(dataset);
+        if (dataset){
+            url = "";
+            if (dataset == "hierarchy_query" && localStorage.getItem("hierarchy_file_query")){
+                var file_query = localStorage.getItem("hierarchy_file_query");
+		console.log("url");
+		file_query = file_query.replace("^","%5C%5E");
+                url = localStorage.getItem('environment')+"/data-access-api/files/select?q=*"+file_query+"&wt=json&indent=true&rows=50000";
+		console.log(url);
+            }else{
+                dataset = dataset.replace("%5C%20","%20").replace("%20","%5C%20").replace(" ","%5C%20").replace("^","%5C%5E");
+                url = localStorage.getItem('environment')+"/data-access-api/files/select?q=DatasetId:"+dataset+"&wt=json&indent=true&rows=50000";
+            }
+            console.log(url);
+            query_labcas_api(url, generate_image_file_list);
+
+         }
+        return;
+    }else{
+        submitImageData(formname);
+    }
+
+}
+
+function submitSingleImageData(image, loc, name, version){
+        var image_list = [];
+        var histomics_list = [];
+	var image_type = "image";
+        image_list.push(localStorage.getItem('environment')+"/data-access-api/download?id="+image);
+        histomics_list.push([loc,name,version, image]);
+        if (name.endsWith(".dcm") || name.endsWith(".dicom") || name.endsWith(".DCM")){
+            image_type = "dicoms";
+        }
+        else if (acepted_omero_check(name)){
+            image_type = "omeros";
+        }else{
+		localStorage.setItem("image_data",JSON.stringify(histomics_list));
+	}
+        localStorage.setItem(image_type,JSON.stringify(image_list));
+        localStorage.setItem("omeros",JSON.stringify(histomics_list));
+        var get_var = get_url_vars();
+        var dataset_id = light_sanitize(get_var["dataset_id"]);
+        var file_id = light_sanitize(get_var["file_id"]);
+
+            if (dataset_id && dataset_id != "undefined"){
+                    Cookies.set("login_redirect", "/labcas-ui/d/index.html?dataset_id="+dataset_id)
+            }else if (get_var["search"]){
+                    Cookies.set("login_redirect", "/labcas-ui/s/index.html?search="+get_var["search"].replace("&","%26"))
+            }else if (file_id && file_id != "undefined"){
+                        Cookies.set("login_redirect", "/labcas-ui/f/index.html?file_id="+file_id)
+            }
+            console.log(image_type);
+            if (image_type == "dicoms"){
+		if (check_dicom_multi()){
+		       window.location.replace("/labcas-ui/i/mindex.html?version=7.0.0");
+		}else{
+		       window.location.replace("/labcas-ui/i/index.html?version=7.0.0");
+		}
+            }else if(image_type == "omeros"){
+		window.location.replace("/labcas-ui/o/index.html?version=7.0.0");
+            }else{
+                window.location.replace("/labcas-ui/z/index.html?version=7.0.0");
+            }
+
+}
+
+function check_image_filtered_dataset(file){
+    var image_filtered = localStorage.getItem("dataset_image_hide").split(",");
+    var show_flag = true;
+    $.each(image_filtered, function( key, val ) {
+        if (file.includes(val)){
+            show_flag = false;
+            return;
+        }
+    });
+    return show_flag;
+}
+
+function submitImageData(formname, dicom){
+    console.log('submitImageData called', formname, dicom);
+    var image_list = [];
+    var histomics_list = [];
+    var dicoms_list = [];
+    var omero_list = [];
+    var dicoms_id_list = [];
+    var image_type = "image";
+    if (formname == 'cart_image' && $('#image_size').html() == '0'){
+        alert("No images available to view, please select from search or dataset pages");
+        return;
+    } else if (formname == 'cart_dicom' && $('#dicom_size').html() == '0'){
+        alert("No dicoms available to view, please select from search or dataset pages");
+        return;
+    } else if (formname == 'cart_dicom_ohif' && $('#dicom_size_ohif2').html() == '0'){
+        alert("No OHIF dicoms available to view, please select from search or dataset pages");
+        return;
+    } else if (formname == 'cart_omero' && $('#omero_size').html() == '0'){
+        alert("No omero images available to view, please select from search or dataset pages");
+        return;
+    } else {}
+   
+    //custom code for qptiff
+    //
+    
+    console.log("Got HERE1");
+ 
+    if (dicom){
+    console.log("Got HERE2");
+        dicoms_list.push(localStorage.getItem('environment')+"/data-access-api/download?id="+$(dicom).val());
+        dicoms_id_list.push($(dicom).val());
+        if ($(dicom).val().endsWith(".dcm") || $(dicom).val().endsWith(".dicom") || $(dicom).val().endsWith(".DCM")){
+            image_type = "dicoms";
+        }
+    }else{
+    console.log("Got HERE3");
+        if (formname.startsWith("cart_")){
+	    if (localStorage.getItem('cart_list')){
+            console.log("HERE2");
+        	download_list = JSON.parse(localStorage.getItem('cart_list'));
+            $.each(download_list, function( key, val ) {
+                //check_image_filtered_dataset should be key, not val[1] since key is the full labcasId and contains dataset name within, while val[1] is just the filename itself.
+                if (check_image_filtered_dataset(key)){
+                    if (accepted_image_check(val[1]) && (val[1].endsWith(".dcm") || val[1].endsWith(".dicom") || val[1].endsWith(".DCM"))){
+                        dicoms_list.push(localStorage.getItem('environment')+"/data-access-api/download?id="+key);
+                        dicoms_id_list.push(key);
+                    }else if(acepted_omero_check(key)){
+                        omero_list.push([val[0],val[1],val[2], key]);
+                    }else if(accepted_image_check(key)){
+                        image_list.push(localStorage.getItem('environment')+"/data-access-api/download?id="+key);
+                        histomics_list.push([val[0],val[1],val[2], key]);
+                    }
+                }
+            });
+        }
+	}else{
+    console.log("Got HERE4.0");
+        $('#' + formname + ' input[type="checkbox"]').each(function() {
+            
+    console.log("Got HERE4.1");
+    console.log(formname);
+            if ($(this).is(":checked") && accepted_image_check($(this).data("name"))) {
+                console.log($(this).val());
+                console.log($(this).data("name"));
+                if ($(this).val().endsWith(".dcm") || $(this).val().endsWith(".dicom") || $(this).val().endsWith(".DCM") ||
+                    $(this).data("name").endsWith(".dcm") || $(this).data("name").endsWith(".dicom") || $(this).data("name").endsWith(".DCM") 
+                    ){
+                     image_type = "dicoms";
+                     dicoms_list.push(localStorage.getItem('environment')+"/data-access-api/download?id="+$(this).val());
+                     dicoms_id_list.push($(this).val());
+                }else if(acepted_omero_check($(this).val())){
+                     image_type = "omeros";
+                     omero_list.push([$(this).data("loc"),$(this).data("name"),$(this).data("version"), $(this).val()]);
+                }else if(accepted_image_check($(this).val())){
+                     image_list.push(localStorage.getItem('environment')+"/data-access-api/download?id="+$(this).val());
+                     histomics_list.push([$(this).data("loc"),$(this).data("name"),$(this).data("version"), $(this).val()]);
+                }
+            }
+        });
+        console.log(dicoms_list);
+        console.log(histomics_list);
+	}
+    }
+    
+    console.log("Got HERE5");
+    localStorage.setItem("image",JSON.stringify(image_list));
+    localStorage.setItem("dicoms",JSON.stringify(dicoms_list));
+    localStorage.setItem("image_data",JSON.stringify(histomics_list));
+    localStorage.setItem("omeros",JSON.stringify(omero_list));
+
+    var get_var = get_url_vars();
+    var dataset_id = light_sanitize(get_var["dataset_id"]);
+    
+    if (dataset_id && dataset_id != "undefined"){
+	    Cookies.set("login_redirect", "/labcas-ui/d/index.html?dataset_id="+dataset_id)
+    }else if (get_var["search"]){
+	    Cookies.set("login_redirect", "/labcas-ui/s/index.html?search="+get_var["search"].replace("&","%26"))
+    }
+    console.log(image_type);
+    if (formname.startsWith("cart_")){
+        if (formname == "cart_dicom"){
+		if (check_dicom_multi()){
+		       window.location.replace("/labcas-ui/i/mindex.html?version=7.0.0");
+		}else{
+		       window.location.replace("/labcas-ui/i/index.html?version=7.0.0");
+		}
+        } else if(formname == "cart_dicom_ohif"){ 
+            if (dicoms_id_list.length === 0) {
+                alert("No DICOM files selected for OHIF.");
+                return;
+            }
+            if ($('#ohif_progress_modal').length) {
+                $('#ohif_progress_bar').css('width','0%').text('0%');
+                console.log('Showing ohif_progress_modal');
+                $('#ohif_progress_modal').modal({backdrop:'static', keyboard:false});
+            }
+            parseDicomFiles(dicoms_id_list, function(done, total){
+                var percent = Math.round(done/total*100);
+                $('#ohif_progress_bar').css('width', percent + '%').text(percent + '%');
+            }).then(function(data){
+                generate_ohif_json(data);
+            }).catch(function(err){
+                console.error('Failed to parse DICOM files', err);
+                $('#ohif_progress_modal').modal('hide');
+            });
+		} else if(formname == "cart_omero"){
+		window.location.replace("/labcas-ui/o/index.html?version=7.0.0");
+		}else{
+            window.location.replace("/labcas-ui/z/index.html?version=7.0.0");
+        }
+    }else{
+       if (image_type == "dicoms"){
+		if (check_dicom_multi()){
+		       window.location.replace("/labcas-ui/i/mindex.html?version=7.0.0");
+		}else{
+		       window.location.replace("/labcas-ui/i/index.html?version=7.0.0");
+		}
+       }else if(image_type == "omeros"){
+	  window.location.replace("/labcas-ui/o/index.html?version=7.0.0");
+       }else{
+          window.location.replace("/labcas-ui/z/index.html?version=7.0.0");
+       }
+    }
+}
+
+function changeFrameSrc(frame, src, fileid){
+            console.log("OMERO2");
+            console.log(fileid);
+    $('#'+frame).attr('src', src);
+    $('#img_frame').contents().find('#h-navbar-brand').html('Image Viewer');
+    window.history.replaceState(null, null, "?fileid="+fileid);
+}
+
+function check_omero_image(image_dataset, image_name, version, show_flag, fileid, show_flag){
+	console.log("omero_datasets");
+	console.log(omero_datasets);
+	dataset = baseName(image_dataset);
+	datasetid = -1;
+	$.each(omero_datasets, function(key, val){
+		console.log("COMPDATASET");
+		console.log(dataset);
+		console.log(val.Name);
+		if (val.Name == dataset){
+			console.log("OKOK1");
+			datasetid = val["@id"];
+			return false;
+		}
+	});
+    makeJSONRequest('GET', localStorage.getItem("omero_api")+"/datasets/"+datasetid+"/images", function(data) {
+
+			var imageid = -1;
+			$.each(data.data, function(key, val){
+				console.log("Comp");
+				console.log(image_name);
+				console.log(val.Name);
+				if (val.Name == image_name || val.Name == image_name+" [resolution #1]"){
+					console.log("OKOK2");
+					imageid = val["@id"];
+					return false;
+				}
+			});
+			console.log("image_id");
+			console.log(imageid);
+			if (show_flag){
+				orchistrate_omero_find(image_dataset, image_name, version, show_flag, fileid, imageid);
+			}
+			var download_cmd = "download_file('"+fileid+"','single');";
+            var details_cmd = "window.open(\"/labcas-ui/f/index.html?file_id="+fileid+"\");";
+            $("#image_list_table tbody").append("<tr ><td  style='padding-left: 5px; word-wrap: break-word;'><a style='word-wrap: break-word;' href='#' onclick=\"changeFrameSrc('img_frame','"+localStorage.getItem("omero_image_viewer")+imageid+"', '"+imageid+"')\">"+decodeURIComponent(image_name)+"</a></td><td class='td-actions text-right'><button type='button' rel='detailbutton' title='Details' style='padding:0px' class='btn btn-info btn-simple btn-link' onclick='"+details_cmd+"'><i class='fa fa-info-circle'></i></button>"+'<button type="button" rel="downloadbutton" title="Download" class="btn btn-success btn-simple btn-link" onclick="'+download_cmd+'"><i class="fa fa-download"></i></button></td></tr>');
+	});
+	
+	return datasetid;
+}
+
+
+
+function createCORSRequest(method, url) {
+  var xhr = new XMLHttpRequest();
+  if ("withCredentials" in xhr) {
+    xhr.withCredentials = true;
+    console.log("HERE1");
+    console.log(xhr);
+    xhr.open(method, url, true);
+  } else if (typeof XDomainRequest != "undefined") {
+    xhr = new XDomainRequest();
+    console.log("HERE2");
+    console.log(xhr.headers);
+    xhr.open(method, url);
+  } else {
+	// CORS is not supported by the browser.
+	xhr = null;
+  }
+
+  xhr.onerror = function() {
+    console.log('There was an error!');
+  };
+  return xhr;
+}
+
+function makeJSONRequest(method, url, callback, data) {
+  url = url.replace("https://mcl-docker:4080","https://mcl-labcas.jpl.nasa.gov:8092");
+  console.log("url");
+  console.log(url);
+  var xhr = createCORSRequest(method, url);
+  xhr.onload = function() {
+    // handle the response (assumes we're getting JSON data)
+    var responseText = xhr.responseText;
+    var jsonResponse = responseText;
+    // If not logged-in, show login form
+    if (xhr.status === 403) {
+      if (login_flag != 1){
+          login_flag = 1;
+          prepareLogin();
+      }else{
+        console.log("Already tried to login once, failed, please troubleshoot");
+      }
+    }
+    // status OK - call the callback()
+    else if (xhr.status === 200) {
+      if (callback) {
+        jsonResponse = JSON.parse(responseText);
+        callback(jsonResponse);
+      }
+    } else {
+      console.log("Error:", xhr)
+    }
+  };
+
+  if (method !== 'GET') {
+    console.log("CSRF");
+    console.log(omero_csrf_token);
+          
+    xhr.setRequestHeader('x-csrftoken', omero_csrf_token);
+  }
+  if (data) {
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.send(data);
+  } else {
+    xhr.send();
+  }
+}
+
+function loadProjects() {
+  var projects_url = base_urls['url:datasets'].replace("http:","https:");
+  makeJSONRequest('POST', projects_url, function(rsp) {
+  });
+}
+
+function loadBaseUrls(callback) {
+  makeJSONRequest('GET', latest_base_url, function(rsp) {
+    base_urls = rsp;
+    callback();
+  });
+}
+//loadBaseUrls(loadProjects);
+function prepareLogin() {
+  // show login form
+  var servers_url = base_urls['url:servers'];
+
+  // Also get CSRF token needed for login and other POST requests
+  var token_url = base_urls['url:token'].replace("http:","https:");
+  makeJSONRequest('GET', token_url, function(rsp) {
+    omero_csrf_token = rsp.data;
+    loginOmero();
+  });
+}
+
+function testGetDatasets(){
+    var projects_url = base_urls['url:datasets'].replace("http:","https:");
+    makeJSONRequest('GET', projects_url, function(rsp) {
+        console.log("DATASET");
+        console.log(rsp);
+    });
+
+}
+
+function loginOmero(){
+  var login_url = base_urls['url:login'];
+
+  var fields = ['username', 'password', 'server'];
+  var configs = {'username':localStorage.getItem("omero_server_user"),'password':localStorage.getItem("omero_server_pass"),'server':localStorage.getItem("omero_server_id")}
+  var data = fields.map(function(f){
+    return f + '=' + configs[f];
+  });
+  data = data.join('&');
+  login_url = login_url.replace("http:","https:");
+  console.log("Login");
+  console.log(login_url);
+  console.log(data);
+  
+  makeJSONRequest('POST', login_url, function(rsp) {
+    // Will get eventContext if login OK
+    console.log(rsp);
+
+    // Show username in top header
+    var ctx = rsp['eventContext'];
+    console.log(ctx['userName']);
+
+    var get_var = get_url_vars();
+    var file_id = light_sanitize(get_var["file_id"]);
+    showOmeroImage(fileid);
+  }, data);
+
+  return false;
+
+}
+
+
+function getOmeroDataset(image_dataset, image_name, version, show_flag, fileid, show_flag){
+	console.log("image_dataset");
+	console.log(image_dataset);
+	console.log("image_name");
+	console.log(image_name);
+
+	if (omero_datasets.length == 0){
+		console.log("API Getting");
+		/*$.ajax({
+			url: localStorage.getItem("omero_api")+"/datasets/",
+			type: 'GET',
+			success: function (data) {
+			    omero_datasets = data;*/
+                var projects_url = base_urls['url:datasets'].replace("http:","https:");
+                makeJSONRequest('GET', projects_url, function(rsp) {
+                    
+                    console.log("DATASET2");
+                    omero_datasets = rsp.data;
+                    check_omero_image(image_dataset, image_name, version, show_flag, fileid, show_flag);
+                }); 
+			/*}
+		});*/
+	}else{
+	    check_omero_image(image_dataset, image_name, version, show_flag, fileid, show_flag);
+				console.log("datasetid");
+				console.log(datasetid);
+	}
+}
+
+function showOmeroImage(hist_image){
+    /*if (hist_image && hist_image != ""){
+        setup_labcas_file_data("fileimage",'id:"'+encodeURI(hist_image).replace("&","%26")+'"', 'id:'+hist_image+'*');
+    }else{*/
+       //images = JSON.parse(localStorage.getItem('image'));
+
+       images_data = JSON.parse(localStorage.getItem('omeros'));
+       show_flag = true;
+       $.each(images_data, function( key, val ) {
+          console.log("new");
+          console.log(val);
+          var fileid = val[3];
+          var query_file = val[1];
+          var query_folder = val[0];
+          var version = val[2];
+	  getOmeroDataset(query_folder, query_file, version, show_flag, fileid, show_flag);
+          show_flag = false;
+            /*if (show_flag){
+                $('#loading_viewer').hide();
+                $('#viewer_content').show();
+                changeFrameSrc("img_frame", localStorage.getItem("dsa_image_viewer")+"?image="+filedata[0]._id, fileid);
+            }*/
+       });
+       localStorage.setItem("image_data","");
+       localStorage.setItem("image","");
+    //}
+}
+
+function showHistImage(hist_image){
+    if (hist_image && hist_image != ""){
+        setup_labcas_file_data("fileimage",'id:"'+encodeURI(hist_image).replace("&","%26")+'"', 'id:'+hist_image+'*'); 
+    }else{
+       images = JSON.parse(localStorage.getItem('image'));
+	console.log("imge_data");
+	console.log(localStorage.getItem('image_data'));
+	console.log("imge");
+	console.log(localStorage.getItem('image'));
+       images_data = JSON.parse(localStorage.getItem('image_data'));
+       show_flag = true;
+       $.each(images_data, function( key, val ) {
+          orchistrate_find(val[0], val[1], val[2], show_flag, val[3]);
+          show_flag = false;
+       });
+       localStorage.setItem("image_data","");
+       localStorage.setItem("image","");
+    }
+}
+
+function set_cart_status (){
+    // set cart info
+        var download_list = {};
+        var download_size = 0;
+        if (localStorage.getItem('cart_list')){
+                download_list = JSON.parse(localStorage.getItem('cart_list'));
+        }
+        if (localStorage.getItem('cart_size')){
+                download_size = parseInt(localStorage.getItem('cart_size'));
+        }
+        $('#cart-count').html(Object.keys(download_list).length);
+        $('#cart-count2').html(Object.keys(download_list).length);
+        filesize = humanFileSize(download_size, true);
+        $('#cart_size').html(filesize);
+
+        imagesize = 0;
+        omerosize = 0;
+        dicomsize = 0;
+
+        $.each(download_list, function( key, val ){
+            console.log("comparing");
+            console.log(key);
+            console.log(check_image_filtered_dataset(key));
+            if (check_image_filtered_dataset(key)){
+                console.log("IN");
+                if (val[1] && accepted_image_check(val[1]) && (val[1].endsWith(".dicom") || val[1].endsWith(".dcm") || val[1].endsWith(".DCM"))){
+                    dicomsize += 1;
+                }else if(val[1] && acepted_omero_check(val[1])){
+                    omerosize += 1;
+                }else if(val[1] && accepted_image_check(val[1])){
+                    imagesize += 1;
+                }
+            }
+        });
+
+        $('#image_size').html(imagesize);
+        $('#omero_size').html(omerosize);
+        $('#dicom_size').html(dicomsize);
+        $('#dicom_size_ohif').html(dicomsize);
+        $('#dicom_size2').html(dicomsize);
+        $('#dicom_size_ohif2').html(dicomsize);
+}
+
+function orchistrate_omero_find(query_folder, query_file, version, show_flag, fileid, omero_id){
+    console.log("iframe");
+    console.log(localStorage.getItem("omero_image_viewer")+query_file);
+    changeFrameSrc("img_frame", localStorage.getItem("omero_image_viewer")+omero_id, omero_id);
+    $('#loading_viewer').hide();
+    $('#viewer_content').show();
+}
+
+function orchistrate_find(query_folder, query_file, version, show_flag, fileid){
+    var image_dsa_path = [];
+    var root_collection = localStorage.getItem("dsa_root_collection");
+    var labcas_data_map = JSON.parse(localStorage.getItem("labcas_data")).collection_path_maps;
+	console.log("query_folder");
+	console.log(query_folder);
+    //Specifically for qptiff files
+    if (query_file.endsWith(".qptiff") && query_folder.includes("mIHC_Images/")){
+       query_file = query_file.replace(".qptiff",".png");
+       query_folder = query_folder.replace("mIHC_Images/","mIHC_Images_png/");
+       console.log("Replaced mIHC"+query_folder+"-/-"+query_file);
+    }
+    query_folder = query_folder.replace("/usr/local/labcas/backend/archive/","");
+    query_folder = query_folder.replace("/labcas-data/labcas-backend/archive/edrn/","");
+    query_folder = query_folder.replace("&","%26");
+    query_file = query_file.replace("&","%26");
+    var collection_name = query_folder.split("/")[0];
+
+    console.log("start");
+    console.log(collection_name);
+    console.log(labcas_data_map);
+    if (collection_name in labcas_data_map){
+    	query_folder = query_folder.replace(collection_name,labcas_data_map[collection_name]);
+    }
+    console.log(query_folder);
+    image_dsa_path = query_folder.split("/");
+    console.log(image_dsa_path);
+    console.log("Root");
+    console.log(root_collection);
+    recurse_dsa(root_collection, image_dsa_path.shift(), query_file, image_dsa_path, show_flag,'collection', version, fileid);
+}
+
+function recurse_dsa(sub_folder, sub_name, query_file, image_dsa_path, show_flag, parenttype, version, fileid){
+    console.log("recurse");
+    console.log(sub_folder);
+    console.log(sub_name);
+    console.log(query_file);
+    console.log(image_dsa_path);
+    console.log(localStorage.getItem("dsa_api")+"/folder?parentType="+parenttype+"&parentId="+sub_folder+"&name="+sub_name+"&limit=50&sort=lowerName&sortdir=1");
+    $.ajax({
+        url: localStorage.getItem("dsa_api")+"/folder?parentType="+parenttype+"&parentId="+sub_folder+"&name="+sub_name+"&limit=50&sort=lowerName&sortdir=1",
+        type: 'GET',
+        success: function (data) {
+            if (image_dsa_path.length > 0 && data.length > 0 && data[0]._id){
+		console.log("HERE2");
+                 recurse_dsa(data[0]._id, image_dsa_path.shift(), query_file, image_dsa_path, show_flag, 'folder', version, fileid);
+            }else{
+		console.log("HERE3");
+                if (data.length > 0 && data[0]._id){
+                    $.ajax({
+                        url: localStorage.getItem("dsa_api")+"/item?folderId="+data[0]._id+"&name="+query_file+"&limit=50&sort=lowerName&sortdir=1",
+                        type: 'GET',
+                        success: function (filedata) {
+                            if (filedata.length > 0 && filedata[0]._id){
+                                var download_cmd = "download_file('"+fileid+"','single');";
+                                var details_cmd = "window.open(\"/labcas-ui/f/index.html?file_id="+fileid+"\");";
+                                $("#image_list_table tbody").append("<tr ><td  style='padding-left: 5px; word-wrap: break-word;'><a style='word-wrap: break-word;' href='#' onclick=\"changeFrameSrc('img_frame','"+localStorage.getItem("dsa_image_viewer")+"?image="+filedata[0]._id+"', '"+fileid+"')\">"+decodeURIComponent(query_file)+"</a></td><td class='td-actions text-right'><button type='button' rel='detailbutton' title='Details' style='padding:0px' class='btn btn-info btn-simple btn-link' onclick='"+details_cmd+"'><i class='fa fa-info-circle'></i></button>"+'<button type="button" rel="downloadbutton" title="Download" class="btn btn-success btn-simple btn-link" onclick="'+download_cmd+'"><i class="fa fa-download"></i></button></td></tr>');
+                                if (show_flag){
+                                    $('#loading_viewer').hide();
+                                    $('#viewer_content').show();
+                                    changeFrameSrc("img_frame", localStorage.getItem("dsa_image_viewer")+"?image="+filedata[0]._id, fileid);
+                                }
+                            }else if(image_dsa_path.length == 0 && version != "null"){
+                                recurse_dsa(data[0]._id, version, query_file, image_dsa_path, show_flag, 'folder', "null", fileid);
+                            }
+                            else{
+                                console.log("Something went wrong in recursive file/version search through DSA");
+                            }
+                        }
+                    });
+                }else{
+                    console.log("Something went wrong in recursive folder search through DSA");
+                }
+            }
+        },
+        error: function(e){
+            console.log("failed");
+        }
+    });
+}
+
+
+function save_labcas_acceptance(type){
+    var payload = {}
+    if (type == "login"){
+        payload['userid'] = Cookies.get("user");
+    }else if(type == "anonymous"){
+        payload['userid'] = $('#accept_user').val();
+        payload['email'] = $('#accept_email').val();
+    }
+    console.log(localStorage.getItem("ksdb_labcas_acceptance_save"));
+    $.ajax({
+        url: localStorage.getItem("ksdb_labcas_acceptance_save"),
+        type: 'POST',
+        dataType: "json",
+        data: JSON.stringify(payload),
+        success: function (data) {
+            console.log(data);
+            console.log("now");
+            console.log(Cookies.get('accepted'));
+            Cookies.set('accepted', true);
+            console.log("now2");
+            console.log(Cookies.get('accepted'));
+            window.location.replace("/labcas-ui/download.html?version=7.0.0");
+        },
+        error: function(xhr, status, error) {
+            console.log(xhr.responseText);
+            alert("Labcas acceptance save failed, please reach out to "+localStorage.getItem("support_contact")+" for support.");
+        }
+    });
+}
+function check_labcas_acceptance(source){
+    var username = Cookies.get("user");
+    console.log(localStorage.getItem("ksdb_labcas_acceptance_check"));
+    console.log(source);
+    console.log("OKOK");
+    if (source == "anonymous"){
+        usage_agreement();
+    }else if (source == "login"){
+        $.ajax({
+            url: localStorage.getItem("ksdb_labcas_acceptance_check"),
+            type: 'POST',
+            dataType: "json",
+            data: JSON.stringify({'userid':username}),
+            success: function (data) {
+                console.log("Successfully checked user acceptance "+username);
+                console.log(data);
+                if (!data.accepted){
+                    usage_agreement();
+                }else{
+                    login_redirect();
+                }
+            },
+            error: function(xhr, status, error) {
+                console.log(xhr.responseText);
+                alert("Labcas initiation check failed, please reach out to "+localStorage.getItem("support_contact")+" for support.");
+            }
+        });
+    }
+}
+
+function save_search_profile(){
+	var name = $('#save_profile_name').val();
+	var username = Cookies.get("user");
+	
+	var check_flag = true;
+	if (name == ""){
+		alert("Please enter a name for your search profile to be saved.");
+		check_flag = false;
+	}
+	console.log(name);
+	if (!/^[a-zA-Z 0-9]+$/.test(name)){
+		alert("Please make sure to only use letters, numbers, or space in your search profile name.");
+		check_flag = false;
+	}
+	if (check_flag){
+		var params = get_search_filters();
+		console.log(localStorage.getItem("ksdb_labcas_search_profile_save"));
+		console.log(JSON.stringify({'userid':username, 'profile_name':name, 'profile':params}));
+		localStorage.setItem("active_custom_search_profile",name);
+		$.ajax({
+			url: localStorage.getItem("ksdb_labcas_search_profile_save"),
+			type: 'POST',
+			dataType: "json",
+			data: JSON.stringify({'userid':username, 'profile_name':name, 'profile':params}),
+			success: function (data) {
+				alert("Successfully saved search profile "+name);
+				$('#saved_profiles').append("<option selected value='"+name+"'>"+name+"</option>");
+				window.location.replace("/labcas-ui/s/index.html?search="+params['search'].replace("&","%26"))
+			},
+			error: function(e){
+				alert("Save failed, please reach out to "+localStorage.getItem("support_contact")+" for support.");
+			}
+		});
+	}
+}
+
+function delete_search_profile(){
+	var username = Cookies.get("user");
+	var name = $('#saved_profiles').val();
+
+	console.log(JSON.stringify({'userid':username, 'profile_name':name}));
+	$.ajax({
+		url: localStorage.getItem("ksdb_labcas_search_profile_delete"),
+		type: 'POST',
+		dataType: "json",
+		data: JSON.stringify({'userid':username, 'profile_name':name}),
+		success: function (data) {
+			alert("Successfully deleted search profile "+name);
+			$("#saved_profiles option[value='"+name+"']").remove();
+			localStorage.setItem("active_custom_search_profile","custom");
+			$('#delete_profile').hide();
+			$('#save_profile_name').show();
+                        $('#save_profile').show();
+			window.location.replace("/labcas-ui/s/index.html?search=*")
+		},
+		error: function(e){
+			alert("Save failed, please reach out to "+localStorage.getItem("support_contact")+" for support.");
+		}
+	});
+
+}
+
+function populate_collection_details_protocol_shortname(shortname){
+	$("#collectiondetails-table tbody").append(
+            "<tr>"+
+		"<td class='text-right' valign='top' style='padding: 2px 8px;' width='30%'>Abbreviated Name:</td>"+
+		"<td class='text-left' valign='top' style='padding: 2px 8px;'>"+
+			shortname+
+		"</td>"+
+	"</tr>");
+}
+
+function get_protocol_info(program, pid, field, func){
+	console.log("GETTING PROTOCOL DATA1");
+	console.log(localStorage.getItem("ksdb_labcas_search_protocol_api")+program+localStorage.getItem("ksdb_split_key")+pid);
+	$.ajax({
+		url: localStorage.getItem("ksdb_labcas_search_protocol_api")+program+localStorage.getItem("ksdb_split_key")+pid,
+		type: 'GET',
+		dataType: 'json',
+		success: function (data) {
+			console.log("WOKRED");
+			wait(1000);
+			if (data.length > 0){
+				func(data[0].fields[field]);
+			}
+		},
+		error: function(e){
+		    console.log("Failed to grab search ksdb protocol data");
+		}
+	});
+
+}
+function pdf_viewer(file_id){
+    localStorage.setItem("pdfviewer_item",file_id);
+    window.location.replace("/labcas-ui/pdf/");
+}
+function get_search_profile(name){
+	var username = Cookies.get("user");
+	console.log("search_profiles for"+username);
+	console.log(localStorage.getItem("ksdb_labcas_search_name_api")+username);
+	if (name == "" || name == "custom"){
+		$.ajax({
+			url: localStorage.getItem("ksdb_labcas_search_name_api")+username,
+			type: 'GET',
+			dataType: 'json',
+			success: function (data) {
+				$('#saved_profiles').empty();
+				$('#saved_profiles').append("<option value='custom'>Custom</option>");
+				$.each( data.search_results, function( key, val ) {
+					if (val != ""){
+					if (localStorage.getItem("active_custom_search_profile") == val){
+						$('#saved_profiles').append("<option value='"+val+"' selected>"+val+"</option>");
+						$('#save_profile_name').hide();
+						$('#save_profile').hide();
+						$('#delete_profile').show();
+					}else{
+						$('#saved_profiles').append("<option value='"+val+"'>"+val+"</option>");
+					}
+					}
+				});
+			},
+			error: function(e){
+			    console.log("Failed to grab search profiles");
+			}
+		});
+	}else{
+		console.log(localStorage.getItem("ksdb_labcas_search_profile_api")+username+localStorage.getItem("ksdb_split_key")+name);
+		$.ajax({
+                        url: localStorage.getItem("ksdb_labcas_search_profile_api")+username+localStorage.getItem("ksdb_split_key")+name,
+                        type: 'GET',
+                        success: function (data) {
+                                console.log(data);
+				data = data.replace(/'/g, '"')
+				var search_profile = JSON.parse(data);
+				console.log(search_profile);
+				localStorage.setItem("active_custom_search_profile",name);
+				set_search_filters(search_profile);
+				console.log("Success");
+				$('#save_profile_name').hide();
+				$('#save_profile').hide();
+				$('#delete_profile').show();
+			},
+                        error: function(e){
+                            console.log("Failed to grab search profiles");
+                        }
+                });
+	}
+}
+
+function displayImage(downloadUrl, placeholder){
+        downloadUrl = localStorage.getItem('environment')+"/data-access-api/download?id="+downloadUrl;
+        const thumb = "<div id='image_viewer_container'><img id='image_viewer' alt='' width='50' height='50'/></div>";
+        $("#"+placeholder).html(thumb);
+        const xhr = new XMLHttpRequest();
+
+          xhr.open('GET', downloadUrl, true);
+          xhr.responseType = 'arraybuffer';
+          xhr.setRequestHeader('Authorization', 'Bearer ' + Cookies.get('token'));
+
+          xhr.onload = function () {
+            if (xhr.status === 200) {
+              // Assuming you know the correct MIME type for the image format, e.g., 'image/jpeg'
+              const mimeType = 'image/png';
+              const blob = new Blob([xhr.response], { type: mimeType });
+              const blobUrl = URL.createObjectURL(blob);
+
+              const imgElement = document.getElementById('image_viewer');
+              imgElement.src = blobUrl;
+
+              // Display the image container
+              const imageContainer = document.getElementById('image_viewer_container');
+
+              // Initialize the Viewer.js instance
+              new Viewer(imgElement);
+            } else {
+              console.error('Error downloading the image:', xhr.statusText);
+            }
+          };
+
+          xhr.onerror = function () {
+            console.error('Error downloading the image:', xhr.statusText);
+          };
+
+          xhr.send();
+
+    }
+
+    async function parseDicomFiles(ids, onProgress) {
+        async function ensureDcmjs() {
+            if (window.dcmjs) return;
+            return new Promise(function(resolve, reject) {
+                var script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/dcmjs@0.23.0/build/dcmjs.min.js';
+                script.onload = resolve;
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+        }
+
+        await ensureDcmjs();
+        const total = ids.length;
+        let completed = 0;
+        const docs = [];
+        for (const id of ids) {
+            const url = localStorage.getItem('environment') + '/data-access-api/download?id=' + id;
+            const response = await fetch(url, { headers: { 'Authorization': 'Bearer ' + Cookies.get('token') } });
+            const arrayBuffer = await response.arrayBuffer();
+            const dicomData = dcmjs.data.DicomMessage.readFile(arrayBuffer);
+            const dataset = dcmjs.data.DicomMetaDictionary.naturalizeDataset(dicomData.dict);
+            try {
+                const modality = dataset.Modality;
+                if (modality === 'RTSTRUCT') {
+                    const rfor = (dataset.ReferencedFrameOfReferenceSequence || []);
+                    const refStudies = (rfor[0] && rfor[0].RTReferencedStudySequence) ? rfor[0].RTReferencedStudySequence : [];
+                    const refSeries = (refStudies[0] && refStudies[0].ReferencedSeriesSequence) ? refStudies[0].ReferencedSeriesSequence : [];
+                    const refSeriesUIDs = refSeries.map(s => s.SeriesInstanceUID).filter(Boolean);
+                    console.log('parseDicomFiles: RTSTRUCT detected', {
+                        id,
+                        StudyInstanceUID: dataset.StudyInstanceUID,
+                        SeriesInstanceUID: dataset.SeriesInstanceUID,
+                        ReferencedSeriesUIDs: refSeriesUIDs
+                    });
+                } else {
+                    console.log('parseDicomFiles: instance', { id, Modality: modality, StudyInstanceUID: dataset.StudyInstanceUID, SeriesInstanceUID: dataset.SeriesInstanceUID });
+                }
+            } catch (e) {
+                console.warn('parseDicomFiles: logging failed for id', id, e);
+            }
+            const doc = { id: id };
+            Object.keys(dataset).forEach(function(key) { doc['dicom_' + key] = dataset[key]; });
+            docs.push(doc);
+            completed += 1;
+            if (onProgress) { onProgress(completed, total); }
+        }
+        return Promise.resolve({ response: { docs: docs } });
+    }
+
+    function showOhifProgress() {
+        if ($('#ohifProgressModal').length) {
+            $('#ohifProgressBar').css('width', '0%').attr('aria-valuenow', 0).text('0%');
+            $('#ohifProgressModal').modal({backdrop: 'static', keyboard: false});
+        }
+    }
+
+    function updateOhifProgress(pct) {
+        if ($('#ohifProgressBar').length) {
+            $('#ohifProgressBar').css('width', pct + '%').attr('aria-valuenow', pct).text(pct + '%');
+        }
+    }
+
+    function hideOhifProgress() {
+        if ($('#ohifProgressModal').length) {
+            $('#ohifProgressModal').modal('hide');
+        }
+            
+    }
+    
+    // NEW FUNCTION: generate_ohif_json
+    // This function loads the OHIF DICOM template from assets/documentation/ohif_dcm_template.json,
+    // duplicates the single instance in studies[0].series[0].instances for each dicom id in dicomList,
+    // replaces "dcm_id" in the URL with the current dicom id, and then triggers a download of the resulting JSON.
+    function generate_ohif_json(data) {
+        const dcmobjs = data.response.docs;
+        console.log('generate_ohif_json: creating viewer JSON for', dcmobjs.length, 'objects');
+        $.getJSON("/labcas-ui/assets/documentation/ohif_dcm_template.json", function (originalTemplate) {
+            const STRUCTURAL_KEYS = new Set(["studies", "series", "instances", "metadata"]);
+            const rtstructRefs = [];
+            const modalityCounts = {};
+
+            // Helper to get value from dcmobjNode by key or "dicom_" + key
+            function getDcmValue(key, dcmobjNode) {
+                if (!dcmobjNode) return undefined;
+                const dicomKey = "dicom_" + key;
+                if (dcmobjNode.hasOwnProperty(dicomKey)) return dcmobjNode[dicomKey];
+                if (dcmobjNode.hasOwnProperty(key)) return dcmobjNode[key];
+                return undefined;
+            }
+
+            function unifyPrimitive(templateValue, dcmValue, key, dcmobjNode) {
+                let valueToUse = getDcmValue(key, dcmobjNode);
+                if (valueToUse === undefined) valueToUse = dcmValue;
+                if (Array.isArray(valueToUse) && valueToUse.length === 1) {
+                    valueToUse = valueToUse[0];
+                }
+                const templateType = typeof templateValue;
+                if (templateType === "string") {
+                    return String(valueToUse);
+                } else if (templateType === "number") {
+                    const parsed = parseFloat(valueToUse);
+                    if (!isNaN(parsed)) {
+                        return parsed;
+                    } else {
+                        return undefined;
+                    }
+                } else if (templateType === "boolean") {
+                    return Boolean(valueToUse);
+                } else {
+                    return valueToUse;
+                }
+            }
+
+            function filterTemplate(templateNode, dcmobjNode, modality) {
+                if (Array.isArray(templateNode)) {
+                    for (let i = templateNode.length - 1; i >= 0; i--) {
+                        if (typeof templateNode[i] === "object" && templateNode[i] !== null) {
+                            filterTemplate(templateNode[i], dcmobjNode, modality);
+                            if (
+                                (Array.isArray(templateNode[i]) && templateNode[i].length === 0) ||
+                                (typeof templateNode[i] === "object" && Object.keys(templateNode[i]).length === 0)
+                            ) {
+                                templateNode.splice(i, 1);
+                            }
+                        }
+                    }
+                } else if (typeof templateNode === "object" && templateNode !== null) {
+                    for (const key of Object.keys(templateNode)) {
+                        // Always retain the "url" field for post-processing
+                        if (key === "url") continue;
+                        const value = templateNode[key];
+                        const isStructural = STRUCTURAL_KEYS.has(key);
+                        if (isStructural) {
+                            filterTemplate(value, dcmobjNode, modality);
+                        } else {
+                            const dcmValue = getDcmValue(key, dcmobjNode);
+                            if (typeof value === "object" && !Array.isArray(value) && value !== null) {
+                                if (dcmValue === undefined) {
+                                    if (modality !== "RTSTRUCT") {
+                                        delete templateNode[key];
+                                    }
+                                } else if (typeof dcmValue === "object" && dcmValue !== null) {
+                                    filterTemplate(value, dcmValue, modality);
+                                    if (Object.keys(value).length === 0) {
+                                        delete templateNode[key];
+                                    }
+                                } else {
+                                    templateNode[key] = dcmValue;
+                                }
+                            } else if (Array.isArray(value)) {
+                                if (dcmValue === undefined) {
+                                    if (modality !== "RTSTRUCT") {
+                                        delete templateNode[key];
+                                    }
+                                } else if (Array.isArray(dcmValue)) {
+                                    templateNode[key] = dcmValue;
+                                } else {
+                                    templateNode[key] = [dcmValue];
+                                }
+                            } else {
+                                if (dcmValue === undefined) {
+                                    if (modality !== "RTSTRUCT") {
+                                        delete templateNode[key];
+                                    }
+                                } else {
+                                    const unifiedValue = unifyPrimitive(value, dcmValue, key, dcmobjNode);
+                                    if (unifiedValue === undefined) {
+                                        if (modality !== "RTSTRUCT") {
+                                            delete templateNode[key];
+                                        }
+                                    } else {
+                                        templateNode[key] = unifiedValue;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            function replaceUrlStrings(obj, newUrl) {
+                if (Array.isArray(obj)) {
+                    for (let i = 0; i < obj.length; i++) {
+                        if (typeof obj[i] === "string" && obj[i].includes("dicomweb")) {
+                            obj[i] = obj[i].replace(/dicomweb:.*$/, "wadouri:" + newUrl);
+                        } else if (typeof obj[i] === "object" && obj[i] !== null) {
+                            replaceUrlStrings(obj[i], newUrl);
+                        }
+                    }
+                } else if (typeof obj === "object" && obj !== null) {
+                    for (const key of Object.keys(obj)) {
+                        if (typeof obj[key] === "string" && obj[key].includes("dicomweb")) {
+                            obj[key] = obj[key].replace(/dicomweb:.*$/, "wadouri:" + newUrl);
+                        } else if (typeof obj[key] === "object" && obj[key] !== null) {
+                            replaceUrlStrings(obj[key], newUrl);
+                        }
+                    }
+                }
+            }
+            // --- New batching logic ---
+            const studiesMap = {};
+            for (let i = 0; i < dcmobjs.length; i++) {
+                const dcmobj = dcmobjs[i];
+                const modality = getDcmValue("Modality", dcmobj);
+                modalityCounts[modality] = (modalityCounts[modality] || 0) + 1;
+                // Clone template for filtering
+                const cloned = JSON.parse(JSON.stringify(originalTemplate));
+                filterTemplate(cloned, dcmobj, modality);
+                // Find the study/series/instance template nodes
+                const studyTemplate = cloned.studies && cloned.studies[0] ? cloned.studies[0] : {};
+                // Choose series template by modality from originalTemplate to avoid corrupting RTSTRUCT metadata
+                const originalStudyTemplate = originalTemplate.studies && originalTemplate.studies[0] ? originalTemplate.studies[0] : {};
+                let seriesTemplate = {};
+                if (originalStudyTemplate.series && Array.isArray(originalStudyTemplate.series)) {
+                    seriesTemplate = originalStudyTemplate.series.find(function(series){
+                        return series && series.Modality === modality;
+                    }) || originalStudyTemplate.series[0] || {};
+                }
+                const instanceTemplate = seriesTemplate.instances && seriesTemplate.instances[0] ? seriesTemplate.instances[0] : {};
+                // Prepare instance object
+                const environment = localStorage.getItem("environment") || "";
+                const newDownloadUrl = environment + "/data-access-api/download?id=" + dcmobj.id;
+                const instanceObj = JSON.parse(JSON.stringify(instanceTemplate));
+                if (instanceObj.metadata) {
+                    filterTemplate(instanceObj.metadata, dcmobj, modality);
+                }
+                replaceUrlStrings(instanceObj, newDownloadUrl);
+                // Extract UIDs
+                const studyUID = getDcmValue("StudyInstanceUID", dcmobj);
+                const seriesUID = getDcmValue("SeriesInstanceUID", dcmobj);
+                if (modality === "RTSTRUCT") {
+                    try {
+                        const rfor = getDcmValue("ReferencedFrameOfReferenceSequence", dcmobj) || [];
+                        const refStudies = (rfor[0] && rfor[0].RTReferencedStudySequence) ? rfor[0].RTReferencedStudySequence : [];
+                        const refSeries = (refStudies[0] && refStudies[0].RTReferencedSeriesSequence) ? refStudies[0].RTReferencedSeriesSequence : [];
+                        const refSeriesUIDs = (refSeries || []).map(function(s){ return s.SeriesInstanceUID; }).filter(Boolean);
+                        rtstructRefs.push({ rtSeriesUID: seriesUID, studyUID: studyUID, refSeriesUIDs: refSeriesUIDs });
+                    } catch (e) {
+                        console.warn('OHIF JSON: failed to extract RTSTRUCT references for series', seriesUID, e);
+                    }
+                }
+                // --- Grouping ---
+                if (!studiesMap[studyUID]) {
+                    const studyObj = JSON.parse(JSON.stringify(studyTemplate));
+                    filterTemplate(studyObj, dcmobj);
+                    studyObj.series = {};
+                    studiesMap[studyUID] = studyObj;
+                }
+                const studyObj = studiesMap[studyUID];
+                if (!studyObj.series[seriesUID]) {
+                    const seriesObj = JSON.parse(JSON.stringify(seriesTemplate));
+                    filterTemplate(seriesObj, dcmobj);
+                    seriesObj.instances = [];
+                    studyObj.series[seriesUID] = seriesObj;
+                }
+                const seriesObj = studyObj.series[seriesUID];
+                seriesObj.instances.push(instanceObj);
+            }
+            // Convert maps to arrays for OHIF
+            const final = { studies: [] };
+            for (const studyUID in studiesMap) {
+                const studyObj = studiesMap[studyUID];
+                studyObj.series = Object.values(studyObj.series);
+                final.studies.push(studyObj);
+            }
+            // Cross-check and patch RTSTRUCT references if missing
+            try {
+                const presentSeries = new Set();
+                final.studies.forEach(function(st){
+                    (st.series || []).forEach(function(se){
+                        if (se && se.SeriesInstanceUID) presentSeries.add(se.SeriesInstanceUID);
+                    });
+                });
+                rtstructRefs.forEach(function(ref){
+                    (ref.refSeriesUIDs || []).forEach(function(uid){
+                        if (!presentSeries.has(uid)) {
+                            console.warn('OHIF JSON WARNING: RTSTRUCT references missing target series', { referencedSeriesUID: uid, inStudy: ref.studyUID, rtSeriesUID: ref.rtSeriesUID });
+                        }
+                    });
+                });
+                // Patch missing references using first compatible image series in study
+                (final.studies || []).forEach(function(st) {
+                    const studyUID = st.StudyInstanceUID;
+                    const seriesArr = Array.isArray(st.series) ? st.series : [];
+                    const candidates = seriesArr.filter(function(se){ return se && se.Modality && se.Modality !== 'RTSTRUCT'; });
+                    const candidateByFoR = {};
+                    candidates.forEach(function(se){
+                        const inst = (se.instances && se.instances[0]) || {};
+                        const md = inst.metadata || {};
+                        const forUID = md.FrameOfReferenceUID;
+                        if (forUID && !candidateByFoR[forUID]) {
+                            candidateByFoR[forUID] = se;
+                        }
+                    });
+                    seriesArr.forEach(function(se){
+                        if (!se || se.Modality !== 'RTSTRUCT') return;
+                        const inst = (se.instances && se.instances[0]) || {};
+                        inst.metadata = inst.metadata || {};
+                        const md = inst.metadata;
+                        const hasRforSeq = Array.isArray(md.ReferencedFrameOfReferenceSequence) && md.ReferencedFrameOfReferenceSequence.length > 0;
+                        const hasRefSeriesSeq = hasRforSeq && Array.isArray((md.ReferencedFrameOfReferenceSequence[0].RTReferencedStudySequence || [])[0]?.RTReferencedSeriesSequence) && ((md.ReferencedFrameOfReferenceSequence[0].RTReferencedStudySequence || [])[0].RTReferencedSeriesSequence.length > 0);
+                        if (!hasRefSeriesSeq) {
+                            const forUID = md.FrameOfReferenceUID;
+                            const targetSeries = (forUID && candidateByFoR[forUID]) ? candidateByFoR[forUID] : candidates[0];
+                            if (targetSeries) {
+                                const tInst = (targetSeries.instances && targetSeries.instances[0]) || {};
+                                const tMd = tInst.metadata || {};
+                                const fallbackSOPClass = tMd.SOPClassUID || '1.2.840.10008.5.1.4.1.1.2';
+                                const ref = [{
+                                    FrameOfReferenceUID: forUID || tMd.FrameOfReferenceUID,
+                                    RTReferencedStudySequence: [{
+                                        StudyInstanceUID: studyUID || md.StudyInstanceUID,
+                                        RTReferencedSeriesSequence: [{
+                                            SeriesInstanceUID: targetSeries.SeriesInstanceUID,
+                                            ContourImageSequence: [{
+                                                ReferencedSOPClassUID: fallbackSOPClass,
+                                                ReferencedSOPInstanceUID: tMd.SOPInstanceUID
+                                            }]
+                                        }]
+                                    }]
+                                }];
+                                md.ReferencedFrameOfReferenceSequence = ref;
+                                md.RTReferencedSeriesSequence = [{
+                                    SeriesInstanceUID: targetSeries.SeriesInstanceUID,
+                                    ContourImageSequence: [{
+                                        ReferencedSOPClassUID: fallbackSOPClass,
+                                        ReferencedSOPInstanceUID: tMd.SOPInstanceUID
+                                    }],
+                                    ReferencedInstanceSequence: [{
+                                        ReferencedSOPClassUID: fallbackSOPClass,
+                                        ReferencedSOPInstanceUID: tMd.SOPInstanceUID
+                                    }]
+                                }];
+                                md.ReferencedSeriesSequence = md.RTReferencedSeriesSequence;
+                                se.metadata = se.metadata || {};
+                                if (!Array.isArray(se.metadata.ReferencedFrameOfReferenceSequence) || se.metadata.ReferencedFrameOfReferenceSequence.length === 0) {
+                                    se.metadata.ReferencedFrameOfReferenceSequence = ref;
+                                }
+                                se.metadata.RTReferencedSeriesSequence = se.metadata.RTReferencedSeriesSequence || [];
+                                if (se.metadata.RTReferencedSeriesSequence.length === 0) {
+                                    se.metadata.RTReferencedSeriesSequence = md.RTReferencedSeriesSequence;
+                                }
+                                se.ReferencedFrameOfReferenceSequence = se.ReferencedFrameOfReferenceSequence || ref;
+                                se.RTReferencedSeriesSequence = se.RTReferencedSeriesSequence || md.RTReferencedSeriesSequence;
+                                if (inst) {
+                                    if (!Array.isArray(inst.ReferencedFrameOfReferenceSequence) || inst.ReferencedFrameOfReferenceSequence.length === 0) {
+                                        inst.ReferencedFrameOfReferenceSequence = ref;
+                                    }
+                                    if (!Array.isArray(inst.RTReferencedSeriesSequence) || inst.RTReferencedSeriesSequence.length === 0) {
+                                        inst.RTReferencedSeriesSequence = md.RTReferencedSeriesSequence;
+                                    }
+                                }
+                            }
+                        }
+                    });
+                });
+            } catch (e) {
+                console.warn('OHIF JSON: RTSTRUCT reference patching failed', e);
+            }
+            const finalJson = JSON.stringify(final, null, 2);
+            console.log("Generated simulated.json content:", finalJson);
+            if ("serviceWorker" in navigator) {
+                navigator.serviceWorker
+                    .register("/labcas-ui/sw.js")
+                    .then(function (reg) {
+                        console.log("Service Worker registered with scope:", reg.scope);
+                        if (navigator.serviceWorker.controller) {
+                            navigator.serviceWorker.controller.postMessage({
+                                type: "CLEAR_CACHE",
+                                url: "/labcas-ui/simulated.json"
+                            });
+                            navigator.serviceWorker.controller.postMessage({
+                                type: "SET_BLOB",
+                                url: "/labcas-ui/simulated.json",
+                                data: finalJson
+                            });
+                        } else {
+                            navigator.serviceWorker.ready.then(function () {
+                                if (navigator.serviceWorker.controller) {
+                                    navigator.serviceWorker.controller.postMessage({
+                                        type: "CLEAR_CACHE",
+                                        url: "/labcas-ui/simulated.json"
+                                    });
+                                    navigator.serviceWorker.controller.postMessage({
+                                        type: "SET_BLOB",
+                                        url: "/labcas-ui/simulated.json",
+                                        data: finalJson
+                                    });
+                                }
+                            });
+                        }
+                    })
+                    .catch(function (error) {
+                        console.error("Service Worker registration failed:", error);
+                    });
+            }
+            if ($("#ohif_progress_modal").length) {
+                $("#ohif_progress_modal").modal("hide");
+            }
+            window.location.href = "/labcas-ui/oh/index.html";
+        });
+    }
+
+// New function: promptForEmail - displays a modal prompting the user to enter their email.
+function promptForEmail() {
+  console.log("zip email: promptForEmail entered");
+  if ($('#emailModal').length === 0) {
+    console.log("promptForEmail: no modal found, creating modal.");
+    var lower_threshold = humanFileSize(parseInt(localStorage.getItem("DOWNLOAD_THRESHOLD")) || 104857600, "MB");
+    var upper_threshold = humanFileSize(parseInt(localStorage.getItem("file_size_upper_limit")) || 104857600, "MB");
+    var modalHtml = '<div class="modal fade" id="emailModal" tabindex="-1" role="dialog" aria-labelledby="emailModalLabel" aria-hidden="true">' +
+      '<div class="modal-dialog" role="document">' +
+        '<div class="modal-content">' +
+          '<div class="modal-header">' +
+            '<h5 class="modal-title" id="emailModalLabel">Download size is between than '+lower_threshold+' and '+upper_threshold+', please enter Your Email for a zip file of the downloads to be emailed to you.</h5>' +
+            '<button type="button" class="close" data-dismiss="modal" aria-label="Close">' +
+              '<span aria-hidden="true">&times;</span>' +
+            '</button>' +
+          '</div>' +
+          '<div class="modal-body">' +
+            '<input type="email" id="emailInput" class="form-control" placeholder="Enter your email" />' +
+          '</div>' +
+          '<div class="modal-footer">' +
+            '<button type="button" class="btn btn-primary" id="submitEmailBtn">Submit</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+    $('body').append(modalHtml);
+  }
+  $('#emailModal').modal('show');
+}
+
+$(document).off('click', '#submitEmailBtn').on('click', '#submitEmailBtn', function() {
+  console.log("zip email: submitEmailBtn clicked");
+  sendZipRequest();
+});
+
+// New function: sendZipRequest - sends a POST request with the provided email.
+function sendZipRequest() {
+  console.log("zip email: sendZipRequest entered");
+  console.log("zip email: checking if user is logged in, token: " + Cookies.get('token'));
+  // Check if user is logged in. If not, show a modal with the access denied message.
+  if (!Cookies.get('JasonWebToken') || Cookies.get('JasonWebToken') === "None") {
+    // Display access denied message using the error modal business logic.
+    $('#alertHTML').html("Access Denied: You do not have permission to download data. Please apply for an account to get access and see additional data.");
+    $('#errorModal').modal({backdrop: 'static', keyboard: false});
+    $('#emailModal').modal('hide');
+    $('#errorModal').modal('show');
+    return;
+  }
+  
+  var email = $('#emailInput').val();
+  console.log("sendZipRequest: email captured: " + email);
+  // Optional UI inputs for additional parameters
+  var queryVal = $('#zipQuery').val(); // optional: Solr files query
+  console.log("sendZipRequest: queryVal captured: " + queryVal);
+  var ids = $('#zipFileId').val();       // optional: comma-separated file IDs
+  console.log("sendZipRequest: ids captured: " + ids);
+  
+  if (!email) {
+    console.log("sendZipRequest: no valid email entered");
+    alert("Please enter a valid email");
+    return;
+  }
+  
+  // Build the x-www-form-urlencoded payload
+  var payload = "email=" + encodeURIComponent(email);
+  if (queryVal && queryVal.trim() !== "") {
+    // If query is provided, it takes priority
+    payload += "&query=" + encodeURIComponent(queryVal.trim());
+  } else if (ids && ids.trim() !== "") {
+    // Use the provided comma-separated file IDs
+    var idsArray = ids.split(",").map(function(id) { return id.trim(); }).filter(function(id) { return id.length > 0; });
+    idsArray.forEach(function(id) {
+      payload += "&id=" + encodeURIComponent(id);
+    });
+  } else {
+    // Fallback: repopulate from download_list saved in localStorage
+    var compressedDownloadList = localStorage.getItem("download_list");
+    if (compressedDownloadList) {
+      var download_list = JSON.parse(LZString.decompress(compressedDownloadList));
+      Object.keys(download_list).forEach(function(fileId) {
+        payload += "&id=" + encodeURIComponent(fileId);
+      });
+    }
+  }
+  console.log("sendZipRequest: payload constructed: " + payload);
+  console.log("DEBUG: Email value:", email);
+  console.log("DEBUG: #zipQuery value:", $('#zipQuery').val());
+  console.log("DEBUG: #zipFileId value:", $('#zipFileId').val());
+  
+  // Final URL to POST to
+  var finalUrl = "https://edrn-labcas.jpl.nasa.gov/data-access-api/zip";
+  console.log("sendZipRequest: sending POST request to: " + finalUrl);
+  console.log("sendZipRequest: Payload: " + payload);
+  
+  $.ajax({
+    url: finalUrl,
+    type: "POST",
+    data: payload,
+    contentType: "application/x-www-form-urlencoded",
+    crossDomain: true,
+    xhrFields: {
+        withCredentials: true
+    },
+    beforeSend: function(xhr) {
+        xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get("JasonWebToken"));
+    },
+    success: function(response) {
+      $('#emailModal').modal('hide');
+      alert("Download initiated successfully: " + response);
+      window.location.replace(Cookies.get('login_redirect') || "/labcas-ui/");
+    },
+    error: function(xhr, status, error) {
+      alert("Error initiating download: " + error);
+    }
+  });
 }

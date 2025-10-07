@@ -1,0 +1,113 @@
+{
+    "studies": [
+      {
+        "StudyInstanceUID": "1.2.840.113711.964254.1.10604.624884533.26.2116281012.1305880",
+        "StudyDate": "20201109",
+        "StudyDescription" : "LCS Mammography-Dx-Digital-Bilateral",
+        "StudyTime": "",
+        "PatientName": "Doe^Anonymized",
+        "PatientID": "LIDC-IDRI-0001",
+        "AccessionNumber": "",
+        "PatientAge": "",
+        "PatientSex": "",
+        "series": [
+            {
+          "SeriesInstanceUID": "1.2.840.113619.2.408.4738430.14986837.24193.1604924124.996",
+          "SeriesDescription": "FAT: Ax LAVA Flex BH POST",
+          "SeriesNumber": 1100,
+          "SeriesTime": "184041",
+          "Modality": "MR",
+          "SliceThickness": 5,
+          "instances": [
+            {
+              "metadata": {
+                "Columns": 512,
+                "Rows": 512,
+                "InstanceNumber": 52,
+                "SOPClassUID": "1.2.840.10008.5.1.4.1.1.4",
+                "AcquisitionNumber": 1,
+                "PhotometricInterpretation": "MONOCHROME2",
+                "BitsAllocated": 16,
+                "BitsStored": 16,
+                "PixelRepresentation": 1,
+                "RescaleIntercept" : 0,
+                "RescaleSlope" : 1,
+                "SamplesPerPixel": 1,
+                "PixelSpacing": [
+                  0.7031,
+                  0.7031
+                ],
+                "HighBit": 15,
+                "ImageOrientationPatient": [
+                  0.99861,
+                  0,
+                  -0.05267,
+                  0,
+                  1,
+                  0
+                ],
+                "ImagePositionPatient": [
+                  -177.237,
+                  -173.648,
+                  284.287
+                ],
+                "FrameOfReferenceUID": "1.2.840.113619.2.408.4738430.14986837.25967.1604923979.195",
+                "ImageType": [
+                  "DERIVED",
+                  "PRIMARY",
+                  "DIXON",
+                  "FAT"
+                ],
+                "Modality": "MR",
+                "SOPInstanceUID": "1.2.840.113619.2.408.4738430.14986837.24193.1604924125.160",
+                "SeriesInstanceUID": "1.2.840.113619.2.408.4738430.14986837.24193.1604924124.996",
+                "StudyInstanceUID": "1.2.840.113711.964254.1.10604.624884533.26.2116281012.1305880",
+                "WindowCenter": 2926,
+                "WindowWidth": 5853,
+                "SeriesDate": "20201109",
+                "AcquisitionDate": "20201109",
+                "AcquisitionTime": "184041",
+                "PatientWeight": 86.18
+              },
+                "url": "dicomweb:dcm_url"
+            }
+          ]
+        },
+        {
+          "SeriesInstanceUID": "1.2.752.243.1.1.20241023113055135.3800.32231.1",
+          "SeriesDescription": "RS: Unapproved Structure Set",
+          "SeriesNumber": 1,
+          "SeriesTime": "113055.000000",
+          "Modality": "RTSTRUCT",
+          "instances": [
+            {
+              "url": "dicomweb:/labcas-data/labcas-backend/archive/edrn/RS1.2.752.243.1.1.20241023113055135.3800.32231.dcm",
+              "metadata": {
+                "SOPClassUID": "1.2.840.10008.5.1.4.1.1.481.3",
+                "SOPInstanceUID": "1.2.752.243.1.1.20241023113055135.3800.32231",
+                "Modality": "RTSTRUCT",
+                "FrameOfReferenceUID": "1.2.840.113619.2.55.1.1762891702.2377.1404213696.9.9308.0.12",
+        
+                "ReferencedFrameOfReferenceSequence": [ {
+                  "FrameOfReferenceUID": "1.2.840.113619.2.55.1.1762891702.2377.1404213696.9.9308.0.12",
+                  "RTReferencedStudySequence": [ {
+                    "StudyInstanceUID": "2.16.840.1.114151.2.2.1.41811.6649.23888904",
+                    "ReferencedSeriesSequence": [ {
+                      "SeriesInstanceUID": "1.2.840.113619.2.55.1.1762891702.2377.1404213696.14",
+                      "ContourImageSequence": [ {
+                        "ReferencedSOPClassUID": "1.2.840.10008.5.1.4.1.1.2",
+                        "ReferencedSOPInstanceUID": "1.2.840.113619.2.55.1.1762891702.2377.1404213696.100.86"
+                      } ]
+                    } ]
+                  } ]
+                } ]
+              }
+            }
+          ]
+        }
+        ],
+        "NumInstances": 1,
+        "Modalities": "MR"
+      }
+    ]
+  }
