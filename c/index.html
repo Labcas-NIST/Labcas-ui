@@ -154,7 +154,7 @@
                       <p class="card-category">Explore or Download</p>
                     </div>
                     <div class="card-body">
-                      <!-- Enhanced radio buttons for hierarchy mode selection -->
+                      <!-- Hierarchy mode selection -->
                       <style>
                         .hierarchy-radio-group {
                           display: flex;
@@ -429,10 +429,8 @@
                     elt.tagsinput('add', tagObj);
                 });
 
-                 console.log(elt.val());
                 $('#hierarchy_').html("");
-                generate_hierarchy_based_on_tags().then(() => console.log('Parent function executed successfully'))
-      .catch((error) => console.log(error));
+                generate_hierarchy_based_on_tags().catch((error) => console.error(error));
                 localStorage.setItem("hierarchy_tags_" + localStorage.getItem('last_collection_id'), elt.val());
             }
         }).disableSelection();
@@ -472,8 +470,7 @@
           elt.tagsinput('add', {
             "value": this.value
           });
-          generate_hierarchy_based_on_tags().then(() => console.log('Parent function executed successfully'))
-            .catch((error) => console.log(error));
+          generate_hierarchy_based_on_tags().catch((error) => console.error(error));
         }
       });
       localStorage.setItem("current_collection_id", get_var["collection_id"]);
@@ -484,9 +481,7 @@
         $('#hierarchy_').html("");
         
         if (event.type == "itemRemoved"){
-            console.log("add124");
-            generate_hierarchy_based_on_tags().then(() => console.log('Parent function executed successfully'))
-  .catch((error) => console.log(error));
+            generate_hierarchy_based_on_tags().catch((error) => console.error(error));
         }
 
         localStorage.setItem("hierarchy_tags_" + get_var["collection_id"], elt.val());
