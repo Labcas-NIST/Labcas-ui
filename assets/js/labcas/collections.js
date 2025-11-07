@@ -86,6 +86,7 @@ function fill_collection_metadata(data){
 
     var get_var = get_url_vars();
     $.each(data.response.docs, function(key, value) {
+
         if (value.CollectionId != get_var["collection_id"]){
             return;
         }
@@ -109,6 +110,8 @@ function fill_collection_metadata(data){
         }
 
         if (value.id.split("/").length - 3 > 0){
+            console.log("value.id");
+            console.log(value.id);
             if (collapse_dict[prev_dataset_id] == 1){
                 dataset_html += "<div id='"+prev_dataset_id+"' class='collapse'>";
                 collapse_dict[prev_dataset_id] += 1;
@@ -506,9 +509,7 @@ function fill_datasets_data(data){
         "</a>"+
                 "</div>"+
                 "<div class=\"td-actions col-md-1 text-right\" valign='middle' style='padding: 0px 8px; vertical-align: middle; height: 25px'>"+
-                    "<button type=\"button\" rel=\"tooltip\" title=\"Favorite\" onclick=\"save_favorite('"+value.id+"', 'FavoriteDatasets', this)\" class=\"btn btn-simple btn-link\" style='position: absolute;left: -100px; top: 50%; transform: translateY(-50%); color: "+color+"'>"+
-                        "<i class=\"fa fa-star\"></i>"+
-                    "</button>"+
+                    
                     image_div +
                     "<button type=\"button\" rel=\"downloadbutton\" title=\"Download\" class=\"btn btn-danger btn-simple btn-link\" onclick=\"download_dataset('"+html_safe_id+"')\" style='position: absolute;left: 0px; top: 50%; transform: translateY(-50%); color: green;'>"+
                                         "<i class=\"fa fa-download\"></i>"+
@@ -638,10 +639,11 @@ function setup_labcas_data(datatype, query, dataset_query){
     });
         var get_var = get_url_vars();
         var collection_file_exists = false;
-        if(get_var["collection_id"] == "NIST_Flow_Cytometry_Standards_Consortium" || get_var["collection_id"] == "Genome_Editing_Consortium" || get_var["collection_id"] == "Microbial"){
+        console.log("HERHERHER");
+        if(get_var["collection_id"] == "NIST_Flow_Cytometry_Standards_Consortium" || get_var["collection_id"] == "Genome_Editing_Consortium" || get_var["collection_id"] == "Microbial" || get_var["collection_id"] == "flow_cytometry_stage"){
             console.log("documentation");
             //query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=DatasetId:"+value.id+"&wt=json&sort=FileName%20asc&indent=true", fill_collection_metadata);
-            query_labcas_api("/nist/assets/documentation/collection_file_documentation.json?version=5.1.0", fill_collection_metadata);
+            query_labcas_api("/nist/assets/documentation/collection_file_documentation.json?version=5.1.1", fill_collection_metadata);
         }else{
             $('#collection_level_files').hide();
 
