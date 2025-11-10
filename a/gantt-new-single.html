@@ -258,7 +258,7 @@ let myLabels = svg.selectAll("myLabels")
 
     function update_virtual_file_table(selected) {
       // Your existing logic here...
-      console.log(selected);
+      // removed debug log
         if (window.parent && window.parent.setup_labcas_hierarchy_data) {
             window.parent.setup_labcas_hierarchy_data(localStorage.getItem("hierarchy_file_query"), selected, 0);
         }

@@ -66,7 +66,7 @@ async function createGanttChart(cell_type, divid) {
     var cell_button_html = "<button id='"+divid+"_toggle' class='btn btn-primary'>"+cell_type+"</button>"
     document.getElementById(divid+'_title').innerHTML = cell_button_html;
     //const response = await fetch('https://labcas.jpl.nasa.gov/nist/assets/tmp/data.json');
-    console.log("HERE");
+    // removed debug log
     const response = await fetch('https://ddsa-labcas-staging.jpl.nasa.gov/labcas-ui/assets/tmp/'+cell_type+'_new_data.json');
     const data = await response.json();
 
@@ -143,7 +143,7 @@ async function createGanttChart(cell_type, divid) {
         };
         chartData.push(existingTrace);
       } else {
-          //console.log("existigng2")
+          
         // Add the data to the existing trace
         existingTrace.x.push(new Date(row.EventDate));
         existingTrace.y.push(row.MammalianCellCode + yOffset[yOffsetKey] * 0.01); // Adjust y value with offset
@@ -184,7 +184,7 @@ async function createGanttChart(cell_type, divid) {
     Plotly.newPlot(divid, chartData, layout, {
       displayModeBar: false
     });
-    console.log(chartData);
+    // removed debug log
 }
 
 createGanttChart('Jurkat','chartDiv1');

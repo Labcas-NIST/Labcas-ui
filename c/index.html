@@ -133,7 +133,7 @@
                 <div class="col-md-12 ml-auto mr-auto" id="collection_level_files">
                   <div class="card card-tasks">
                     <div class="card-header ">
-                      <h4 class="card-title">Collection Level Files</h4>
+                      <h4 class="card-title">Dataset Level Documents</h4>
                       <p class="card-category">Interactively Explore</p>
                     </div>
                     <div class="card-body" style="padding: 0px 15px 10px 15px">
@@ -149,27 +149,78 @@
                 </div>
                 <div class="col-md-12 ml-auto mr-auto" id="datasets_in_collection">
                   <div class="card card-tasks">
-                    <div class="card-header ">
+                    <div class="card-header">
                       <h4 class="card-title">Datasets in this Collection</h4>
                       <p class="card-category">Explore or Download</p>
                     </div>
-                    <div class="card-body"> Add Folder Grouping Heirarchy:
-                      <hr style="padding:0; padding-bottom:5px; margin: 0">
-                      <input id="view_tags" type="text" value="" />
-                      <div>
-                          <div class="row"><div class="col-md-8"><select id="view_tag_select" class="form-control input-sm" data-style="btn-default btn-outline" data-menu-style="dropdown-blue"><option>Native Hierarchy</option><option>Default</option></select> </div> <div class="col-md-1"><input type="checkbox" id="virtual_expand_all" class="form-control" style="display: none; width:36px;height:36px"></div><div class="col-md-3" id="virtual_expand_all_label" style="line-height: 36px; display: none">Expand All?</div></div>
-                          <!--<div class="row"><div class="col-md-8"><select id="view_tag_select" class="form-control input-sm" data-style="btn-default btn-outline" data-menu-style="dropdown-blue"><option>Native Hierarchy</option><option>Default</option></select> </div> <div class="col-md-1"><input type="checkbox" id="virtual_expand_all" class="form-control" style="display: none; width:36px;height:36px"></div><div class="col-md-3" id="virtual_expand_all_label" style="line-height: 36px; display: none">Expand All?</div></div>-->
-                        <div class="table-full-width">
-                          <div id="hierarchy_">
-                            <center>
-                              <img id="loading_hierarchy" class="collapse hide" height="50px" width="50px" src="/nist/assets/img/loading.gif">
-                            </center>
-                          </div>
-                          <div id="datasets-table">
-                            <center>
-                              <img id="loading_dataset" class="collapse show" height="50px" width="50px" src="/nist/assets/img/loading.gif">
-                            </center>
-                          </div>
+                    <div class="card-body">
+                      <!-- Hierarchy mode selection -->
+                      <style>
+                        .hierarchy-radio-group {
+                          display: flex;
+                          flex-direction: column;
+                          width: 95%;
+                          margin: 0 auto 1rem auto;
+                          padding-left: 1.5rem;
+                          padding-right: 1.5rem;
+                          box-sizing: border-box;
+                        }
+                        .hierarchy-radio-group .form-check {
+                          margin-bottom: 0.5rem;
+                          align-items: flex-start;
+                        }
+                        .hierarchy-radio-group .form-check-input {
+                          width: 1.25em;
+                          height: 1.25em;
+                          margin-top: 0.2em;
+                        }
+                        .hierarchy-radio-group .form-check-label {
+                          font-size: 1rem;
+                          line-height: 1.5;
+                          font-weight: 400;
+                          color: #222;
+                          margin-left: 0.75em;
+                          word-break: break-word;
+                          white-space: normal;
+                        }
+                      </style>
+                      <div class="hierarchy-radio-group">
+                        <div class="form-check">
+                          <input class="form-check-input" type="radio" name="hierarchyMode" id="radio_native_hierarchy" value="native">
+                          <label class="form-check-label" for="radio_native_hierarchy">
+                            Datasets - Uploaded Native Hierarchy
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="radio" name="hierarchyMode" id="radio_default_hierarchy" value="default" checked>
+                          <label class="form-check-label" for="radio_default_hierarchy" id="default_hierarchy_label">
+                            Default -
+                            <span id="default_hierarchy_tags_label">WorkingGroup | InstrumentCode | SiteCode | ProtocolID | ExperimentType | SampleName</span>
+                          </label>
+                        </div>
+                      </div>
+                      <div class="d-flex align-items-center mb-2">
+                        <span style="width: 300px">Build your own hierarchy:&nbsp;</span>
+                        <select id="view_tag_select" class="form-control input-sm" data-style="btn-default btn-outline" data-menu-style="dropdown-blue" style="max-width: 300px;">
+                          <option>Select Metadata Tags</option>
+                          <!-- More options dynamically populated -->
+                        </select>
+                      </div>
+                      <input id="view_tags" type="text" value="" class="mb-2" />
+                      <div class="d-flex align-items-center mb-2">
+                        <input type="checkbox" id="virtual_expand_all" class="form-control" style="width:20px;height:20px; display: none;">
+                        <div id="virtual_expand_all_label" style="line-height: 20px; display: none;">&nbsp;Expand All?</div>
+                      </div>
+                      <div class="table-full-width">
+                        <div id="hierarchy_">
+                          <center>
+                            <img id="loading_hierarchy" class="collapse hide" height="50px" width="50px" src="/nist/assets/img/loading.gif">
+                          </center>
+                        </div>
+                        <div id="datasets-table">
+                          <center>
+                            <img id="loading_dataset" class="collapse show" height="50px" width="50px" src="/nist/assets/img/loading.gif">
+                          </center>
                         </div>
                       </div>
                     </div>
@@ -264,12 +315,36 @@
   <script src="/nist/assets/js/labcas/authentication.js?version=5.1.0"></script>
   <script src="/nist/assets/js/labcas/utils.js?version=5.1.0"></script>
   <script src="/nist/assets/js/labcas/search.js?version=5.1.0"></script>
-  <script src="/nist/assets/js/labcas/collections.js?version=5.1.0"></script>
+  <script src="/nist/assets/js/labcas/collections.js?version=5.1.1"></script>
   <script src="/nist/assets/js/labcas/hierarchy_filter_utils_fast.js?version=5.1.0"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-X0YH110WES"></script> <script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-X0YH110WES'); </script>
   <script type="text/javascript">
     var get_var = get_url_vars();
     var dataset_id = get_var["collection_id"] + "/" + get_var["collection_id"];
+
+    // Function to update the Default radio label with tags for the current collection
+    function updateDefaultRadioLabel() {
+      $.getJSON('/nist/assets/conf/environment.cfg', function(cfg) {
+        var collection = get_var["collection_id"];
+        var tags = "WorkingGroup,InstrumentCode,SiteCode,ProtocolID,ExperimentType,SampleName";
+        if (
+          cfg &&
+          cfg.collection_custom_hierarchy_default &&
+          cfg.collection_custom_hierarchy_default[collection]
+        ) {
+          tags = cfg.collection_custom_hierarchy_default[collection];
+        }
+        var tagList = tags.split(',').join(' | ');
+        $('#default_hierarchy_tags_label').text(tagList);
+      });
+    }
+    // Call on page load
+    updateDefaultRadioLabel();
+
+    // Also call after sidebar, breadcrumb, or main content loads (AJAX navigation)
+    $("#sidebar_placeholder").on("load", updateDefaultRadioLabel);
+    $("#breadcrumb_collection").on("DOMSubtreeModified", updateDefaultRadioLabel);
+    // If you have a main content AJAX load, add a similar call here
 
     document.onreadystatechange = function() {
       var state = document.readyState
@@ -313,6 +388,7 @@
 
       $('#collection_level_schema_metadata_frame').attr('src', '/nist/a/metadata_tables.html?collection_id='+get_var["collection_id"]);
         $("#collection_level_pcoa").hide();
+        $("#collection_level_schema_metadata").hide();
       //Setup view tags
       var tagValues = [];
       var states = new Bloodhound({
@@ -353,37 +429,48 @@
                     elt.tagsinput('add', tagObj);
                 });
 
-                 console.log(elt.val());
                 $('#hierarchy_').html("");
-                generate_hierarchy_based_on_tags().then(() => console.log('Parent function executed successfully'))
-      .catch((error) => console.log(error));
+                generate_hierarchy_based_on_tags().catch((error) => console.error(error));
                 localStorage.setItem("hierarchy_tags_" + localStorage.getItem('last_collection_id'), elt.val());
             }
         }).disableSelection();
 
-
-      $('#view_tag_select').change(function() {
-        if (this.value != "Native Hierarchy") {
-          $('#datasets-table').hide();
-          $('#hierarchy_').show();
-          $('#virtual_expand_all').show();
-          $('#virtual_expand_all_label').show();
-          if (this.value == "Default"){
-              collection_hierarchy_default();
-          }else{
-              elt.tagsinput('add', {
-                "value": this.value
-              });
-              console.log("add123");
-              generate_hierarchy_based_on_tags().then(() => console.log('Parent function executed successfully'))
-  .catch((error) => console.log(error));
-          }
-
-        } else {
+      // Radio button logic for hierarchy mode selection
+      $('input[name="hierarchyMode"]').change(function() {
+        if (this.value === "native") {
+          // Simulate "Native Hierarchy" selection
           $('#hierarchy_').hide();
           $('#datasets-table').show();
           $('#virtual_expand_all').hide();
           $('#virtual_expand_all_label').hide();
+          $('#view_tag_select').prop('disabled', true);
+          $('#view_tags').prop('disabled', true);
+        } else if (this.value === "default") {
+          // Enable dropdown and tagsinput for custom tag management
+          $('#datasets-table').hide();
+          $('#hierarchy_').show();
+          $('#virtual_expand_all').show();
+          $('#virtual_expand_all_label').show();
+          $('#view_tag_select').prop('disabled', false);
+          $('#view_tags').prop('disabled', false);
+        }
+      });
+
+      // Set initial state for default mode (enabled)
+      $('#view_tag_select').prop('disabled', false);
+      $('#view_tags').prop('disabled', false);
+
+      $('#view_tag_select').change(function() {
+        // Only allow custom tag selection if "Default" radio is selected
+        if ($('input[name="hierarchyMode"]:checked').val() === "default") {
+          $('#datasets-table').hide();
+          $('#hierarchy_').show();
+          $('#virtual_expand_all').show();
+          $('#virtual_expand_all_label').show();
+          elt.tagsinput('add', {
+            "value": this.value
+          });
+          generate_hierarchy_based_on_tags().catch((error) => console.error(error));
         }
       });
       localStorage.setItem("current_collection_id", get_var["collection_id"]);
@@ -394,9 +481,7 @@
         $('#hierarchy_').html("");
         
         if (event.type == "itemRemoved"){
-            console.log("add124");
-            generate_hierarchy_based_on_tags().then(() => console.log('Parent function executed successfully'))
-  .catch((error) => console.log(error));
+            generate_hierarchy_based_on_tags().catch((error) => console.error(error));
         }
 
         localStorage.setItem("hierarchy_tags_" + get_var["collection_id"], elt.val());

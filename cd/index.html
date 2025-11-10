@@ -337,7 +337,7 @@
             $("#dataset_level_gantt").show();
             $("#dataset_level_telemetry").show();
         } else {
-            console.log("'CellCode' not found in the first row of the JSON data");
+            // 'CellCode' not found in the first row of the JSON data
             $("#dataset_level_gantt").hide();
             $("#dataset_level_telemetry").hide();
         }
@@ -357,10 +357,9 @@
       var file_query = "";
       var file_query_tmp = {};
       var breadcrumb_hierarchy = [];
-      console.log("hierarhcy_start");
-      console.log(hierarchy[0]);
+      
       for (var i = 0; i < hierarchy[0].length; i++) {
-          console.log("hierarchy");
+          
           if (hierarchy[1][i] != "None"){
                 file_query += "&fq=(" + encodeURI(escapeRegExp(hierarchy[0][i])).replace(/:/g, '%3A').replace(/%5C&/g, '%5C%26') + ":" + encodeURI(escapeRegExp(String(hierarchy[1][i]))).replace(/%5C&/g, '%5C%26').replace(/%5C%20/g,"%20").replace(/%20/g,"%5C%20").replace(/ /g,"%5C%20").replace(/^None$/,"*") + ")";
           }else{
@@ -422,10 +421,8 @@
                     elt.tagsinput('add', tagObj);
                 });
 
-                 console.log(elt.val());
                 $('#hierarchy_').html("");
-                generate_hierarchy_based_on_tags().then(() => console.log('Parent function executed successfully'))
-      .catch((error) => console.log(error));
+                generate_hierarchy_based_on_tags().catch((error) => console.error(error));
                 localStorage.setItem("hierarchy_tags_" + localStorage.getItem('last_collection_id'), elt.val());
             }
         }).disableSelection();
@@ -443,9 +440,7 @@
               elt.tagsinput('add', {
                 "value": this.value
               });
-              console.log("add123");
-              generate_hierarchy_based_on_tags().then(() => console.log('Parent function executed successfully'))
-  .catch((error) => console.log(error));
+              generate_hierarchy_based_on_tags().catch((error) => console.error(error));
           }
 
         } else {
@@ -463,9 +458,7 @@
             $('#hierarchy_').html("");
 
             if (event.type == "itemRemoved"){
-                console.log("add124");
-                generate_hierarchy_based_on_tags().then(() => console.log('Parent function executed successfully'))
-      .catch((error) => console.log(error));
+                generate_hierarchy_based_on_tags().catch((error) => console.error(error));
             }
 
             localStorage.setItem("hierarchy_tags_" + localStorage.getItem('last_collection_id'), elt.val());

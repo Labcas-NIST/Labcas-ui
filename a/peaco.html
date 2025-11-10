@@ -102,7 +102,7 @@
         $.get(localStorage.getItem("peaco_report"), function(data) {
             $('#peaco_div').html(data);
         }).fail(function() {
-            console.log('Error fetching the data.');
+            console.error('Error fetching the data.');
         });
     });
 

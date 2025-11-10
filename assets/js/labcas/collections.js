@@ -86,6 +86,7 @@ function fill_collection_metadata(data){
 
     var get_var = get_url_vars();
     $.each(data.response.docs, function(key, value) {
+
         if (value.CollectionId != get_var["collection_id"]){
             return;
         }
@@ -239,36 +240,7 @@ function fill_collection_details_data(data){
                     "</td>"+
                 "</tr>");
         });
-        // temporarily changed to the below in order to hide all headers not int show_headers to just make it easier to only show subset of collection level attributes that's not at the dataset or file level
-        /*$.each(obj, function(key, value) {
-            if (show_headers.includes(key) || hide_headers.includes(key)){
-                return;
-            }
-            if (typeof  value === "undefined") {
-                            value = "";
-                    }
-            if ($.isArray(value)){
-                value = value.join(",");
-            }
-            if (typeof value == "string"){
-                value = value.replace(/% /g,'_labcasPercent_');
-                value = decodeURIComponent(value);
-                value = value.replace(/\+/g,"&nbsp;").replace(/_labcasPercent_/g,'% ');
-            }
-            if (collapse_headers.includes(key)){
-                if (value.length > 20){
-                    value = "<nobr>"+value.substring(0, 20) + "<a data-toggle='collapse' id='#"+key+"Less' href='#"+key+"Collapse' role='button' aria-expanded='false' onclick='document.getElementById(\"#"+key+"Less\").style.display = \"none\";'>... More</a></nobr><div class='collapse' id='"+key+"Collapse'>" + value.substring(20) + " <a data-toggle='collapse' href='#"+key+"Collapse' role='button' aria-expanded='false' onclick='document.getElementById(\"#"+key+"Less\").style.display = \"block\";'>Less</a></div>";
-                }
-            }
-              $("#collectiondetails-table tbody").append(
-                "<tr>"+
-                    "<td class='text-right' valign='top' style='padding: 2px 8px;' width='30%'>"+key.replace( /([a-z])([A-Z])/g, "$1 $2" )+":</td>"+
-                    "<td class='text-left' valign='top' style='padding: 2px 8px;'>"+
-                        value+
-                    "</td>"+
-                "</tr>");
-
-        });*/
+        // (cleanup) removed legacy commented-out block for hidden headers rendering
 
         $('#loading_collection').hide(500);
         $("#collectiontitle").html(collectioname);
@@ -435,32 +407,13 @@ function fill_datasets_data(data){
         var get_var = get_url_vars();
         var metadata_exists = false;
         //var collection_file_exists = false;
-    //Need updating!!
-     /*if(get_var["collection_id"] == "NIST_Flow_Cytometry_Standards_Consortium" || get_var["collection_id"] == "Genome_Editing_Consortium"){
-            console.log("documentation");
-            //query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=DatasetId:"+value.id+"&wt=json&sort=FileName%20asc&indent=true", fill_collection_metadata);
-            query_labcas_api("/nist/assets/documentation/collection_file_documentation.json", fill_collection_metadata);
-            metadata_exists = true;
-        }*/
 
 
     $.each(data.response.docs, function(key, value) {
         if (value.CollectionId != get_var["collection_id"]){
             return;
         }
-        /*if (value.id.split(/\//)[1] == get_var["collection_id"]){
-            query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=DatasetId:"+value.id+"&wt=json&sort=FileName%20asc&indent=true", fill_collection_level_files);
-            collection_file_exists = true;
-            return;
-        }*/
-        /*else if(value.id.split(/\//)[1].toLowerCase() == "documentation"){
-            console.log("documentation");
-            console.log(value.id);
-            //query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=DatasetId:"+value.id+"&wt=json&sort=FileName%20asc&indent=true", fill_collection_metadata);
-            query_labcas_api("/nist/assets/documentation/collection_file_documentation.json", fill_collection_metadata);
-            metadata_exists = true;
-            return;
-        }*/
+        
         var html_safe_id = encodeURI(escapeRegExp(value.id));
         var id_safe_id = html_safe_id.replace(/\//g,"-labsep-");
 
@@ -506,9 +459,7 @@ function fill_datasets_data(data){
         "</a>"+
                 "</div>"+
                 "<div class=\"td-actions col-md-1 text-right\" valign='middle' style='padding: 0px 8px; vertical-align: middle; height: 25px'>"+
-                    "<button type=\"button\" rel=\"tooltip\" title=\"Favorite\" onclick=\"save_favorite('"+value.id+"', 'FavoriteDatasets', this)\" class=\"btn btn-simple btn-link\" style='position: absolute;left: -100px; top: 50%; transform: translateY(-50%); color: "+color+"'>"+
-                        "<i class=\"fa fa-star\"></i>"+
-                    "</button>"+
+                    
                     image_div +
                     "<button type=\"button\" rel=\"downloadbutton\" title=\"Download\" class=\"btn btn-danger btn-simple btn-link\" onclick=\"download_dataset('"+html_safe_id+"')\" style='position: absolute;left: 0px; top: 50%; transform: translateY(-50%); color: green;'>"+
                                         "<i class=\"fa fa-download\"></i>"+
@@ -516,12 +467,7 @@ function fill_datasets_data(data){
                 "</div>"+
             "</div>";
     });
-    /*if (!metadata_exists){
-                $('#collection_level_files').hide();
-        }*/
-    /*if (!collection_file_exists){
-                $('#children-files').hide();
-        }*/
+    
     if ( dataset_html == "" ){
         $('#datasets_in_collection').hide();
     }
@@ -539,14 +485,9 @@ function fill_datasets_data(data){
         $("#collection_favorites_len").html(user_data['FavoriteFiles'].length+user_data['FavoriteDatasets'].length+user_data['FavoriteCollections'].length);
     $('#loading_dataset').hide(500);
     $('#loading_metadata').hide(500);
-    //console.log("HERE");
-        //hierarchy reset
-    //var hierarchy_tags = get_hierarchy_selected_upto(1000);
-    //console.log(localStorage.getItem('environment')+"/data-access-api/files/select?q=CollectionId:"+get_var["collection_id"]+"%20AND%20-FolderType:%5B*%20TO%20*%5D&wt=json&indent=true&rows=10000&fl="+hierarchy_tags.join(","));
-    //query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=CollectionId:"+get_var["collection_id"]+"%20AND%20-FolderType:%5B*%20TO%20*%5D&wt=json&indent=true&rows=10000&fl="+hierarchy_tags.join(","), fill_hierarchy_data_fast, true);
+    // (cleanup) removed debug and commented-out hierarchy reset code
 }
 function setup_labcas_data(datatype, query, dataset_query){
-    console.log(localStorage.getItem('environment')+"/data-access-api/collections/select?q="+query+"&wt=json&indent=true&rows=10000&sort=id%20asc");
     $.ajax({
         url: localStorage.getItem('environment')+"/data-access-api/collections/select?q="+query+"&wt=json&indent=true&rows=10000&sort=id%20asc",
         beforeSend: function(xhr) {
@@ -591,8 +532,7 @@ function setup_labcas_data(datatype, query, dataset_query){
             }
         },
         error: function(e){
-            console.log("Error");
-            console.log(e);
+            console.error(e);
 
             if (datatype == "collections" && e.responseText){
                 fill_collections_data(JSON.parse(e.responseText));
@@ -608,7 +548,6 @@ function setup_labcas_data(datatype, query, dataset_query){
     });
     if (datatype == "collectiondatasets"){
 	var url = localStorage.getItem('environment')+"/data-access-api/datasets/select?q="+dataset_query+"&wt=json&indent=true&rows=20000";
-        console.log(url);
         $.ajax({
 	    url: url,
             beforeSend: function(xhr) {
@@ -623,8 +562,7 @@ function setup_labcas_data(datatype, query, dataset_query){
             	fill_datasets_data(data);
             },
             error: function(e){
-            console.log("Collection Dataset Error");
-            console.log(e);
+            console.error(e);
             if (datatype == "collectiondatasets" && e.responseText){
                 fill_datasets_data(JSON.parse(e.responseText));
             }else{
@@ -638,10 +576,8 @@ function setup_labcas_data(datatype, query, dataset_query){
     });
         var get_var = get_url_vars();
         var collection_file_exists = false;
-        if(get_var["collection_id"] == "NIST_Flow_Cytometry_Standards_Consortium" || get_var["collection_id"] == "Genome_Editing_Consortium" || get_var["collection_id"] == "Microbial"){
-            console.log("documentation");
-            //query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=DatasetId:"+value.id+"&wt=json&sort=FileName%20asc&indent=true", fill_collection_metadata);
-            query_labcas_api("/nist/assets/documentation/collection_file_documentation.json?version=5.1.0", fill_collection_metadata);
+        if(get_var["collection_id"] == "NIST_Flow_Cytometry_Standards_Consortium" || get_var["collection_id"] == "Genome_Editing_Consortium" || get_var["collection_id"] == "Microbial" || get_var["collection_id"] == "flow_cytometry_stage"){
+            query_labcas_api("/nist/assets/documentation/collection_file_documentation.json?version=5.1.1", fill_collection_metadata);
         }else{
             $('#collection_level_files').hide();
 
@@ -649,4 +585,3 @@ function setup_labcas_data(datatype, query, dataset_query){
 
     }
 }
-
