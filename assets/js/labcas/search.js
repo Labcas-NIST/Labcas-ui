@@ -72,14 +72,7 @@ function generate_categories(field_id, data){
         var ids = localStorage.getItem(head+"_filters_id").split(",");
         var displays = localStorage.getItem(head+"_filters_display").split(",");
         var divs = localStorage.getItem(head+"_filters_div").split(",");
-        ///console.log("filter");
-        //console.log(divs);
-        //console.log(ids);
         $.each(ids, function(i, idhead) {
-            //console.log("generate_filter");
-            //console.log(divs[i]);
-            //console.log(idhead);
-            //console.log(data.facet_counts.facet_fields);
             generate_filters(idhead,$.trim(divs[i]), data.facet_counts.facet_fields[idhead], $.trim(displays[i]), $.trim(head));
         });
     });
@@ -172,8 +165,6 @@ function generate_filters(field_type, placeholder, data, display, head){
             '</form>'+
         '</div>'
     );
-    //console.log("placeholder");
-    //console.log(placeholder);
     $("#"+placeholder).html("");
 
     if (placeholder.includes("_num_")){
@@ -355,10 +346,6 @@ function add_labcas_api_facets(querytypes, query, filters, facets, newdata, call
                     add_labcas_api_facets(querytypes, query, filters, facets, newdata, callback);
                 },
                 error: function (xhr, ajaxOptions, thrownError) {
-                    //console.log("labcas api facets Error");
-                    //console.log(xhr.responseText);
-                    //console.log(xhr.status);
-                    //console.log(thrownError);
                     if (!(localStorage.getItem("logout_alert") && localStorage.getItem("logout_alert") == "On")){
                          localStorage.setItem("logout_alert","On");
                          alert("You are currently logged out. Redirecting you to log in.");

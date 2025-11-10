@@ -482,7 +482,6 @@ function fill_hierarchy_files_data(data, file_query){
 
 function setup_labcas_hierarchy_data(file_query, cpage){
     var url = localStorage.getItem('environment')+'/data-access-api/files/select?q=*'+file_query+'&wt=json&indent=true&sort=FileName%20asc&start='+cpage*10;
-    console.log(url);
     $.ajax({
         url: url,
         xhrFields: {

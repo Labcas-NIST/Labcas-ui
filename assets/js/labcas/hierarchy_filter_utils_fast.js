@@ -27,7 +27,7 @@ function collection_hierarchy_default(){
 
         $.each(hierarchy_tags.split(","), function( key, val ) {
             
-            /*console.log(key);
+            /*
             if (key == hierarchy_tags.split(",").length -1 ){
                 hierarchy_initial_loading = false;
                 
@@ -175,7 +175,7 @@ function initiate_virtual_state(){
     var hierarchy_state = load_hierarchy_state();
 
     $.each(hierarchy_state, function(k, v) {
-        //console.log("toggling2"+k+":"+v);
+        
         toggle_child_elements(k, v, false);
     });
 }
