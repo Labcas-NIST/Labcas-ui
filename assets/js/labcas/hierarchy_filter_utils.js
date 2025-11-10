@@ -116,7 +116,7 @@ function collection_hierarchy_get(collection_id, obj_type){
     if (obj_type == "dataset"){
         url = localStorage.getItem('environment')+"/data-access-api/files/select?q=DatasetId:"+collection_id+"*&facet=true&facet.limit=-1&facet.mincount=1"+facets+"&wt=json&rows=0";
     }
-    console.log(url);
+    
     $.ajax({
         url: url,
         beforeSend: function(xhr) {
@@ -152,7 +152,7 @@ function toggle_child_elements(idx, show){
     if (show == "true"){
 	    if($('#virtual_expand_all').is(":checked")){
             $('div[id^="hierarchy_'+idx+'_"]').show();
-            console.log("expand");
+            
             $('span[id^="toggle_'+idx).each(function() {
                 $(this).find('i').toggleClass("fa-minus",true)
                 $(this).find('i').toggleClass("fa-plus",false)
@@ -508,5 +508,4 @@ function setup_labcas_hierarchy_data(file_query, cpage){
          }
     });
 }
-
 

@@ -26,19 +26,18 @@ function collection_hierarchy_default(){
         elt.tagsinput('removeAll');
 
         $.each(hierarchy_tags.split(","), function( key, val ) {
-            console.log("key5");
+            
             /*console.log(key);
             if (key == hierarchy_tags.split(",").length -1 ){
                 hierarchy_initial_loading = false;
-                console.log("flag");
-                console.log(hierarchy_initial_loading);
+                
             }*/
             elt.tagsinput('add', { "value": val});
             valid_tags_check = true;
             last_val = val;
         });
         generate_hierarchy_based_on_tags();
-        console.log("add125");
+        
         $('#view_tag_select').val(last_val);
         //if tag exist as a key in the files under this collection, show the hierarchy built by the hierarchy tag combination
         if (valid_tags_check){
@@ -131,8 +130,7 @@ function collection_hierarchy_get(collection_id, obj_type){
     if (obj_type == "dataset"){
         url = localStorage.getItem('environment')+"/data-access-api/files/select?q=CollectionId:"+collection_id+filters+"*&facet=true&facet.limit=-1&facet.mincount=1"+facets+"&wt=json&rows=0";
     }
-    console.log("url");
-    console.log(url);
+    
     $.ajax({
         url: url,
         beforeSend: function(xhr) {
@@ -191,7 +189,7 @@ function toggle_child_elements(idx, show, post_initial_flag){
     if (show == "true"){
 	    if($('#virtual_expand_all').is(":checked")){
             $('div[id^="hierarchy_'+idx+'_"]').show();
-            console.log("expand");
+            
             $('span[id^="toggle_'+idx).each(function() {
                 $(this).find('i').toggleClass("fa-minus",true)
                 $(this).find('i').toggleClass("fa-plus",false)
@@ -265,7 +263,7 @@ function fill_hierarchy_data_fast(data, initial_load_flag) {
             reject('Content generation in progress');
         } else {
             childlock = true;
-            console.log("fast");
+            
             var collection_file_facets = data.response.docs;
 
             let expanded_docs = [];
@@ -277,7 +275,7 @@ function fill_hierarchy_data_fast(data, initial_load_flag) {
                 expanded_docs = expanded_docs.concat(combinations);
             });
 
-            console.log("Expanded docs:", expanded_docs);
+            
 
             $.each(expanded_docs, function(k, v) {
                 var tree_path = "";
@@ -502,7 +500,7 @@ function fill_hierarchy_files_data(data, file_query){
         });
     }
 
-    console.log(cols_to_add);
+    
 
     var tableheaders = localStorage.getItem("collection_custom_dataset_headers").split(",")[tableidx].split("|");
     var tablehead = "<th style='width:5%'>Select</th>"+
@@ -818,8 +816,7 @@ function fetchTotalRecordsAndSharedFields(file_query) {
       var url2 = environment + '/data-access-api/files/select?q=*' + file_query + '&wt=json&indent=true&rows=0&facet=true' + facetFieldsParam + '&facet.mincount=' + totalRecords + '&facet.limit=-1';
       return url2;
     }
-    console.log("url1");
-    console.log(url1);
+    
   $.ajax({
     url: url1,
     xhrFields: {
@@ -877,13 +874,11 @@ function fetchSharedValues(url, sharedFields) {
       sharedFields.forEach(function(fieldName) {
         if (facetFields[fieldName][0]){
                 if (displayFieldsArray.includes(fieldName)) {
-                    console.log("display");
-                    console.log(fieldName);
-                    console.log(displayFieldsKeysArray);
+                    
                     // If fieldName is in the displayFields list, add the row as usual.
                     var fieldNameLabel = fieldName.replace( /([a-z])([A-Z])/g, "$1 $2" );
                     if (displayFieldsKeysArray.includes(fieldName)){
-                        console.log("included");
+                        
                         fieldNameLabel = displayFieldsLabelsArray[displayFieldsKeysArray.indexOf(fieldName)];
                     }
                     $("#datasetdetails-table tbody").append(

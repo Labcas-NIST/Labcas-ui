@@ -37,7 +37,6 @@ $().ready(function() {
 
 });
 function redirect_to_login(){
-    console.log("Attempting to redirect to login...");
     if (localStorage.getItem("allow_redirect") == "true"){
         window.location.replace("/nist/index.html");
     }else{
@@ -117,7 +116,7 @@ function writeUserData(udata, noreload){
 	    }
         },
         error: function(){
-             console.log("Creating user profile failed... please troubleshoot");
+             console.error("Creating user profile failed... please troubleshoot");
          }
     });
 }
@@ -130,7 +129,6 @@ function printUserData(){
         type: 'GET',
         dataType: 'json',
         success: function (data) {
-        console.log(data);
         }});
 }
     
@@ -158,8 +156,8 @@ function getUserData(){
 			}
 			localStorage.setItem("userdata",  JSON.stringify(user_data_tmp));
 		},
-		error: function(){
-			 console.log("read user data profile failed..., please troubleshoot");
+        error: function(){
+             console.error("read user data profile failed..., please troubleshoot");
 		 }
 	});
 }
