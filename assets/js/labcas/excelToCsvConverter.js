@@ -19,7 +19,7 @@ document.getElementById('excelFileInput').addEventListener('change', function(ev
                 //const cfuData = jsonData.filter(item => item['CFU']);
                 //const impedanceData = jsonData.filter(item => item['ImpedanceFC']);
                 //const fluorescenceData = jsonData.filter(item => item['FlorescenceFC']);
-                console.log(jsonData);
+                
                 validateDataAgainstSchema(jsonData, microbialCoreValidationSchema, file.name, 'Core Microbial');
                 validateDataAgainstSchema(jsonData, microbialCFUValidationSchema, file.name, 'CFU');
                 validateDataAgainstSchema(jsonData, microbialImpedanceValidationSchema, file.name, 'ImpedanceFC');

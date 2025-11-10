@@ -245,8 +245,7 @@ function fill_hierarchy_data(data, collection_id, path, pathval, idx){
                     if (obj_type == "dataset"){
                         url = localStorage.getItem('environment')+"/data-access-api/files/select?q=DatasetId:"+collection_id+"*"+filter_field+"&facet=true&facet.limit=-1&facet.mincount=1"+facets+"&wt=json&rows=0";
                     }
-                    console.log("url");
-                    console.log(url);
+                    
                     $.ajax({
                         url: url,
                         beforeSend: function(xhr) {
@@ -508,4 +507,3 @@ function setup_labcas_hierarchy_data(file_query, cpage){
          }
     });
 }
-

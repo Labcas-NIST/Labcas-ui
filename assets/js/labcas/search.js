@@ -431,8 +431,7 @@ function fill_collections_facets(data){
 }
 
 function setup_labcas_search(query, divid, cpage){
-    console.log("Searching2...");
-    console.log(query);
+    
     if (query != "*"){
        query = '"'+query+'"';
     }
@@ -448,7 +447,7 @@ function setup_labcas_search(query, divid, cpage){
     var data_filters = "";
     if (divid == "collections_search" || divid == "all"){
 	var url = localStorage.getItem('environment')+"/data-access-api/collections/select?q="+query+""+collection_filters+"&wt=json&indent=true&sort=id%20asc&start="+cpage*10;
-        console.log(url);
+        
         $.ajax({
 	    url: url,
             beforeSend: function(xhr) {

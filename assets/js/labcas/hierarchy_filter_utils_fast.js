@@ -960,8 +960,7 @@ function setup_labcas_hierarchy_data(file_query, extraFilters, cpage){
     }
 
     fetchTotalRecordsAndSharedFields(file_query);
-    console.log("url_origin");
-    console.log(url);
+    
     $.ajax({
         url: url,
         xhrFields: {
@@ -1001,7 +1000,7 @@ function generate_hierarchy_based_on_tags(){
             var collection_id = get_var["collection_id"] ? get_var["collection_id"] : localStorage.getItem('last_collection_id');
             var filters = localStorage.getItem("hierarchy_file_query") && !get_var["collection_id"] && localStorage.getItem("hierarchy_file_query_collection") == localStorage.getItem("last_collection_id") ? localStorage.getItem("hierarchy_file_query") : "";
 
-            console.log("generating hierarchy url: "+localStorage.getItem('environment')+"/data-access-api/files/select?q=CollectionId:"+collection_id+"%20AND%20-FolderType:%5B*%20TO%20*%5D"+filters+"&wt=json&indent=true&rows=10000&fl="+hierarchy_tags.join(","));
+            
             $('#hierarchy_').empty();
             
             query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=CollectionId:"+collection_id+"%20AND%20-FolderType:%5B*%20TO%20*%5D"+filters+"&wt=json&indent=true&rows=10000&fl="+hierarchy_tags.join(","), fill_hierarchy_data_fast, false).then(() => {
@@ -1009,7 +1008,7 @@ function generate_hierarchy_based_on_tags(){
         parentLock = false;
         resolve();
       }).catch((error) => {
-        console.log(error);
+        console.error(error);
         parentLock = false;
         reject('Child function execution was not successful');
       });

@@ -162,7 +162,6 @@ function getUserData(){
 	});
 }
 function query_labcas_api(url, customfunction, generalflag){
-        console.log(url);
     return new Promise((resolve, reject) => {
         $.ajax({
                 url: url,
@@ -243,7 +242,7 @@ function save_downloaded(labcas_id, labcas_type, ele){
         writeUserData(JSON.stringify(user_data_tmp), true);
     },
         error: function(){
-             console.log("user fravorite profile failed... please troubleshoot");
+             console.error("user fravorite profile failed... please troubleshoot");
          }
     });
 }
@@ -303,7 +302,7 @@ function save_favorite(labcas_id, labcas_type, ele){
 		writeUserData(JSON.stringify(user_data_tmp), true);
 	},
         error: function(){
-             console.log("user fravorite profile failed... please troubleshoot");
+             console.error("user fravorite profile failed... please troubleshoot");
          }
     });
 }
@@ -370,17 +369,12 @@ function load_pagination(divid, size, cpage){
 }
 
 function paginate(divid, cpage){
-    console.log("paginating");
-    console.log(cpage);
-    console.log(divid);
 	var get_var = get_url_vars();
 	if (divid == 'files'){
 		setup_labcas_dataset_data("datasetfiles",'id:"'+get_var["dataset_id"]+'"', 'DatasetId:"'+get_var["dataset_id"]+'"', cpage-1); 
 	}else if (divid == 'collections_search' || divid == 'datasets_search' || divid == 'files_search'){
 		setup_labcas_search(get_var["search"], divid, cpage-1);
     }else if (divid == 'hierarchy_files'){
-        console.log("hierarchy_files");
-        console.log(cpage);
         setup_labcas_hierarchy_data(localStorage.getItem("hierarchy_file_query"), [], cpage-1)
 	}else if (divid == 'collectionfiles' ){
         query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=DatasetId:"+get_var["collection_id"]+"/"+get_var["collection_id"]+"&wt=json&indent=true&start="+(cpage-1)*10, fill_collection_level_files);
@@ -488,8 +482,7 @@ function resume_download(){
 }
 
 function download_file(val, type){
-	var dataurl = localStorage.getItem('environment')+"/data-access-api/download?id="+val.replace("\\&","%5C%26").replace("+","%5C%2B");
-	console.log(dataurl);
+    var dataurl = localStorage.getItem('environment')+"/data-access-api/download?id="+val.replace("\\&","%5C%26").replace("+","%5C%2B");
 	if (UrlExists(dataurl)){
 		if (type == "multiple"){
 			win = window.open(dataurl, '_blank');
@@ -505,7 +498,6 @@ function download_file(val, type){
 }
 function download_metadata_file(val, type){
     var dataurl = localStorage.getItem('environment')+"/data-access-api/files/select?q=id:"+val.replace("\\&","%5C%26").replace("+","%5C%2B")+"&wt=json&sort=FileName%20asc&indent=true"
-    console.log(dataurl);
     if (UrlExists(dataurl)){
         query_labcas_api(dataurl, export_metadata_as_csv);
     }else{
@@ -568,9 +560,7 @@ function download_files(formname){
 
     const filesize = download_size;
     const filecount = Object.keys(download_list).length;
-    console.log("Filecount");
-    console.log(filecount);
-    console.log(filecount > parseInt(localStorage.getItem("file_count_threshold_for_download_warning_trigger")));
+    
     if (filesize > parseInt(localStorage.getItem("file_size_threshold_for_download_alert_trigger"))){
         $('#download_warning').html("You're requesting to download <B><font color=red>"+filecount+"</font></B> files and <B><font color=red>"+humanFileSize(filesize)+"</font></B> total in size. Large file downloads are currently turned off, please reach out to John Elliott (john.elliott@nist.gov) or Samantha Maragh (samantha.maragh@nist.gov) for further details");
         $('#redirectModal_continue').hide();
@@ -595,8 +585,7 @@ function calculate_unique_files(div){
         var file_query = localStorage.getItem("hierarchy_file_query");
         queryParams = `q=*${file_query}&wt=json&sort=FileName%20asc&rows=2147483647`;
     }
-    console.log("metadata url");
-    console.log(`https://labcas.jpl.nasa.gov/nist/data-access-api/files/select?${queryParams}`);
+    
 
     // Prepare headers for the Fetch API request
     const headers = new Headers();
@@ -611,8 +600,7 @@ function calculate_unique_files(div){
     })
           .then(response => response.json())
           .then(data => {
-        console.log("distinct files");
-        console.log(data);
+        
               var uniqueFilenames = new Set();
                $.each(data.response.docs, function(index, doc) {
                 if (doc.FileName && doc.FileName != "" && doc.FileName != "NoFile") {
@@ -664,8 +652,7 @@ function download_metadatas(formname){
         
         queryParams = `q=${encodeURIComponent(query)}&wt=json&sort=FileName%20asc`;
     }
-    console.log("metadata url");
-    console.log(`https://labcas.jpl.nasa.gov/nist/data-access-api/files/select?${queryParams}`);
+    
 
     // Prepare headers for the Fetch API request
     const headers = new Headers();
@@ -697,7 +684,7 @@ function download_dataset(dataset){
         dataset = dataset.replace("%5C%20","%20").replace("%20","%5C%20").replace(" ","%5C%20");
         url = localStorage.getItem('environment')+"/data-access-api/files/select?q=DatasetId:"+dataset+"&wt=json&rows=10000";
     }
-    console.log(url);
+    
     query_labcas_api(url, generate_dataset_file_list);
 }
 
@@ -706,7 +693,7 @@ function download_collection_wizard(){
     var get_var = get_url_vars();
     collection = get_var["collection_id"].replace("%5C%20","%20").replace("%20","%5C%20").replace(" ","%5C%20");
     url = localStorage.getItem('environment')+"/data-access-api/files/select?q=CollectionId:"+collection+"&wt=json&rows=10000000";
-    console.log(url);
+    
     query_labcas_api(url, generate_dataset_file_list);
 
 }
@@ -746,8 +733,7 @@ function init_file_checkboxes(formname){
             download_size += parseInt(this.getAttribute("data-valuesize"));
         }else{
             if ( cart_item in download_list ){
-            console.log("Deleting");
-            console.log(cart_item);
+            
             delete download_list[cart_item];
             download_size -= parseInt(this.getAttribute("data-valuesize"));
             }
@@ -863,8 +849,7 @@ function set_search_filters(params){
 					localStorage.setItem($.trim(divhead)+"_max_1",params[$.trim(divhead)+"_max_1"]);
 				}
             }else{
-				console.log(params[$.trim(divhead)+"_val"]);
-				if (params[$.trim(divhead)+"_val"]){
+                if (params[$.trim(divhead)+"_val"]){
 					localStorage.setItem($.trim(divhead)+"_val", params[$.trim(divhead)+"_val"]);
 				}
             }
@@ -1095,8 +1080,7 @@ function checkDatasetContainsDicom(dataset_id, safe_dataset_id, data){
 
 function submitImage(formname, dataset){
     if ( $('#check_all:checked').length || dataset){
-        console.log("Loading images from dataset:");
-        console.log(dataset);
+        
         var get_var = get_url_vars();
         if (dataset){
             url = "";
@@ -1107,7 +1091,7 @@ function submitImage(formname, dataset){
                 dataset = dataset.replace("%5C%20","%20").replace("%20","%5C%20").replace(" ","%5C%20");
                 url = localStorage.getItem('environment')+"/data-access-api/files/select?q=DatasetId:"+dataset+"&wt=json&indent=true&rows=10000";
             }
-            console.log(url);
+            
             query_labcas_api(url, generate_image_file_list);
 
          }
@@ -1312,13 +1296,11 @@ return datasetid;
 
 function createCORSRequest(method, url) {
 	var xhr = new XMLHttpRequest();
-	if ("withCredentials" in xhr) {
-		xhr.withCredentials = true;
-		console.log(xhr);
-		xhr.open(method, url, true);
+    if ("withCredentials" in xhr) {
+    	xhr.withCredentials = true;
+    	xhr.open(method, url, true);
 	} else if (typeof XDomainRequest != "undefined") {
 		xhr = new XDomainRequest();
-		console.log(xhr.headers);
 		xhr.open(method, url);
 	} else {
 		// CORS is not supported by the browser.
@@ -1326,14 +1308,12 @@ function createCORSRequest(method, url) {
 	}
 
 	xhr.onerror = function() {
-		console.log('There was an error!');
+		console.error('There was an error!');
 	};
 	return xhr;
 }
 
 function makeJSONRequest(method, url, callback, data) {
-  console.log("url");
-  console.log(url);
   var xhr = createCORSRequest(method, url);
   xhr.onload = function() {
     // handle the response (assumes we're getting JSON data)
@@ -1345,7 +1325,7 @@ function makeJSONRequest(method, url, callback, data) {
           login_flag = 1;
           prepareLogin();
       }else{
-        console.log("Already tried to login once, failed, please troubleshoot");
+        console.error("Already tried to login once, failed, please troubleshoot");
       }
     }
     // status OK - call the callback()
@@ -1355,13 +1335,11 @@ function makeJSONRequest(method, url, callback, data) {
         callback(jsonResponse);
       }
     } else {
-      console.log("Error:", xhr)
+      console.error("Error:", xhr)
     }
   };
 
   if (method !== 'GET') {
-    console.log("CSRF");
-    console.log(omero_csrf_token);
           
     xhr.setRequestHeader('x-csrftoken', omero_csrf_token);
   }
@@ -1400,7 +1378,7 @@ function prepareLogin() {
 
 function testGetDatasets(){
     var projects_url = base_urls['url:datasets'].replace("http:","https:");
-    makeJSONRequest('GET', projects_url, function(rsp) {
+                makeJSONRequest('GET', projects_url, function(rsp) {
     });
 
 }
@@ -1418,11 +1396,8 @@ function loginOmero(){
   
   makeJSONRequest('POST', login_url, function(rsp) {
     // Will get eventContext if login OK
-    console.log(rsp);
-
     // Show username in top header
     var ctx = rsp['eventContext'];
-    console.log(ctx['userName']);
 
     var get_var = get_url_vars();
     showOmeroImage(get_var["fileid"]);
@@ -1435,7 +1410,7 @@ function loginOmero(){
 
 function getOmeroDataset(image_dataset, image_name, version, show_flag, fileid, show_flag){
 	if (omero_datasets.length == 0){
-		console.log("API Getting");
+    
                 var projects_url = base_urls['url:datasets'].replace("http:","https:");
                 makeJSONRequest('GET', projects_url, function(rsp) {
 			omero_datasets = rsp.data;
@@ -1543,7 +1518,6 @@ function orchistrate_find(query_folder, query_file, version, show_flag, fileid){
 
 function recurse_dsa(sub_folder, sub_name, query_file, image_dsa_path, show_flag, parenttype, version, fileid){
     var url = localStorage.getItem("dsa_api")+"/folder?parentType="+parenttype+"&parentId="+sub_folder+"&name="+sub_name+"&limit=50&sort=lowerName&sortdir=1";
-    console.log(url);
     $.ajax({
 	url: url,
         type: 'GET',
@@ -1569,17 +1543,17 @@ function recurse_dsa(sub_folder, sub_name, query_file, image_dsa_path, show_flag
                                 recurse_dsa(data[0]._id, version, query_file, image_dsa_path, show_flag, 'folder', "null", fileid);
                             }
                             else{
-                                console.log("Something went wrong in recursive file/version search through DSA");
+                                console.error("Something went wrong in recursive file/version search through DSA");
                             }
                         }
                     });
                 }else{
-                    console.log("Something went wrong in recursive folder search through DSA");
+                    console.error("Something went wrong in recursive folder search through DSA");
                 }
             }
         },
         error: function(e){
-            console.log("failed");
+            console.error("DSA request failed");
         }
     });
 }
@@ -1603,7 +1577,7 @@ function save_labcas_acceptance(type){
             login_redirect();
         },
         error: function(xhr, status, error) {
-            console.log(xhr.responseText);
+            console.error(xhr.responseText);
             alert("Labcas acceptance save failed, please reach out to "+localStorage.getItem("support_contact")+" for support.");
         }
     });
@@ -1619,7 +1593,7 @@ function check_labcas_acceptance(source){
             dataType: "json",
             data: JSON.stringify({'userid':username}),
             success: function (data) {
-                console.log("Successfully checked user acceptance "+username);
+                
                 if (!data.accepted){
                     usage_agreement();
                 }else{
@@ -1627,7 +1601,7 @@ function check_labcas_acceptance(source){
                 }
             },
             error: function(xhr, status, error) {
-                console.log(xhr.responseText);
+                console.error(xhr.responseText);
                 alert("Labcas initiation check failed, please reach out to "+localStorage.getItem("support_contact")+" for support.");
             }
         });
@@ -1643,7 +1617,7 @@ function save_search_profile(){
 		alert("Please enter a name for your search profile to be saved.");
 		check_flag = false;
 	}
-	console.log(name);
+
 	if (!/^[a-zA-Z 0-9]+$/.test(name)){
 		alert("Please make sure to only use letters, numbers, or space in your search profile name.");
 		check_flag = false;
@@ -1705,7 +1679,7 @@ function populate_collection_details_protocol_shortname(shortname){
 
 function get_protocol_info(program, pid, field, func){
 	var url = localStorage.getItem("ksdb_labcas_search_protocol_api")+program+localStorage.getItem("ksdb_split_key")+pid;
-	console.log(url);
+	
 	$.ajax({
 		url: url,
 		type: 'GET',
@@ -1717,7 +1691,7 @@ function get_protocol_info(program, pid, field, func){
 			}
 		},
 		error: function(e){
-		    console.log("Failed to grab search ksdb protocol data");
+		    console.error("Failed to grab search ksdb protocol data");
 		}
 	});
 
@@ -1746,12 +1720,12 @@ function get_search_profile(name){
 				});
 			},
 			error: function(e){
-			    console.log("Failed to grab search profiles");
+			    console.error("Failed to grab search profiles");
 			}
 		});
 	}else{
 		var url = localStorage.getItem("ksdb_labcas_search_profile_api")+username+localStorage.getItem("ksdb_split_key")+name;
-		console.log(url)
+		
 		$.ajax({
 			url: url,
                         type: 'GET',
@@ -1765,7 +1739,7 @@ function get_search_profile(name){
 				$('#delete_profile').show();
 			},
             error: function(e){
-                console.log("Failed to grab search profiles");
+                console.error("Failed to grab search profiles");
             }
         });
 	}
