@@ -10,11 +10,10 @@ document.getElementById('jsonFileInput').addEventListener('change', function(eve
                 const data = JSON.parse(e.target.result);
         const filteredData = filterRelevantInfo(data);
         const flattenedData = filteredData.map(item => flattenDict(item));
-        console.log("flattenedData1");
-        console.log(flattenedData);
+        
         //check instrument type
         if (flattenedData.length > 0 && Object.keys(flattenedData[0]).includes("Instrument")){
-                console.log("HEREHERE");
+                
             if (flattenedData[0]["Instrument"].includes("CytoFLEX")){
                 validateDataAgainstSchema(flattenedData, microbialFlourescenceFCValidationSchema, file.name);
             }else if(flattenedData[0]["Instrument"].includes("Manual")){
@@ -536,5 +535,4 @@ const microbialFlourescenceFCValidationSchema = {
         explanatoryNote: 'eLabs, "MoFloDropFrequency"'
     }
 };
-
 

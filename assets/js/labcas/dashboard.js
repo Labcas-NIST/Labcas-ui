@@ -349,7 +349,6 @@ function fill_favorites_analytics(){
 	$("#favorites_len").html(user_data['FavoriteFiles'].length+user_data['FavoriteDatasets'].length+user_data['FavoriteCollections'].length);
 }
 function setup_labcas_analytics(){
-    console.log("Analyzing...");
         //collection data
 	var collection_url = localStorage.getItem('environment')+"/data-access-api/collections/select?q=*&wt=json&indent=true&rows=2147483647";
     
@@ -367,7 +366,6 @@ function setup_labcas_analytics(){
 	
 			//dataset data
 			var dataset_url = localStorage.getItem('environment')+"/data-access-api/datasets/select?q=*&facet=true&facet.limit=-1&facet.field=CollectionName&facet.field=ProtocolID&facet.field=ProtocolId&facet.field=LeadPI&wt=json&rows=0";
-			console.log(dataset_url);
 			$.ajax({
 				url: dataset_url,
 				beforeSend: function(xhr) {

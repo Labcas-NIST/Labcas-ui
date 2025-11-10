@@ -11,17 +11,15 @@ $.getJSON( '/nist/assets/conf/environment.cfg?version=5.3.1', function(json) {
         }else if(typeof val == "object"){
             localStorage.setItem(key, JSON.stringify(val));
         }else{
-            console.log(key);
-            console.log(typeof val);
-            console.log(val);
+            
         }
 	});
 }, 'text').done(function(d) {
-                console.log("Config done");
+                
             }).fail(function(d, textStatus, error) {
                 console.error("Config failed, status: " + textStatus + ", error: "+error);
             }).always(function(d) {
-                console.log("Config complete");
+                
             });
 	$('#loginerror').html(localStorage.getItem("login_msg"));
 });
@@ -65,8 +63,7 @@ $('#loginform').submit(function (e) {
 					if (!user_data["FavoriteFiles"]){
 						user_data["FavoriteFiles"] = [];
 					}
-					console.log("userdata");
-					console.log(user_data);
+					
 					localStorage.setItem("userdata",  JSON.stringify(user_data));
 
 					writeUserData(JSON.stringify(user_data))
@@ -78,7 +75,7 @@ $('#loginform').submit(function (e) {
 					}
 				},
 				error: function(){
-					 console.log("Unable to get user favorites, dev will need to troubleshoot...");
+					 console.error("Unable to get user favorites, dev will need to troubleshoot...");
 					 //window.location.replace("/nist/application/pages/login.html");
 				 }
 			});

@@ -14,7 +14,7 @@ $(document).ready(function() {
     // Fetch the JSON data
     $.getJSON(jsonUrl)
         .done(function(data) {
-            console.log("HERE");
+            
 
             // Replace NaN with null in the data
             function replaceNaN(obj) {
@@ -64,7 +64,7 @@ $(document).ready(function() {
                             data: key
                         }));
 
-                        console.log(`Initializing table for ${sanitizedTabName} with columns:`, columns);
+                        
 
                         $(`#table_${sanitizedTabName}`).DataTable({
                             data: data[tabName],
@@ -97,4 +97,3 @@ $(document).ready(function() {
             console.error("Request Failed: " + textStatus + ", " + error);
         });
 });
-

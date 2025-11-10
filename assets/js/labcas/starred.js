@@ -136,7 +136,7 @@ function setup_labcas_starred(query, divid, cpage){
         file_starred_search = "&fq=(id:"+tmp_files_search+")";
     }
     if (divid == "collections_starred" || divid == "all"){
-        console.log(localStorage.getItem('environment')+"/data-access-api/collections/select?q=*"+collection_starred_search+"&wt=json&indent=true&start="+cpage*10);
+        
         $.ajax({
             url: localStorage.getItem('environment')+"/data-access-api/collections/select?q=*"+collection_starred_search+"&wt=json&indent=true&sort=id%20asc&start="+cpage*10,
             beforeSend: function(xhr) {
@@ -181,7 +181,7 @@ function setup_labcas_starred(query, divid, cpage){
         });
     }
     if (divid == "files_starred" || divid == "all"){
-        console.log(localStorage.getItem('environment')+"/data-access-api/files/select?q=*"+file_starred_search+"&wt=json&indent=true&sort=FileName%20asc&start="+cpage*10);
+        
 
         $.ajax({
             url: localStorage.getItem('environment')+"/data-access-api/files/select?q=*"+file_starred_search+"&wt=json&sort=FileName%20asc&indent=true&start="+cpage*10,
@@ -208,4 +208,3 @@ function setup_labcas_starred(query, divid, cpage){
     }
     $("#favorites_len").html(user_data['FavoriteFiles'].length+user_data['FavoriteDatasets'].length+user_data['FavoriteCollections'].length);
 }
-
