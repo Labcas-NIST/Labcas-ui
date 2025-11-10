@@ -5,8 +5,7 @@ function init_ml_wizard(dataset_id){
     var ml_collections_split = ml_collections.split(",");
     for (i = 0; i < ml_collections_split.length; i++) {
         if (dataset_id.includes(ml_collections_split[i])){
-        console.log("WIZARD23");
-            $( "#ml_wizard_template" ).load("/labcas-ui/templates.html #ml_wizard_template");
+            $( "#ml_wizard_template" ).load("/nist/templates.html #ml_wizard_template");
             break;
         }
     }
@@ -16,7 +15,6 @@ function init_ml_wizard(dataset_id){
 function submit_ml_file(file_id, batch_flag){
     //single submission
     if(batch_flag == "single"){
-        console.log("OK");
         $('#ml_wizard_HTML').html(localStorage.getItem("ml_wizard_html"));
         var ml_wizard_options = localStorage.getItem("ml_wizard_options");
         var first_selected = "";

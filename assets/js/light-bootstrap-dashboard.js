@@ -135,7 +135,7 @@ lbd = {
 
             mobile_menu_initialized = true;
         } else {
-            console.log('window with:' + $(window).width());
+            
             if ($(window).width() > 991) {
                 // reset all the additions that we made for the sidebar wrapper only if the screen is bigger than 991px
                 $sidebar_wrapper.find('.navbar-form').remove();

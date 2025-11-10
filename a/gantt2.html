@@ -126,7 +126,7 @@ function formatDateToISOWithoutTime(dateObj) {
 }
 
 function getShape(eventType) {
-    console.log(eventType);
+    // removed debug log: eventType
     switch (eventType) {
       case 'Start':
         return 'triangle-right-open';
@@ -154,11 +154,11 @@ async function createGanttChart(cell_type, divid) {
     var cell_button_html = "<button id='"+divid+"_toggle' class='btn btn-primary'>"+cell_type+"</button>"
     document.getElementById(divid+'_title').innerHTML = cell_button_html;
     //const response = await fetch('https://labcas.jpl.nasa.gov/nist/assets/tmp/data.json');
-    console.log("HERE");
+    // removed debug log
 
-    let response = await fetch('https://ddsa-labcas-staging.jpl.nasa.gov/labcas-ui/assets/tmp/'+cell_type+'_new_data.json');
+    let response = await fetch('https://labcas.jpl.nasa.gov/nist/assets/tmp/'+cell_type+'_new_data.json');
     if (cell_type == "Jurkat"){
-        response = await fetch('https://ddsa-labcas-staging.jpl.nasa.gov/labcas-ui/assets/tmp/test-cell-line2.json');
+        response = await fetch('https://labcas.jpl.nasa.gov/nist/assets/tmp/test-cell-line2.json');
     }
     const data = await response.json();
 
@@ -256,9 +256,7 @@ async function createGanttChart(cell_type, divid) {
     // Add this code after the Plotly.newPlot() call
 document.getElementById(divid).on('plotly_hover', function(data){
     const uniqueId = data.points[0].y + '_' + formatDateToISOWithoutTime(data.points[0].x);
-    console.log("row");
-    console.log(uniqueId);
-    console.log(combinedData[uniqueId]);
+    // removed debug logs
     displayDetailsTable(combinedData[uniqueId]);
 });
 

@@ -10,9 +10,8 @@ function search(){
 	search_text = search_text_main;
     }
 
-    console.log(localStorage.getItem("search"));
-    console.log("Set search");
-    window.location.href = "/labcas-ui/s/index.html?search="+search_text.replace("&","%26");
+    
+    window.location.href = "/nist/s/index.html?search="+search_text.replace("&","%26");
 }
 
 function fill_datasets_search(data, query, collection_filters){
@@ -31,7 +30,7 @@ function fill_datasets_search(data, query, collection_filters){
         var instrument = obj.Instrument ? obj.Instrument : obj.InstrumentCode;
         var image_div = "";
         if (obj.contains_image){
-            image_div = "<button id='view_"+id_safe_id+"' type=\"button\" rel=\"tooltip\" title=\"View\" onclick=\"Cookies.set('login_redirect', '/labcas-ui/d/index.html?dataset_id="+html_safe_id+"'); submitImage('files-table','"+html_safe_id+"')\" class=\"btn btn-simple btn-link\" style='color: red'>"+
+            image_div = "<button id='view_"+id_safe_id+"' type=\"button\" rel=\"tooltip\" title=\"View\" onclick=\"Cookies.set('login_redirect', '/nist/d/index.html?dataset_id="+html_safe_id+"'); submitImage('files-table','"+html_safe_id+"')\" class=\"btn btn-simple btn-link\" style='color: red'>"+
                 "<i class=\"fa fa-image\"></i>"+
             "</button>";
         }
@@ -39,10 +38,10 @@ function fill_datasets_search(data, query, collection_filters){
         $("#search-dataset-table tbody").append(
             "<tr>"+
                 "<td>"+
-                "<a href=\"/labcas-ui/d/index.html?dataset_id="+
+                "<a href=\"/nist/d/index.html?dataset_id="+
                     obj.id+"\">"+
                 obj.DatasetName+"</a></td>"+
-                "<td><a href=\"/labcas-ui/c/index.html?collection_id="+
+                "<td><a href=\"/nist/c/index.html?collection_id="+
                     obj.CollectionId+"\">"+
                     obj.CollectionName+"</a></td>"+
                 "<td>"+obj.StudyID+"</td>"+
@@ -82,8 +81,7 @@ function generate_categories(field_id, data){
 function fill_files_search(data, query, collection_filters){
     var size = data.response.numFound;
     var cpage = data.response.start;
-    console.log("paginate")
-    console.log(cpage)
+    
     load_pagination("files_search",size,cpage);
     $("#search-file-table tbody").empty();
     $.each(data.response.docs, function(key, obj) {
@@ -95,15 +93,16 @@ function fill_files_search(data, query, collection_filters){
       var thumb = "";
       var filetype = obj.FileType ? obj.FileType.join(",") : "";
       var filename = obj.FileName ? obj.FileName : "";
-      var version = obj.DatasetVersion ? obj.DatasetVersion : "";
+      var version = obj.DatasetVersion ?obj.DatasetVersion : "";
       var fileloc = obj.RealFileLocation ? obj.RealFileLocation : "";
+      var collection = obj.CollectionName ? obj.CollectionName : "";
       if (fileloc == ""){
       	fileloc = obj.FileLocation ? obj.FileLocation : "";
       }
       var site = obj.Institution ? obj.Institution.join(",") : "";
       var description = obj.Description? obj.Description.join(",") : "";
       if ('ThumbnailRelativePath' in obj){
-        thumb = "<img width='50' height='50' src='"+localStorage.getItem('environment')+"/labcas-ui/assets/"+obj.ThumbnailRelativePath+"'/>";
+        thumb = "<img width='50' height='50' src='"+localStorage.getItem('environment')+"/nist/assets/"+obj.ThumbnailRelativePath+"'/>";
       }
       var filesize = "";
       var filesizenum = 0;
@@ -123,8 +122,8 @@ function fill_files_search(data, query, collection_filters){
         "<tr>"+
             "<td><center><input type='checkbox' class='form-check-input' data-loc='"+fileloc+"' data-name='"+filename+"' data-version='"+version+"' value='"+html_safe_id+"' data-valuesize='"+filesizenum+"' "+checked+"></center></td>"+
             "<td class='text-left'>"+
-                "<a href=\"/labcas-ui/f/index.html?file_id="+
-                    html_safe_id+"\">"+
+                "<a href='#' data-href=\"/nist/f/index.html?file_id="+
+                    html_safe_id+"\" onclick=\"localStorage.setItem('file_id', '"+html_safe_id+"'); window.location.href = this.getAttribute('data-href');\">"+
                     obj.FileName+
                 "</a>"+
             "</td>"+
@@ -132,10 +131,7 @@ function fill_files_search(data, query, collection_filters){
                     filetype +
             "</td>"+
             "<td class='text-left'>"+
-                    site +
-            "</td>"+
-            "<td class='text-left'>"+
-                    description +
+                    collection+
             "</td>"+
             "<td class='text-left'>"+
                     thumb+
@@ -375,7 +371,7 @@ function fill_collections_search(data, query, collection_filter){
       $("#search-collection-table tbody").append(
         "<tr>"+
             "<td>"+
-            "<a href=\"/labcas-ui/c/index.html?collection_id="+
+            "<a href=\"/nist/c/index.html?collection_id="+
                     obj.id+"\">"+
                 obj.CollectionName+"</a></td>"+
                 "<td>"+obj.Discipline+"</td>"+
@@ -422,8 +418,7 @@ function fill_collections_facets(data){
 }
 
 function setup_labcas_search(query, divid, cpage){
-    console.log("Searching2...");
-    console.log(query);
+    
     if (query != "*"){
        query = '"'+query+'"';
     }
@@ -439,7 +434,7 @@ function setup_labcas_search(query, divid, cpage){
     var data_filters = "";
     if (divid == "collections_search" || divid == "all"){
 	var url = localStorage.getItem('environment')+"/data-access-api/collections/select?q="+query+""+collection_filters+"&wt=json&indent=true&sort=id%20asc&start="+cpage*10;
-        console.log(url);
+        
         $.ajax({
 	    url: url,
             beforeSend: function(xhr) {
@@ -461,7 +456,7 @@ function setup_labcas_search(query, divid, cpage){
              }
         });
         var querytypes = ["files", "datasets", "collections"];
-        console.log("Filling facets");
+        
         add_labcas_api_facets(querytypes, query, collection_filters, collection_facets, {}, fill_collections_facets);
     }
     if (divid == "datasets_search" || divid == "all"){
@@ -490,8 +485,7 @@ function setup_labcas_search(query, divid, cpage){
         });
     }
     if (divid == "files_search" || divid == "all"){
-        console.log("Files search");
-        console.log(localStorage.getItem('environment')+"/data-access-api/files/select?q="+query+""+collection_filters+"&wt=json&indent=true&sort=FileName%20asc&start="+cpage*10);
+        
         wait(1000);
         $.ajax({
             url: localStorage.getItem('environment')+"/data-access-api/files/select?q="+query+""+collection_filters+"&wt=json&indent=true&sort=FileName%20asc&start="+cpage*10,
@@ -523,13 +517,13 @@ function setup_labcas_search(query, divid, cpage){
 
 function initiate_search(){
     var get_var = get_url_vars();
-    console.log(localStorage.getItem("search"));
+    
     if(localStorage.getItem("search")  && get_var["search"]){
         localStorage.setItem("search", get_var["search"].replace("&","%26"));
-        console.log("Search not clearned");
+        
     }else{
         localStorage.setItem("search", "*");
-        console.log("Search cleared");
+        
     }
     $.each(localStorage.getItem("filters").split(","), function(ind, head) {
             var divs = localStorage.getItem(head+"_filters_div").split(",");
@@ -555,4 +549,3 @@ function initiate_search(){
     setup_labcas_search(localStorage.getItem("search"), "all", 0);
     $("#collection_favorites_len").html(user_data['FavoriteFiles'].length+user_data['FavoriteDatasets'].length+user_data['FavoriteCollections'].length);
 }
-
