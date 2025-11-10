@@ -102,8 +102,7 @@ function fill_files_data(data){
                     tablevals += "<td class='text-left'>"+tableitem+"</td>";
                 }
                 tableheader += "<th>"+item+"</th>";
-                console.log(tableitem);
-                console.log(item);
+                
             });
             tableheader += "<th>Action</th>";
             if (!tableheader_flag){
@@ -148,8 +147,6 @@ function fill_files_data(data){
         var reportbutton = '<div id="report_'+html_safe_id.replace("%20","_").replace(/\//g,"_")+'"></div>';
 
         if (html_safe_id.endsWith(".html")){
-            console.log("replace!");
-            console.log('#report_'+html_safe_id.replace("%20","_").replace(/\//g,"_").replace(/.html/,".fcs"));
             var div = document.getElementById('report_'+html_safe_id.replace("%20","_").replace(/\//g,"_").replace(/.html/,".fcs"));
             if (div){
                 div.innerHTML = "<button type=\"button\" rel=\"downloadbutton\" title=\"Download\" class=\"btn btn-success btn-simple btn-link\" onclick=\"localStorage.setItem('peaco_report', 'https://labcas.jpl.nasa.gov/nist/data-access-api/download?id="+html_safe_id+"'); window.location.href = '/nist/a/peaco.html'\">"+
@@ -356,9 +353,6 @@ function fill_dataset_details_data(data){
                     }
             if ($.isArray(value)){
                 if (get_var["dataset_id"].includes("GenomeEdit") && value.length > 1){
-                    console.log("head");
-                    console.log(key);
-                    console.log(value.length);
                     return;
                 }
                 value = value.join(",");
@@ -427,7 +421,7 @@ function setup_labcas_dataset_data(datatype, query, file_query, cpage){
     });
     }
     //Set dataset size
-    console.log(localStorage.getItem('environment')+"/data-access-api/files/select?q="+file_query+"&wt=json&indent=true&sort=FileName%20asc&start="+cpage*10);
+    
     $.ajax({
         url: localStorage.getItem('environment')+"/data-access-api/files/select?q="+file_query+"&wt=json&indent=true&sort=FileName%20asc&start="+cpage*10,
         xhrFields: {

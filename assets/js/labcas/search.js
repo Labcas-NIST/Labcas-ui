@@ -10,8 +10,7 @@ function search(){
 	search_text = search_text_main;
     }
 
-    console.log(localStorage.getItem("search"));
-    console.log("Set search");
+    
     window.location.href = "/nist/s/index.html?search="+search_text.replace("&","%26");
 }
 
@@ -89,8 +88,7 @@ function generate_categories(field_id, data){
 function fill_files_search(data, query, collection_filters){
     var size = data.response.numFound;
     var cpage = data.response.start;
-    console.log("paginate")
-    console.log(cpage)
+    
     load_pagination("files_search",size,cpage);
     $("#search-file-table tbody").empty();
     $.each(data.response.docs, function(key, obj) {
@@ -472,7 +470,7 @@ function setup_labcas_search(query, divid, cpage){
              }
         });
         var querytypes = ["files", "datasets", "collections"];
-        console.log("Filling facets");
+        
         add_labcas_api_facets(querytypes, query, collection_filters, collection_facets, {}, fill_collections_facets);
     }
     if (divid == "datasets_search" || divid == "all"){
@@ -501,8 +499,7 @@ function setup_labcas_search(query, divid, cpage){
         });
     }
     if (divid == "files_search" || divid == "all"){
-        console.log("Files search");
-        console.log(localStorage.getItem('environment')+"/data-access-api/files/select?q="+query+""+collection_filters+"&wt=json&indent=true&sort=FileName%20asc&start="+cpage*10);
+        
         wait(1000);
         $.ajax({
             url: localStorage.getItem('environment')+"/data-access-api/files/select?q="+query+""+collection_filters+"&wt=json&indent=true&sort=FileName%20asc&start="+cpage*10,
@@ -534,13 +531,13 @@ function setup_labcas_search(query, divid, cpage){
 
 function initiate_search(){
     var get_var = get_url_vars();
-    console.log(localStorage.getItem("search"));
+    
     if(localStorage.getItem("search")  && get_var["search"]){
         localStorage.setItem("search", get_var["search"].replace("&","%26"));
-        console.log("Search not clearned");
+        
     }else{
         localStorage.setItem("search", "*");
-        console.log("Search cleared");
+        
     }
     $.each(localStorage.getItem("filters").split(","), function(ind, head) {
             var divs = localStorage.getItem(head+"_filters_div").split(",");
@@ -566,4 +563,3 @@ function initiate_search(){
     setup_labcas_search(localStorage.getItem("search"), "all", 0);
     $("#collection_favorites_len").html(user_data['FavoriteFiles'].length+user_data['FavoriteDatasets'].length+user_data['FavoriteCollections'].length);
 }
-

@@ -156,7 +156,6 @@ function fill_file_image_viewer_data(data){
 
 function setup_labcas_file_data(datatype, query, file_query){
     //Url encode just in case
-    console.log(localStorage.getItem('environment')+"/data-access-api/files/select?q="+query+"&wt=json&sort=FileName%20asc&indent=true");
     $.ajax({
         url: localStorage.getItem('environment')+"/data-access-api/files/select?q="+query+"&wt=json&sort=FileName%20asc&indent=true",
         xhrFields: {
@@ -169,8 +168,6 @@ function setup_labcas_file_data(datatype, query, file_query){
         },
         dataType: 'json',
         success: function (data) {
-            console.log("data");
-            console.log(data);
             try {
                 if (datatype == "file"){
                     fill_file_details_data(data);
@@ -179,8 +176,7 @@ function setup_labcas_file_data(datatype, query, file_query){
                 }
 
             } catch (ex) {
-                console.log("ERROR");
-                console.log(ex);
+                console.error(ex);
                 if (!(localStorage.getItem("logout_alert") && localStorage.getItem("logout_alert") == "On")){
                     localStorage.setItem("logout_alert","On");
                     alert("You are currently logged out. Redirecting you to log in.");
@@ -189,7 +185,7 @@ function setup_labcas_file_data(datatype, query, file_query){
             }
         },
         error: function(e){
-            console.log(e.responseText);
+            console.error(e);
             if (e.responseText){
                 fill_file_details_data(JSON.parse(e.responseText));
             }else{
@@ -204,4 +200,3 @@ function setup_labcas_file_data(datatype, query, file_query){
      }
     });
 }
-
