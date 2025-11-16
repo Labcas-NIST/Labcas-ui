@@ -15,7 +15,7 @@ The above copyright notice and this permission notice shall be included in all c
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <base href="/nist/assets/" target="_blank">
+    <base href="/labcas-ui/assets/" target="_blank">
     <link rel="apple-touch-icon" sizes="76x76" href="img/apple-icon.png">
     <link rel="icon" type="image/png" href="img/favicon.png">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -75,7 +75,7 @@ The above copyright notice and this permission notice shall be included in all c
         <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute">
           <div class="container">
             <div class="navbar-wrapper">
-              <a class="navbar-brand" href="/nist">Labcas 3.0</a>
+              <a class="navbar-brand" href="/labcas-ui">Labcas 3.0</a>
               <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-bar burger-lines"></span>
                 <span class="navbar-toggler-bar burger-lines"></span>
@@ -250,11 +250,11 @@ The above copyright notice and this permission notice shall be included in all c
   <script src="js/plugins/js.cookie.js"></script>
   <script src="js/labcas/utils.js?version=5.1.0"></script>
   <script src="js/labcas/login.js?version=5.3.1"></script>
-  <script src="/nist/assets/js/labcas/dashboard.js?version=5.1.0"></script>
+  <script src="/labcas-ui/assets/js/labcas/dashboard.js?version=5.1.0"></script>
   <script>
     $(document).ready(function() {
       demo.checkFullPageBackgroundImage();
-      $.getJSON('/nist/a/labcas_summary.json', function(data) {
+      $.getJSON('/labcas-ui/a/labcas_summary.json', function(data) {
         $('#collections_len').html(data.collection_size);
         $('#datasets_len').html(data.dataset_size);
         $('#files_len').html(data.file_size);
@@ -262,7 +262,7 @@ The above copyright notice and this permission notice shall be included in all c
       setTimeout(function() {
         // after 1000 ms we add the class animated to the login/register card
         $('.card').removeClass('card-hidden');
-        $("#sidebar_placeholder").load("/nist/sidebar_" + localStorage.getItem("environment_name") + ".html?version=5.1.0");
+        $("#sidebar_placeholder").load("/labcas-ui/sidebar_" + localStorage.getItem("environment_name") + ".html?version=5.1.0");
       }, 700)
     });
   </script>

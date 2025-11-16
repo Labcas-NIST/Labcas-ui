@@ -63,7 +63,7 @@ function fill_files_data(data){
         }
 
         if ('ThumbnailRelativePath' in value){
-            thumb = "<img width='50' height='50' src='"+localStorage.getItem('environment')+"/nist/assets/"+value.ThumbnailRelativePath+"'/>";
+            thumb = "<img width='50' height='50' src='"+localStorage.getItem('environment')+"/labcas-ui/assets/"+value.ThumbnailRelativePath+"'/>";
         }
         var html_safe_id = encodeURI(escapeRegExp(value.id)).replace("&","%26");
         var filesize = "";
@@ -116,7 +116,7 @@ function fill_files_data(data){
             tablevals = "<tr>"+
                     "<td><center><input type='checkbox' class='form-check-input' data-loc='"+fileloc+"' data-name='"+filename+"' data-version='"+version+"' value='"+html_safe_id+"' "+checked+" data-valuesize='"+filesizenum+"'></center></td>"+
                     "<td class='text-left' style='padding-right: 10px'>"+
-                        "<a href='#' data-href=\"/nist/f/index.html?file_id="+
+                        "<a href='#' data-href=\"/labcas-ui/f/index.html?file_id="+
                                 html_safe_id+"\" onclick=\"localStorage.setItem('file_id', '"+html_safe_id+"'); window.location.href = this.getAttribute('data-href');\">"+
                                 value.FileName+
                             "</a>"+
@@ -126,7 +126,7 @@ function fill_files_data(data){
                 var tableitem = value[item] ? value[item] : "";
                 //if InputFileLabCASID, generate a link instead with the filename as the link display
                 if (item == "InputFileLabCASID" && tableitem && String(tableitem) != ""){
-                    tableitem = "<a href='#' data-href='/nist/f/index.html?file_id="+tableitem+"' onclick=\"localStorage.setItem('file_id', '"+tableitem+"'); window.location.href = this.getAttribute('data-href');\" >"+String(tableitem).split('/').pop()+"</a>";
+                    tableitem = "<a href='#' data-href='/labcas-ui/f/index.html?file_id="+tableitem+"' onclick=\"localStorage.setItem('file_id', '"+tableitem+"'); window.location.href = this.getAttribute('data-href');\" >"+String(tableitem).split('/').pop()+"</a>";
                 }
                 //temporarily here until we decide how to automatically populate SoftwareCode for Flow Cyt Derived files
                 if (item == "SoftwareCode" && tableitem && String(tableitem) != ""){
@@ -149,7 +149,7 @@ function fill_files_data(data){
         if (html_safe_id.endsWith(".html")){
             var div = document.getElementById('report_'+html_safe_id.replace("%20","_").replace(/\//g,"_").replace(/.html/,".fcs"));
             if (div){
-                div.innerHTML = "<button type=\"button\" rel=\"downloadbutton\" title=\"Download\" class=\"btn btn-success btn-simple btn-link\" onclick=\"localStorage.setItem('peaco_report', 'https://labcas.jpl.nasa.gov/nist/data-access-api/download?id="+html_safe_id+"'); window.location.href = '/nist/a/peaco.html'\">"+
+                div.innerHTML = "<button type=\"button\" rel=\"downloadbutton\" title=\"Download\" class=\"btn btn-success btn-simple btn-link\" onclick=\"localStorage.setItem('peaco_report', 'https://labcas.jpl.nasa.gov/nist/data-access-api/download?id="+html_safe_id+"'); window.location.href = '/labcas-ui/a/peaco.html'\">"+
                         "<i class=\"fa fa-file-image-o\"></i>"+
                     "</button>";
             }
@@ -211,12 +211,12 @@ function fill_datasets_children(data){
         var image_div = "";
         //commenting out image viewer at dataset level for now since omero viewer has been decommed
         if (value.contains_image){
-            image_div = "<button id='view_"+id_safe_id+"' type=\"button\" rel=\"tooltip\" title=\"View\" onclick=\"Cookies.set('login_redirect', '/nist/d/index.html?dataset_id="+html_safe_id+"'); submitImage('files-table','"+html_safe_id+"')\" class=\"btn btn-simple btn-link\" style='position: absolute;left: -50px; top: 50%; transform: translateY(-50%); color: red'>"+
+            image_div = "<button id='view_"+id_safe_id+"' type=\"button\" rel=\"tooltip\" title=\"View\" onclick=\"Cookies.set('login_redirect', '/labcas-ui/d/index.html?dataset_id="+html_safe_id+"'); submitImage('files-table','"+html_safe_id+"')\" class=\"btn btn-simple btn-link\" style='position: absolute;left: -50px; top: 50%; transform: translateY(-50%); color: red'>"+
                 "<i class=\"fa fa-image\"></i>"+
             "</button>";
         }
         else if (value.id.endsWith("fastq.gz")){
-            image_div = "<button id='view_"+id_safe_id+"' type=\"button\" rel=\"tooltip\" title=\"View\" onclick=\"Cookies.set('login_redirect', '/nist/d/index.html?dataset_id="+html_safe_id+"'); window.location.replace('/nist/fqc/index.html?version=5.1.0');\" class=\"btn btn-simple btn-link\" style='position: absolute;left: -50px; top: 50%; transform: translateY(-50%); color: red'>"+
+            image_div = "<button id='view_"+id_safe_id+"' type=\"button\" rel=\"tooltip\" title=\"View\" onclick=\"Cookies.set('login_redirect', '/labcas-ui/d/index.html?dataset_id="+html_safe_id+"'); window.location.replace('/labcas-ui/fqc/index.html?version=5.1.0');\" class=\"btn btn-simple btn-link\" style='position: absolute;left: -50px; top: 50%; transform: translateY(-50%); color: red'>"+
                 "<i class=\"fa fa-image\"></i>"+
             "</button>";
         }
@@ -224,7 +224,7 @@ function fill_datasets_children(data){
         dataset_html += "<div class='row' style='border-bottom:1px solid #ccc; margin-left: 0px; margin-right: 0px;'>"+
             "<div class='col-md-1'></div>"+
             "<div class='text-left col-md-10' valign='middle' style='padding: 0px 8px; vertical-align: middle;'>"+
-            "<a href=\"/nist/d/index.html?dataset_id="+
+            "<a href=\"/labcas-ui/d/index.html?dataset_id="+
                 value.id+"\">"+
                 value.DatasetName+
             "</a>"+
@@ -240,12 +240,12 @@ function fill_datasets_children(data){
     });
     if ( dataset_html != ""){
         $("#children-datasets").show();
-        $( "#dataset_stat_template" ).load("/nist/templates.html #dataset_stat_template");
+        $( "#dataset_stat_template" ).load("/labcas-ui/templates.html #dataset_stat_template");
         setTimeout(function() {
             $("#collection_datasets_len").html(dataset_count);
         }, 2000);
     }else{
-        $( "#dataset_stat_template" ).load("/nist/templates.html?version=5.1.0 #dataset_name_template");
+        $( "#dataset_stat_template" ).load("/labcas-ui/templates.html?version=5.1.0 #dataset_name_template");
     }
         $("#children-datasets-section").append(dataset_html);
 }
@@ -301,7 +301,7 @@ function fill_dataset_details_data(data){
             $("#collection_level_gantt").show();
         }
 
-        $("#collection_name").html("<a href=\"/nist/c/index.html?collection_id="+collectionid+"\">"+collectionid+"</a>");
+        $("#collection_name").html("<a href=\"/labcas-ui/c/index.html?collection_id="+collectionid+"\">"+collectionid+"</a>");
                 
         var extended_headers = [];
         if (localStorage.getItem('dataset_header_extend_'+collectionid)){

@@ -22,7 +22,7 @@ function fill_collection_level_files(data){
                 var site = value.Institution ? value.Institution.join(",") : "";
                 var description = value.Description? value.Description.join(",") : "";
                 if ('ThumbnailRelativePath' in value){
-                        thumb = "<img width='50' height='50' src='"+localStorage.getItem('environment')+"/nist/assets/"+value.ThumbnailRelativePath+"'/>";
+                        thumb = "<img width='50' height='50' src='"+localStorage.getItem('environment')+"/labcas-ui/assets/"+value.ThumbnailRelativePath+"'/>";
                 }
                 var html_safe_id = encodeURI(escapeRegExp(value.id));
                 var filesize = "";
@@ -39,7 +39,7 @@ function fill_collection_level_files(data){
                 "<tr>"+
                         "<td><center><input type='checkbox' class='form-check-input' data-loc='"+fileloc+"' data-name='"+filename+"' data-version='"+version+"' value='"+html_safe_id+"' "+checked+" data-valuesize='"+filesizenum+"'></center></td>"+
                         "<td class='text-left'>"+
-                                "<a href=\"/nist/f/index.html?file_id="+
+                                "<a href=\"/labcas-ui/f/index.html?file_id="+
                                         html_safe_id+"\">"+
                                         value.FileName+
                                 "</a>"+
@@ -100,7 +100,7 @@ function fill_collection_metadata(data){
             color = "#87CB16 !important";
         }
         if (value.contains_image){
-            image_div = "<button id='view_"+id_safe_id+"' type=\"button\" rel=\"tooltip\" title=\"View\" onclick=\"Cookies.set('login_redirect', '/nist/d/index.html?dataset_id="+html_safe_id+"'); submitImage('files-table','"+html_safe_id+"')\" class=\"btn btn-simple btn-link\" style='position: absolute;left: -50px; top: 50%; transform: translateY(-50%); color: red'>"+
+            image_div = "<button id='view_"+id_safe_id+"' type=\"button\" rel=\"tooltip\" title=\"View\" onclick=\"Cookies.set('login_redirect', '/labcas-ui/d/index.html?dataset_id="+html_safe_id+"'); submitImage('files-table','"+html_safe_id+"')\" class=\"btn btn-simple btn-link\" style='position: absolute;left: -50px; top: 50%; transform: translateY(-50%); color: red'>"+
                 "<i class=\"fa fa-image\"></i>"+
             "</button>";
         }
@@ -116,7 +116,7 @@ function fill_collection_metadata(data){
             }
             value.FileName = "&nbsp;&nbsp;&nbsp;&nbsp;".repeat(value.id.split("/").length - 3)+"<span>&#8226;</span>"+value.FileName;
             collapse_button = "";
-            file_link = "<a href='#' data-href=\"/nist/f/index.html?file_id="+
+            file_link = "<a href='#' data-href=\"/labcas-ui/f/index.html?file_id="+
                 html_safe_id+"\" onclick=\"localStorage.setItem('file_id', '"+value.id+"'); window.location.href = this.getAttribute('data-href');\">"+
                 value.FileName+
             "</a>";
@@ -269,7 +269,7 @@ function fill_collections_public_data(data){
               $("#collection-table tbody").append(
                 "<tr>"+
                     "<td></td><td>"+
-                    "<a href=\"/nist/c/index.html?collection_id="+
+        "<a href=\"/labcas-ui/c/index.html?collection_id="+
                         obj.id+"\">"+
                     obj.CollectionName+"</a></td>"+
                     "<td>"+orgs+"</td>"+
@@ -344,7 +344,7 @@ function fill_collections_data(data){
           $("#collection-table tbody").append(
             "<tr>"+
                 "<td></td><td>"+
-                "<a href=\"/nist/c/index.html?collection_id="+
+                "<a href=\"/labcas-ui/c/index.html?collection_id="+
                     obj.id+"\">"+
                 obj.CollectionName+"</a></td>"+
                 "<td>"+description+"</td>"+
@@ -421,7 +421,7 @@ function fill_datasets_data(data){
 
         var image_div = "";
         /*if (value.contains_image){
-            image_div = "<button id='view_"+id_safe_id+"' type=\"button\" rel=\"tooltip\" title=\"View\" onclick=\"Cookies.set('login_redirect', '/nist/d/index.html?dataset_id="+html_safe_id+"'); submitImage('files-table','"+html_safe_id+"')\" class=\"btn btn-simple btn-link\" style='position: absolute;left: -50px; top: 50%; transform: translateY(-50%); color: red'>"+
+            image_div = "<button id='view_"+id_safe_id+"' type=\"button\" rel=\"tooltip\" title=\"View\" onclick=\"Cookies.set('login_redirect', '/labcas-ui/d/index.html?dataset_id="+html_safe_id+"'); submitImage('files-table','"+html_safe_id+"')\" class=\"btn btn-simple btn-link\" style='position: absolute;left: -50px; top: 50%; transform: translateY(-50%); color: red'>"+
                 "<i class=\"fa fa-image\"></i>"+
             "</button>";
         }*/
@@ -453,7 +453,7 @@ function fill_datasets_data(data){
                     "</label>"+
                 "</div>-->"+collapse_button+"</div>"+
                 "<div class='text-left col-md-10' valign='middle' style='padding: 0px 8px; vertical-align: middle;'>"+
-        "<a href=\"/nist/d/index.html?dataset_id="+
+        "<a href=\"/labcas-ui/d/index.html?dataset_id="+
             value.id+"\">"+
             value.DatasetName+
         "</a>"+
@@ -577,7 +577,7 @@ function setup_labcas_data(datatype, query, dataset_query){
         var get_var = get_url_vars();
         var collection_file_exists = false;
         if(get_var["collection_id"] == "NIST_Flow_Cytometry_Standards_Consortium" || get_var["collection_id"] == "Genome_Editing_Consortium" || get_var["collection_id"] == "Microbial" || get_var["collection_id"] == "flow_cytometry_stage"){
-            query_labcas_api("/nist/assets/documentation/collection_file_documentation.json?version=5.1.1", fill_collection_metadata);
+            query_labcas_api("/labcas-ui/assets/documentation/collection_file_documentation.json?version=5.1.1", fill_collection_metadata);
         }else{
             $('#collection_level_files').hide();
 

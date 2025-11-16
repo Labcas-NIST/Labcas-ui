@@ -25,7 +25,7 @@ $().ready(function() {
 	//Always do this, init functions
 	
 	setTimeout(function(){
-        if (!(location.href.includes("/nist/index.html") || location.href.endsWith("/nist/") || location.href.endsWith("/nist") || location.href.includes("/nist/o/index.html"))){
+        if (!(location.href.includes("/labcas-ui/index.html") || location.href.endsWith("/labcas-ui/") || location.href.endsWith("/labcas-ui") || location.href.includes("/labcas-ui/o/index.html"))){
             if(!localStorage.getItem('environment')){
                 localStorage.setItem("environment","https://"+location.hostname.split(/\//)[0]);
             }
@@ -38,7 +38,7 @@ $().ready(function() {
 });
 function redirect_to_login(){
     if (localStorage.getItem("allow_redirect") == "true"){
-        window.location.replace("/nist/index.html");
+        window.location.replace("/labcas-ui/index.html");
     }else{
 
     }
@@ -47,7 +47,7 @@ function login_redirect(){
         if (Cookies.get("login_redirect")){
             window.location.replace(Cookies.get("login_redirect"));
         }else{
-            window.location.replace("/nist/s/index.html?search=*");
+            window.location.replace("/labcas-ui/s/index.html?search=*");
         }
 }
 function baseName(str)
@@ -60,7 +60,7 @@ function baseName(str)
 function initCookies(){
 	if(!Cookies.get("token") || Cookies.get("token") == "None"){
 		$.ajax({
-			url: '/nist/assets/conf/environment.cfg?26',
+			url: '/labcas-ui/assets/conf/environment.cfg?26',
 			dataType: 'json',
 			async: false,
 			success: function(json) {
@@ -478,7 +478,7 @@ function checkSize(filecount, filesize, threshold){
 
 function resume_download(){
 	localStorage.setItem('download_size',0);
-	window.location.replace("/nist/download.html?version=5.1.0");
+	window.location.replace("/labcas-ui/download.html?version=5.1.0");
 }
 
 function download_file(val, type){
@@ -519,9 +519,9 @@ function selected_files(formname){
 
     var get_var = get_url_vars();
     if (get_var["dataset_id"] && get_var["dataset_id"] != "undefined"){
-	    Cookies.set("login_redirect", "/nist/d/index.html?dataset_id="+get_var["dataset_id"])
+	    Cookies.set("login_redirect", "/labcas-ui/d/index.html?dataset_id="+get_var["dataset_id"])
     }else if (get_var["search"]){
-	    Cookies.set("login_redirect", "/nist/s/index.html?search="+get_var["search"].replace("&","%26"))
+	    Cookies.set("login_redirect", "/labcas-ui/s/index.html?search="+get_var["search"].replace("&","%26"))
     }
 
     return download_list;
@@ -567,7 +567,7 @@ function download_files(formname){
         $('#redirectModal').modal('show');
     }else if (filecount > parseInt(localStorage.getItem("file_count_threshold_for_download_alert_trigger"))){
         $('#download_warning').html("You're about to download <B><font color=red>"+filecount+"</font></B> files and <B><font color=red>"+humanFileSize(filesize)+"</font></B> total in size.");
-        $('#redirectModal .modal-footer').html("<button type='submit' onclick=\"window.location.replace('/nist/download.html?version=5.1.0')\" class='btn btn-info btn-fill pull-right' data-dismiss='modal'>Continue</button><div class=\"col-md-6\" style=\"padding-right:0px text-align: right\"><button type=\"button\" class=\"btn btn-danger btn-simple \" style=\"float: right\" data-dismiss=\"modal\">Cancel</button></div>");
+        $('#redirectModal .modal-footer').html("<button type='submit' onclick=\"window.location.replace('/labcas-ui/download.html?version=5.1.0')\" class='btn btn-info btn-fill pull-right' data-dismiss='modal'>Continue</button><div class=\"col-md-6\" style=\"padding-right:0px text-align: right\"><button type=\"button\" class=\"btn btn-danger btn-simple \" style=\"float: right\" data-dismiss=\"modal\">Cancel</button></div>");
         $('#redirectModal_continue').hide();
         $('#redirectModal').modal('show');
     }else if (filecount > parseInt(localStorage.getItem("file_count_threshold_for_download_warning_trigger"))){
@@ -575,7 +575,7 @@ function download_files(formname){
         $('#redirectModal_continue').show();
         $('#redirectModal').modal('show');
     }else{
-        window.location.replace("/nist/download.html?version=5.1.0");
+        window.location.replace("/labcas-ui/download.html?version=5.1.0");
     }
 }
 
@@ -762,7 +762,7 @@ function generate_dataset_file_list(data){
 
     const filesize = download_size;
     const filecount = Object.keys(download_list).length;
-    window.location.replace("/nist/download.html?version=5.1.0");
+	window.location.replace("/labcas-ui/download.html?version=5.1.0");
 }
 function download_script(filename, ostype) {
 	var element = document.createElement('a');
@@ -857,9 +857,9 @@ function set_search_filters(params){
         });
 	if (params["search"] && params["search"] != "*" && params["search"] != ""){
         localStorage.setItem("search", params["search"].replace("&","%26"));
-		window.location.replace("/nist/s/index.html?search="+params["search"].replace("&","%26"));
+		window.location.replace("/labcas-ui/s/index.html?search="+params["search"].replace("&","%26"));
 	}else{
-		window.location.replace("/nist/s/index.html?search=*");
+		window.location.replace("/labcas-ui/s/index.html?search=*");
 	}
 }
 
@@ -1055,20 +1055,20 @@ function generate_image_file_list(data){
     var get_var = get_url_vars();
 
     if (get_var["dataset_id"] && get_var["dataset_id"] != "undefined"){
-        Cookies.set("login_redirect", "/nist/d/index.html?dataset_id="+get_var["dataset_id"])
+        Cookies.set("login_redirect", "/labcas-ui/d/index.html?dataset_id="+get_var["dataset_id"])
     }else if (get_var["search"]){
-        Cookies.set("login_redirect", "/nist/s/index.html?search="+get_var["search"].replace("&","%26"))
+        Cookies.set("login_redirect", "/labcas-ui/s/index.html?search="+get_var["search"].replace("&","%26"))
     }
     if (image_type == "dicoms"){
 	if (check_dicom_multi()){
-	       window.location.replace("/nist/i/mindex.html?version=5.1.0");
+	       window.location.replace("/labcas-ui/i/mindex.html?version=5.1.0");
 	}else{
-	       window.location.replace("/nist/i/index.html?version=5.1.0");
+	       window.location.replace("/labcas-ui/i/index.html?version=5.1.0");
 	}
     }else if(image_type = "omeros"){
-	window.location.replace("/nist/o/index.html?version=5.1.0");
+	window.location.replace("/labcas-ui/o/index.html?version=5.1.0");
     }else{
-       window.location.replace("/nist/z/index.html?version=5.1.0");
+       window.location.replace("/labcas-ui/z/index.html?version=5.1.0");
     }
 }
 
@@ -1125,22 +1125,22 @@ function submitSingleImageData(image, loc, name, version){
         var get_var = get_url_vars();
 
             if (get_var["dataset_id"] && get_var["dataset_id"] != "undefined"){
-                    Cookies.set("login_redirect", "/nist/d/index.html?dataset_id="+get_var["dataset_id"])
+                    Cookies.set("login_redirect", "/labcas-ui/d/index.html?dataset_id="+get_var["dataset_id"])
             }else if (get_var["search"]){
-                    Cookies.set("login_redirect", "/nist/s/index.html?search="+get_var["search"].replace("&","%26"))
+                    Cookies.set("login_redirect", "/labcas-ui/s/index.html?search="+get_var["search"].replace("&","%26"))
             }else if (get_var["file_id"] && get_var["file_id"] != "undefined"){
-                        Cookies.set("login_redirect", "/nist/f/index.html?file_id="+get_var["file_id"])
+                        Cookies.set("login_redirect", "/labcas-ui/f/index.html?file_id="+get_var["file_id"])
             }
             if (image_type == "dicoms"){
 		if (check_dicom_multi()){
-		       window.location.replace("/nist/i/mindex.html?version=5.1.0");
+	       window.location.replace("/labcas-ui/i/mindex.html?version=5.1.0");
 		}else{
-		       window.location.replace("/nist/i/index.html?version=5.1.0");
+	       window.location.replace("/labcas-ui/i/index.html?version=5.1.0");
 		}
             }else if(image_type == "omeros"){
-		window.location.replace("/nist/o/index.html?version=5.1.0");
+	window.location.replace("/labcas-ui/o/index.html?version=5.1.0");
             }else{
-                window.location.replace("/nist/z/index.html?version=5.1.0");
+                window.location.replace("/labcas-ui/z/index.html?version=5.1.0");
             }
     */
 }
@@ -1227,33 +1227,33 @@ function submitImageData(formname, dicom){
     var get_var = get_url_vars();
     
     if (get_var["dataset_id"] && get_var["dataset_id"] != "undefined"){
-	    Cookies.set("login_redirect", "/nist/d/index.html?dataset_id="+get_var["dataset_id"])
+	    Cookies.set("login_redirect", "/labcas-ui/d/index.html?dataset_id="+get_var["dataset_id"])
     }else if (get_var["search"]){
-	    Cookies.set("login_redirect", "/nist/s/index.html?search="+get_var["search"].replace("&","%26"))
+	    Cookies.set("login_redirect", "/labcas-ui/s/index.html?search="+get_var["search"].replace("&","%26"))
     }
     if (formname.startsWith("cart_")){
         if (formname == "cart_dicom"){
 		if (check_dicom_multi()){
-		       window.location.replace("/nist/i/mindex.html?version=5.1.0");
+	       window.location.replace("/labcas-ui/i/mindex.html?version=5.1.0");
 		}else{
-		       window.location.replace("/nist/i/index.html?version=5.1.0");
+	       window.location.replace("/labcas-ui/i/index.html?version=5.1.0");
 		}
         }else if(formname == "cart_omero"){
-		window.location.replace("/nist/o/index.html?version=5.1.0");
+	window.location.replace("/labcas-ui/o/index.html?version=5.1.0");
 	}else{
-            window.location.replace("/nist/z/index.html?version=5.1.0");
+            window.location.replace("/labcas-ui/z/index.html?version=5.1.0");
         }
     }else{
        if (image_type == "dicoms"){
 		if (check_dicom_multi()){
-		       window.location.replace("/nist/i/mindex.html?version=5.1.0");
+		       window.location.replace("/labcas-ui/i/mindex.html?version=5.1.0");
 		}else{
-		       window.location.replace("/nist/i/index.html?version=5.1.0");
+		       window.location.replace("/labcas-ui/i/index.html?version=5.1.0");
 		}
        }else if(image_type == "omeros"){
-	  window.location.replace("/nist/o/index.html?version=5.1.0");
+	  window.location.replace("/labcas-ui/o/index.html?version=5.1.0");
        }else{
-          window.location.replace("/nist/z/index.html?version=5.1.0");
+          window.location.replace("/labcas-ui/z/index.html?version=5.1.0");
        }
     }
 }
@@ -1285,7 +1285,7 @@ function check_omero_image(image_dataset, image_name, version, show_flag, fileid
 			orchistrate_omero_find(image_dataset, image_name, version, show_flag, fileid, imageid);
 		}
 		var download_cmd = "download_file('"+fileid+"','single');";
-		var details_cmd = "window.open(\"/nist/f/index.html?file_id="+fileid+"\");";
+		var details_cmd = "window.open(\"/labcas-ui/f/index.html?file_id="+fileid+"\");";
 		$("#image_list_table tbody").append("<tr ><td  style='padding-left: 5px; word-wrap: break-word;'><a style='word-wrap: break-word;' href='#' onclick=\"changeFrameSrc('img_frame','"+localStorage.getItem("omero_image_viewer")+imageid+"', '"+imageid+"')\">"+decodeURIComponent(image_name)+"</a></td><td class='td-actions text-right'><button type='button' rel='detailbutton' title='Details' style='padding:0px' class='btn btn-info btn-simple btn-link' onclick='"+details_cmd+"'><i class='fa fa-info-circle'></i></button>"+'<button type="button" rel="downloadbutton" title="Download" class="btn btn-success btn-simple btn-link" onclick="'+download_cmd+'"><i class="fa fa-download"></i></button></td></tr>');
 });
 
@@ -1532,7 +1532,7 @@ function recurse_dsa(sub_folder, sub_name, query_file, image_dsa_path, show_flag
                         success: function (filedata) {
                             if (filedata.length > 0 && filedata[0]._id){
                                 var download_cmd = "download_file('"+fileid+"','single');";
-                                var details_cmd = "window.open(\"/nist/f/index.html?file_id="+fileid+"\");";
+		var details_cmd = "window.open(\"/labcas-ui/f/index.html?file_id="+fileid+"\");";
                                 $("#image_list_table tbody").append("<tr ><td  style='padding-left: 5px; word-wrap: break-word;'><a style='word-wrap: break-word;' href='#' onclick=\"changeFrameSrc('img_frame','"+localStorage.getItem("dsa_image_viewer")+"?image="+filedata[0]._id+"', '"+fileid+"')\">"+decodeURIComponent(query_file)+"</a></td><td class='td-actions text-right'><button type='button' rel='detailbutton' title='Details' style='padding:0px' class='btn btn-info btn-simple btn-link' onclick='"+details_cmd+"'><i class='fa fa-info-circle'></i></button>"+'<button type="button" rel="downloadbutton" title="Download" class="btn btn-success btn-simple btn-link" onclick="'+download_cmd+'"><i class="fa fa-download"></i></button></td></tr>');
                                 if (show_flag){
                                     $('#loading_viewer').hide();
@@ -1633,7 +1633,7 @@ function save_search_profile(){
 			success: function (data) {
 				alert("Successfully saved search profile "+name);
 				$('#saved_profiles').append("<option selected value='"+name+"'>"+name+"</option>");
-				window.location.replace("/nist/s/index.html?search="+params['search'].replace("&","%26"))
+				window.location.replace("/labcas-ui/s/index.html?search="+params['search'].replace("&","%26"))
 			},
 			error: function(e){
 				alert("Save failed, please reach out to "+localStorage.getItem("support_contact")+" for support.");
@@ -1658,7 +1658,7 @@ function delete_search_profile(){
 			$('#delete_profile').hide();
 			$('#save_profile_name').show();
                         $('#save_profile').show();
-			window.location.replace("/nist/s/index.html?search=*")
+			window.location.replace("/labcas-ui/s/index.html?search=*")
 		},
 		error: function(e){
 			alert("Save failed, please reach out to "+localStorage.getItem("support_contact")+" for support.");
@@ -1747,7 +1747,7 @@ function get_search_profile(name){
 
 function pdf_viewer(file_id){
     localStorage.setItem("pdfviewer_item",file_id);
-    window.location.replace("/nist/pdf/");
+    window.location.replace("/labcas-ui/pdf/");
 }
 
 function export_metadata_as_csv(data) {

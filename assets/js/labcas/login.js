@@ -4,7 +4,7 @@ $(document).ready(function(){
         Cookies.set('user', "Sign in");
     }
     clear_cart('files-table');
-$.getJSON( '/nist/assets/conf/environment.cfg?version=5.3.1', function(json) {
+$.getJSON( '/labcas-ui/assets/conf/environment.cfg?version=5.3.1', function(json) {
 	$.each( json, function( key, val ) {
         if (typeof val == "string"){
             localStorage.setItem(key, val);
@@ -69,9 +69,9 @@ $('#loginform').submit(function (e) {
 					writeUserData(JSON.stringify(user_data))
 					localStorage.setItem("first_time_user",  first_time_user);
 					if (Cookies.get("login_redirect")){
-                        window.location.replace("/nist/m/index.html");
+                        window.location.replace("/labcas-ui/m/index.html");
 					}else{
-						window.location.replace("/nist/m/index.html");
+						window.location.replace("/labcas-ui/m/index.html");
 					}
 				},
 				error: function(){
