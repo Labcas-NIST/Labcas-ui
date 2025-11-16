@@ -92,11 +92,11 @@ function fill_file_details_data(data){
 			obj.ThumbnailPath = obj.ThumbnailPath[0];
 		}
 		if ('ThumbnailRelativePath' in obj){
-                        thumb = "<img width='50' height='50' src='/nist/assets/"+obj.ThumbnailRelativePath+"'/>";
+                        thumb = "<img width='50' height='50' src='/labcas-ui/assets/"+obj.ThumbnailRelativePath+"'/>";
 			$("#viewer_wrapper").html(thumb);
 			$("#viewer_wrapper").attr("onclick","submitSingleImageData('"+html_safe_id+"','"+fileloc+"','"+filename+"','"+version+"');");
 		}else if ('ThumbnailPath' in obj && obj.ThumbnailPath.startsWith("/labcas-data/labcas-backend/thumbnails")){
-		        thumb = "<img width='50' height='50' src='/nist/assets/img/"+obj.ThumbnailPath.replace(/\/labcas-data\/labcas-backend\//g, '')+"'/>";
+		        thumb = "<img width='50' height='50' src='/labcas-ui/assets/img/"+obj.ThumbnailPath.replace(/\/labcas-data\/labcas-backend\//g, '')+"'/>";
 		        $("#viewer_wrapper").html(thumb);
 		        $("#viewer_wrapper").attr("onclick","submitSingleImageData('"+html_safe_id+"','"+fileloc+"','"+filename+"','"+version+"');");
 
