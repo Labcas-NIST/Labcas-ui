@@ -33,7 +33,7 @@ $('#loginform').submit(function (e) {
                 beforeSend: function(xhr) {
                     xhr.setRequestHeader("Authorization", "Basic " + btoa($('#username').val() + ":" + $('#password').val()));
                 },
-                type: 'GET',
+                type: 'POST',
                 success: function (data) {
 			Cookies.set("logout_alert","Off");
 			Cookies.set("token", data);
