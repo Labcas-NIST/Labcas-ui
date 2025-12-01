@@ -253,7 +253,7 @@ function fill_datasets_children(data){
 function populate_dataset_children(query){
     query = query.replace(/id:/,'DatasetParentId')+"%5C%2A";
     $.ajax({
-        url: localStorage.getItem('environment')+"/data-access-api/datasets/select?q="+query+"&wt=json&indent=true&rows=20000&sort=id%20asc",
+        url: localStorage.getItem('environment')+"/data-access-api/datasets/select?q="+query+"&wt=json&indent=true&rows=5000&sort=id%20asc",
         xhrFields: {
                 withCredentials: true
           },

@@ -489,7 +489,7 @@ function fill_datasets_data(data){
 }
 function setup_labcas_data(datatype, query, dataset_query){
     $.ajax({
-        url: localStorage.getItem('environment')+"/data-access-api/collections/select?q="+query+"&wt=json&indent=true&rows=10000&sort=id%20asc",
+        url: localStorage.getItem('environment')+"/data-access-api/collections/select?q="+query+"&wt=json&indent=true&rows=5000&sort=id%20asc",
         beforeSend: function(xhr) {
             if(Cookies.get('token') && Cookies.get('token') != "None"){
                 xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token'));
@@ -547,7 +547,7 @@ function setup_labcas_data(datatype, query, dataset_query){
      }
     });
     if (datatype == "collectiondatasets"){
-	var url = localStorage.getItem('environment')+"/data-access-api/datasets/select?q="+dataset_query+"&wt=json&indent=true&rows=20000";
+	var url = localStorage.getItem('environment')+"/data-access-api/datasets/select?q="+dataset_query+"&wt=json&indent=true&rows=5000";
         $.ajax({
 	    url: url,
             beforeSend: function(xhr) {

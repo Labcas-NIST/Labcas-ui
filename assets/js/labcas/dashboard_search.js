@@ -343,7 +343,7 @@ function fill_favorites_analytics(){
 }
 function setup_labcas_analytics(query, collection_filters){
     //collection data
-    var url = localStorage.getItem('environment')+"/data-access-api/collections/select?q="+query+""+collection_filters+"&wt=json&indent=true&rows=2147483647";
+    var url = localStorage.getItem('environment')+"/data-access-api/collections/select?q="+query+""+collection_filters+"&wt=json&indent=true&rows=5000";
 	$.ajax({
 		url: url,	
 		beforeSend: function(xhr) {

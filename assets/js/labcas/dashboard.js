@@ -350,7 +350,7 @@ function fill_favorites_analytics(){
 }
 function setup_labcas_analytics(){
         //collection data
-	var collection_url = localStorage.getItem('environment')+"/data-access-api/collections/select?q=*&wt=json&indent=true&rows=2147483647";
+	var collection_url = localStorage.getItem('environment')+"/data-access-api/collections/select?q=*&wt=json&indent=true&rows=5000";
     
 	$.ajax({
 		url: collection_url,	

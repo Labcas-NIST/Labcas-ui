@@ -502,7 +502,7 @@
         collection_hierarchy_get(get_var["collection_id"]);
         setup_labcas_data("collectiondatasets", 'id:"' + get_var["collection_id"] + '"', 'CollectionId:"' + get_var["collection_id"] + '"');
           //var hierarchy_tags = get_hierarchy_selected_upto(1000);
-          //query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=CollectionId:"+get_var["collection_id"]+"%20AND%20-FolderType:%5B*%20TO%20*%5D&wt=json&indent=true&rows=10000&fl="+hierarchy_tags.join(","), fill_hierarchy_data_fast, true);
+          //query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=CollectionId:"+get_var["collection_id"]+"%20AND%20-FolderType:%5B*%20TO%20*%5D&wt=json&indent=true&rows=5000&fl="+hierarchy_tags.join(","), fill_hierarchy_data_fast, true);
         
       //}, 1000);
 
