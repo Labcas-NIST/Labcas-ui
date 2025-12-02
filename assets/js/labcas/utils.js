@@ -1065,7 +1065,7 @@ function generate_image_file_list(data){
 	}else{
 	       window.location.replace("/labcas-ui/i/index.html?version=5.1.0");
 	}
-    }else if(image_type = "omeros"){
+    }else if(image_type === "omeros"){
 	window.location.replace("/labcas-ui/o/index.html?version=5.1.0");
     }else{
        window.location.replace("/labcas-ui/z/index.html?version=5.1.0");
