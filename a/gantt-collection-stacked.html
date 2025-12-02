@@ -67,7 +67,7 @@ async function createGanttChart(cell_type, divid) {
     document.getElementById(divid+'_title').innerHTML = cell_button_html;
     //const response = await fetch('https://labcas.jpl.nasa.gov/nist/assets/tmp/data.json');
     // removed debug log
-    const response = await fetch('https://ddsa-labcas-staging.jpl.nasa.gov/labcas-ui/assets/tmp/'+cell_type+'_new_data.json');
+    const response = await fetch('/labcas-ui/assets/tmp/'+cell_type+'_new_data.json');
     const data = await response.json();
 
     data.sort((a, b) => new Date(a.EventDate) - new Date(b.EventDate)); // Sort by date first
