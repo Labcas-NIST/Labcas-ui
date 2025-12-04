@@ -1,0 +1,197 @@
+<html>
+    <head>
+        <script src="https://code.jscharting.com/latest/jscharting.js"></script>
+    </head>
+    <body>
+        <div id="chartDiv1" class="chartDiv" style="max-width: 100%;height: 300px"></div>
+    </body>
+<script>
+// JS 
+// Helper functions to create axisTick label template with two columns of text describing each task. 
+var columnWidths = [80, 30], 
+  span = function(val, width) { 
+    return ( 
+      '<span style="width:' + 
+      width + 
+      'px;">' + 
+      val + 
+      '</span>'
+    ); 
+  }, 
+  mapLabels = function(labels) { 
+    return labels 
+      .map(function(v, i) { 
+        return span(v, columnWidths[i]); 
+      }) 
+      .join(''); 
+  }, 
+  tickTemplate = mapLabels([ 
+    '%name', 
+    '{weeks(%high-%low):n0}w'
+  ]); 
+  
+// The critical path
+//var criticalPath = 'A549,power,excavation,foundation,framing,roofing,caco2'.split( 
+var criticalPath = 'A549,excavation,foundation,framing,roofing,caco2'.split( 
+    ','
+  ), 
+  criticalpathStyle = { 
+    color: '#d50000', 
+    width: 2 
+  }; 
+    if (parent.window.location.search.endsWith("dataset_id=cell_line_provenance/A549")){
+
+        var criticalPath = 'A549,excavation'.split( 
+            ','
+          ), 
+          criticalpathStyle = { 
+            color: '#d50000', 
+            width: 5
+          }; 
+
+        }else if (parent.window.location.search.endsWith("Passage_04-01-2022")){
+        var criticalPath = 'roofing,caco2'.split( 
+            ','
+          ), 
+          criticalpathStyle = { 
+            color: '#d50000', 
+            width: 5
+          }; 
+        }
+
+async function createGanttChart() {
+    const response = await fetch('https://labcas.jpl.nasa.gov/nist/assets/tmp/data.json');
+    const generatedjson = await response.json();
+
+
+// Get the URL parameters
+let urlParams = new URLSearchParams(window.location.search);
+
+// Get the cellcode parameter from the URL
+let cellcode = urlParams.get('cellcode');
+
+// Filter the JSON data
+let filteredJson = generatedjson.filter(row => row.CellCode === cellcode);
+// removed debug logs
+
+
+let colors = ["gray","blue","orange","purple","green","red"];
+let colorMap = {};
+
+function getColor(eventType) {
+    if(!colorMap[eventType]) {
+        let color = colors.shift();
+        colorMap[eventType] = color;
+    }
+    return colorMap[eventType];
+}
+
+function generateSeries(json) {
+    json.sort((a, b) => new Date(a.EventDate) - new Date(b.EventDate));
+
+    let points = [];
+    let cellCodeMap = {};
+
+    for(let i = 0; i < json.length; i++) {
+        let endDate = (i + 1 < json.length && json[i].CellCode === json[i + 1].CellCode)
+            ? new Date(json[i + 1].EventDate).toISOString()
+            : new Date(new Date(json[i].EventDate).getTime() + 24 * 60 * 60 * 1000).toISOString(); // add 24 hours if no next event for the same CellCode
+        let point = {
+            name: json[i].EventType,
+            y: [json[i].EventDate, endDate],
+            id: json[i].CellCode.replaceAll('/', '-') + "_" + new Date(json[i].EventDate).toISOString().split('T')[0].replaceAll('/', '-') + "_" + json[i].FileName,
+            color: getColor(json[i].EventType)
+        };
+
+        if(cellCodeMap[json[i].CellCode]) {
+            point.parent = cellCodeMap[json[i].CellCode];
+        }
+
+        cellCodeMap[json[i].CellCode] = point.id;
+        points.push(point);
+        // removed debug log
+    }
+
+    return [{
+        points: points
+    }];
+}
+
+let series = generateSeries(filteredJson);
+
+var chart = JSC.chart( 
+  'chartDiv1', 
+  { 
+    title_label_text: 
+      cellcode, 
+    legend_visible: false, 
+  
+    /*Typical Gantt setup. Horizontal columns by default.*/
+    type: 'horizontal column solid', 
+    /*Make columns overlap.*/
+    zAxis_scale_type: 'stacked', 
+    /*Time Y Axis.*/
+    yAxis: { 
+      scale: { 
+        type: 'time', 
+        range: { padding: 0 } 
+      } 
+    }, 
+    xAxis: { spacingPercentage: 0.5 }, 
+    palette: [ 
+      '#33658A', 
+      '#86BBD8', 
+      '#758E4F', 
+      '#F6AE2D', 
+      '#F26419', 
+      '#590925'
+    ], 
+    defaultSeries: { 
+      defaultPoint: { 
+        xAxisTick_label_text: tickTemplate, 
+        outline_width: 0, 
+        tooltip: 
+          '<b>%name</b> <br/>%low - %high<br/>{days(%high-%low)} days'
+      } 
+    },defaultPoint_events_click: function() { 
+            window.top.location.href = "/labcas-ui/d/index.html?dataset_id=cell_line_provenance/caco2/01-12-2022/"+this.y[0].replaceAll('/','-')+"_"+this.name;
+    }, 
+    series: series, 
+    toolbar_items: { 
+      'Critical Path': { 
+        type: 'checkbox', 
+        value: false, 
+        position: 'inside top right', 
+        events_change: function(value) { 
+          var chart = this.chart; 
+          if (value) { 
+            chart.connectors( 
+              criticalPath, 
+              criticalpathStyle 
+            ); 
+          } else { 
+            chart.connectors(); 
+          } 
+        } 
+      } 
+    } 
+  }, 
+  //highlightCriticalPath 
+); 
+  
+function highlightCriticalPath(chart) { 
+  chart.connectors( 
+    criticalPath, 
+    criticalpathStyle 
+  ); 
+} 
+
+             }
+
+             createGanttChart();
+
+setTimeout(function(){
+            document.getElementById("brandingLogo").style.display = 'none'; 
+        },50);
+</script>
+</html>

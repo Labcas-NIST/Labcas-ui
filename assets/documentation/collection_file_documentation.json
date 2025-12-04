@@ -1,0 +1,799 @@
+{
+  "response": {
+    "numFound": 2,
+    "start": 0,
+    "docs": [
+    {     
+        "id":"Microbial/Microbial/LogCOMET",
+        "FileName":"LogCOMET",
+        "CollectionId":"Microbial",
+        "DatasetId":"Microbial",
+        "FileType":["folder"],
+        "Description":["LogCOMET Documentation"],
+        "SiteID":["NIST"],
+        "SubmittingInvestigatorID":"Kirsten Parratt"
+    },
+    {     
+        "id":"Microbial/Microbial/LogCOMET/2023.06.01",
+        "FileName":"2023.06.01",
+        "CollectionId":"Microbial",
+        "DatasetId":"Microbial",
+        "FileType":["folder"],
+        "Description":["LogCOMET 2023.06.01"],
+        "SiteID":["NIST"],
+        "SubmittingInvestigatorID":"Kirsten Parratt"
+    },
+    {     
+        "id":"Microbial/Microbial/LogCOMET/2023.06.01/2023.06.01 Reporting Spreadsheet.xlsx",
+        "FileName":"2023.06.01 Reporting Spreadsheet.xlsx",
+        "CollectionId":"Microbial",
+        "DatasetId":"Microbial",
+        "FileType":["xlsx"],
+        "Description":["2023.06.01 Reporting Spreadsheet"],
+        "SiteID":["NIST"],
+        "SubmittingInvestigatorID":"Kirsten Parratt"
+    },
+    {
+        "id":"Microbial/Microbial/LogCOMET/2023.06.01/2023-06-01-2023.06.01-LogCOMET_SamplePrep.pdf",
+        "FileName":"2023-06-01-2023.06.01-LogCOMET_SamplePrep.pdf",
+        "CollectionId":"Microbial",
+        "DatasetId":"Microbial",
+        "FileType":["pdf"],
+        "Description":["2023-06-01-2023.06.01-LogCOMET_SamplePrep"],
+        "SiteID":["NIST"],
+        "SubmittingInvestigatorID":"Kirsten Parratt"
+    },
+    {
+        "id":"Microbial/Microbial/LogCOMET/2023.06.01/2023.06.01 LogCOMET Full Protocol.docx",
+        "FileName":"2023.06.01 LogCOMET Full Protocol.docx",
+        "CollectionId":"Microbial",
+        "DatasetId":"Microbial",
+        "FileType":["docx"],
+        "Description":["2023.06.01 LogCOMET Full Protocol"],
+        "SiteID":["NIST"],
+        "SubmittingInvestigatorID":"Kirsten Parratt"
+    },
+    {
+        "id":"Microbial/Microbial/LogCOMET/2023.06.01/2023.06.01 LogCOMET GUI.xlsx",
+        "FileName":"2023.06.01 LogCOMET GUI.xlsx",
+        "CollectionId":"Microbial",
+        "DatasetId":"Microbial",
+        "FileType":["xlsx"],
+        "Description":["2023.06.01 LogCOMET GUI"],
+        "SiteID":["NIST"],
+        "SubmittingInvestigatorID":"Kirsten Parratt"
+    },
+
+    {
+        "id":"Microbial/Microbial/LogCOMET/2023.06.13",
+        "FileName":"2023.06.13",
+        "CollectionId":"Microbial",
+        "DatasetId":"Microbial",
+        "FileType":["folder"],
+        "Description":["LogCOMET 2023.06.13"],
+        "SiteID":["NIST"],
+        "SubmittingInvestigatorID":"Kirsten Parratt"
+    },
+    {
+        "id":"Microbial/Microbial/LogCOMET/2023.06.13/2023.06.13 LogCOMET Bead Protocol.docx",
+        "FileName":"2023.06.13 LogCOMET Bead Protocol.docx",
+        "CollectionId":"Microbial",
+        "DatasetId":"Microbial",
+        "FileType":["docx"],
+        "Description":["2023.06.13 LogCOMET Bead Protocol"],
+        "SiteID":["NIST"],
+        "SubmittingInvestigatorID":"Kirsten Parratt"
+    },
+    {
+        "id":"Microbial/Microbial/LogCOMET/2023.06.13/2023.06.13 LogCOMET GUI.xlsx",
+        "FileName":"2023.06.13 LogCOMET GUI.xlsx",
+        "CollectionId":"Microbial",
+        "DatasetId":"Microbial",
+        "FileType":["xlsx"],
+        "Description":["2023.06.13 LogCOMET GUI"],
+        "SiteID":["NIST"],
+        "SubmittingInvestigatorID":"Kirsten Parratt"
+    },
+    {
+        "id":"Microbial/Microbial/LogCOMET/2023.06.13/2023.06.13 Reporting Spreadsheet.xlsx",
+        "FileName":"2023.06.13 Reporting Spreadsheet.xlsx",
+        "CollectionId":"Microbial",
+        "DatasetId":"Microbial",
+        "FileType":["xlsx"],
+        "Description":["2023.06.13 Reporting Spreadsheet"],
+        "SiteID":["NIST"],
+        "SubmittingInvestigatorID":"Kirsten Parratt"
+    },
+    {
+        "id":"Microbial/Microbial/LogCOMET/2023.06.13/2023-06-13-2023.06.13-LogCOMET_SamplePrep.pdf",
+        "FileName":"2023-06-13-2023.06.13-LogCOMET_SamplePrep.pdf",
+        "CollectionId":"Microbial",
+        "DatasetId":"Microbial",
+        "FileType":["pdf"],
+        "Description":["2023-06-13-2023.06.13-LogCOMET_SamplePrep"],
+        "SiteID":["NIST"],
+        "SubmittingInvestigatorID":"Kirsten Parratt"
+    },
+
+    {
+        "id":"Microbial/Microbial/LogCOMET/2023.07.11",
+        "FileName":"2023.07.11",
+        "CollectionId":"Microbial",
+        "DatasetId":"Microbial",
+        "FileType":["folder"],
+        "Description":["LogCOMET 2023.07.11"],
+        "SiteID":["NIST"],
+        "SubmittingInvestigatorID":"Kirsten Parratt"
+    },
+    {
+        "id":"Microbial/Microbial/LogCOMET/2023.07.11/2023-07-11-2023.07.11-LogCOMET_SamplePrep.pdf",
+        "FileName":"2023-07-11-2023.07.11-LogCOMET_SamplePrep.pdf",
+        "CollectionId":"Microbial",
+        "DatasetId":"Microbial",
+        "FileType":["pdf"],
+        "Description":["2023-07-11-2023.07.11-LogCOMET_SamplePrep"],
+        "SiteID":["NIST"],
+        "SubmittingInvestigatorID":"Kirsten Parratt"
+    },
+    {
+        "id":"Microbial/Microbial/LogCOMET/2023.07.11/2023.07.11 LogCOMET Full Protocol.docx",
+        "FileName":"2023.07.11 LogCOMET Full Protocol.docx",
+        "CollectionId":"Microbial",
+        "DatasetId":"Microbial",
+        "FileType":["docx"],
+        "Description":["2023.07.11 LogCOMET Full Protocol"],
+        "SiteID":["NIST"],
+        "SubmittingInvestigatorID":"Kirsten Parratt"
+    },
+    {
+        "id":"Microbial/Microbial/LogCOMET/2023.07.11/2023.07.11 LogCOMET GUI.xlsx",
+        "FileName":"2023.07.11 LogCOMET GUI.xlsx",
+        "CollectionId":"Microbial",
+        "DatasetId":"Microbial",
+        "FileType":["xlsx"],
+        "Description":["2023.07.11 LogCOMET GUI"],
+        "SiteID":["NIST"],
+        "SubmittingInvestigatorID":"Kirsten Parratt"
+    },
+    {
+        "id":"Microbial/Microbial/LogCOMET/2023.07.11/2023.07.11 Reporting Spreadsheet.xlsx",
+        "FileName":"2023.07.11 Reporting Spreadsheet.xlsx",
+        "CollectionId":"Microbial",
+        "DatasetId":"Microbial",
+        "FileType":["xlsx"],
+        "Description":["2023.07.11 Reporting Spreadsheet"],
+        "SiteID":["NIST"],
+        "SubmittingInvestigatorID":"Kirsten Parratt"
+    },
+
+    {
+        "id":"Microbial/Microbial/LogCOMET/2023.08.29",
+        "FileName":"2023.08.29",
+        "CollectionId":"Microbial",
+        "DatasetId":"Microbial",
+        "FileType":["folder"],
+        "Description":["LogCOMET 2023.08.29"],
+        "SiteID":["NIST"],
+        "SubmittingInvestigatorID":"Kirsten Parratt"
+    },
+    {
+        "id":"Microbial/Microbial/LogCOMET/2023.08.29/2023-08-29-2023.08.29-LogCOMET_SamplePrep.pdf",
+        "FileName":"2023-08-29-2023.08.29-LogCOMET_SamplePrep.pdf",
+        "CollectionId":"Microbial",
+        "DatasetId":"Microbial",
+        "FileType":["pdf"],
+        "Description":["2023-08-29-2023.08.29-LogCOMET_SamplePrep"],
+        "SiteID":["NIST"],
+        "SubmittingInvestigatorID":"Kirsten Parratt"
+    },
+    {
+        "id":"Microbial/Microbial/LogCOMET/2023.08.29/2023.08.29 LogCOMET Full Protocol.docx",
+        "FileName":"2023.08.29 LogCOMET Full Protocol.docx",
+        "CollectionId":"Microbial",
+        "DatasetId":"Microbial",
+        "FileType":["docx"],
+        "Description":["2023.08.29 LogCOMET Full Protocol"],
+        "SiteID":["NIST"],
+        "SubmittingInvestigatorID":"Kirsten Parratt"
+    },
+    {
+        "id":"Microbial/Microbial/LogCOMET/2023.08.29/2023.08.29 LogCOMET GUI.xlsx",
+        "FileName":"2023.08.29 LogCOMET GUI.xlsx",
+        "CollectionId":"Microbial",
+        "DatasetId":"Microbial",
+        "FileType":["xlsx"],
+        "Description":["2023.08.29 LogCOMET GUI"],
+        "SiteID":["NIST"],
+        "SubmittingInvestigatorID":"Kirsten Parratt"
+    },
+    {
+        "id":"Microbial/Microbial/LogCOMET/2023.08.29/2023.08.29 Reporting Spreadsheet.xlsx",
+        "FileName":"2023.08.29 Reporting Spreadsheet.xlsx",
+        "CollectionId":"Microbial",
+        "DatasetId":"Microbial",
+        "FileType":["xlsx"],
+        "Description":["2023.08.29 Reporting Spreadsheet"],
+        "SiteID":["NIST"],
+        "SubmittingInvestigatorID":"Kirsten Parratt"
+    },
+
+    {
+        "id":"Microbial/Microbial/LogCOMET/2023.03.21",
+        "FileName":"2023.03.21",
+        "CollectionId":"Microbial",
+        "DatasetId":"Microbial",
+        "FileType":["folder"],
+        "Description":["LogCOMET 2023.03.21"],
+        "SiteID":["NIST"],
+        "SubmittingInvestigatorID":"Kirsten Parratt"
+    },
+    {
+        "id":"Microbial/Microbial/LogCOMET/2023.03.21/2023.03.21 LogCOMET Full Protocol.docx",
+        "FileName":"2023.03.21 LogCOMET Full Protocol.docx",
+        "CollectionId":"Microbial",
+        "DatasetId":"Microbial",
+        "FileType":["docx"],
+        "Description":["2023.03.21 LogCOMET Full Protocol"],
+        "SiteID":["NIST"],
+        "SubmittingInvestigatorID":"Kirsten Parratt"
+    },
+    {
+        "id":"Microbial/Microbial/LogCOMET/2023.03.21/2023.03.21 LogCOMET GUI.xlsx",
+        "FileName":"2023.03.21 LogCOMET GUI.xlsx",
+        "CollectionId":"Microbial",
+        "DatasetId":"Microbial",
+        "FileType":["xlsx"],
+        "Description":["2023.03.21 LogCOMET GUI"],
+        "SiteID":["NIST"],
+        "SubmittingInvestigatorID":"Kirsten Parratt"
+    },
+    {
+        "id":"Microbial/Microbial/LogCOMET/2023.03.21/2023.03.21 Reporting Spreadsheet.xlsx",
+        "FileName":"2023.03.21 Reporting Spreadsheet.xlsx",
+        "CollectionId":"Microbial",
+        "DatasetId":"Microbial",
+        "FileType":["xlsx"],
+        "Description":["2023.03.21 Reporting Spreadsheet"],
+        "SiteID":["NIST"],
+        "SubmittingInvestigatorID":"Kirsten Parratt"
+    },
+    {
+        "id":"Microbial/Microbial/LogCOMET/2023.03.21/2023-03-21-2023.03.21-LogCOMET_SamplePrep.pdf",
+        "FileName":"2023-03-21-2023.03.21-LogCOMET_SamplePrep.pdf",
+        "CollectionId":"Microbial",
+        "DatasetId":"Microbial",
+        "FileType":["pdf"],
+        "Description":["2023-03-21-2023.03.21-LogCOMET_SamplePrep"],
+        "SiteID":["NIST"],
+        "SubmittingInvestigatorID":"Kirsten Parratt"
+    },
+        {
+        "id":"Genome_Editing_Consortium/Genome_Editing_Consortium/Benchmark",
+        "FileName":"Benchmark",
+        "CollectionId":"Genome_Editing_Consortium",
+        "DatasetId":"Genome_Editing_Consortium",
+        "FileType":["folder"],
+        "Description":["Genome Benchmarks"],
+        "SiteID":["NIST"],
+        "SubmittingInvestigatorID":"Sierra Miller"
+        },
+        {
+              "id":"Genome_Editing_Consortium/Genome_Editing_Consortium/Benchmark/Documentation",
+        "FileName":"Documentation",
+        "CollectionId":"Genome_Editing_Consortium",
+        "DatasetId":"Genome_Editing_Consortium",
+        "FileType":["folder"],
+        "Description":["Genome Benchmark Documentation"],
+        "SiteID":["NIST"],
+        "SubmittingInvestigatorID":"Sierra Miller"
+        },
+        {
+              "id":"Genome_Editing_Consortium/Genome_Editing_Consortium/Benchmark/Documentation/GIAB-Benchmark-Files.pdf",
+        "FileName":"GIAB-Benchmark-Files.pdf",
+        "CollectionId":"Genome_Editing_Consortium",
+        "DatasetId":"Genome_Editing_Consortium",
+        "FileType":["pdf"],
+        "Description":["GIAB-Benchmark-Files.pdf"],
+        "SiteID":["NIST"],
+        "SubmittingInvestigatorID":"Sierra Miller"
+        },
+        {
+              "id":"Genome_Editing_Consortium/Genome_Editing_Consortium/Benchmark/Documentation/Results-key-long-sequences.pdf",
+        "FileName":"Results-key-long-sequences.pdf",
+        "CollectionId":"Genome_Editing_Consortium",
+        "DatasetId":"Genome_Editing_Consortium",
+        "FileType":["pdf"],
+        "Description":["Results-key-long-sequences.pdf"],
+        "SiteID":["NIST"],
+        "SubmittingInvestigatorID":"Sierra Miller"
+        },
+        {
+              "id":"Genome_Editing_Consortium/Genome_Editing_Consortium/Benchmark/Documentation/STR-Typing-GIAB-MixtureStudy.pdf",
+        "FileName":"STR-Typing-GIAB-MixtureStudy.pdf",
+        "CollectionId":"Genome_Editing_Consortium",
+        "DatasetId":"Genome_Editing_Consortium",
+        "FileType":["pdf"],
+        "Description":["STR-Typing-GIAB-MixtureStudy.pdf"],
+        "SiteID":["NIST"],
+        "SubmittingInvestigatorID":"Sierra Miller"
+        },
+        {
+              "id":"Genome_Editing_Consortium/Genome_Editing_Consortium/Benchmark/Documentation/STR-Typing-GIAB-MixtureStudy.xlsx",
+        "FileName":"STR-Typing-GIAB-MixtureStudy.xlsx",
+        "CollectionId":"Genome_Editing_Consortium",
+        "DatasetId":"Genome_Editing_Consortium",
+        "FileType":["xlsx"],
+        "Description":["STR-Typing-GIAB-MixtureStudy.xlsx"],
+        "SiteID":["NIST"],
+        "SubmittingInvestigatorID":"Sierra Miller"
+        },
+        {
+              "id":"Genome_Editing_Consortium/Genome_Editing_Consortium/StudyDesign",
+        "FileName":"Study Design",
+        "CollectionId":"Genome_Editing_Consortium",
+        "DatasetId":"Genome_Editing_Consortium",
+        "FileType":["folder"],
+        "Description":["SOP - WG1 Interlaboratory Study (ILS) One"],
+        "SiteID":["NIST"],
+        "SubmittingInvestigatorID":"Sierra Miller"
+        },
+        {
+        "id":"Genome_Editing_Consortium/Genome_Editing_Consortium/StudyDesign/Documentation",
+        "CollectionId":"Genome_Editing_Consortium",
+        "DatasetId":"Genome_Editing_Consortium",
+        "FileName":"Documentation",
+        "FileType":["folder"],
+        "Description":["Metadata - WG1 Interlaboratory Study (ILS) One"],
+        "SubmittingInstitutuionID":["NIST"],
+        "SubmittingInvestigatorID":"Sierra Miller"
+        },
+        {
+        "id":"Genome_Editing_Consortium/Genome_Editing_Consortium/StudyDesign/Documentation/Copy_NIST GEC_WG1_ Mixture Study positions and AAVS1 deletions_hg38_02-20-20.xlsx",
+        "CollectionId":"Genome_Editing_Consortium",
+        "DatasetId":"Genome_Editing_Consortium",
+        "FileName":"Copy NIST GEC WG1 Mixture Study positions and AAVS1 deletions hg38 02-20-20.xlsx",
+        "FileType":["xlsx"],
+        "Description":["The National Institute of Standards and Technology Genome Editing Consortium addresses the measurements and standards needed to increase confidence and lower the risk of utilizing genome editing technologies in research and commercial products."],
+        "SubmittingInstitutuionID":["NIST"],
+        "SubmittingInvestigatorID":"Sierra Miller"
+        },
+        {
+        "id":"Genome_Editing_Consortium/Genome_Editing_Consortium/StudyDesign/SOP",
+        "CollectionId":"Genome_Editing_Consortium",
+        "DatasetId":"Genome_Editing_Consortium",
+        "FileName":"SOP",
+        "FileType":["folder"],
+        "Description":["Metadata - WG1 Interlaboratory Study (ILS) One"],
+        "SubmittingInstitutuionID":["NIST"],
+        "SubmittingInvestigatorID":"Sierra Miller"
+        },
+        {
+        "id":"Genome_Editing_Consortium/Genome_Editing_Consortium/StudyDesign/SOP/Copy_2021-08-03_WG1_mixturestudy_return_template.xlsx",
+        "CollectionId":"Genome_Editing_Consortium",
+        "DatasetId":"Genome_Editing_Consortium",
+        "FileName":"Copy_2021-08-03_WG1_mixturestudy_return_template.xlsx",
+        "FileType":["xlsx"],
+        "Description":["Mixture Study data submission templates"],
+        "SubmittingInstitutuionID":["NIST"],
+        "SubmittingInvestigatorID":"Sierra Miller"
+        },
+        {
+      	"id":"NIST_Flow_Cytometry_Standards_Consortium/NIST_Flow_Cytometry_Standards_Consortium/WG1",
+      	"FileName":"WG1",
+      	"CollectionId":"NIST_Flow_Cytometry_Standards_Consortium",
+      	"DatasetId":"NIST_Flow_Cytometry_Standards_Consortium",
+		"FileType":["pdf"],
+		"Description":["SOP - WG1 Interlaboratory Study (ILS) One"],
+		"SiteID":["NIST"],
+		"SubmittingInvestigatorID":"John Elliott"
+		},
+        {
+        "id":"NIST_Flow_Cytometry_Standards_Consortium/NIST_Flow_Cytometry_Standards_Consortium/WG1/FCSC_WG1-001_Metadata-ERFConvesions for all instruments 06142024.xlsx",
+        "CollectionId":"NIST_Flow_Cytometry_Standards_Consortium",
+        "DatasetId":"NIST_Flow_Cytometry_Standards_Consortium",
+        "FileName":"FCSC_WG1-001_Metadata-ERFConvesions for all instruments 06142024.xlsx",
+        "FileType":["xlsx"],
+        "Description":["Metadata - WG1 Interlaboratory Study (ILS) One"],
+        "SubmittingInstitutuionID":["NIST"],
+        "SubmittingInvestigatorID":"John Elliott"
+        },
+        {
+      	"id":"NIST_Flow_Cytometry_Standards_Consortium/NIST_Flow_Cytometry_Standards_Consortium/WG1/FCSC_WG1-001_Appendix1-Information_10232023.docx",
+      	"CollectionId":"NIST_Flow_Cytometry_Standards_Consortium",
+      	"DatasetId":"NIST_Flow_Cytometry_Standards_Consortium",
+      	"FileName":"FCSC_WG1-001_Appendix1-Information_10232023.docx",
+		"FileType":["docx"],
+		"Description":["Metadata - WG1 Interlaboratory Study (ILS) One"],
+		"SubmittingInstitutuionID":["NIST"],
+		"SubmittingInvestigatorID":"John Elliott"
+		},
+        {
+      	"id":"NIST_Flow_Cytometry_Standards_Consortium/NIST_Flow_Cytometry_Standards_Consortium/WG1/FCSC_WG1-001_Appendix2-QuickStartDownload_10232023.docx",
+      	"CollectionId":"NIST_Flow_Cytometry_Standards_Consortium",
+      	"DatasetId":"NIST_Flow_Cytometry_Standards_Consortium",
+      	"FileName":"FCSC_WG1-001_Appendix2-QuickStartDownload_10232023.docx",
+		"FileType":["docx"],
+		"Description":["SOP - WG1 Interlaboratory Study (ILS) One"],
+		"SubmittingInstitutuionID":["NIST"],
+		"SubmittingInvestigatorID":"John Elliott"
+		},
+        {
+        "id":"NIST_Flow_Cytometry_Standards_Consortium/NIST_Flow_Cytometry_Standards_Consortium/WG1/FCSC_WG1-001_Metadata-CompleteFilenameToMetadataInjestTable 01302024.xlsx",
+        "CollectionId":"NIST_Flow_Cytometry_Standards_Consortium",
+        "DatasetId":"NIST_Flow_Cytometry_Standards_Consortium",
+        "FileName":"FCSC_WG1-001_Metadata-CompleteFilenameToMetadataInjestTable 01302024.xlsx",
+        "FileType":["xlsx"],
+        "Description":["SOP - WG1 Interlaboratory Study (ILS) One"],
+        "SubmittingInstitutuionID":["NIST"],
+        "SubmittingInvestigatorID":"John Elliott"
+},
+{
+        "id":"NIST_Flow_Cytometry_Standards_Consortium/NIST_Flow_Cytometry_Standards_Consortium/WG1/FCSC_WG1-001_Metadata-WG1WG2 Instrument Channel Names to wavelength and fluorophore no erf 01302024.xlsm",
+        "CollectionId":"NIST_Flow_Cytometry_Standards_Consortium",
+        "DatasetId":"NIST_Flow_Cytometry_Standards_Consortium",
+        "FileName":"FCSC_WG1-001_Metadata-WG1WG2 Instrument Channel Names to wavelength and fluorophore no erf 01302024.xlsm",
+        "FileType":["xlsm"],
+        "Description":["SOP - WG1 Interlaboratory Study (ILS) One"],
+        "SubmittingInstitutuionID":["NIST"],
+        "SubmittingInvestigatorID":"John Elliott"
+},
+{
+        "id":"NIST_Flow_Cytometry_Standards_Consortium/NIST_Flow_Cytometry_Standards_Consortium/WG1/FCSC_WG3-001_Document-LabCAS_APISupport.pptx",
+        "CollectionId":"NIST_Flow_Cytometry_Standards_Consortium",
+        "DatasetId":"NIST_Flow_Cytometry_Standards_Consortium",
+        "FileName":"FCSC_WG3-001_Document-LabCAS_APISupport.pptx",
+        "FileType":["pptx"],
+        "Description":["SOP - WG1 Interlaboratory Study (ILS) One"],
+        "SubmittingInstitutuionID":["NIST"],
+        "SubmittingInvestigatorID":"John Elliott"
+},
+{
+        "id":"NIST_Flow_Cytometry_Standards_Consortium/NIST_Flow_Cytometry_Standards_Consortium/WG1/SOP-p1-WG1_ILS-final_091322.pdf",
+        "CollectionId":"NIST_Flow_Cytometry_Standards_Consortium",
+        "DatasetId":"NIST_Flow_Cytometry_Standards_Consortium",
+        "FileName":"SOP-p1 - WG1 ILS - final 091322.pdf",
+        "FileType":["pdf"],
+        "Description":["SOP - WG1 Interlaboratory Study (ILS) One"],
+        "SubmittingInstitutuionID":["NIST"],
+        "SubmittingInvestigatorID":"John Elliott"
+},
+{
+    "id":"NIST_Flow_Cytometry_Standards_Consortium/NIST_Flow_Cytometry_Standards_Consortium/WG2",
+    "FileName":"WG2",
+    "CollectionId":"NIST_Flow_Cytometry_Standards_Consortium",
+    "DatasetId":"NIST_Flow_Cytometry_Standards_Consortium",
+    "FileType":["pdf"],
+    "Description":["SOP - WG2 Interlaboratory Study (ILS) One"],
+    "SiteID":["NIST"],
+    "SubmittingInvestigatorID":"John Elliott"
+    },
+{
+    "id": "NIST_Flow_Cytometry_Standards_Consortium/NIST_Flow_Cytometry_Standards_Consortium/WG2/FCSC_WG2-001_Metadata-ERFConversion for all instruments 06142024.xlsx",
+    "FileName": "FCSC_WG2-001_Metadata-ERFConversion for all instruments 06142024.xlsx",
+    "CollectionId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "DatasetId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "FileType": ["xlsx"],
+    "Description": ["SOP - WG2 Interlaboratory Study (ILS) One"],
+    "SiteID": ["NIST"],
+    "SubmittingInvestigatorID": "John Elliott"
+},
+{
+    "id": "NIST_Flow_Cytometry_Standards_Consortium/NIST_Flow_Cytometry_Standards_Consortium/WG2/FCSC_WG2-001_Appendix1-GeneralInformation_10232023.docx",
+    "FileName": "FCSC_WG2-001_Appendix1-GeneralInformation_10232023.docx",
+    "CollectionId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "DatasetId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "FileType": ["docx"],
+    "Description": ["SOP - WG2 Interlaboratory Study (ILS) One"],
+    "SiteID": ["NIST"],
+    "SubmittingInvestigatorID": "John Elliott"
+},
+{
+    "id": "NIST_Flow_Cytometry_Standards_Consortium/NIST_Flow_Cytometry_Standards_Consortium/WG2/FCSC_WG2-001_Appendix2-QuickStartDownload_10232023.docx",
+    "FileName": "FCSC_WG2-001_Appendix2-QuickStartDownload_10232023.docx",
+    "CollectionId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "DatasetId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "FileType": ["docx"],
+    "Description": ["SOP - WG2 Interlaboratory Study (ILS) One"],
+    "SiteID": ["NIST"],
+    "SubmittingInvestigatorID": "John Elliott",
+    "ParentFolder": ""
+},
+{
+    "id": "NIST_Flow_Cytometry_Standards_Consortium/NIST_Flow_Cytometry_Standards_Consortium/WG2/SOPs with Additional Steps for Imaging Cytometry-20231208T172431Z-001.zip",
+    "FileName": "SOPs with Additional Steps for Imaging Cytometry-20231208T172431Z-001.zip",
+    "CollectionId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "DatasetId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "FileType": ["zip"],
+    "Description": ["SOP - WG2 Interlaboratory Study (ILS) One"],
+    "SiteID": ["NIST"],
+    "SubmittingInvestigatorID": "John Elliott",
+    "ParentFolder": ""
+},
+{
+    "id": "NIST_Flow_Cytometry_Standards_Consortium/NIST_Flow_Cytometry_Standards_Consortium/WG2/FCSC_WG2-001_Metadata-CompleteFilenameToMetadataInjestTable 01302024.xlsx",
+    "FileName": "FCSC_WG2-001_Metadata-CompleteFilenameToMetadataInjestTable 01302024.xlsx",
+    "CollectionId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "DatasetId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "FileType": ["xlsx"],
+    "Description": ["SOP - WG2 Interlaboratory Study (ILS) One"],
+    "SiteID": ["NIST"],
+    "SubmittingInvestigatorID": "John Elliott",
+    "ParentFolder": ""
+},
+{
+    "id": "NIST_Flow_Cytometry_Standards_Consortium/NIST_Flow_Cytometry_Standards_Consortium/WG2/FCSC_WG2-001_Metadata-WG1WG2 Instrument Channel Names to wavelength and fluorophore no erf 01302024.xlsm",
+    "FileName": "FCSC_WG2-001_Metadata-WG1WG2 Instrument Channel Names to wavelength and fluorophore no erf 01302024.xlsm",
+    "CollectionId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "DatasetId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "FileType": ["xlsm"],
+    "Description": ["SOP - WG2 Interlaboratory Study (ILS) One"],
+    "SiteID": ["NIST"],
+    "SubmittingInvestigatorID": "John Elliott",
+    "ParentFolder": ""
+},
+{
+    "id": "NIST_Flow_Cytometry_Standards_Consortium/NIST_Flow_Cytometry_Standards_Consortium/WG2/FCSC_WG3-001_Document-LabCAS_APISupport.pptx",
+    "FileName": "FCSC_WG3-001_Document-LabCAS_APISupport.pptx",
+    "CollectionId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "DatasetId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "FileType": ["pptx"],
+    "Description": ["SOP - WG2 Interlaboratory Study (ILS) One"],
+    "SiteID": ["NIST"],
+    "SubmittingInvestigatorID": "John Elliott",
+    "ParentFolder": ""
+},
+{
+    "id":"NIST_Flow_Cytometry_Standards_Consortium/NIST_Flow_Cytometry_Standards_Consortium/WG1/SOP-01",
+    "FileName":"SOP-01",
+    "CollectionId":"NIST_Flow_Cytometry_Standards_Consortium",
+    "DatasetId":"NIST_Flow_Cytometry_Standards_Consortium",
+    "FileType":["folder"],
+    "Description":["SOP - WG1 Interlaboratory Study (ILS) One SOP-01"],
+    "SiteID":["NIST"],
+    "SubmittingInvestigatorID":"John Elliott"
+},
+{
+    "id":"NIST_Flow_Cytometry_Standards_Consortium/NIST_Flow_Cytometry_Standards_Consortium/WG2/SOP-01/BD FC Beads Information.pdf",
+    "CollectionId":"NIST_Flow_Cytometry_Standards_Consortium",
+    "DatasetId":"NIST_Flow_Cytometry_Standards_Consortium",
+    "FileName":"BD FC Beads Information.pdf",
+    "FileType":["pdf"],
+    "Description":["SOP - WG2 Interlaboratory Study (ILS) One SOP-01"],
+    "SubmittingInstitutuionID":["NIST"],
+    "SubmittingInvestigatorID":"John Elliott"
+},
+{
+    "id":"NIST_Flow_Cytometry_Standards_Consortium/NIST_Flow_Cytometry_Standards_Consortium/WG2/SOP-01/SOP-01 Instrument Characterization_07-22-2022_Final.pdf",
+    "CollectionId":"NIST_Flow_Cytometry_Standards_Consortium",
+    "DatasetId":"NIST_Flow_Cytometry_Standards_Consortium",
+    "FileName":"SOP-01 Instrument Characterization_07-22-2022_Final.pdf",
+    "FileType":["pdf"],
+    "Description":["SOP - WG2 Interlaboratory Study (ILS) One SOP-01"],
+    "SubmittingInstitutuionID":["NIST"],
+    "SubmittingInvestigatorID":"John Elliott"
+},
+{
+    "id":"NIST_Flow_Cytometry_Standards_Consortium/NIST_Flow_Cytometry_Standards_Consortium/WG2/SOP-01/Spherotech Rainbow Calibration Particles.pdf",
+    "CollectionId":"NIST_Flow_Cytometry_Standards_Consortium",
+    "DatasetId":"NIST_Flow_Cytometry_Standards_Consortium",
+    "FileName":"Spherotech Rainbow Calibration Particles.pdf",
+    "FileType":["pdf"],
+    "Description":["SOP - WG2 Interlaboratory Study (ILS) One SOP-01"],
+    "SubmittingInstitutuionID":["NIST"],
+    "SubmittingInvestigatorID":"John Elliott"
+},
+{
+    "id": "NIST_Flow_Cytometry_Standards_Consortium/NIST_Flow_Cytometry_Standards_Consortium/WG2/SOP 2",
+    "FileName": "SOP 2",
+    "CollectionId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "DatasetId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "FileType": ["folder"],
+    "Description": ["SOP - WG2 Interlaboratory Study (ILS) One"],
+    "SiteID": ["NIST"],
+    "SubmittingInvestigatorID": "John Elliott",
+    "ParentFolder": "SOP 2"
+},
+{
+    "id": "NIST_Flow_Cytometry_Standards_Consortium/NIST_Flow_Cytometry_Standards_Consortium/WG2/SOP 2/AbC total antibody compensation bead kit.pdf",
+    "FileName": "AbC total antibody compensation bead kit.pdf",
+    "CollectionId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "DatasetId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "FileType": ["pdf"],
+    "Description": ["SOP - WG2 Interlaboratory Study (ILS) One"],
+    "SiteID": ["NIST"],
+    "SubmittingInvestigatorID": "John Elliott",
+    "ParentFolder": "SOP 2"
+},
+{
+    "id": "NIST_Flow_Cytometry_Standards_Consortium/NIST_Flow_Cytometry_Standards_Consortium/WG2/SOP 2/Annexin Package Insert.pdf",
+    "FileName": "Annexin Package Insert.pdf",
+    "CollectionId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "DatasetId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "FileType": ["pdf"],
+    "Description": ["SOP - WG2 Interlaboratory Study (ILS) One"],
+    "SiteID": ["NIST"],
+    "SubmittingInvestigatorID": "John Elliott",
+    "ParentFolder": "SOP 2"
+},
+{
+    "id": "NIST_Flow_Cytometry_Standards_Consortium/NIST_Flow_Cytometry_Standards_Consortium/WG2/SOP 2/Pacific Blue and Aqua Compensation Products.pdf",
+    "FileName": "Pacific Blue and Aqua Compensation Products.pdf",
+    "CollectionId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "DatasetId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "FileType": ["pdf"],
+    "Description": ["SOP - WG2 Interlaboratory Study (ILS) One"],
+    "SiteID": ["NIST"],
+    "SubmittingInvestigatorID": "John Elliott",
+    "ParentFolder": "SOP 2"
+},
+{
+    "id": "NIST_Flow_Cytometry_Standards_Consortium/NIST_Flow_Cytometry_Standards_Consortium/WG2/SOP 2/SOP-02 Compensation setup_07-24-2022_Final.pdf",
+    "FileName": "SOP-02 Compensation setup_07-24-2022_Final.pdf",
+    "CollectionId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "DatasetId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "FileType": ["pdf"],
+    "Description": ["SOP - WG2 Interlaboratory Study (ILS) One"],
+    "SiteID": ["NIST"],
+    "SubmittingInvestigatorID": "John Elliott",
+    "ParentFolder": "SOP 2"
+},
+{
+    "id": "NIST_Flow_Cytometry_Standards_Consortium/NIST_Flow_Cytometry_Standards_Consortium/WG2/SOP 2/VersaComp Antibody Capture Bead Kit.pdf",
+    "FileName": "VersaComp Antibody Capture Bead Kit.pdf",
+    "CollectionId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "DatasetId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "FileType": ["pdf"],
+    "Description": ["SOP - WG2 Interlaboratory Study (ILS) One"],
+    "SiteID": ["NIST"],
+    "SubmittingInvestigatorID": "John Elliott",
+    "ParentFolder": "SOP 2"
+},
+{
+    "id": "NIST_Flow_Cytometry_Standards_Consortium/NIST_Flow_Cytometry_Standards_Consortium/WG2/SOP 2/live_dead_fixable dead cell stains.pdf",
+    "FileName": "live_dead_fixable dead cell stains.pdf",
+    "CollectionId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "DatasetId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "FileType": ["pdf"],
+    "Description": ["SOP - WG2 Interlaboratory Study (ILS) One"],
+    "SiteID": ["NIST"],
+    "SubmittingInvestigatorID": "John Elliott",
+    "ParentFolder": "SOP 2"
+},
+{
+    "id": "NIST_Flow_Cytometry_Standards_Consortium/NIST_Flow_Cytometry_Standards_Consortium/WG2/SOP 2/lyoLeuk.pdf",
+    "FileName": "lyoLeuk.pdf",
+    "CollectionId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "DatasetId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "FileType": ["pdf"],
+    "Description": ["SOP - WG2 Interlaboratory Study (ILS) One"],
+    "SiteID": ["NIST"],
+    "SubmittingInvestigatorID": "John Elliott",
+    "ParentFolder": "SOP 2"
+},
+{
+    "id": "NIST_Flow_Cytometry_Standards_Consortium/NIST_Flow_Cytometry_Standards_Consortium/WG2/SOP 3",
+    "FileName": "SOP 3",
+    "CollectionId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "DatasetId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "FileType": ["folder"],
+    "Description": ["SOP - WG2 Interlaboratory Study (ILS) One"],
+    "SiteID": ["NIST"],
+    "SubmittingInvestigatorID": "John Elliott",
+    "ParentFolder": "SOP 3"
+},
+{
+    "id": "NIST_Flow_Cytometry_Standards_Consortium/NIST_Flow_Cytometry_Standards_Consortium/WG2/SOP 3/AllCells Thawing Protocol.pdf",
+    "FileName": "AllCells Thawing Protocol.pdf",
+    "CollectionId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "DatasetId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "FileType": ["pdf"],
+    "Description": ["SOP - WG2 Interlaboratory Study (ILS) One"],
+    "SiteID": ["NIST"],
+    "SubmittingInvestigatorID": "John Elliott",
+    "ParentFolder": "SOP 3"
+},
+{
+    "id": "NIST_Flow_Cytometry_Standards_Consortium/NIST_Flow_Cytometry_Standards_Consortium/WG2/SOP 3/SOP-03 Sample Processing_09-01-2022_Final.pdf",
+    "FileName": "SOP-03 Sample Processing_09-01-2022_Final.pdf",
+    "CollectionId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "DatasetId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "FileType": ["pdf"],
+    "Description": ["SOP - WG2 Interlaboratory Study (ILS) One"],
+    "SiteID": ["NIST"],
+    "SubmittingInvestigatorID": "John Elliott",
+    "ParentFolder": "SOP 3"
+},
+{
+    "id": "NIST_Flow_Cytometry_Standards_Consortium/NIST_Flow_Cytometry_Standards_Consortium/WG2/SOP 3/TDS_ TruCytes TBMNK.pdf",
+    "FileName": "TDS_ TruCytes TBMNK.pdf",
+    "CollectionId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "DatasetId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "FileType": ["pdf"],
+    "Description": ["SOP - WG2 Interlaboratory Study (ILS) One"],
+    "SiteID": ["NIST"],
+    "SubmittingInvestigatorID": "John Elliott",
+    "ParentFolder": "SOP 3"
+},
+{
+    "id": "NIST_Flow_Cytometry_Standards_Consortium/NIST_Flow_Cytometry_Standards_Consortium/WG2/SOP 4",
+    "FileName": "SOP 4",
+    "CollectionId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "DatasetId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "FileType": ["folder"],
+    "Description": ["SOP - WG2 Interlaboratory Study (ILS) One"],
+    "SiteID": ["NIST"],
+    "SubmittingInvestigatorID": "John Elliott",
+    "ParentFolder": "SOP 4"
+},
+{
+    "id": "NIST_Flow_Cytometry_Standards_Consortium/NIST_Flow_Cytometry_Standards_Consortium/WG2/SOP 4/SOP-04 Sample Data Analysis_07-26-2022_Final.pdf",
+    "FileName": "SOP-04 Sample Data Analysis_07-26-2022_Final.pdf",
+    "CollectionId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "DatasetId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "FileType": ["pdf"],
+    "Description": ["SOP - WG2 Interlaboratory Study (ILS) One"],
+    "SiteID": ["NIST"],
+    "SubmittingInvestigatorID": "John Elliott",
+    "ParentFolder": "SOP 4"
+},
+{
+    "id": "NIST_Flow_Cytometry_Standards_Consortium/NIST_Flow_Cytometry_Standards_Consortium/WG2/SOP 4/TDS_ TruCytes TBMNK.pdf",
+    "FileName": "TDS_ TruCytes TBMNK.pdf",
+    "CollectionId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "DatasetId": "NIST_Flow_Cytometry_Standards_Consortium",
+    "FileType": ["pdf"],
+    "Description": ["SOP - WG2 Interlaboratory Study (ILS) One"],
+    "SiteID": ["NIST"],
+    "SubmittingInvestigatorID": "John Elliott",
+    "ParentFolder": "SOP 4"
+},
+{
+    "id": "flow_cytometry_stage/flow_cytometry_stage/Raw Flow Cytometry Standards Consortium InterLab Study WG1 and WG2",
+    "FileName": "Raw Flow Cytometry Standards Consortium InterLab Study WG1 and WG2",
+    "CollectionId": "flow_cytometry_stage",
+    "DatasetId": "flow_cytometry_stage",
+    "FileType": ["folder"],
+    "Description": ["Raw Flow Cytometry Standards Consortium InterLab Study WG1 and WG2"]
+},
+{
+    "id": "flow_cytometry_stage/flow_cytometry_stage/Standardized_Flow_Cytometry_Standards_Consortium_InterLab_Study_WG1_and_WG2",
+    "FileName": "Standardized Flow Cytometry Standards Consortium InterLab Study WG1 and WG2",
+    "CollectionId": "flow_cytometry_stage",
+    "DatasetId": "flow_cytometry_stage",
+    "FileType": ["folder"],
+    "Description": ["Standardized Flow Cytometry Standards Consortium InterLab Study WG1 and WG2"]
+},
+{
+    "id": "flow_cytometry_stage/flow_cytometry_stage/Standardized_Flow_Cytometry_Standards_Consortium_InterLab_Study_WG1_and_WG2/ReadMe",
+    "FileName": "ReadMe",
+    "CollectionId": "flow_cytometry_stage",
+    "DatasetId": "flow_cytometry_stage",
+    "FileType": ["file"],
+    "Description": ["ReadMe for Standardized Flow Cytometry Standards Consortium InterLab Study WG1 and WG2"]
+},
+{
+    "id": "flow_cytometry_stage/flow_cytometry_stage/Standardized_Flow_Cytometry_Standards_Consortium_InterLab_Study_WG1_and_WG2/SOP-p-1-WG1",
+    "FileName": "SOP-p-1-WG1",
+    "CollectionId": "flow_cytometry_stage",
+    "DatasetId": "flow_cytometry_stage",
+    "FileType": ["file"],
+    "Description": ["SOP-p-1-WG1 for Standardized Flow Cytometry Standards Consortium InterLab Study WG1 and WG2"]
+},
+{
+    "id": "flow_cytometry_stage/flow_cytometry_stage/Standardized_Flow_Cytometry_Standards_Consortium_InterLab_Study_WG1_and_WG2/SOP1-WG2",
+    "FileName": "SOP1-WG2",
+    "CollectionId": "flow_cytometry_stage",
+    "DatasetId": "flow_cytometry_stage",
+    "FileType": ["file"],
+    "Description": ["SOP1-WG2 for Standardized Flow Cytometry Standards Consortium InterLab Study WG1 and WG2"]
+},
+{
+    "id": "flow_cytometry_stage/flow_cytometry_stage/Derived Reference Set Flow Cytometry Standards Consortium InterLab Study WG3",
+    "FileName": "Derived Reference Set Flow Cytometry Standards Consortium InterLab Study WG3",
+    "CollectionId": "flow_cytometry_stage",
+    "DatasetId": "flow_cytometry_stage",
+    "FileType": ["folder"],
+    "Description": ["Derived Reference Set Flow Cytometry Standards Consortium InterLab Study WG3"]
+}
+]
+}}
