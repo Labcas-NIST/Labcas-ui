@@ -386,6 +386,167 @@ function escapeRegExp(string) {
 function replaceRegExp(string, replace) {
       return string.replace(/[\*\?\^\$\{\}\(\)\|\[\]\\~&!';\.\/ ":]/g, replace); // $& means the whole matched string
 }
+function parse_config_list_value(raw) {
+    if (!raw) {
+        return [];
+    }
+    if ($.isArray(raw)) {
+        return raw;
+    }
+    if (typeof raw !== "string") {
+        return [];
+    }
+    var trimmed = raw.trim();
+    if (!trimmed) {
+        return [];
+    }
+    if (trimmed.charAt(0) === "[") {
+        try {
+            var parsed = JSON.parse(trimmed);
+            if ($.isArray(parsed)) {
+                return parsed;
+            }
+        } catch (err) {
+            console.warn("Config list parse failed, using raw string.", err);
+        }
+    }
+    return trimmed.split(",").map(function(item) {
+        return item.trim();
+    }).filter(Boolean);
+}
+function get_config_list(key, fallback) {
+    var list = parse_config_list_value(localStorage.getItem(key));
+    if (list.length) {
+        return list;
+    }
+    if (fallback && fallback.length) {
+        return fallback;
+    }
+    return [];
+}
+function parse_collection_alias_groups(raw) {
+    return parse_config_list_value(raw).map(function(group) {
+        return group.split("|").map(function(alias) {
+            return alias.trim();
+        }).filter(Boolean);
+    }).filter(function(group) {
+        return group.length;
+    });
+}
+function get_collection_alias_group(collectionId) {
+    if (!collectionId) {
+        return [];
+    }
+    var groups = parse_collection_alias_groups(localStorage.getItem("collection_id_alias_groups"));
+    var normalized = String(collectionId).toLowerCase();
+    for (var i = 0; i < groups.length; i++) {
+        for (var j = 0; j < groups[i].length; j++) {
+            if (String(groups[i][j]).toLowerCase() === normalized) {
+                return groups[i];
+            }
+        }
+    }
+    return [collectionId];
+}
+function collection_id_matches(collectionId, candidateId) {
+    if (!collectionId || !candidateId) {
+        return false;
+    }
+    var aliases = get_collection_alias_group(collectionId);
+    var candidates = $.isArray(candidateId) ? candidateId : [candidateId];
+    var candidateLower = candidates.map(function(item) {
+        return String(item).toLowerCase();
+    });
+    for (var i = 0; i < aliases.length; i++) {
+        if (candidateLower.indexOf(String(aliases[i]).toLowerCase()) !== -1) {
+            return true;
+        }
+    }
+    return false;
+}
+function collection_matches_list(collectionId, list) {
+    if (!collectionId || !list || !list.length) {
+        return false;
+    }
+    var aliases = get_collection_alias_group(collectionId);
+    var aliasLower = aliases.map(function(alias) {
+        return String(alias).toLowerCase();
+    });
+    for (var i = 0; i < list.length; i++) {
+        var parts = String(list[i]).split("|");
+        for (var j = 0; j < parts.length; j++) {
+            if (aliasLower.indexOf(parts[j].trim().toLowerCase()) !== -1) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+function collection_has_feature(collectionId, configKey, fallbackList) {
+    var list = get_config_list(configKey, fallbackList);
+    return collection_matches_list(collectionId, list);
+}
+function resolve_collection_config_key(collectionId, configObj, aliasGroups) {
+    if (!collectionId || !configObj) {
+        return collectionId;
+    }
+    if (configObj[collectionId]) {
+        return collectionId;
+    }
+    var groups = aliasGroups && aliasGroups.length ? aliasGroups : parse_collection_alias_groups(localStorage.getItem("collection_id_alias_groups"));
+    var normalized = String(collectionId).toLowerCase();
+    for (var i = 0; i < groups.length; i++) {
+        var group = groups[i];
+        var inGroup = false;
+        for (var j = 0; j < group.length; j++) {
+            if (String(group[j]).toLowerCase() === normalized) {
+                inGroup = true;
+                break;
+            }
+        }
+        if (inGroup) {
+            for (var k = 0; k < group.length; k++) {
+                if (configObj[group[k]]) {
+                    return group[k];
+                }
+            }
+        }
+    }
+    return collectionId;
+}
+function build_collection_query(collectionId, fields) {
+    if (!collectionId || !fields || !fields.length) {
+        return "";
+    }
+    var aliases = get_collection_alias_group(collectionId);
+    var tokens = [];
+    var seen = {};
+    for (var i = 0; i < aliases.length; i++) {
+        var safeId = escapeRegExp(String(aliases[i]));
+        for (var j = 0; j < fields.length; j++) {
+            var token = fields[j] + ":\"" + safeId + "\"";
+            if (!seen[token]) {
+                seen[token] = true;
+                tokens.push(token);
+            }
+        }
+    }
+    if (!tokens.length) {
+        tokens.push(fields[0] + ":\"" + escapeRegExp(String(collectionId)) + "\"");
+    }
+    return tokens.join(" OR ");
+}
+function safe_decode_uri_component(value) {
+    if (typeof value !== "string") {
+        return value;
+    }
+    try {
+        return decodeURIComponent(value);
+    } catch (err) {
+        console.warn("Unable to decode URI component:", value, err);
+        return value;
+    }
+}
 
 function formatTimeOfDay(millisSinceEpoch) {
   var secondsSinceEpoch = (millisSinceEpoch / 1000) | 0;

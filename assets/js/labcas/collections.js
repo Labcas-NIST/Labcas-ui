@@ -85,9 +85,17 @@ function fill_collection_metadata(data){
     var download_button = "";
 
     var get_var = get_url_vars();
+    var collection_id = get_var["collection_id"];
     $.each(data.response.docs, function(key, value) {
 
-        if (value.CollectionId != get_var["collection_id"]){
+        var collection_ids = [];
+        if (value.CollectionId) {
+            collection_ids = collection_ids.concat($.isArray(value.CollectionId) ? value.CollectionId : [value.CollectionId]);
+        }
+        if (value.CollectionName) {
+            collection_ids = collection_ids.concat($.isArray(value.CollectionName) ? value.CollectionName : [value.CollectionName]);
+        }
+        if (!collection_id_matches(collection_id, collection_ids)) {
             return;
         }
 
@@ -167,11 +175,37 @@ function fill_collection_metadata(data){
 }
 function fill_collection_details_data(data){
     var get_var = get_url_vars();
+    var collection_id = get_var["collection_id"];
+    var matched = false;
+    var missing_config = false;
+    var rows_added = 0;
+    var $tbody = $("#collectiondetails-table tbody");
+    $tbody.empty();
+
     $.each(data.response.docs, function(index, obj) {
-        //loop until correct datasets
-        if (obj.id != get_var["collection_id"]){
+        var candidates = [];
+        if (obj.id) {
+            candidates.push(obj.id);
+        }
+        if (obj.CollectionId) {
+            candidates = candidates.concat($.isArray(obj.CollectionId) ? obj.CollectionId : [obj.CollectionId]);
+        }
+        if (obj.labcasId) {
+            candidates = candidates.concat($.isArray(obj.labcasId) ? obj.labcasId : [obj.labcasId]);
+        }
+        if (obj.labcasName) {
+            candidates = candidates.concat($.isArray(obj.labcasName) ? obj.labcasName : [obj.labcasName]);
+        }
+        if (obj.name) {
+            candidates = candidates.concat($.isArray(obj.name) ? obj.name : [obj.name]);
+        }
+        if (obj.CollectionName) {
+            candidates = candidates.concat($.isArray(obj.CollectionName) ? obj.CollectionName : [obj.CollectionName]);
+        }
+        if (!collection_id_matches(collection_id, candidates)) {
             return;
         }
+        matched = true;
 
         if(!obj){
             if(!Cookies.get("token") || Cookies.get("token") == "None"){
@@ -181,40 +215,57 @@ function fill_collection_details_data(data){
             }
         }
         var collectioname = obj.CollectionName;
+        if ($.isArray(collectioname)) {
+            collectioname = collectioname[0];
+        }
+        if (!collectioname && obj.name) {
+            collectioname = $.isArray(obj.name) ? obj.name[0] : obj.name;
+        }
+        if (!collectioname && obj.labcasName) {
+            collectioname = $.isArray(obj.labcasName) ? obj.labcasName[0] : obj.labcasName;
+        }
+        if (!collectioname) {
+            collectioname = collection_id;
+        }
 
         if (collectioname.length > 35){
             collectioname = collectioname.slice(0,35);
         }
         $("#collection_name").html(collectioname);
-        var obj = obj;
         var institutions = obj.Institution? obj.Institution.join(", ") : "";
         var pis = obj.LeadPI? obj.LeadPI.join(", ") : "";
         var orgs = obj.Organ? obj.Organ.join(", ") : "";
-        var proids = [];
         var protocols = "";
 
         obj.Institution = institutions;
         obj.LeadPI = pis;
         obj.Organ = orgs;
         obj.ProtocolName = protocols;
-        obj.Consortium = obj.Consortium? "<a href='"+localStorage.getItem('environment_url')+"'>"+obj.Consortium+"</a>" : "";
+        if (obj.Consortium){
+            var consortium_label = $.isArray(obj.Consortium) ? obj.Consortium.join(", ") : obj.Consortium;
+            obj.Consortium = "<a href='"+localStorage.getItem('environment_url')+"'>"+consortium_label+"</a>";
+        }else{
+            obj.Consortium = "";
+        }
 
         var extended_headers = [];
         if (localStorage.getItem('collection_header_extend_'+obj.id)){
             extended_headers = localStorage.getItem('collection_header_extend_'+obj.id).split(',');
         }
-        var show_headers = localStorage.getItem('collection_header_order').split(',');
-        var header_labels = localStorage.getItem('collection_header_label').split(',');
-        var hide_headers = localStorage.getItem('collection_header_hide').split(',');
-        var collapse_headers = localStorage.getItem('collapsible_headers').split(',');
-        var collection_id_append = localStorage.getItem('collection_id_append').split(',');
+        var show_headers = get_config_list('collection_header_order', []);
+        var header_labels = get_config_list('collection_header_label', []);
+        var hide_headers = get_config_list('collection_header_hide', []);
+        var collapse_headers = get_config_list('collapsible_headers', []);
+        var collection_id_append = get_config_list('collection_id_append', []);
+
+        if (!show_headers.length) {
+            missing_config = true;
+            console.warn("collection_header_order missing; collection details may be empty.");
+        }
 
         $.each(show_headers, function(ind, head) {
             var value = obj[head];
-            /*if (typeof  value === "undefined") {
-                value = "";
-            }*/
-            if (typeof  value === "undefined" || value == "") {
+            if (typeof value === "undefined" || value === "" || value === null) {
                 return;
             }
             if ($.isArray(value)){
@@ -222,7 +273,7 @@ function fill_collection_details_data(data){
             }
             if (typeof value == "string"){
                 value = value.replace(/% /g,'_labcasPercent_');
-                value = decodeURIComponent(value);
+                value = safe_decode_uri_component(value);
                 value = value.replace(/\+/g,"&nbsp;").replace(/_labcasPercent_/g,'% ');
             }
             if (collection_id_append.includes(head)){
@@ -232,13 +283,15 @@ function fill_collection_details_data(data){
                     value = "<nobr>"+value.substring(0, 20) + "<a data-toggle='collapse' id='#"+head+"Less' href='#"+head+"Collapse' role='button' aria-expanded='false' onclick='document.getElementById(\"#"+head+"Less\").style.display = \"none\";'>... More</a></nobr><div class='collapse' id='"+head+"Collapse'>" + value.substring(20) + " <a data-toggle='collapse' href='#"+head+"Collapse' role='button' aria-expanded='false' onclick='document.getElementById(\"#"+head+"Less\").style.display = \"block\";'>Less</a></div>";
                 }
             }
-            $("#collectiondetails-table tbody").append(
+            var label = header_labels[ind] || head.replace( /([a-z])([A-Z])/g, "$1 $2" );
+            $tbody.append(
                 "<tr>"+
-                    "<td class='text-right' valign='top' style='padding: 2px 8px;' width='30%'>"+header_labels[ind]+":</td>"+
+                    "<td class='text-right' valign='top' style='padding: 2px 8px;' width='30%'>"+label+":</td>"+
                     "<td class='text-left' valign='top' style='padding: 2px 8px;'>"+
                         value+
                     "</td>"+
                 "</tr>");
+            rows_added += 1;
         });
         // (cleanup) removed legacy commented-out block for hidden headers rendering
 
@@ -246,6 +299,23 @@ function fill_collection_details_data(data){
         $("#collectiontitle").html(collectioname);
     });
 
+    if (!matched || rows_added === 0) {
+        $('#loading_collection').hide(500);
+        var message = "Collection metadata not found.";
+        if (matched && missing_config) {
+            message = "Collection metadata configuration missing.";
+        }
+        $tbody.append(
+            "<tr>"+
+                "<td class='text-center' colspan='2'>"+message+"</td>"+
+            "</tr>"
+        );
+        if (matched && missing_config) {
+            console.warn("Collection metadata configuration missing for:", collection_id);
+        } else {
+            console.warn("Collection metadata not found for:", collection_id);
+        }
+    }
 }
 
 function fill_collections_public_data(data){
@@ -575,12 +645,12 @@ function setup_labcas_data(datatype, query, dataset_query){
         }
     });
         var get_var = get_url_vars();
-        var collection_file_exists = false;
-        if(get_var["collection_id"] == "NIST_Flow_Cytometry_Standards_Consortium" || get_var["collection_id"] == "Genome_Editing_Consortium" || get_var["collection_id"] == "Microbial" || get_var["collection_id"] == "flow_cytometry_stage"){
+        var collection_id = get_var["collection_id"];
+        var default_doc_collections = ["NIST_Flow_Cytometry_Standards_Consortium", "Genome_Editing_Consortium", "Microbial", "flow_cytometry_stage"];
+        if (collection_has_feature(collection_id, "collection_file_documentation_collections", default_doc_collections)){
             query_labcas_api("/labcas-ui/assets/documentation/collection_file_documentation.json?version=5.1.1", fill_collection_metadata);
         }else{
             $('#collection_level_files').hide();
-
         }
 
     }

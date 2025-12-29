@@ -82,6 +82,9 @@
                     </div>
                     <div class="card-body" style="padding: 0px 15px 10px 15px">
                       <div class="table-full-width">
+                        <div id="timeline_mockup" style="margin: 6px 0 12px;">
+                          <iframe src="/nist/a/strain_timeline_mockup.html" title="Strain Timeline Mockup" style="border:none; width:100%; height:220px; box-shadow: -2px 2px 2px rgba(0,0,0,0.1);"></iframe>
+                        </div>
                         <div id="metadata_div2">
                           <iframe id="collection_level_gantt_frame" style="border: none; box-shadow: -2px 2px 2px 2px rgba(0,0,0,0.75); transform: translate(-2px, 2px);" height="350px" width="100%"></iframe>
                         </div>
@@ -327,12 +330,19 @@
       $.getJSON('/labcas-ui/assets/conf/environment.cfg', function(cfg) {
         var collection = get_var["collection_id"];
         var tags = "WorkingGroup,InstrumentCode,SiteCode,ProtocolID,ExperimentType,SampleName";
-        if (
-          cfg &&
-          cfg.collection_custom_hierarchy_default &&
-          cfg.collection_custom_hierarchy_default[collection]
-        ) {
-          tags = cfg.collection_custom_hierarchy_default[collection];
+        var alias_groups = parse_collection_alias_groups(cfg.collection_id_alias_groups);
+        var config_key = resolve_collection_config_key(collection, cfg.collection_custom_hierarchy_default, alias_groups);
+        if (cfg && cfg.collection_custom_hierarchy_default && cfg.collection_custom_hierarchy_default[config_key]) {
+          tags = cfg.collection_custom_hierarchy_default[config_key];
+        }
+        if (cfg && cfg.collection_id_alias_groups) {
+          localStorage.setItem("collection_id_alias_groups", cfg.collection_id_alias_groups);
+        }
+        if (cfg && cfg.collection_file_documentation_collections) {
+          localStorage.setItem("collection_file_documentation_collections", cfg.collection_file_documentation_collections);
+        }
+        if (cfg && cfg.collection_gantt_collections) {
+          localStorage.setItem("collection_gantt_collections", cfg.collection_gantt_collections);
         }
         var tagList = tags.split(',').join(' | ');
         $('#default_hierarchy_tags_label').text(tagList);
@@ -380,7 +390,8 @@
       $("#sidebar_placeholder").load("/labcas-ui/sidebar_" + localStorage.getItem("environment_name") + ".html?9");
       Cookies.set("login_redirect", "/labcas-ui/c/index.html?collection_id=" + get_var["collection_id"]);
       $("#breadcrumb_collection").text(get_var["collection_id"].replace(/_/g, " "));
-      if (get_var["collection_id"] != "Cell_Line_Provenance") {
+      var default_gantt_collections = ["Cell_Line_Provenance"];
+      if (!collection_has_feature(get_var["collection_id"], "collection_gantt_collections", default_gantt_collections)) {
         $("#collection_level_gantt").hide();
       }else{
         $('#collection_level_gantt_frame').attr('src', '/labcas-ui/a/gantt2.html');
@@ -500,7 +511,9 @@
         localStorage.setItem("last_collection_id", get_var["collection_id"]);
         init_file_checkboxes('none');
         collection_hierarchy_get(get_var["collection_id"]);
-        setup_labcas_data("collectiondatasets", 'id:"' + get_var["collection_id"] + '"', 'CollectionId:"' + get_var["collection_id"] + '"');
+        var collection_query = build_collection_query(get_var["collection_id"], ["id", "CollectionId", "labcasId", "labcasName", "name", "CollectionName"]);
+        var dataset_query = build_collection_query(get_var["collection_id"], ["CollectionId", "CollectionName"]);
+        setup_labcas_data("collectiondatasets", collection_query, dataset_query);
           //var hierarchy_tags = get_hierarchy_selected_upto(1000);
           //query_labcas_api(localStorage.getItem('environment')+"/data-access-api/files/select?q=CollectionId:"+get_var["collection_id"]+"%20AND%20-FolderType:%5B*%20TO%20*%5D&wt=json&indent=true&rows=5000&fl="+hierarchy_tags.join(","), fill_hierarchy_data_fast, true);
         
