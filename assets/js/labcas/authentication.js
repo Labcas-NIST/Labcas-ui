@@ -1,4 +1,31 @@
 var page_files = {};
+function ui_path_safe(path) {
+    if (typeof ui_path === "function") {
+        return ui_path(path);
+    }
+    var base = "";
+    if (localStorage && localStorage.getItem("ui_base_path")) {
+        base = localStorage.getItem("ui_base_path");
+    } else if (location && location.pathname) {
+        if (location.pathname === "/nist" || location.pathname.indexOf("/nist/") === 0) {
+            base = "/nist";
+        } else if (location.pathname === "/labcas-ui" || location.pathname.indexOf("/labcas-ui/") === 0) {
+            base = "/labcas-ui";
+        }
+    }
+    if (base) {
+        if (base[0] !== "/") {
+            base = "/" + base;
+        }
+        if (base.length > 1 && base[base.length - 1] === "/") {
+            base = base.slice(0, -1);
+        }
+    }
+    if (path && path[0] !== "/") {
+        path = "/" + path;
+    }
+    return base ? base + path : path;
+}
 Array.prototype.contains = function(v) {
       for (var i = 0; i < this.length; i++) {
               if (this[i] === v) return true;
@@ -92,11 +119,11 @@ function fill_file_details_data(data){
 			obj.ThumbnailPath = obj.ThumbnailPath[0];
 		}
 		if ('ThumbnailRelativePath' in obj){
-                        thumb = "<img width='50' height='50' src='/labcas-ui/assets/"+obj.ThumbnailRelativePath+"'/>";
+                        thumb = "<img width='50' height='50' src='" + ui_path_safe("/assets/" + obj.ThumbnailRelativePath) + "'/>";
 			$("#viewer_wrapper").html(thumb);
 			$("#viewer_wrapper").attr("onclick","submitSingleImageData('"+html_safe_id+"','"+fileloc+"','"+filename+"','"+version+"');");
 		}else if ('ThumbnailPath' in obj && obj.ThumbnailPath.startsWith("/labcas-data/labcas-backend/thumbnails")){
-		        thumb = "<img width='50' height='50' src='/labcas-ui/assets/img/"+obj.ThumbnailPath.replace(/\/labcas-data\/labcas-backend\//g, '')+"'/>";
+		        thumb = "<img width='50' height='50' src='" + ui_path_safe("/assets/img/" + obj.ThumbnailPath.replace(/\/labcas-data\/labcas-backend\//g, '')) + "'/>";
 		        $("#viewer_wrapper").html(thumb);
 		        $("#viewer_wrapper").attr("onclick","submitSingleImageData('"+html_safe_id+"','"+fileloc+"','"+filename+"','"+version+"');");
 

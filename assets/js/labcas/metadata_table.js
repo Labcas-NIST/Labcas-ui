@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    const jsonUrl = '/labcas-ui/assets/documentation/excel_data.json'; // replace with your JSON URL
+    const jsonUrl = (typeof ui_path === "function") ? ui_path('/assets/documentation/excel_data.json') : 'assets/documentation/excel_data.json'; // replace with your JSON URL
 
     // Retrieve the JSON mapping from localStorage
     const mappingStr = localStorage.getItem("metadata_table_collection_mapping");

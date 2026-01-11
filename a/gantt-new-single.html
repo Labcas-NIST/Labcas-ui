@@ -1,5 +1,31 @@
 <html>
     <head>
+  <script>
+    (function() {
+      var base = "";
+      try {
+        if (localStorage && localStorage.getItem("ui_base_path")) {
+          base = localStorage.getItem("ui_base_path");
+        } else if (location && location.pathname) {
+          if (location.pathname == "/nist" || location.pathname.startswith("/nist/")) {
+            base = "/nist";
+          } else if (location.pathname == "/labcas-ui" || location.pathname.startswith("/labcas-ui/")) {
+            base = "/labcas-ui";
+          }
+        }
+      } catch (e) {}
+      if (base) {
+        if (base[0] != "/") {
+          base = "/" + base;
+        }
+        if (base[base.length - 1] != "/") {
+          base = base + "/";
+        }
+        document.write('<base href="' + base + '">');
+      }
+    })();
+  </script>
+
         <!--<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>-->
         <script src="https://d3js.org/d3.v7.min.js"></script>
         <style>
@@ -125,12 +151,12 @@ let tooltip = d3.select("body")
 
 // Map the EventType to image URLs
 const shapeMap = {
-  'Start': '/labcas-ui/assets/tmp/start-tall.png',
-  'Monitor': '/labcas-ui/assets/tmp/monitor-tall.png',
-  'Feed': '/labcas-ui/assets/tmp/feed-tall.png',
-  'Passage': '/labcas-ui/assets/tmp/passage-tall.png',
-  'Transfer': '/labcas-ui/assets/tmp/transfer-tall.png',
-  'Stop': '/labcas-ui/assets/tmp/stop-tall.png'
+  'Start': 'assets/tmp/start-tall.png',
+  'Monitor': 'assets/tmp/monitor-tall.png',
+  'Feed': 'assets/tmp/feed-tall.png',
+  'Passage': 'assets/tmp/passage-tall.png',
+  'Transfer': 'assets/tmp/transfer-tall.png',
+  'Stop': 'assets/tmp/stop-tall.png'
 };
 
   // Append the MammalianCellCode labels directly

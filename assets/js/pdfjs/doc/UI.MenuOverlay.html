@@ -2,6 +2,32 @@
 
 <html lang="en">
 <head>
+  <script>
+    (function() {
+      var base = "";
+      try {
+        if (localStorage && localStorage.getItem("ui_base_path")) {
+          base = localStorage.getItem("ui_base_path");
+        } else if (location && location.pathname) {
+          if (location.pathname == "/nist" || location.pathname.startswith("/nist/")) {
+            base = "/nist";
+          } else if (location.pathname == "/labcas-ui" || location.pathname.startswith("/labcas-ui/")) {
+            base = "/labcas-ui";
+          }
+        }
+      } catch (e) {}
+      if (base) {
+        if (base[0] != "/") {
+          base = "/" + base;
+        }
+        if (base[base.length - 1] != "/") {
+          base = base + "/";
+        }
+        document.write('<base href="' + base + '">');
+      }
+    })();
+  </script>
+
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
 	<title>PDFJS Express WebViewer Interface: MenuOverlay</title>
@@ -105,7 +131,8 @@
     <div class="container-overview">
     
         
-            <div class="description">A class which contains MenuOverlay APIs.<br/><br/><span style="color: red; font-size: 1.2em; font-weight: bold">⚠</span> If you want to remove an item in a MenuOverlay, use <a href="UI.html#.disableElements">disableElements</a>.</div>
+            <div class="description">A class which contains MenuOverlay APIs.<br/><br/>
+<span style="color: red; font-size: 1.2em; font-weight: bold">⚠</span> If you want to remove an item in a MenuOverlay, use <a href="UI.html#.disableElements">disableElements</a>.</div>
         
 
         
@@ -504,7 +531,8 @@
 
     
     <div class="description">
-        Update all the items in the menuOverlay dropdown.To update an individual item, use <a href="UI.html#.updateElement">updateElement</a>
+        Update all the items in the menuOverlay dropdown.
+To update an individual item, use <a href="UI.html#.updateElement">updateElement</a>
     </div>
     
 

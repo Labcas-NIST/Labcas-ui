@@ -1,6 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>
+    (function() {
+      var base = "";
+      try {
+        if (localStorage && localStorage.getItem("ui_base_path")) {
+          base = localStorage.getItem("ui_base_path");
+        } else if (location && location.pathname) {
+          if (location.pathname == "/nist" || location.pathname.startswith("/nist/")) {
+            base = "/nist";
+          } else if (location.pathname == "/labcas-ui" || location.pathname.startswith("/labcas-ui/")) {
+            base = "/labcas-ui";
+          }
+        }
+      } catch (e) {}
+      if (base) {
+        if (base[0] != "/") {
+          base = "/" + base;
+        }
+        if (base[base.length - 1] != "/") {
+          base = base + "/";
+        }
+        document.write('<base href="' + base + '">');
+      }
+    })();
+  </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JSON to DataTable</title>
@@ -69,6 +95,6 @@
     <script src="https://cdn.datatables.net/buttons/2.1.0/js/dataTables.buttons.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.1.0/js/buttons.html5.min.js"></script>
-    <script src="/labcas-ui/assets/js/labcas/metadata_table.js?1"></script>
+    <script src="assets/js/labcas/metadata_table.js?1"></script>
 </body>
 </html>

@@ -1,10 +1,37 @@
 Cookies.set("token", "None");
+function ui_path_safe(path) {
+    if (typeof ui_path === "function") {
+        return ui_path(path);
+    }
+    var base = "";
+    if (localStorage && localStorage.getItem("ui_base_path")) {
+        base = localStorage.getItem("ui_base_path");
+    } else if (location && location.pathname) {
+        if (location.pathname === "/nist" || location.pathname.indexOf("/nist/") === 0) {
+            base = "/nist";
+        } else if (location.pathname === "/labcas-ui" || location.pathname.indexOf("/labcas-ui/") === 0) {
+            base = "/labcas-ui";
+        }
+    }
+    if (base) {
+        if (base[0] !== "/") {
+            base = "/" + base;
+        }
+        if (base.length > 1 && base[base.length - 1] === "/") {
+            base = base.slice(0, -1);
+        }
+    }
+    if (path && path[0] !== "/") {
+        path = "/" + path;
+    }
+    return base ? base + path : path;
+}
 $(document).ready(function(){
     if (!Cookies.get('user')){
         Cookies.set('user', "Sign in");
     }
     clear_cart('files-table');
-$.getJSON( '/labcas-ui/assets/conf/environment.cfg?version=5.3.1', function(json) {
+$.getJSON( ui_path_safe('/assets/conf/environment.cfg?version=5.3.1'), function(json) {
 	$.each( json, function( key, val ) {
         if (typeof val == "string"){
             localStorage.setItem(key, val);
@@ -67,11 +94,11 @@ $('#loginform').submit(function (e) {
 					localStorage.setItem("userdata",  JSON.stringify(user_data));
 
 					writeUserData(JSON.stringify(user_data))
-					localStorage.setItem("first_time_user",  first_time_user);
-					if (Cookies.get("login_redirect")){
-                        window.location.replace("/labcas-ui/m/index.html");
+                    localStorage.setItem("first_time_user",  first_time_user);
+                    if (Cookies.get("login_redirect")){
+                        window.location.replace(ui_path_safe("/m/index.html"));
 					}else{
-						window.location.replace("/labcas-ui/m/index.html");
+						window.location.replace(ui_path_safe("/m/index.html"));
 					}
 				},
 				error: function(){
