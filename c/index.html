@@ -109,7 +109,7 @@
                     <div class="card-body" style="padding: 0px 15px 10px 15px">
                       <div class="table-full-width">
                         <div id="timeline_mockup" style="margin: 6px 0 12px;">
-                          <iframe src="/nist/a/strain_timeline_mockup.html" title="Strain Timeline Mockup" style="border:none; width:100%; height:220px; box-shadow: -2px 2px 2px rgba(0,0,0,0.1);"></iframe>
+                          <iframe src="a/strain_timeline_mockup.html" title="Strain Timeline Mockup" style="border:none; width:100%; height:320px; box-shadow: -2px 2px 2px rgba(0,0,0,0.1);"></iframe>
                         </div>
                         <div id="metadata_div2">
                           <iframe id="collection_level_gantt_frame" style="border: none; box-shadow: -2px 2px 2px 2px rgba(0,0,0,0.75); transform: translate(-2px, 2px);" height="350px" width="100%"></iframe>
@@ -416,10 +416,12 @@
       $("#sidebar_placeholder").load("sidebar_" + localStorage.getItem("environment_name") + ".html?9");
       Cookies.set("login_redirect", "c/index.html?collection_id=" + get_var["collection_id"]);
       $("#breadcrumb_collection").text(get_var["collection_id"].replace(/_/g, " "));
-      var default_gantt_collections = ["Cell_Line_Provenance"];
-      if (!collection_has_feature(get_var["collection_id"], "collection_gantt_collections", default_gantt_collections)) {
+      var default_gantt_collections = ["test_collection"];
+      var collection_id = get_var["collection_id"];
+      var always_show_mockup = (collection_id === "microbial_strain");
+      if (!always_show_mockup && !collection_has_feature(collection_id, "collection_gantt_collections", default_gantt_collections)) {
         $("#collection_level_gantt").hide();
-      }else{
+      } else {
         $('#collection_level_gantt_frame').attr('src', 'a/gantt2.html');
       }
 
