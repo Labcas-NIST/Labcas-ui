@@ -156,7 +156,13 @@
       });
       $("#footer_template").load("templates.html?version=5.1.0 #footer_template_" + localStorage.getItem("environment_name"));
       $("#sidebar_placeholder").load("sidebar_" + localStorage.getItem("environment_name") + ".html?version=5.1.0");
-      setup_labcas_data("collections", "*:*");
+      console.log("[m] baseURI", document.baseURI);
+      console.log("[m] setup_labcas_data type", typeof setup_labcas_data);
+      if (typeof setup_labcas_data === "function") {
+        setup_labcas_data("collections", "*:*");
+      } else {
+        console.error("[m] setup_labcas_data is missing; check assets/js/labcas/collections.js load");
+      }
       window.operateEvents = {
         'click .view': function(e, value, row, index) {
           info = JSON.stringify(row);
