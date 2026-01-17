@@ -388,6 +388,10 @@ function fill_collections_public_data(data){
 
 
 function fill_collections_data(data){
+    console.log("[collections] fill_collections_data", {
+        numFound: data && data.response ? data.response.numFound : undefined,
+        docs: data && data.response ? data.response.docs.length : undefined
+    });
     $.each(data.response.docs, function(index, obj) {
         var color = "btn-info";
         if(user_data["FavoriteCollections"].includes(obj.id)){
@@ -425,6 +429,7 @@ function fill_collections_data(data){
                     "</td>"+
             "</tr>");
     });
+    console.log("[collections] fill_collections_data done, hiding loading spinner");
     $('#loading').hide(500);
     $table.bootstrapTable({
             toolbar: ".toolbar",
@@ -553,8 +558,16 @@ function fill_datasets_data(data){
     // (cleanup) removed debug and commented-out hierarchy reset code
 }
 function setup_labcas_data(datatype, query, dataset_query){
+    var collections_url = localStorage.getItem('environment')+"/data-access-api/collections/select?q="+query+"&wt=json&indent=true&rows=5000&sort=id%20asc";
+    console.log("[collections] setup_labcas_data", {
+        datatype: datatype,
+        query: query,
+        environment: localStorage.getItem("environment"),
+        collections_url: collections_url,
+        has_token: !!(Cookies.get('token') && Cookies.get('token') != "None")
+    });
     $.ajax({
-        url: localStorage.getItem('environment')+"/data-access-api/collections/select?q="+query+"&wt=json&indent=true&rows=5000&sort=id%20asc",
+        url: collections_url,
         beforeSend: function(xhr) {
             if(Cookies.get('token') && Cookies.get('token') != "None"){
                 xhr.setRequestHeader("Authorization", "Bearer " + Cookies.get('token'));
@@ -563,11 +576,15 @@ function setup_labcas_data(datatype, query, dataset_query){
         type: 'GET',
         dataType: 'json',
         success: function (data) {
+            console.log("[collections] collections/select success", {
+                numFound: data && data.response ? data.response.numFound : undefined
+            });
             if(data.response.numFound == 0){
                 alert("No data found, you might be logged out. Redirecting you to log back in.");
                 redirect_to_login();
             }
             if (datatype == "collections"){
+                console.log("[collections] calling fill_collections_data");
                 fill_collections_data(data);
             }else if (datatype == "collections_public"){
                 fill_collections_public_data(data);
@@ -597,7 +614,11 @@ function setup_labcas_data(datatype, query, dataset_query){
             }
         },
         error: function(e){
-            console.error(e);
+            console.error("[collections] collections/select error", {
+                status: e.status,
+                statusText: e.statusText,
+                responseText: e.responseText
+            });
 
             if (datatype == "collections" && e.responseText){
                 fill_collections_data(JSON.parse(e.responseText));
