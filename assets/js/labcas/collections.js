@@ -22,7 +22,7 @@ function fill_collection_level_files(data){
                 var site = value.Institution ? value.Institution.join(",") : "";
                 var description = value.Description? value.Description.join(",") : "";
                 if ('ThumbnailRelativePath' in value){
-                        thumb = "<img width='50' height='50' src='" + ui_path(\"/assets/\" + value.ThumbnailRelativePath) + "'/>";
+                        thumb = "<img width='50' height='50' src='" + ui_path("/assets/" + value.ThumbnailRelativePath) + "'/>";
                 }
                 var html_safe_id = encodeURI(escapeRegExp(value.id));
                 var filesize = "";
@@ -492,7 +492,7 @@ function fill_datasets_data(data){
 
         var image_div = "";
         /*if (value.contains_image){
-            image_div = "<button id='view_"+id_safe_id+"' type=\"button\" rel=\"tooltip\" title=\"View\" onclick=\"Cookies.set('login_redirect', '" + ui_path(\"/d/index.html?dataset_id=\" + html_safe_id) + "'); submitImage('files-table','"+html_safe_id+"')\" class=\"btn btn-simple btn-link\" style='position: absolute;left: -50px; top: 50%; transform: translateY(-50%); color: red'>"+
+            image_div = "<button id='view_"+id_safe_id+"' type=\"button\" rel=\"tooltip\" title=\"View\" onclick=\"Cookies.set('login_redirect', '" + ui_path("/d/index.html?dataset_id=" + html_safe_id) + "'); submitImage('files-table','"+html_safe_id+"')\" class=\"btn btn-simple btn-link\" style='position: absolute;left: -50px; top: 50%; transform: translateY(-50%); color: red'>"+
                 "<i class=\"fa fa-image\"></i>"+
             "</button>";
         }*/
