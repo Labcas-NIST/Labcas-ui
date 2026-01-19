@@ -63,7 +63,7 @@ function fill_files_data(data){
         }
 
         if ('ThumbnailRelativePath' in value){
-            thumb = "<img width='50' height='50' src='" + ui_path(\"/assets/\" + value.ThumbnailRelativePath) + "'/>";
+            thumb = "<img width='50' height='50' src='" + ui_path("/assets/" + value.ThumbnailRelativePath) + "'/>";
         }
         var html_safe_id = encodeURI(escapeRegExp(value.id)).replace("&","%26");
         var filesize = "";
