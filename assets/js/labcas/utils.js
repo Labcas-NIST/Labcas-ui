@@ -1,21 +1,5 @@
 var user_data = {};
 
-// Log LabCAS backend/Solr calls for diagnostics.
-if (typeof $ !== "undefined" && $.ajaxPrefilter && !window.__labcas_ajax_logger) {
-    window.__labcas_ajax_logger = true;
-    $.ajaxPrefilter(function(options) {
-        if (!options || !options.url) {
-            return;
-        }
-        if (options.url.indexOf("/data-access-api/") !== -1 || options.url.indexOf("labcas-backend") !== -1) {
-            console.log("[labcas] ajax", {
-                method: options.type || "GET",
-                url: options.url
-            });
-        }
-    });
-}
-
 function normalize_ui_base_path(base) {
     if (!base) {
         return "";
@@ -227,6 +211,10 @@ function getUserData(){
 	});
 }
 function query_labcas_api(url, customfunction, generalflag){
+    console.log("[labcas] query_labcas_api", {
+        url: url,
+        generalflag: generalflag
+    });
     return new Promise((resolve, reject) => {
         $.ajax({
                 url: url,
