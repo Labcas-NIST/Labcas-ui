@@ -116,7 +116,7 @@ function fill_files_data(data){
             tablevals = "<tr>"+
                     "<td><center><input type='checkbox' class='form-check-input' data-loc='"+fileloc+"' data-name='"+filename+"' data-version='"+version+"' value='"+html_safe_id+"' "+checked+" data-valuesize='"+filesizenum+"'></center></td>"+
                     "<td class='text-left' style='padding-right: 10px'>"+
-                        "<a href='#' data-href=\"" + ui_path("/f/index.html?file_id=" + html_safe_id) + "\" onclick=\"localStorage.setItem('file_id', '"+html_safe_id+"'); window.location.href = this.getAttribute('data-href');\">"+
+                        "<a href=\"" + ui_path("/f/index.html?file_id=" + html_safe_id) + "\" onclick=\"localStorage.setItem('file_id', '"+html_safe_id+"');\">"+
                                 value.FileName+
                             "</a>"+
                     "</td>";
@@ -125,7 +125,7 @@ function fill_files_data(data){
                 var tableitem = value[item] ? value[item] : "";
                 //if InputFileLabCASID, generate a link instead with the filename as the link display
                 if (item == "InputFileLabCASID" && tableitem && String(tableitem) != ""){
-                    tableitem = "<a href='#' data-href='" + ui_path("/f/index.html?file_id=" + tableitem) + "' onclick=\"localStorage.setItem('file_id', '"+tableitem+"'); window.location.href = this.getAttribute('data-href');\" >"+String(tableitem).split('/').pop()+"</a>";
+                    tableitem = "<a href='" + ui_path("/f/index.html?file_id=" + tableitem) + "' onclick=\"localStorage.setItem('file_id', '"+tableitem+"');\" >"+String(tableitem).split('/').pop()+"</a>";
                 }
                 //temporarily here until we decide how to automatically populate SoftwareCode for Flow Cyt Derived files
                 if (item == "SoftwareCode" && tableitem && String(tableitem) != ""){
