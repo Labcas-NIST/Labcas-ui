@@ -293,7 +293,7 @@ function fill_dataset_details_data(data){
         var collectionid = obj.CollectionId;
         var collectionname = obj.CollectionName;
 
-        if ( collectionid != "cell_line_provenance"){
+        if (collectionid != "microbial_strain"){
             $("#collection_level_gantt").hide();
         }else{
             $("#collection_level_gantt").show();
