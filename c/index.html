@@ -87,7 +87,6 @@
                         <div id="timeline_mockup" style="margin: 6px 0 12px;">
                           <iframe src="a/strain_timeline_mockup.html" title="Strain Timeline Mockup" style="border:none; width:100%; height:320px; box-shadow: -2px 2px 2px rgba(0,0,0,0.1);"></iframe>
                         </div>
-                        <iframe id="collection_level_gantt_frame" style="border: none; box-shadow: -2px 2px 2px 2px rgba(0,0,0,0.75); transform: translate(-2px, 2px);" height="350px" width="100%"></iframe>
                       </div>
                     </div>
                   </div>
@@ -395,8 +394,6 @@
       var always_show_mockup = (collection_id === "microbial_strain");
       if (!always_show_mockup && !collection_has_feature(collection_id, "collection_gantt_collections", default_gantt_collections)) {
         $("#collection_level_gantt").hide();
-      } else {
-        $('#collection_level_gantt_frame').attr('src', 'a/gantt2.html');
       }
 
       $('#collection_level_schema_metadata_frame').attr('src', 'a/metadata_tables.html?collection_id='+get_var["collection_id"]);
