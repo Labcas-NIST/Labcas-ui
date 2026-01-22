@@ -55,7 +55,7 @@
       <path class="connector arrow" d="M 980 264 L 1000 264" />
 
       <!-- Nodes -->
-      <rect class="node highlight" x="40" y="120" width="140" height="28" />
+      <rect id="node-cfu" class="node" x="40" y="120" width="140" height="28" />
       <text class="label" x="110" y="132" text-anchor="middle">2nd Pure</text>
       <text class="label" x="110" y="146" text-anchor="middle">CFU Plate</text>
 
@@ -64,7 +64,7 @@
       <text class="label" x="430" y="36" text-anchor="middle">Morphology</text>
       <text class="label" x="430" y="48" text-anchor="middle">Plate Image</text>
 
-      <rect class="node highlight" x="360" y="60" width="140" height="28" />
+      <rect id="node-maldi-fresh" class="node" x="360" y="60" width="140" height="28" />
       <text class="label" x="430" y="74" text-anchor="middle">MALDI Spectra</text>
 
       <rect class="node highlight" x="360" y="120" width="140" height="28" />
@@ -102,5 +102,33 @@
       <text class="label" x="1070" y="264" text-anchor="middle">Assembled Data</text>
     </svg>
   </div>
+  <script>
+    (function () {
+      var cfuNode = document.getElementById("node-cfu");
+      var maldiNode = document.getElementById("node-maldi-fresh");
+      if (!cfuNode || !maldiNode) {
+        return;
+      }
+
+      var baseUrl = window.location.origin + "/labcas-backend/data-access-api/files/select";
+      var query = 'DatasetId:"microbial_strain/strain" AND (FileName:*MALDI* OR FileName:*maldi* OR Filename:*MALDI* OR Filename:*maldi*)';
+      var url = baseUrl + "?q=" + encodeURIComponent(query) + "&rows=0&wt=json";
+
+      fetch(url, { credentials: "include" })
+        .then(function (response) {
+          if (!response.ok) {
+            return null;
+          }
+          return response.json();
+        })
+        .then(function (data) {
+          if (data && data.response && data.response.numFound > 0) {
+            cfuNode.classList.add("highlight");
+            maldiNode.classList.add("highlight");
+          }
+        })
+        .catch(function () {});
+    })();
+  </script>
 </body>
 </html>
