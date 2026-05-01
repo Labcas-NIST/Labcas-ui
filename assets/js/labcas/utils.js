@@ -1485,6 +1485,7 @@ function set_cart_status (){
         $('#image_size').html(imagesize);
         $('#omero_size').html(omerosize);
         $('#dicom_size').html(dicomsize);
+        $('#dicom_size_ohif').html(dicomsize);
 }
 
 function orchistrate_omero_find(query_folder, query_file, version, show_flag, fileid, omero_id){
@@ -1743,6 +1744,505 @@ function get_search_profile(name){
             }
         });
 	}
+}
+
+function ensureOhifProgressModal(){
+    if ($('#ohif_progress_modal').length) return;
+    var modalHtml = '' +
+        '<div id="ohif_progress_modal" class="modal fade" tabindex="-1" role="dialog">' +
+        '  <div class="modal-dialog modal-sm" role="document">' +
+        '    <div class="modal-content">' +
+        '      <div class="modal-header"><h5 class="modal-title">Preparing DICOMs...</h5></div>' +
+        '      <div class="modal-body">' +
+        '        <div class="progress">' +
+        '          <div id="ohif_progress_bar" class="progress-bar" role="progressbar" style="width:0%">0%</div>' +
+        '        </div>' +
+        '      </div>' +
+        '    </div>' +
+        '  </div>' +
+        '</div>';
+    $('body').append(modalHtml);
+}
+
+function isDicomFileName(name){
+    var lname = String(name || '').toLowerCase();
+    return lname.endsWith('.dcm') || lname.endsWith('.dicom');
+}
+
+function collectOhifDicomIds(formname){
+    var ids = [];
+    var seen = {};
+    function add(id, name){
+        if (!id || seen[id]) return;
+        if (name && !isDicomFileName(name) && !isDicomFileName(id)) return;
+        if (!name && !isDicomFileName(id)) return;
+        seen[id] = true;
+        ids.push(id);
+    }
+    if (formname === 'cart' || formname === 'cart_dicom_ohif') {
+        var cartList = {};
+        try { cartList = JSON.parse(localStorage.getItem('cart_list')) || {}; } catch(e) { cartList = {}; }
+        $.each(cartList, function(key, val){
+            var fileId = $.isArray(val) && val.length > 3 ? val[3] : key;
+            var fileName = $.isArray(val) && val.length > 1 ? val[1] : key;
+            add(fileId, fileName);
+        });
+        return ids;
+    }
+    $('#' + formname + ' input[type="checkbox"]').each(function(){
+        if ($(this).is(':checked')) {
+            add($(this).val(), $(this).data('name') || this.getAttribute('data-name'));
+        }
+    });
+    return ids;
+}
+
+function submitOhifImageData(formname){
+    var ids = collectOhifDicomIds(formname || 'cart');
+    if (ids.length === 0) {
+        alert('No DICOM files selected for OHIF.');
+        return;
+    }
+    ensureOhifProgressModal();
+    $('#ohif_progress_bar').css('width','0%').text('0%');
+    $('#ohif_progress_modal').modal({backdrop:'static', keyboard:false});
+    parseDicomFiles(ids, function(done, total){
+        var percent = Math.round(done / total * 100);
+        $('#ohif_progress_bar').css('width', percent + '%').text(percent + '%');
+    }).then(function(data){
+        generate_ohif_json(data);
+    }).catch(function(err){
+        console.error('Failed to parse DICOM files for OHIF', err);
+        $('#ohif_progress_modal').modal('hide');
+        alert('Failed to prepare DICOM files for OHIF.');
+    });
+}
+
+async function parseDicomFiles(ids, onProgress) {
+    async function ensureDcmjs() {
+        if (window.dcmjs) return;
+        return new Promise(function(resolve, reject) {
+            var script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/dcmjs@0.23.0/build/dcmjs.min.js';
+            script.onload = resolve;
+            script.onerror = reject;
+            document.head.appendChild(script);
+        });
+    }
+
+    await ensureDcmjs();
+    const total = ids.length;
+    let completed = 0;
+    const docs = [];
+    for (const id of ids) {
+        const url = localStorage.getItem('environment') + '/data-access-api/download?id=' + id;
+        const headers = {};
+        if (Cookies.get('token')) {
+            headers.Authorization = 'Bearer ' + Cookies.get('token');
+        }
+        const response = await fetch(url, { headers: headers });
+        if (!response.ok) {
+            throw new Error('Failed to fetch DICOM ' + id + ': HTTP ' + response.status);
+        }
+        const arrayBuffer = await response.arrayBuffer();
+        const dicomData = dcmjs.data.DicomMessage.readFile(arrayBuffer);
+        const dataset = dcmjs.data.DicomMetaDictionary.naturalizeDataset(dicomData.dict);
+        try {
+            const modality = dataset.Modality;
+            if (modality === 'RTSTRUCT') {
+                const rfor = dataset.ReferencedFrameOfReferenceSequence || [];
+                const refStudies = rfor[0] && rfor[0].RTReferencedStudySequence ? rfor[0].RTReferencedStudySequence : [];
+                const refSeries = refStudies[0] ? (refStudies[0].RTReferencedSeriesSequence || refStudies[0].ReferencedSeriesSequence || []) : [];
+                const refSeriesUIDs = refSeries.map(function(s){ return s.SeriesInstanceUID; }).filter(Boolean);
+                console.log('parseDicomFiles: RTSTRUCT detected', {
+                    id: id,
+                    StudyInstanceUID: dataset.StudyInstanceUID,
+                    SeriesInstanceUID: dataset.SeriesInstanceUID,
+                    ReferencedSeriesUIDs: refSeriesUIDs
+                });
+            }
+        } catch (e) {
+            console.warn('parseDicomFiles: logging failed for id', id, e);
+        }
+        const doc = { id: id };
+        Object.keys(dataset).forEach(function(key) { doc['dicom_' + key] = dataset[key]; });
+        docs.push(doc);
+        completed += 1;
+        if (onProgress) onProgress(completed, total);
+    }
+    return { response: { docs: docs } };
+}
+
+function generate_ohif_json(data) {
+    const dcmobjs = data.response.docs;
+    console.log('generate_ohif_json: creating viewer JSON for', dcmobjs.length, 'objects');
+    $.getJSON('/nist/assets/documentation/ohif_dcm_template.json', function (originalTemplate) {
+        const STRUCTURAL_KEYS = new Set(['studies', 'series', 'instances', 'metadata']);
+
+        function getDcmValue(key, dcmobjNode) {
+            if (!dcmobjNode) return undefined;
+            const dicomKey = 'dicom_' + key;
+            if (dcmobjNode.hasOwnProperty(dicomKey)) return dcmobjNode[dicomKey];
+            if (dcmobjNode.hasOwnProperty(key)) return dcmobjNode[key];
+            return undefined;
+        }
+
+        function unifyPrimitive(templateValue, dcmValue, key, dcmobjNode) {
+            let valueToUse = getDcmValue(key, dcmobjNode);
+            if (valueToUse === undefined) valueToUse = dcmValue;
+            if (Array.isArray(valueToUse) && valueToUse.length === 1) valueToUse = valueToUse[0];
+            const templateType = typeof templateValue;
+            if (templateType === 'string') {
+                return String(valueToUse);
+            } else if (templateType === 'number') {
+                const parsed = parseFloat(valueToUse);
+                return isNaN(parsed) ? undefined : parsed;
+            } else if (templateType === 'boolean') {
+                return Boolean(valueToUse);
+            }
+            return valueToUse;
+        }
+
+        function filterTemplate(templateNode, dcmobjNode, modality) {
+            if (Array.isArray(templateNode)) {
+                for (let i = templateNode.length - 1; i >= 0; i--) {
+                    if (typeof templateNode[i] === 'object' && templateNode[i] !== null) {
+                        filterTemplate(templateNode[i], dcmobjNode, modality);
+                        if ((Array.isArray(templateNode[i]) && templateNode[i].length === 0) ||
+                            (typeof templateNode[i] === 'object' && Object.keys(templateNode[i]).length === 0)) {
+                            templateNode.splice(i, 1);
+                        }
+                    }
+                }
+            } else if (typeof templateNode === 'object' && templateNode !== null) {
+                for (const key of Object.keys(templateNode)) {
+                    if (key === 'url') continue;
+                    const value = templateNode[key];
+                    const isStructural = STRUCTURAL_KEYS.has(key);
+                    if (isStructural) {
+                        filterTemplate(value, dcmobjNode, modality);
+                    } else {
+                        const dcmValue = getDcmValue(key, dcmobjNode);
+                        if (typeof value === 'object' && !Array.isArray(value) && value !== null) {
+                            if (dcmValue === undefined) {
+                                if (modality !== 'RTSTRUCT') delete templateNode[key];
+                            } else if (typeof dcmValue === 'object' && dcmValue !== null) {
+                                filterTemplate(value, dcmValue, modality);
+                                if (Object.keys(value).length === 0) delete templateNode[key];
+                            } else {
+                                templateNode[key] = dcmValue;
+                            }
+                        } else if (Array.isArray(value)) {
+                            if (dcmValue === undefined) {
+                                if (modality !== 'RTSTRUCT') delete templateNode[key];
+                            } else if (Array.isArray(dcmValue)) {
+                                templateNode[key] = dcmValue;
+                            } else {
+                                templateNode[key] = [dcmValue];
+                            }
+                        } else {
+                            if (dcmValue === undefined) {
+                                if (modality !== 'RTSTRUCT') delete templateNode[key];
+                            } else {
+                                const unifiedValue = unifyPrimitive(value, dcmValue, key, dcmobjNode);
+                                if (unifiedValue === undefined) {
+                                    if (modality !== 'RTSTRUCT') delete templateNode[key];
+                                } else {
+                                    templateNode[key] = unifiedValue;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        function replaceUrlStrings(obj, newUrl) {
+            if (Array.isArray(obj)) {
+                for (let i = 0; i < obj.length; i++) {
+                    if (typeof obj[i] === 'string' && obj[i].includes('dicomweb')) {
+                        obj[i] = obj[i].replace(/dicomweb:.*$/, 'wadouri:' + newUrl);
+                    } else if (typeof obj[i] === 'object' && obj[i] !== null) {
+                        replaceUrlStrings(obj[i], newUrl);
+                    }
+                }
+            } else if (typeof obj === 'object' && obj !== null) {
+                for (const key of Object.keys(obj)) {
+                    if (typeof obj[key] === 'string' && obj[key].includes('dicomweb')) {
+                        obj[key] = obj[key].replace(/dicomweb:.*$/, 'wadouri:' + newUrl);
+                    } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+                        replaceUrlStrings(obj[key], newUrl);
+                    }
+                }
+            }
+        }
+
+        const studiesMap = {};
+        const rtstructRefs = [];
+        const modalityCounts = {};
+        for (let i = 0; i < dcmobjs.length; i++) {
+            const dcmobj = dcmobjs[i];
+            const modality = getDcmValue('Modality', dcmobj);
+            modalityCounts[modality] = (modalityCounts[modality] || 0) + 1;
+            const cloned = JSON.parse(JSON.stringify(originalTemplate));
+            filterTemplate(cloned, dcmobj, modality);
+            const studyTemplate = cloned.studies && cloned.studies[0] ? cloned.studies[0] : {};
+            const originalStudyTemplate = originalTemplate.studies && originalTemplate.studies[0] ? originalTemplate.studies[0] : {};
+            let seriesTemplate = {};
+            if (originalStudyTemplate.series && Array.isArray(originalStudyTemplate.series)) {
+                seriesTemplate = originalStudyTemplate.series.find(function(series){
+                    return series && series.Modality === modality;
+                }) || originalStudyTemplate.series[0] || {};
+            }
+            const instanceTemplate = seriesTemplate.instances && seriesTemplate.instances[0] ? seriesTemplate.instances[0] : {};
+            const environment = localStorage.getItem('environment') || '';
+            const newDownloadUrl = environment + '/data-access-api/download?id=' + dcmobj.id;
+            const instanceObj = JSON.parse(JSON.stringify(instanceTemplate));
+            if (instanceObj.metadata) filterTemplate(instanceObj.metadata, dcmobj, modality);
+            replaceUrlStrings(instanceObj, newDownloadUrl);
+
+            const studyUID = getDcmValue('StudyInstanceUID', dcmobj);
+            const seriesUID = getDcmValue('SeriesInstanceUID', dcmobj);
+            if (modality === 'RTSTRUCT') {
+                try {
+                    const rfor = getDcmValue('ReferencedFrameOfReferenceSequence', dcmobj) || [];
+                    const refStudies = rfor[0] && rfor[0].RTReferencedStudySequence ? rfor[0].RTReferencedStudySequence : [];
+                    const refSeries = refStudies[0] ? (refStudies[0].RTReferencedSeriesSequence || refStudies[0].ReferencedSeriesSequence || []) : [];
+                    const refSeriesUIDs = (refSeries || []).map(function(s){ return s.SeriesInstanceUID; }).filter(Boolean);
+                    rtstructRefs.push({ rtSeriesUID: seriesUID, studyUID: studyUID, refSeriesUIDs: refSeriesUIDs });
+                } catch (e) {
+                    console.warn('OHIF JSON: failed to extract RTSTRUCT references for series', seriesUID, e);
+                }
+            }
+            if (!studiesMap[studyUID]) {
+                const studyObj = JSON.parse(JSON.stringify(studyTemplate));
+                filterTemplate(studyObj, dcmobj, modality);
+                studyObj.series = {};
+                studiesMap[studyUID] = studyObj;
+            }
+            const studyObj = studiesMap[studyUID];
+            if (!studyObj.series[seriesUID]) {
+                const seriesObj = JSON.parse(JSON.stringify(seriesTemplate));
+                filterTemplate(seriesObj, dcmobj, modality);
+                seriesObj.instances = [];
+                studyObj.series[seriesUID] = seriesObj;
+            }
+            studyObj.series[seriesUID].instances.push(instanceObj);
+        }
+
+        const final = { studies: [] };
+        for (const studyUID in studiesMap) {
+            const studyObj = studiesMap[studyUID];
+            studyObj.series = Object.values(studyObj.series);
+            final.studies.push(studyObj);
+        }
+
+        try {
+            const presentSeries = new Set();
+            final.studies.forEach(function(st){
+                (st.series || []).forEach(function(se){
+                    if (se && se.SeriesInstanceUID) presentSeries.add(se.SeriesInstanceUID);
+                });
+            });
+            rtstructRefs.forEach(function(ref){
+                (ref.refSeriesUIDs || []).forEach(function(uid){
+                    if (!presentSeries.has(uid)) {
+                        console.warn('OHIF JSON WARNING: RTSTRUCT references missing target series', {
+                            referencedSeriesUID: uid,
+                            inStudy: ref.studyUID,
+                            rtSeriesUID: ref.rtSeriesUID
+                        });
+                    }
+                });
+            });
+            console.log('OHIF JSON summary:', { modalities: modalityCounts, studyCount: final.studies.length, seriesCount: presentSeries.size, rtstructRefsCount: rtstructRefs.length });
+        } catch (e) {
+            console.warn('OHIF JSON: cross-check failed', e);
+        }
+
+        try {
+            function asArray(value) {
+                if (Array.isArray(value)) return value;
+                return value ? [value] : [];
+            }
+            function cloneRefItem(item) {
+                return {
+                    ReferencedSOPClassUID: item && item.ReferencedSOPClassUID ? item.ReferencedSOPClassUID : '1.2.840.10008.5.1.4.1.1.2',
+                    ReferencedSOPInstanceUID: item && item.ReferencedSOPInstanceUID ? item.ReferencedSOPInstanceUID : ''
+                };
+            }
+            function collectRtReferencedSeries(md) {
+                const series = [];
+                asArray(md.ReferencedFrameOfReferenceSequence).forEach(function(rf){
+                    asArray(rf.RTReferencedStudySequence).forEach(function(refStudy){
+                        asArray(refStudy.RTReferencedSeriesSequence).forEach(function(refSeries){ series.push(refSeries); });
+                        asArray(refStudy.ReferencedSeriesSequence).forEach(function(refSeries){ series.push(refSeries); });
+                    });
+                });
+                asArray(md.RTReferencedSeriesSequence).forEach(function(refSeries){ series.push(refSeries); });
+                asArray(md.ReferencedSeriesSequence).forEach(function(refSeries){ series.push(refSeries); });
+                return series;
+            }
+            function collectRtReferencedImages(md) {
+                const items = [];
+                const seen = {};
+                function addRefItem(item) {
+                    if (!item || !item.ReferencedSOPInstanceUID || seen[item.ReferencedSOPInstanceUID]) return;
+                    seen[item.ReferencedSOPInstanceUID] = true;
+                    items.push(cloneRefItem(item));
+                }
+                collectRtReferencedSeries(md).forEach(function(refSeries){
+                    asArray(refSeries.ContourImageSequence).concat(asArray(refSeries.ReferencedInstanceSequence)).forEach(addRefItem);
+                });
+                asArray(md.ROIContourSequence).forEach(function(roiContour){
+                    asArray(roiContour.ContourSequence).forEach(function(contour){
+                        asArray(contour.ContourImageSequence).forEach(addRefItem);
+                    });
+                });
+                return items;
+            }
+            function imageRefsFromSeries(series) {
+                return asArray(series.instances).map(function(inst){
+                    const md = inst.metadata || {};
+                    return {
+                        ReferencedSOPClassUID: md.SOPClassUID || '1.2.840.10008.5.1.4.1.1.2',
+                        ReferencedSOPInstanceUID: md.SOPInstanceUID || ''
+                    };
+                }).filter(function(item){ return !!item.ReferencedSOPInstanceUID; });
+            }
+            (final.studies || []).forEach(function(st) {
+                const studyUID = st.StudyInstanceUID;
+                const seriesArr = Array.isArray(st.series) ? st.series : [];
+                const candidates = seriesArr.filter(function(se){ return se && se.Modality && se.Modality !== 'RTSTRUCT'; });
+                const candidateByUID = {};
+                const candidateByFoR = {};
+                const candidateBySOP = {};
+                candidates.forEach(function(se){
+                    if (se.SeriesInstanceUID) candidateByUID[se.SeriesInstanceUID] = se;
+                    const inst = (se.instances && se.instances[0]) || {};
+                    const md = inst.metadata || {};
+                    const forUID = md.FrameOfReferenceUID;
+                    if (forUID && !candidateByFoR[forUID]) candidateByFoR[forUID] = se;
+                    asArray(se.instances).forEach(function(candidateInst){
+                        const candidateMd = candidateInst.metadata || {};
+                        if (candidateMd.SOPInstanceUID) candidateBySOP[candidateMd.SOPInstanceUID] = se;
+                    });
+                });
+                seriesArr.forEach(function(se){
+                    if (!se || se.Modality !== 'RTSTRUCT') return;
+                    const inst = (se.instances && se.instances[0]) || {};
+                    inst.metadata = inst.metadata || {};
+                    const md = inst.metadata;
+                    const originalRefSeries = collectRtReferencedSeries(md);
+                    const originalSeriesUIDs = originalRefSeries.map(function(refSeries){ return refSeries.SeriesInstanceUID; }).filter(Boolean);
+                    const referencedImages = collectRtReferencedImages(md);
+                    const groupedBySeries = {};
+                    referencedImages.forEach(function(item){
+                        const target = candidateBySOP[item.ReferencedSOPInstanceUID];
+                        if (!target || !target.SeriesInstanceUID) return;
+                        groupedBySeries[target.SeriesInstanceUID] = groupedBySeries[target.SeriesInstanceUID] || { series: target, items: [] };
+                        groupedBySeries[target.SeriesInstanceUID].items.push(item);
+                    });
+                    originalRefSeries.forEach(function(refSeries){
+                        if (!refSeries || !refSeries.SeriesInstanceUID || !candidateByUID[refSeries.SeriesInstanceUID] || groupedBySeries[refSeries.SeriesInstanceUID]) return;
+                        groupedBySeries[refSeries.SeriesInstanceUID] = {
+                            series: candidateByUID[refSeries.SeriesInstanceUID],
+                            items: asArray(refSeries.ContourImageSequence).map(cloneRefItem).filter(function(item){ return !!item.ReferencedSOPInstanceUID; })
+                        };
+                    });
+                    if (Object.keys(groupedBySeries).length === 0 && referencedImages.length === 0) {
+                        const forUID = md.FrameOfReferenceUID;
+                        const fallbackSeries = forUID && candidateByFoR[forUID] ? candidateByFoR[forUID] : candidates[0];
+                        if (fallbackSeries && fallbackSeries.SeriesInstanceUID) {
+                            groupedBySeries[fallbackSeries.SeriesInstanceUID] = {
+                                series: fallbackSeries,
+                                items: imageRefsFromSeries(fallbackSeries)
+                            };
+                        }
+                    }
+                    const normalizedSeriesSeq = Object.keys(groupedBySeries).map(function(seriesUID){
+                        const group = groupedBySeries[seriesUID];
+                        const items = group.items.length > 0 ? group.items : imageRefsFromSeries(group.series);
+                        return {
+                            SeriesInstanceUID: seriesUID,
+                            ContourImageSequence: items,
+                            ReferencedInstanceSequence: items
+                        };
+                    }).filter(function(refSeries){ return refSeries.ContourImageSequence.length > 0; });
+                    if (normalizedSeriesSeq.length === 0) {
+                        console.warn('OHIF JSON PATCH: could not find loaded target series for RTSTRUCT references', {
+                            rtSeriesUID: se.SeriesInstanceUID,
+                            originalSeriesUIDs: originalSeriesUIDs,
+                            referencedImageCount: referencedImages.length
+                        });
+                        return;
+                    }
+                    const firstTarget = groupedBySeries[normalizedSeriesSeq[0].SeriesInstanceUID].series;
+                    const firstTargetMd = ((firstTarget.instances && firstTarget.instances[0]) || {}).metadata || {};
+                    const refStudy = {
+                        StudyInstanceUID: studyUID || md.StudyInstanceUID || firstTargetMd.StudyInstanceUID,
+                        ReferencedSOPInstanceUID: studyUID || md.StudyInstanceUID || firstTargetMd.StudyInstanceUID,
+                        RTReferencedSeriesSequence: normalizedSeriesSeq,
+                        ReferencedSeriesSequence: normalizedSeriesSeq
+                    };
+                    const ref = [{
+                        FrameOfReferenceUID: md.FrameOfReferenceUID || firstTargetMd.FrameOfReferenceUID,
+                        RTReferencedStudySequence: [refStudy]
+                    }];
+                    md.ReferencedFrameOfReferenceSequence = ref;
+                    md.RTReferencedSeriesSequence = normalizedSeriesSeq;
+                    md.ReferencedSeriesSequence = normalizedSeriesSeq;
+                    se.metadata = se.metadata || {};
+                    se.metadata.ReferencedFrameOfReferenceSequence = ref;
+                    se.metadata.RTReferencedSeriesSequence = normalizedSeriesSeq;
+                    se.metadata.ReferencedSeriesSequence = normalizedSeriesSeq;
+                    se.ReferencedFrameOfReferenceSequence = ref;
+                    se.RTReferencedSeriesSequence = normalizedSeriesSeq;
+                    se.ReferencedSeriesSequence = normalizedSeriesSeq;
+                    inst.ReferencedFrameOfReferenceSequence = ref;
+                    inst.RTReferencedSeriesSequence = normalizedSeriesSeq;
+                    inst.ReferencedSeriesSequence = normalizedSeriesSeq;
+                    const normalizedUIDs = normalizedSeriesSeq.map(function(refSeries){ return refSeries.SeriesInstanceUID; });
+                    const missingOriginalUIDs = originalSeriesUIDs.filter(function(uid){ return !candidateByUID[uid]; });
+                    if (missingOriginalUIDs.length > 0 || originalSeriesUIDs.length === 0) {
+                        console.warn('OHIF JSON PATCH: normalized RTSTRUCT references', {
+                            rtSeriesUID: se.SeriesInstanceUID,
+                            originalSeriesUIDs: originalSeriesUIDs,
+                            normalizedSeriesUIDs: normalizedUIDs,
+                            referencedImageCount: referencedImages.length
+                        });
+                    }
+                });
+            });
+        } catch (e) {
+            console.warn('OHIF JSON PATCH error', e);
+        }
+
+        const finalJson = JSON.stringify(final, null, 2);
+        const simulatedUrl = '/nist/simulated.json';
+        const response = new Response(finalJson, { headers: { 'Content-Type': 'application/json' } });
+        const cachePromise = window.caches ? caches.open('simulated-json-cache').then(function(cache){
+            return cache.delete(simulatedUrl).then(function(){ return cache.put(simulatedUrl, response.clone()); });
+        }) : Promise.resolve();
+        const swPromise = 'serviceWorker' in navigator ? navigator.serviceWorker.register('/nist/sw.js').then(function(){
+            function postToController() {
+                if (!navigator.serviceWorker.controller) return;
+                navigator.serviceWorker.controller.postMessage({ type: 'CLEAR_CACHE', url: simulatedUrl });
+                navigator.serviceWorker.controller.postMessage({ type: 'SET_BLOB', url: simulatedUrl, data: finalJson });
+            }
+            postToController();
+            return navigator.serviceWorker.ready.then(postToController);
+        }).catch(function(error){
+            console.error('Service Worker registration failed:', error);
+        }) : Promise.resolve();
+        Promise.all([cachePromise.catch(function(e){ console.warn('OHIF JSON cache write failed', e); }), swPromise]).then(function(){
+            $('#ohif_progress_modal').modal('hide');
+            window.location.href = '/nist/oh/index.html';
+        });
+    }).fail(function(){
+        $('#ohif_progress_modal').modal('hide');
+        alert('Failed to load OHIF DICOM JSON template.');
+    });
 }
 
 function pdf_viewer(file_id){
