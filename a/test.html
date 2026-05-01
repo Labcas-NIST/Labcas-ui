@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Load HTML Content</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+    <div id="content"></div>
+
+    <script>
+        $(document).ready(function() {
+            $.ajax({
+                url: 'https://labcas.jpl.nasa.gov/nist/data-access-api/download?id=Microbial/2024-04-29/LogCOMET%202023.08.29/Bleach_1.html', // Change to your HTML file URL
+                method: 'GET',
+                success: function(data) {
+                    $('#content').html(data);
+                },
+                error: function() {
+                    $('#content').html('<p>An error occurred</p>');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+

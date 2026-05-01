@@ -72,8 +72,7 @@ let cellcode = urlParams.get('cellcode');
 
 // Filter the JSON data
 let filteredJson = generatedjson.filter(row => row.CellCode === cellcode);
-console.log("filteredJson");
-console.log(filteredJson);
+// removed debug logs
 
 
 let colors = ["gray","blue","orange","purple","green","red"];
@@ -110,7 +109,7 @@ function generateSeries(json) {
 
         cellCodeMap[json[i].CellCode] = point.id;
         points.push(point);
-        console.log(point);
+        // removed debug log
     }
 
     return [{
@@ -155,7 +154,7 @@ var chart = JSC.chart(
           '<b>%name</b> <br/>%low - %high<br/>{days(%high-%low)} days'
       } 
     },defaultPoint_events_click: function() { 
-            window.top.location.href = "/labcas-ui/d/index.html?dataset_id=cell_line_provenance/caco2/01-12-2022/"+this.y[0].replaceAll('/','-')+"_"+this.name;
+            window.top.location.href = "/nist/d/index.html?dataset_id=cell_line_provenance/caco2/01-12-2022/"+this.y[0].replaceAll('/','-')+"_"+this.name;
     }, 
     series: series, 
     toolbar_items: { 

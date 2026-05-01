@@ -29,7 +29,7 @@ function dateToSolrTimestamp(dateString) {
 }
 
 async function createGanttChart() {
-    const response = await fetch('https://ddsa-labcas-staging.jpl.nasa.gov/labcas-ui/assets/tmp/test-cell-line2.json');
+    const response = await fetch('https://labcas.jpl.nasa.gov/nist/assets/tmp/test-cell-line2.json');
     let data = await response.json();
 
     const urlParams = new URLSearchParams(window.location.search);
@@ -125,12 +125,12 @@ let tooltip = d3.select("body")
 
 // Map the EventType to image URLs
 const shapeMap = {
-  'Start': '/labcas-ui/assets/tmp/start-tall.png',
-  'Monitor': '/labcas-ui/assets/tmp/monitor-tall.png',
-  'Feed': '/labcas-ui/assets/tmp/feed-tall.png',
-  'Passage': '/labcas-ui/assets/tmp/passage-tall.png',
-  'Transfer': '/labcas-ui/assets/tmp/transfer-tall.png',
-  'Stop': '/labcas-ui/assets/tmp/stop-tall.png'
+  'Start': '/nist/assets/tmp/start-tall.png',
+  'Monitor': '/nist/assets/tmp/monitor-tall.png',
+  'Feed': '/nist/assets/tmp/feed-tall.png',
+  'Passage': '/nist/assets/tmp/passage-tall.png',
+  'Transfer': '/nist/assets/tmp/transfer-tall.png',
+  'Stop': '/nist/assets/tmp/stop-tall.png'
 };
 
   // Append the MammalianCellCode labels directly
@@ -258,7 +258,7 @@ let myLabels = svg.selectAll("myLabels")
 
     function update_virtual_file_table(selected) {
       // Your existing logic here...
-      console.log(selected);
+      // removed debug log
         if (window.parent && window.parent.setup_labcas_hierarchy_data) {
             window.parent.setup_labcas_hierarchy_data(localStorage.getItem("hierarchy_file_query"), selected, 0);
         }

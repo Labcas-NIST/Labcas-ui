@@ -7,160 +7,175 @@
     <meta http-equiv="Expires" content="0">
 	<title>LabCAS</title>
         <div id="head_template"></div>
-<script src="/labcas-ui/assets/js/core/jquery-3.5.1.min.js" type="text/javascript"></script>
-<script src="/labcas-ui/assets/js/pdfjs/lib/webviewer.min.js" type="text/javascript"></script>
+<script src="/nist/assets/js/core/jquery-3.5.1.min.js" type="text/javascript"></script>
+<script src="/nist/assets/js/pdfjs/lib/webviewer.min.js" type="text/javascript"></script>
 </head>
 
 <body class="sidebar-mini">
- <div class="wrapper">
-    <div id='sidebar_placeholder'></div>
-		<div class="main-panel">
-			<div id="nav_template"></div> <!-- Navbar -->
-			<div class="content">
-				<div class="container-fluid">
-					<div class="row">
-						<div class="col-md-12">
-							<nav aria-label="breadcrumb">
-								<ol id="breadcrumb" class="breadcrumb"></ol>
-							</nav>
-						</div>
-					</div>
-					<div id='fqc-div' style="width:100%; height:900px; margin:0 auto">
-                        <iframe id='multiqc-iframe' frameBorder="0" height="100%" width="100%" src="/labcas-ui/fqc/multiqc_test/multiqc_report.html"></iframe>
+    <div class="wrapper">
+        <div id='sidebar_placeholder'></div>
+        <div class="main-panel">
+            <!-- Navbar -->
+            <div id="nav_template"></div>
+            <!-- End Navbar -->
+            <div class="content">
+                <br>
+                <br>
+                <div class="container-fluid">
+                    <div class="row">
+                    	<div class="col-md-12">
+				<nav aria-label="breadcrumb">
+				  <ol id="breadcrumb" class="breadcrumb">
+
+				  </ol>
+				</nav>
+                    	</div>
                     </div>
-				</div>
-			</div>
+                        <div id='fqc-div' style="width:100%; height:900px; margin:0 auto">
+                        <iframe id='multiqc-iframe' frameBorder="0" height="100%" width="100%" src="/nist/fqc/multiqc_test/multiqc_report.html"></iframe>
+                        </div>
 		</div>
-		<footer role='contentinfo' class='labcas-footer' id="footer_template"></footer>
-	</div>              
+	    </div>
+	</div>
+    </div>
+    <footer role='contentinfo' class='labcas-footer'  id="footer_template">
+    </footer>
+    </div>
+</div>
+                          
 </body>
 <script>
 
 </script>
 <!--   Core JS Files   -->
-<script src="/labcas-ui/assets/js/core/popper.min.js" type="text/javascript"></script>
-<script src="/labcas-ui/assets/js/core/bootstrap.min.js" type="text/javascript"></script>
+<script src="/nist/assets/js/core/popper.min.js" type="text/javascript"></script>
+<script src="/nist/assets/js/core/bootstrap.min.js" type="text/javascript"></script>
 <!--  Plugin for Switches, full documentation here: http://www.jque.re/plugins/version3/bootstrap.switch/ -->
-<script src="/labcas-ui/assets/js/plugins/bootstrap-switch.js"></script>
+<script src="/nist/assets/js/plugins/bootstrap-switch.js"></script>
 <!--  Chartist Plugin  -->
-<script src="/labcas-ui/assets/js/plugins/chartist.min.js"></script>
+<script src="/nist/assets/js/plugins/chartist.min.js"></script>
 <!--  Notifications Plugin    -->
-<script src="/labcas-ui/assets/js/plugins/bootstrap-notify.js"></script>
+<script src="/nist/assets/js/plugins/bootstrap-notify.js"></script>
 <!--  jVector Map  -->
-<script src="/labcas-ui/assets/js/plugins/jquery-jvectormap.js" type="text/javascript"></script>
+<script src="/nist/assets/js/plugins/jquery-jvectormap.js" type="text/javascript"></script>
 <!--  Plugin for Date Time Picker and Full Calendar Plugin-->
-<script src="/labcas-ui/assets/js/plugins/moment.min.js"></script>
+<script src="/nist/assets/js/plugins/moment.min.js"></script>
 <!--  DatetimePicker   -->
-<script src="/labcas-ui/assets/js/plugins/bootstrap-datetimepicker.js"></script>
+<script src="/nist/assets/js/plugins/bootstrap-datetimepicker.js"></script>
 <!--  Sweet Alert  -->
-<script src="/labcas-ui/assets/js/plugins/sweetalert2.min.js" type="text/javascript"></script>
+<script src="/nist/assets/js/plugins/sweetalert2.min.js" type="text/javascript"></script>
 <!--  Tags Input  -->
-<script src="/labcas-ui/assets/js/plugins/bootstrap-tagsinput.js" type="text/javascript"></script>
+<script src="/nist/assets/js/plugins/bootstrap-tagsinput.js" type="text/javascript"></script>
 <!--  Sliders  -->
-<script src="/labcas-ui/assets/js/plugins/nouislider.js" type="text/javascript"></script>
+<script src="/nist/assets/js/plugins/nouislider.js" type="text/javascript"></script>
 <!--  Bootstrap Select  -->
-<script src="/labcas-ui/assets/js/plugins/bootstrap-selectpicker.js" type="text/javascript"></script>
+<script src="/nist/assets/js/plugins/bootstrap-selectpicker.js" type="text/javascript"></script>
 <!--  jQueryValidate  -->
-<script src="/labcas-ui/assets/js/plugins/jquery.validate.min.js" type="text/javascript"></script>
+<script src="/nist/assets/js/plugins/jquery.validate.min.js" type="text/javascript"></script>
 <!--  Plugin for the Wizard, full documentation here: https://github.com/VinceG/twitter-bootstrap-wizard -->
-<script src="/labcas-ui/assets/js/plugins/jquery.bootstrap-wizard.js"></script>
+<script src="/nist/assets/js/plugins/jquery.bootstrap-wizard.js"></script>
 <!--  Bootstrap Table Plugin -->
-<script src="/labcas-ui/assets/js/plugins/bootstrap-table.js"></script>
+<script src="/nist/assets/js/plugins/bootstrap-table.js"></script>
 <!--  DataTable Plugin -->
-<script src="/labcas-ui/assets/js/plugins/jquery.dataTables.min.js"></script>
+<script src="/nist/assets/js/plugins/jquery.dataTables.min.js"></script>
 <!--  Full Calendar   -->
-<script src="/labcas-ui/assets/js/plugins/fullcalendar.min.js"></script>
+<script src="/nist/assets/js/plugins/fullcalendar.min.js"></script>
 <!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
-<script src="/labcas-ui/assets/js/light-bootstrap-dashboard.js?v=2.0.1" type="text/javascript"></script>
+<script src="/nist/assets/js/light-bootstrap-dashboard.js?v=2.0.1" type="text/javascript"></script>
 <!-- Light Dashboard DEMO methods, don't include it in your project! -->
-<link href="/labcas-ui/assets/css/labcas/custom.css" rel="stylesheet" />
-<script src="/labcas-ui/assets/js/plugins/js.cookie.js"></script>
-<script src="/labcas-ui/assets/js/labcas/labcas-sidebar.js"></script>
-<script src="/labcas-ui/assets/js/labcas/authentication.js?version=3.0.0"></script>
-<script src="/labcas-ui/assets/js/labcas/utils.js?version=3.0.0"></script>
+<link href="/nist/assets/css/labcas/custom.css" rel="stylesheet" />
+<script src="/nist/assets/js/plugins/js.cookie.js"></script>
+<script src="/nist/assets/js/labcas/labcas-sidebar.js"></script>
+<script src="/nist/assets/js/labcas/authentication.js?version=5.1.0"></script>
+<script src="/nist/assets/js/labcas/utils.js?version=5.1.0"></script>
 
 <script type="text/javascript">
-   $(document).ready(function() {
-		initPage();
-		configureBreadcrumbs();
-	});
-	
-	function initPage() {
-		$('#viewer_content').hide();
-		initCookies();
-		loadTemplates();
-	}
-	
-	function loadTemplates() {
-		$("#head_template").load("/labcas-ui/templates.html #head_template");
-		$("#nav_template").load("/labcas-ui/templates.html?version=3.0.0 #nav_template", updateUserStatus);
-		$("#footer_template").load(`/labcas-ui/templates.html?version=3.0.1 #footer_template_${localStorage.getItem("environment_name")}`);
-		$("#sidebar_placeholder").load(`/labcas-ui/sidebar_${localStorage.getItem("environment_name")}.html?version=3.0.0`);
-	}
-	
-	function updateUserStatus() {
-		const user = Cookies.get('user');
-		$("#username_placeholder_second, #username_placeholder_third").text(user);
-		user === "Sign in" ? $("#loggedout_msg").show() : $("#loggedout_msg").hide();
-		set_cart_status();
-	}
-	
-	function configureBreadcrumbs() {
-		let breadcrumb = '<li class="breadcrumb-item"><a href="/labcas-ui/m/index.html">Home</a></li>';
-		const loginRedirect = Cookies.get("login_redirect");
-		const getVar = get_url_vars();
-		
-		breadcrumb += buildBreadcrumbPath(loginRedirect, getVar);
+
+
+    $('#viewer_content').hide(1);
+	initCookies();
+    $(document).ready(function() {
+        $( "#head_template" ).load("/nist/templates.html #head_template");
+        $( "#nav_template" ).load("/nist/templates.html?version=5.1.0 #nav_template", function() {
+            $( "#username_placeholder_second" ).text(Cookies.get('user'));
+            if (Cookies.get('user') == "Sign in"){$( "#username_placeholder_third" ).text(Cookies.get('user'));}
+            set_cart_status();
+        });
+
+	$( "#footer_template" ).load("/nist/templates.html?version=5.1.0 #footer_template_"+localStorage.getItem("environment_name"));
+    $( "#sidebar_placeholder" ).load("/nist/sidebar_"+localStorage.getItem("environment_name")+".html?version=5.1.0" );
+    $("#loggedout_msg").hide(); 
+
+
+        
+		var breadcrumb = '<li class="breadcrumb-item"><a href="/nist/m/index.html">Home</a></li>';
+        if (Cookies.get("login_redirect") && Cookies.get("login_redirect").includes("dataset_id=")){
+            var dataset_id = Cookies.get("login_redirect").split("dataset_id=")[1];
+            var data_split = dataset_id.split("/");
+            var url_prefix = "";
+            for (i = 0; i < data_split.length; i++) {
+                if(i == 0){
+                    breadcrumb += '<li class="breadcrumb-item active" aria-current="page"><a href="/nist/c/index.html?collection_id='+data_split[i]+'">'+data_split[i].replace(/_/g," ")+'</a></li>';
+                }else if (i == data_split.length -1){
+                    breadcrumb += '<li class="breadcrumb-item active" aria-current="page"><a href="'+Cookies.get("login_redirect")+'">'+data_split[i].replace(/_/g," ")+'</a></li>';
+                }else{
+                    breadcrumb += '<li class="breadcrumb-item active" aria-current="page"><a href="/nist/d/index.html?dataset_id='+data_split.slice(0,i+1).join("/")+'">'+data_split[i].replace(/_/g," ")+'</a></li>';
+                }
+            }
+            breadcrumb += '<li class="breadcrumb-item active" aria-current="page">Image Viewer</li>';
+        }
+        if (Cookies.get("login_redirect") && Cookies.get("login_redirect").includes("search=")){
+            breadcrumb += '<li class="breadcrumb-item active" aria-current="page"><a href="'+Cookies.get("login_redirect")+'">Search</a></li>';
+            breadcrumb += '<li class="breadcrumb-item active" aria-current="page">Image Viewer</li>';
+        }
+        var get_var = get_url_vars();
+        var images = [];
+
+        if (!(Cookies.get("login_redirect") && Cookies.get("login_redirect").includes("dataset_id=")) && !(Cookies.get("login_redirect") && Cookies.get("login_redirect").includes("search=")) && (images && images.length > 0 && images[0].length == 4)){
+            var data_split = images[0][3].split("/");
+
+            var url_prefix = "";
+            for (i = 0; i < data_split.length-1; i++) {
+                if(i == 0){
+                    breadcrumb += '<li class="breadcrumb-item active" aria-current="page"><a href="/nist/c/index.html?collection_id='+data_split[i]+'">'+data_split[i].replace(/_/g," ")+'</a></li>';
+                }else if (i == data_split.length -1){
+                    breadcrumb += '<li class="breadcrumb-item active" aria-current="page"><a href="'+Cookies.get("login_redirect")+'">'+data_split[i].replace(/_/g," ")+'</a></li>';
+                }else{
+                    breadcrumb += '<li class="breadcrumb-item active" aria-current="page"><a href="/nist/d/index.html?dataset_id='+data_split.slice(0,i+1).join("/")+'">'+data_split[i].replace(/_/g," ")+'</a></li>';
+                }
+            }
+            breadcrumb += '<li class="breadcrumb-item active" aria-current="page">Image Viewer</li>';
+        }
+        if (!(Cookies.get("login_redirect") && Cookies.get("login_redirect").includes("dataset_id=")) && !(Cookies.get("login_redirect") && Cookies.get("login_redirect").includes("search=")) && get_var["fileid"]){
+            var data_split = get_var["fileid"].split("/");
+
+            var url_prefix = "";
+            for (i = 0; i < data_split.length-1; i++) {
+                if(i == 0){
+                    breadcrumb += '<li class="breadcrumb-item active" aria-current="page"><a href="/nist/c/index.html?collection_id='+data_split[i]+'">'+data_split[i].replace(/_/g," ")+'</a></li>';
+                }else if (i == data_split.length -1){
+                    breadcrumb += '<li class="breadcrumb-item active" aria-current="page"><a href="'+Cookies.get("login_redirect")+'">'+data_split[i].replace(/_/g," ")+'</a></li>';
+                }else{
+                    breadcrumb += '<li class="breadcrumb-item active" aria-current="page"><a href="/nist/d/index.html?dataset_id='+data_split.slice(0,i+1).join("/")+'">'+data_split[i].replace(/_/g," ")+'</a></li>';
+                }
+            }
+            breadcrumb += '<li class="breadcrumb-item active" aria-current="page">Image Viewer</li>';
+        }
 		$('#breadcrumb').html(breadcrumb);
-		
-		if (getVar["multiqc_id"]) {
-			$('#multiqc-iframe').attr('src', `/labcas-ui/fqc/multiqc_test/${getVar["multiqc_id"]}/multiqc_report.html`);
-		}
-	}
-	
-	function buildBreadcrumbPath(loginRedirect, getVar) {
-		let breadcrumb = '';
-		const dataSplit = determineDataSplit(loginRedirect, getVar);
-	
-		dataSplit.forEach((part, i) => {
-			const link = getBreadcrumbLink(part, i, dataSplit);
-			const isActive = i === dataSplit.length - 1 ? 'active' : '';
-			breadcrumb += `<li class="breadcrumb-item ${isActive}" aria-current="page"><a href="${link}">${part.replace(/_/g, " ")}</a></li>`;
-		});
-	
-		breadcrumb += '<li class="breadcrumb-item active" aria-current="page">Image Viewer</li>';
-		return breadcrumb;
-	}
-	
-	function determineDataSplit(loginRedirect, getVar) {
-		if (loginRedirect.includes("dataset_id=")) {
-			return loginRedirect.split("dataset_id=")[1].split("/");
-		} else if (loginRedirect.includes("search=")) {
-			return loginRedirect.split("search=")[1].split("/");
-		} else if (getVar["fileid"]) {
-			return getVar["fileid"].split("/");
-		} else {
-			return []; // Default empty path
-		}
-	}
-	
-	function getBreadcrumbLink(part, index, dataSplit) {
-		if (index === 0) {
-			return `/labcas-ui/c/index.html?collection_id=${part}`;
-		} else if (index === dataSplit.length - 1) {
-			return Cookies.get("login_redirect") || '#';
-		} else {
-			return `/labcas-ui/d/index.html?dataset_id=${dataSplit.slice(0, index + 1).join("/")}`;
-		}
-	}
-	
-	window.onbeforeunload = function(event) {
-		if (typeof event == 'undefined') {
-			event = window.event;
-		}
-		if (event) {
-			// Handle the unload event
-		}
+
+        if (get_var["multiqc_id"]){
+	      $('#multiqc-iframe').attr('src', "/nist/fqc/multiqc_test/"+get_var["multiqc_id"]+"/multiqc_report.html");
+        }
+    });
+
+
+
+	window.onbeforeunload = function (event) {
+	    if (typeof event == 'undefined') {
+		event = window.event;
+	    }
+	    if (event) {
+	    }
 	};
 
 </script>

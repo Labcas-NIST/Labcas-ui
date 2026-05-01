@@ -1,16 +1,4 @@
 document.getElementById('jsonFileInput').addEventListener('change', function(event) {
-    /*const files = event.target.files;
-    Array.from(files).forEach(file => {
-        const fileReader = new FileReader();
-        fileReader.onload = function(e) {
-            const data = JSON.parse(e.target.result);
-            const filteredData = filterRelevantInfo(data); // Assuming the JSON structure is an array
-            const flattenedData = filteredData.map(item => flattenDict(item));
-            const csvData = generateCsv(flattenedData);
-            createDownloadButton(csvData, file.name.replace('.json', '.csv'));
-        };
-        fileReader.readAsText(file);
-    });*/
     const files = event.target.files;
     const workbook = XLSX.utils.book_new(); // Initialize a new workbook
 
@@ -22,11 +10,10 @@ document.getElementById('jsonFileInput').addEventListener('change', function(eve
                 const data = JSON.parse(e.target.result);
         const filteredData = filterRelevantInfo(data);
         const flattenedData = filteredData.map(item => flattenDict(item));
-        console.log("flattenedData1");
-        console.log(flattenedData);
+        
         //check instrument type
         if (flattenedData.length > 0 && Object.keys(flattenedData[0]).includes("Instrument")){
-                console.log("HEREHERE");
+                
             if (flattenedData[0]["Instrument"].includes("CytoFLEX")){
                 validateDataAgainstSchema(flattenedData, microbialFlourescenceFCValidationSchema, file.name);
             }else if(flattenedData[0]["Instrument"].includes("Manual")){
@@ -84,23 +71,6 @@ function showValidationWarning(message) {
 }
 
 function createDownloadButton(workbook) {
-/*function createDownloadButton(csvData, fileName) {
-    const downloadBtn = document.createElement('button');
-    downloadBtn.className = 'btn btn-success btn-download m-2'; // Bootstrap classes with margin
-    downloadBtn.textContent = `Download ${fileName}`;
-    downloadBtn.addEventListener('click', () => {
-        const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.setAttribute('href', url);
-        link.setAttribute('download', fileName);
-        link.style.visibility = 'hidden';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    });
-    document.getElementById('downloadButtonsContainer').appendChild(downloadBtn);
-    */
     if(workbook.SheetNames.includes('Sheet1')){
         delete workbook.Sheets['Sheet1'];
         workbook.SheetNames = workbook.SheetNames.filter(name => name !== 'Sheet1');
@@ -565,5 +535,4 @@ const microbialFlourescenceFCValidationSchema = {
         explanatoryNote: 'eLabs, "MoFloDropFrequency"'
     }
 };
-
 
